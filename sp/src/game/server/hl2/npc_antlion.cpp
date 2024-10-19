@@ -400,7 +400,8 @@ void CNPC_Antlion::Activate( void )
 				if (pNpc->Classify() == CLASS_PLAYER_ALLY ||
 					pNpc->Classify() == CLASS_PLAYER_ALLY_VITAL ||
 					pNpc->Classify() == CLASS_PLAYER_NPC || 
-					pNpc->Classify() == CLASS_VORTIGAUNT)
+					pNpc->Classify() == CLASS_VORTIGAUNT ||
+					pNpc->Classify() == CLASS_BULLSEYE)
 				{
 					AddEntityRelationship(pNpc, D_LI, 0);
 					pNpc->AddEntityRelationship(this, D_LI, 0);
@@ -1421,6 +1422,11 @@ void CNPC_Antlion::LockJumpNode( void )
 	}
 }
 
+bool IsEntityAntlion(CBaseEntity* pEnt)
+{ 
+	return (pEnt->Classify() == CLASS_ANTLION || pEnt->Classify() == CLASS_ANTLION_GUARD); 
+}
+
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 bool CNPC_Antlion::OnObstructionPreSteer( AILocalMoveGoal_t *pMoveGoal, float distClear, AIMoveResult_t *pResult )
@@ -1435,7 +1441,7 @@ bool CNPC_Antlion::OnObstructionPreSteer( AILocalMoveGoal_t *pMoveGoal, float di
 
 	CAI_BaseNPC *pBlocker = pMoveGoal->directTrace.pObstruction->MyNPCPointer();
 
-	if ( pBlocker && pBlocker->Classify() == CLASS_ANTLION )
+	if (pBlocker && IsEntityAntlion(pBlocker))
 	{
 		// HACKHACK
 		CNPC_Antlion *pAntlion = dynamic_cast< CNPC_Antlion * > ( pBlocker );
@@ -2018,7 +2024,7 @@ bool CNPC_Antlion::IsJumpLegal( const Vector &startPos, const Vector &apex, cons
 		{
 			CAI_BaseNPC *pBlocker = tr.m_pEnt->MyNPCPointer();
 
-			if ( pBlocker && pBlocker->Classify() == CLASS_ANTLION )
+			if ( pBlocker && IsEntityAntlion(pBlocker))
 			{
 				// HACKHACK
 				CNPC_Antlion *pAntlion = dynamic_cast< CNPC_Antlion * > ( pBlocker );
@@ -2695,7 +2701,7 @@ void CNPC_Antlion::CascadePush( const Vector &vecForce )
 	for ( int i = 0; i < nNumEnemies; i++ )
 	{
 		// We only care about antlions
-		if ( pEnemySearch[i] == NULL || pEnemySearch[i]->Classify() != CLASS_ANTLION || pEnemySearch[i] == this )
+		if ( pEnemySearch[i] == NULL || !IsEntityAntlion(pEnemySearch[i]) || pEnemySearch[i] == this )
 			continue;
 
 		CNPC_Antlion *pAntlion = dynamic_cast<CNPC_Antlion *>(pEnemySearch[i]);
@@ -5170,7 +5176,7 @@ bool IsAntlionWorker( CBaseEntity *pEntity )
 {
 	// Must at least be valid and an antlion
 	return ( pEntity != NULL && 
-			 pEntity->Classify() == CLASS_ANTLION && 
+			IsEntityAntlion(pEntity) &&
 			 pEntity->HasSpawnFlags( SF_ANTLION_WORKER ) &&
 			 dynamic_cast<CNPC_Antlion *>(pEntity) != NULL );	// Save this as the last step
 }
@@ -5183,7 +5189,7 @@ bool IsAntlion( CBaseEntity *pEntity )
 {
 	// Must at least be valid and an antlion
 	return ( pEntity != NULL && 
-			 pEntity->Classify() == CLASS_ANTLION && 
+			IsEntityAntlion(pEntity) &&
 			 dynamic_cast<CNPC_Antlion *>(pEntity) != NULL );	// Save this as the last step
 }
 

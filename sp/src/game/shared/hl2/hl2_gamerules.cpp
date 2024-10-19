@@ -765,6 +765,18 @@ ConVar  alyx_darkness_force( "alyx_darkness_force", "0", FCVAR_CHEAT | FCVAR_REP
 		CBaseCombatCharacter::SetDefaultRelationship(CLASS_ANTLION, CLASS_VORTIGAUNT, D_HT, 0);
 		CBaseCombatCharacter::SetDefaultRelationship(CLASS_VORTIGAUNT, CLASS_ANTLION, D_HT, 0);
 
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_ANTLION_GUARD, CLASS_PLAYER, D_HT, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_PLAYER, CLASS_ANTLION_GUARD, D_HT, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_ANTLION_GUARD, CLASS_PLAYER_NPC, D_HT, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_PLAYER_NPC, CLASS_ANTLION_GUARD, D_HT, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_ANTLION_GUARD, CLASS_PLAYER_ALLY, D_HT, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_PLAYER_ALLY, CLASS_ANTLION_GUARD, D_HT, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_ANTLION_GUARD, CLASS_VORTIGAUNT, D_HT, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_VORTIGAUNT, CLASS_ANTLION_GUARD, D_HT, 0);
+
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_ANTLION, CLASS_ANTLION_GUARD, D_LI, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_ANTLION_GUARD, CLASS_ANTLION, D_LI, 0);
+
 		CBaseCombatCharacter::SetDefaultRelationship(CLASS_HUMAN_MILITARY, CLASS_PLAYER, D_HT, 0);
 		CBaseCombatCharacter::SetDefaultRelationship(CLASS_PLAYER, CLASS_HUMAN_MILITARY, D_HT, 0);
 		CBaseCombatCharacter::SetDefaultRelationship(CLASS_HUMAN_MILITARY, CLASS_PLAYER_NPC, D_HT, 0);
@@ -859,6 +871,10 @@ ConVar  alyx_darkness_force( "alyx_darkness_force", "0", FCVAR_CHEAT | FCVAR_REP
 			case CLASS_EARTH_FAUNA:		return "CLASS_EARTH_FAUNA";
 			case CLASS_PLAYER_NPC:		return "CLASS_PLAYER_NPC";
 			case CLASS_ALIEN_BIOWEAPON:		return "CLASS_ALIEN_BIOWEAPON";
+			case CLASS_COMBINE_ADVISOR:		return "CLASS_COMBINE_ADVISOR";
+			case CLASS_COMBINE_TURRET:		return "CLASS_COMBINE_TURRET";
+			case CLASS_HUMAN_MILITARY:		return "CLASS_HUMAN_MILITARY";
+			case CLASS_ANTLION_GUARD:		return "CLASS_ANTLION_GUARD";
 
 			default:					return "MISSING CLASS in ClassifyText()";
 		}

@@ -230,7 +230,7 @@ public:
 
 	CNPC_AntlionGuard( void );
 
-	Class_T	Classify( void ) { return CLASS_ANTLION; }
+	Class_T	Classify( void ) { return CLASS_ANTLION_GUARD; }
 	virtual int		GetSoundInterests( void ) { return (SOUND_WORLD|SOUND_COMBAT|SOUND_PLAYER|SOUND_DANGER); }
 	virtual bool	QueryHearSound( CSound *pSound );
 
@@ -2618,6 +2618,11 @@ void ApplyChargeDamage( CBaseEntity *pAntlionGuard, CBaseEntity *pTarget, float 
 
 }
 
+bool IsClassAntlion(CBaseEntity* pEnt)
+{
+	return (pEnt->Classify() == CLASS_ANTLION || pEnt->Classify() == CLASS_ANTLION_GUARD);
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: A simple trace filter class to skip small moveable physics objects
 //-----------------------------------------------------------------------------
@@ -2659,7 +2664,7 @@ public:
 			}
 
 			// If we hit an antlion, don't stop, but kill it
-			if ( pEntity->Classify() == CLASS_ANTLION )
+			if (IsClassAntlion(pEntity))
 			{
 				CBaseEntity *pGuard = (CBaseEntity*)EntityFromEntityHandle( m_pPassEnt );
 				ApplyChargeDamage( pGuard, pEntity, pEntity->GetHealth() );
@@ -3085,7 +3090,7 @@ void CNPC_AntlionGuard::RunTask( const Task_t *pTask )
 				else if ( moveTrace.pObstruction )
 				{
 					// If we hit an antlion, don't stop, but kill it
-					if ( moveTrace.pObstruction->Classify() == CLASS_ANTLION )
+					if (IsClassAntlion(moveTrace.pObstruction))
 					{
 						CNPC_AntlionGuard* guard = dynamic_cast<CNPC_AntlionGuard*>(moveTrace.pObstruction);
 						if (guard)
@@ -4574,7 +4579,7 @@ void CNPC_AntlionGuard::InputSummonedAntlionDied( inputdata_t &inputdata )
 bool CNPC_AntlionGuard::QueryHearSound( CSound *pSound )
 {
 	// Don't bother with danger sounds from antlions or other guards
-	if ( pSound->SoundType() == SOUND_DANGER && ( pSound->m_hOwner != NULL && pSound->m_hOwner->Classify() == CLASS_ANTLION ) )
+	if ( pSound->SoundType() == SOUND_DANGER && ( pSound->m_hOwner != NULL && IsClassAntlion(pSound->m_hOwner)) )
 		return false;
 
 	return BaseClass::QueryHearSound( pSound );

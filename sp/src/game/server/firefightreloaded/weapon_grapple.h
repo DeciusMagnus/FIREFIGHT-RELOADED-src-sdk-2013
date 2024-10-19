@@ -29,6 +29,8 @@
 #define BOLT_AIR_VELOCITY	3500
 #define BOLT_WATER_VELOCITY	1500
 
+#define GRAPPLE_VELOCITY	900
+
 class CWeaponGrapple;
  
 //-----------------------------------------------------------------------------

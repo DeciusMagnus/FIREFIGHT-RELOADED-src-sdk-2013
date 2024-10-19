@@ -126,7 +126,15 @@ public:
 	virtual int		GetSoundInterests( void ) { return (BaseClass::GetSoundInterests())|(SOUND_DANGER|SOUND_PHYSICS_DANGER|SOUND_THUMPER|SOUND_BUGBAIT); }
 	virtual	bool	IsHeavyDamage( const CTakeDamageInfo &info );
 
-	Class_T		Classify( void ) { return CLASS_ANTLION; }
+	Class_T		Classify( void ) 
+	{ 
+		if (IsAllied())
+		{
+			return CLASS_PLAYER_ALLY;
+		}
+
+		return CLASS_ANTLION; 
+	}
 	
 	void		Event_Killed( const CTakeDamageInfo &info );
 	bool		FValidateHintType ( CAI_Hint *pHint );

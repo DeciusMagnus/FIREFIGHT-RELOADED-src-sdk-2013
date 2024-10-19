@@ -41,7 +41,8 @@ const char* g_charEnemiesWithDamageResistance[] =
 	"npc_antlionguard",
 	"npc_antlionguardian",
 	"npc_hunter",
-	"npc_combine_ace"
+	"npc_combine_ace",
+	"npc_advisor"
 };
 
 //-----------------------------------------------------------------------------

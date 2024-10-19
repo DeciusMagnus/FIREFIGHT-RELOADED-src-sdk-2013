@@ -243,20 +243,21 @@ void CGrappleHook::HookedThink( void )
 
 	float flDistance = (m_hPlayer->GetAbsOrigin() - GetAbsOrigin()).Length();
 
-	if (flDistance < 128.0f)
+	if (flDistance < 300.0f)
 	{
 		SetTouch(NULL);
 		SetThink(NULL);
 
 		m_hOwner->NotifyHookDied();
 		m_hPlayer->SelectLastItem();
+		m_hPlayer->SetAbsVelocity(vec3_origin);
+		m_hPlayer->SetLocalAngularVelocity(vec3_angle);
 
 		UTIL_Remove(this);
 	}
 	else
 	{
-		float velocity = 1350.0f;
-		m_hPlayer->SetAbsVelocity(tempVec1 * temp_multiplier * velocity);//400
+		m_hPlayer->SetAbsVelocity(tempVec1 * temp_multiplier * GRAPPLE_VELOCITY);//400
 	}
 }
  
@@ -306,6 +307,9 @@ IMPLEMENT_ACTTABLE(CWeaponGrapple);
 //-----------------------------------------------------------------------------
 CWeaponGrapple::CWeaponGrapple( void )
 {
+	m_fMinRange1 = 0;// No minimum range. 
+	m_fMaxRange1 = 768;
+
 	m_bReloadsSingly	= true;
 	m_bFiresUnderwater	= true;
 	m_nBulletType = -1;
@@ -342,6 +346,28 @@ bool CWeaponGrapple::CanDeploy(void)
 
 	EmitSound("Weapon_SMG1.Empty");
 	return false;
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+float Distance(CBaseCombatWeapon* pWeapon, CBaseEntity* pTarget)
+{
+	CBasePlayer* pPlayer = ToBasePlayer(pWeapon->GetOwner());
+
+	if (pPlayer)
+	{
+		// Get the entity under my crosshair
+		trace_t tr;
+		Vector forward;
+		pPlayer->EyeVectors(&forward);
+		UTIL_TraceLine(pPlayer->EyePosition(), pPlayer->EyePosition() + forward * MAX_COORD_RANGE, MASK_SOLID, pPlayer, COLLISION_GROUP_NONE, &tr);
+		
+		Vector enemyDelta = (tr.endpos - tr.startpos);
+		DevMsg("Grapple Distance: %f\n", enemyDelta.Length());
+		return enemyDelta.Length();
+	}
+
+	return 0.0f;
 }
  
 //-----------------------------------------------------------------------------
@@ -390,7 +416,10 @@ void CWeaponGrapple::PrimaryAttack( void )
 
 	CBaseEntity* pOther = tr.m_pEnt;
 
-	if (!pOther || pOther->IsSolidFlagSet(FSOLID_NOT_SOLID | FSOLID_VOLUME_CONTENTS) || pOther->IsEffectActive(EF_NODRAW))
+	if (!pOther ||
+		pOther->IsSolidFlagSet(FSOLID_NOT_SOLID | FSOLID_VOLUME_CONTENTS) || 
+		pOther->IsEffectActive(EF_NODRAW) || 
+		Distance(this, pOther) > m_fMaxRange1)
 	{
 		WeaponSound(EMPTY);
 		return;
@@ -417,11 +446,13 @@ void CWeaponGrapple::PrimaryAttack( void )
 		return;
 	}
 
-	if (tr.surface.flags & SURF_SKY)
+	if (tr.surface.flags & (SURF_SKY | SURF_SKY2D | SURF_NODRAW | SURF_SKIP))
 	{
 		WeaponSound(EMPTY);
 		return;
 	}
+
+	DevMsg("Surface Flags: %i\n", tr.surface.flags);
 
 	//Draws the beam
 	DrawBeam( vecShootOrigin, tr.endpos, 5 );
