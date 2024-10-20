@@ -28,6 +28,10 @@
 
 #define BOLT_AIR_VELOCITY	3500
 #define BOLT_WATER_VELOCITY	1500
+#define BOLT_DISLODGE_DISTANCE	128
+#define BOLT_BATTERY_POWER_DRAW	7
+#define BOLT_BATTERY_POWER_DRAW_TIME	0.20f
+#define BOLT_GRAPPLE_VELOCITY	1350.0f
 
 class CWeaponGrapple;
  
@@ -57,6 +61,7 @@ protected:
 
 private:
 
+	float						m_flNextBatteryDrain;
 	CHandle<CWeaponGrapple>		m_hOwner;
 	CHandle<CBasePlayer>		m_hPlayer;
 	CHandle<CDynamicProp>		m_hBolt;

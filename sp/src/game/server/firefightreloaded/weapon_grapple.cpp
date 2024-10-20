@@ -36,6 +36,8 @@
 #define GLOW_SPRITE "sprites/orangeflare1.vmt"
 
 ConVar sk_grapple_delay("sk_grapple_delay", "0.5");
+ConVar sk_grapple_batterydrain("sk_grapple_batterydrain", "1", FCVAR_ARCHIVE);
+ConVar sk_grapple_rangerestriction("sk_grapple_rangerestriction", "1", FCVAR_ARCHIVE);
 
 static const char* ppszIgnoredClasses[] =
 {
@@ -50,6 +52,7 @@ BEGIN_DATADESC( CGrappleHook )
 	DEFINE_FIELD( m_hOwner, FIELD_EHANDLE ),
 	DEFINE_FIELD( m_hBolt, FIELD_EHANDLE ),
 	DEFINE_FIELD( m_bPlayerWasStanding, FIELD_BOOLEAN ),
+	DEFINE_FIELD(m_flNextBatteryDrain, FIELD_TIME),
 
 	DEFINE_ENTITYFUNC( HookTouch ),
 
@@ -211,6 +214,16 @@ void CGrappleHook::HookTouch( CBaseEntity *pOther )
 
 	m_bPlayerWasStanding = ((m_hPlayer->GetFlags() & FL_DUCKING) == 0);
 
+	if (sk_grapple_batterydrain.GetBool())
+	{
+		if (m_hPlayer->ArmorValue() > 0)
+		{
+			m_hPlayer->RemoveArmor(BOLT_BATTERY_POWER_DRAW);
+		}
+
+		m_flNextBatteryDrain = gpGlobals->curtime + BOLT_BATTERY_POWER_DRAW_TIME;
+	}
+
 	SetThink(&CGrappleHook::HookedThink);
 	SetNextThink(gpGlobals->curtime);
 }
@@ -241,9 +254,22 @@ void CGrappleHook::HookedThink( void )
 	m_hPlayer->m_Local.m_flSlideTime = 0.0f;
 	m_hPlayer->StopPowerSlideSound();
 
+	if (sk_grapple_batterydrain.GetBool())
+	{
+		if (m_flNextBatteryDrain < gpGlobals->curtime)
+		{
+			if (m_hPlayer->ArmorValue() > 0)
+			{
+				m_hPlayer->RemoveArmor(BOLT_BATTERY_POWER_DRAW);
+			}
+
+			m_flNextBatteryDrain = gpGlobals->curtime + BOLT_BATTERY_POWER_DRAW_TIME;
+		}
+	}
+
 	float flDistance = (m_hPlayer->GetAbsOrigin() - GetAbsOrigin()).Length();
 
-	if (flDistance < 128.0f)
+	if (flDistance < BOLT_DISLODGE_DISTANCE)
 	{
 		SetTouch(NULL);
 		SetThink(NULL);
@@ -255,7 +281,7 @@ void CGrappleHook::HookedThink( void )
 	}
 	else
 	{
-		float velocity = 1350.0f;
+		float velocity = BOLT_GRAPPLE_VELOCITY;
 		m_hPlayer->SetAbsVelocity(tempVec1 * temp_multiplier * velocity);//400
 	}
 }
@@ -306,6 +332,9 @@ IMPLEMENT_ACTTABLE(CWeaponGrapple);
 //-----------------------------------------------------------------------------
 CWeaponGrapple::CWeaponGrapple( void )
 {
+	m_fMinRange1 = 0;// No minimum range. 
+	m_fMaxRange1 = 1500;
+
 	m_bReloadsSingly	= true;
 	m_bFiresUnderwater	= true;
 	m_nBulletType = -1;
@@ -343,12 +372,48 @@ bool CWeaponGrapple::CanDeploy(void)
 	EmitSound("Weapon_SMG1.Empty");
 	return false;
 }
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+float Distance(CBaseCombatWeapon* pWeapon)
+{
+	CBasePlayer* pPlayer = ToBasePlayer(pWeapon->GetOwner());
+	if (pPlayer)
+	{
+		// Get the entity under my crosshair
+		trace_t tr;
+		Vector forward;
+		pPlayer->EyeVectors(&forward);
+		UTIL_TraceLine(pPlayer->EyePosition(), pPlayer->EyePosition() + forward * MAX_COORD_RANGE, MASK_SOLID, pPlayer, COLLISION_GROUP_NONE, &tr);
+
+		Vector enemyDelta = (tr.endpos - tr.startpos);
+		DevMsg("Grapple Distance: %f\n", enemyDelta.Length());
+		return enemyDelta.Length();
+	}
+	return 0.0f;
+}
  
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
 void CWeaponGrapple::PrimaryAttack( void )
 {
+	//split this into 2 statements since this method would be called twice
+	if (sk_grapple_rangerestriction.GetBool())
+	{
+		if (Distance(this) < m_fMinRange1)
+		{
+			WeaponSound(EMPTY);
+			return;
+		}
+
+		if (Distance(this) > m_fMaxRange1)
+		{
+			WeaponSound(EMPTY);
+			return;
+		}
+	}
+
 	// Can't have an active hook out
 	if ( m_hHook != NULL )
 		return;
@@ -358,6 +423,15 @@ void CWeaponGrapple::PrimaryAttack( void )
 	if ( !pPlayer )
 	{
 		return;
+	}
+
+	if (sk_grapple_batterydrain.GetBool())
+	{
+		if (pPlayer->ArmorValue() <= 0)
+		{
+			WeaponSound(EMPTY);
+			return;
+		}
 	}
 
 	m_iPrimaryAttacks++;

@@ -238,6 +238,32 @@
 					"1"		"#gameui_enabled"
 				}
 			}
+            
+            "GrappleRangeRestriction"
+			{
+				"text"			"#GameUI_GrappleRangeRestriction"
+				"type"			"wheelywheel"
+				"convar"		"sk_grapple_rangerestriction"
+
+				"options"
+				{
+					"0"		"#gameui_enabled"
+					"1"		"#gameui_disabled"
+				}
+			}
+            
+            "GrappleBatteryDrain"
+			{
+				"text"			"#GameUI_GrappleBatteryDrain"
+				"type"			"wheelywheel"
+				"convar"		"sk_grapple_batterydrain"
+
+				"options"
+				{
+					"0"		"#gameui_disabled"
+					"1"		"#gameui_enabled"
+				}
+			}
 
 			"RocketJumping"
 			{
