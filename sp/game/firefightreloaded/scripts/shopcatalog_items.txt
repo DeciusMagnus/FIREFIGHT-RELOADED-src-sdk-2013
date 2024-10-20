@@ -21,15 +21,15 @@
 	"3"
 	{
 		"name"		"MaxHealth"
-		"price"		"550"
+		"price"		"2500"
         "limit"	    "15"
 		"command"	"upgrade 0"
 	}
     "4"
 	{
 		"name"		"EXPBoost"
-		"price"		"1550"
-        "limit"	    "5"
+		"price"		"3000"
+        "limit"	    "3"
 		"command"	"upgrade 1"
 	}
     "4"
