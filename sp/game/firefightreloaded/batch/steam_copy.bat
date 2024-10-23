@@ -1,5 +1,6 @@
 @ECHO OFF
 call reset.bat
+vdf2json "%CD%/resource/firefightreloaded_english.txt" "%CD%/resource/firefightreloaded_english.json" -ei utf-16le -p
 cls
 SET dest=G:\Projects\FIREFIGHT\steambuild\FIREFIGHTRELOADED\release\firefightreloaded
 SET dlldest=G:\Projects\FIREFIGHT\steambuild\FIREFIGHTRELOADED\windows_client\firefightreloaded\bin
@@ -25,6 +26,7 @@ if not exist "%gamemapdir%" mkdir "%gamemapdir%"
 if not exist "%gamepaduidir%" mkdir "%gamepaduidir%"
 if not exist "%gamebindir%" mkdir "%gamebindir%"
 if not exist "%gamebinlinuxdir%" mkdir "%gamebinlinuxdir%"
+if %debug%==1 pause
 
 echo.
 echo Copying game data...
@@ -45,6 +47,7 @@ XCOPY "%CD%\firefightreloaded_pak_001.vpk" "%basedir%" /y
 XCOPY "%CD%\firefightreloaded_pak_002.vpk" "%basedir%" /y
 XCOPY "%CD%\firefightreloaded_pak_003.vpk" "%basedir%" /y
 XCOPY "%CD%\firefightreloaded_pak_dir.vpk" "%basedir%" /y
+if %debug%==1 pause
 
 echo.
 echo Moving game data to release folder...
@@ -54,6 +57,7 @@ XCOPY /E "%gamebinlinuxdir%" "%linuxdlldest%" /sy
 rmdir "%gamebinlinuxdir%" /s /q
 XCOPY /E "%basedir%" "%dest%" /sy
 rmdir "%basedir%" /s /q
+if %debug%==1 pause
 
 echo.
 echo Coying additional files to release folder...

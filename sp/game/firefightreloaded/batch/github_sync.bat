@@ -1,5 +1,4 @@
 @ECHO OFF
-call reset.bat
 cls
 SET cd=G:\Projects\FIREFIGHT\steambuild\FIREFIGHTRELOADED\release\firefightreloaded
 SET dest=G:\Projects\GitHub\FIREFIGHT-RELOADED-src-sdk-2013
@@ -24,6 +23,7 @@ if not exist "%gamemapgraphdir%" mkdir "%gamemapgraphdir%"
 if not exist "%gamesresourcedir%" mkdir "%gamesresourcedir%"
 if not exist "%gamemapadddir%" mkdir "%gamemapadddir%"
 if not exist "%gamepaduidir%" mkdir "%gamepaduidir%"
+if %debug%==1 pause
 
 echo.
 echo Copying game data...
@@ -38,6 +38,7 @@ XCOPY "%CD%\credits.txt" "%basedir%" /y
 XCOPY "%CD%\gameinfo.txt" "%basedir%" /y
 XCOPY "%CD%\steam.inf" "%basedir%" /y
 XCOPY "%CD%\version.txt" "%basedir%" /y
+if %debug%==1 pause
 
 echo.
 echo Moving game data to GitHub folder...
@@ -45,6 +46,7 @@ SET scriptsdir="%dest%\sp\game\firefightreloaded"
 if not exist "%scriptsdir%" mkdir "%scriptsdir%"
 XCOPY /E "%basedir%" "%scriptsdir%" /sy
 rmdir "%basedir%" /s /q
+if %debug%==1 pause
 
 echo.
 echo Coying additional files to GitHub folder...
