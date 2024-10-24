@@ -40,6 +40,8 @@ enum ELanguage
 	k_Lang_Brazilian,
 	k_Lang_Bulgarian,
 	k_Lang_Greek,
+	k_Lang_Ukrainian,
+	k_Lang_Vietnamese,
 	k_Lang_MAX
 };
 
