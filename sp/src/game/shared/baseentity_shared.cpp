@@ -80,7 +80,8 @@ ConVar	ai_shot_bias_max( "ai_shot_bias_max", "1.0", FCVAR_REPLICATED );
 ConVar	ai_debug_shoot_positions( "ai_debug_shoot_positions", "0", FCVAR_REPLICATED | FCVAR_CHEAT );
 
 #ifdef GAME_DLL
-	ConVar	sv_bullettime_timescale_offset("sv_bullettime_timescale_offset", "130", FCVAR_ARCHIVE);
+	ConVar	sv_bullettime_timescale_offset("sv_bullettime_timescale_offset", "120", FCVAR_ARCHIVE);
+	ConVar	sv_bullettime_timescale_offset_player("sv_bullettime_timescale_offset_player", "110", FCVAR_ARCHIVE);
 	ConVar	sv_bullettime_bullet_speed("sv_bullettime_bullet_speed", "12000", FCVAR_ARCHIVE);
 #endif
 
@@ -2042,7 +2043,7 @@ void CBaseEntity::FireBullets(const FireBulletsInfo_t& info)
 				const char* pszTracerName = GetTracerType();
 
 				ConVarRef host_timescale("host_timescale");
-				float tracerSpeed = sv_bullettime_bullet_speed.GetInt() * host_timescale.GetFloat() * (sv_bullettime_timescale_offset.GetFloat() / 100);
+				float tracerSpeed = sv_bullettime_bullet_speed.GetInt() * host_timescale.GetFloat() * ((IsPlayer() ? sv_bullettime_timescale_offset_player.GetFloat() : sv_bullettime_timescale_offset.GetFloat()) / 100);
 
 				UTIL_Tracer(vecTracerSrc, Tracer.endpos, entindex(), iAttachment, tracerSpeed, true, pszTracerName);
 				UTIL_Tracer(vecTracerSrc, Tracer.endpos, entindex(), iAttachment, tracerSpeed, false, "GaussTracer");
