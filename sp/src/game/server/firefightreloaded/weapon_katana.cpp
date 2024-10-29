@@ -211,7 +211,21 @@ void CWeaponKatana::PrimaryAttack(void)
 						}
 					}
 
-					pPlayer->FireBullets(3, vecSrc, vecAiming, VECTOR_CONE_4DEGREES, GetRange() * 2, m_iPrimaryAmmoType, 0, -1, -1, damage);
+					FireBulletsInfo_t info;
+					info.m_iShots = 3;
+					info.m_vecSrc = vecSrc;
+					info.m_vecDirShooting = vecAiming;
+					info.m_vecSpread = VECTOR_CONE_4DEGREES;
+					info.m_flDistance = GetRange() * 2;
+					info.m_iAmmoType = m_iPrimaryAmmoType;
+					info.m_iTracerFreq = 0;
+					info.m_flDamage = damage;
+					info.m_pAttacker = pPlayer;
+					info.m_nFlags = FIRE_BULLETS_FIRST_SHOT_ACCURATE;
+					info.m_bPrimaryAttack = true;
+					info.m_bAffectedByBullettime = false;
+
+					pPlayer->FireBullets(info);
 
 					if (ent && !ent->IsAlive() && g_pGameRules->isInBullettime && m_bKillMultiplier)
 					{

@@ -171,7 +171,19 @@ void CWeaponRailgun::FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, bool 
 	int iDamage = (bUsesOvercharge ? (int)(definedDamage * 2) : definedDamage);
 	DevMsg("RAILGUN DAMAGE: %i\n", iDamage);
 
-	npc->FireBullets(1, vecShootOrigin, vecShootDir, vec3_origin, MAX_TRACE_LENGTH, m_iPrimaryAmmoType, 0, -1, -1, iDamage, npc);
+	FireBulletsInfo_t info;
+	info.m_iShots = 1;
+	info.m_vecSrc = vecShootOrigin;
+	info.m_vecDirShooting = vecShootDir;
+	info.m_vecSpread = vec3_origin;
+	info.m_flDistance = MAX_TRACE_LENGTH;
+	info.m_iAmmoType = m_iPrimaryAmmoType;
+	info.m_iTracerFreq = 0;
+	info.m_flDamage = iDamage;
+	info.m_pAttacker = npc;
+	info.m_bAffectedByBullettime = false;
+
+	npc->FireBullets(info);
 
 	WeaponSound(SINGLE);
 	CSoundEnt::InsertSound(SOUND_COMBAT | SOUND_CONTEXT_GUNFIRE, pOperator->GetAbsOrigin(), SOUNDENT_VOLUME_MACHINEGUN, 0.2, pOperator, SOUNDENT_CHANNEL_WEAPON, pOperator->GetEnemy());
@@ -557,10 +569,18 @@ void CWeaponRailgun::Fire( void )
 	int iDamage = (m_bOverchargeDamageBenefits ? (int)(definedDamage * (rounded / 100)) : definedDamage);
 	DevMsg("RAILGUN DAMAGE: %i\n", iDamage);
 
-	FireBulletsInfo_t info(1, startPos, aimDir, vec3_origin, MAX_TRACE_LENGTH, m_iPrimaryAmmoType);
-	info.m_pAttacker = pOwner;
+	FireBulletsInfo_t info;
+	info.m_iShots = 1;
+	info.m_vecSrc = startPos;
+	info.m_vecDirShooting = aimDir;
+	info.m_vecSpread = vec3_origin;
+	info.m_flDistance = MAX_TRACE_LENGTH;
+	info.m_iAmmoType = m_iPrimaryAmmoType;
+	info.m_iTracerFreq = 0;
 	info.m_iPlayerDamage = info.m_flDamage = iDamage;
+	info.m_pAttacker = pOwner;
 	info.m_flDamageForceScale = 0.2f;
+	info.m_bAffectedByBullettime = false;
 
 	// Fire the bullets, and force the first shot to be perfectly accurate
 	pOwner->FireBullets(info);
