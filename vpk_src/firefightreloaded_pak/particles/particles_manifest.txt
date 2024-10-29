@@ -50,4 +50,5 @@ particles_manifest
 	//custom stuff here
 	"file"		"particles/weapon_smoke.pcf"
 	"file"		"particles/smod3_blood.pcf"
+	"file"		"particles/fr_bullets.pcf"
 }

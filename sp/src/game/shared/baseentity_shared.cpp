@@ -35,6 +35,8 @@
 	#include "te_hl2mp_shotgun_shot.h"
 #endif
 
+	#include "actual_bullet.h"
+
 	#include "gamestats.h"
 
 #endif
@@ -1598,6 +1600,23 @@ typedef CTraceFilterSimpleList CBulletsTraceFilter;
 
 void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 {
+	if (info.m_bAffectedByBullettime)
+	{
+#if defined( GAME_DLL )
+		if (g_pGameRules->isInBullettime)
+		{
+			//use our info
+			FireBulletsInfo_t info2 = info;
+			// the default attacker is ourselves
+			CBaseEntity* pAttacker = info.m_pAttacker ? info.m_pAttacker : this;
+			info2.m_pAttacker = pAttacker;
+			ConVarRef host_timescale("host_timescale");
+			FireActualBullet(info2, 12000 * host_timescale.GetFloat(), GetTracerType());
+			return;
+		}
+#endif
+	}
+
 	static int	tracerCount;
 	trace_t		tr;
 	CAmmoDef*	pAmmoDef	= GetAmmoDef();

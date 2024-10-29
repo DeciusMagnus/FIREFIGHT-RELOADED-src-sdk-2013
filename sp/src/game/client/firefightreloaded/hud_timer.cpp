@@ -99,8 +99,6 @@ void CHudTimer::VidInit()
 //-----------------------------------------------------------------------------
 void CHudTimer::OnThink()
 {
-	ConVarRef host_timescale("host_timescale");
-
 	if (cl_fr_usetimer.GetBool())
 	{
 		SetAlpha(255);

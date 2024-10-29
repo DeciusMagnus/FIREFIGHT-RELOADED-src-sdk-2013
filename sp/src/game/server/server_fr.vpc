@@ -366,6 +366,8 @@ $Project "Server (FR)"
 			$File	"firefightreloaded\node_placement.cpp"
             $File	"$SRCDIR\game\shared\firefightreloaded\mapinfo.cpp"
 			$File	"$SRCDIR\game\shared\firefightreloaded\mapinfo.h"
+            $File	"firefightreloaded\actual_bullet.cpp"
+            $File	"firefightreloaded\actual_bullet.h"
 
 			$Folder	"NPCs"
 			{
