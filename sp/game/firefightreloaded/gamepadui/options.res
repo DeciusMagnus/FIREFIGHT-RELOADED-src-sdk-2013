@@ -2520,6 +2520,48 @@
 					"3"		"#GameUI_MuzzleValveStyled"
 				}
 			}
+            
+            "BullettimeBulletSpeed"
+			{
+				"text"			"#GameUI_Bullettime_Bullet_Speed"
+				"type"			"slideyslide"
+				"advanced"		"1"
+				"convar"		"sv_bullettime_bullet_speed"
+
+				"min"			"1000"
+				"max"			"20000"
+				"step"			"100"
+
+				"textprecision" "2"
+			}
+            
+            "BullettimeBulletSpeedOffset"
+			{
+				"text"			"#GameUI_Bullettime_Bullet_Speed_Offset"
+				"type"			"slideyslide"
+				"advanced"		"1"
+				"convar"		"sv_bullettime_timescale_offset"
+
+				"min"			"100"
+				"max"			"300"
+				"step"			"10"
+
+				"textprecision" "2"
+			}
+            
+            "BullettimeBulletSpeedOffsetPlayer"
+			{
+				"text"			"#GameUI_Bullettime_Bullet_Speed_Offset_Player"
+				"type"			"slideyslide"
+				"advanced"		"1"
+				"convar"		"sv_bullettime_timescale_offset_player"
+
+				"min"			"100"
+				"max"			"300"
+				"step"			"10"
+
+				"textprecision" "2"
+			}
 
 			"ColorCorrection"
 			{
