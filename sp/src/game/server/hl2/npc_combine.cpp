@@ -3662,6 +3662,7 @@ Vector CNPC_Combine::EyePosition( void )
 Vector CNPC_Combine::GetAltFireTarget()
 {
 	Assert(IsElite());
+
 	return m_vecAltFireTarget;
 }
 
@@ -4197,6 +4198,7 @@ DEFINE_SCHEDULE
  "	Interrupts"
  "		COND_CAN_MELEE_ATTACK1"
  "		COND_CAN_MELEE_ATTACK2"
+ "		COND_HEAVY_DAMAGE"
  "		COND_HEAR_DANGER"
  "		COND_HEAR_MOVE_AWAY"
  )
@@ -4438,7 +4440,6 @@ DEFINE_SCHEDULE
 
  "	Tasks"
  "		TASK_STOP_MOVING				0"
- "		TASK_FACE_ENEMY										0"
  "		TASK_ANNOUNCE_ATTACK								1"
  "		TASK_COMBINE_PLAY_SEQUENCE_FACE_ALTFIRE_TARGET		ACTIVITY:ACT_COMBINE_AR2_ALTFIRE"
  ""
