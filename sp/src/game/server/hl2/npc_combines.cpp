@@ -187,16 +187,40 @@ void CNPC_CombineS::Precache()
 	}
 
 	PrecacheModel(pModelName);
-	PrecacheModel(GetGibModel(APPENDAGE_DECAP_BODY));
 
-	//GIBS!
-	PrecacheModel(GetGibModel(APPENDAGE_HEAD));
-	PrecacheModel(GetGibModel(APPENDAGE_TORSO));
-	PrecacheModel(GetGibModel(APPENDAGE_PELVIS));
-	PrecacheModel(GetGibModel(APPENDAGE_ARML));
-	PrecacheModel(GetGibModel(APPENDAGE_ARMR));
-	PrecacheModel(GetGibModel(APPENDAGE_LEGL));
-	PrecacheModel(GetGibModel(APPENDAGE_LEGR));
+	//gaben please save me
+	PrecacheModel("models/gibs/soldier_elite_head.mdl");
+	PrecacheModel("models/gibs/soldier_shotgunner_head.mdl");
+	PrecacheModel("models/gibs/soldier_prisonguard_head.mdl");
+	PrecacheModel("models/gibs/soldier_head.mdl");
+	PrecacheModel("models/gibs/soldier_elite_torso.mdl");
+	PrecacheModel("models/gibs/soldier_shotgunner_torso.mdl");
+	PrecacheModel("models/gibs/soldier_prisonguard_torso.mdl");
+	PrecacheModel("models/gibs/soldier_torso.mdl");
+	PrecacheModel("models/gibs/soldier_elite_pelvis.mdl");
+	PrecacheModel("models/gibs/soldier_shotgunner_pelvis.mdl");
+	PrecacheModel("models/gibs/soldier_prisonguard_pelvis.mdl");
+	PrecacheModel("models/gibs/soldier_pelvis.mdl");
+	PrecacheModel("models/gibs/soldier_elite_left_arm.mdl");
+	PrecacheModel("models/gibs/soldier_shotgunner_left_arm.mdl");
+	PrecacheModel("models/gibs/soldier_prisonguard_left_arm.mdl");
+	PrecacheModel("models/gibs/soldier_left_arm.mdl");
+	PrecacheModel("models/gibs/soldier_elite_right_arm.mdl");
+	PrecacheModel("models/gibs/soldier_shotgunner_right_arm.mdl");
+	PrecacheModel("models/gibs/soldier_prisonguard_right_arm.mdl");
+	PrecacheModel("models/gibs/soldier_right_arm.mdl");
+	PrecacheModel("models/gibs/soldier_elite_right_leg.mdl");
+	PrecacheModel("models/gibs/soldier_shotgunner_right_leg.mdl");
+	PrecacheModel("models/gibs/soldier_prisonguard_right_leg.mdl");
+	PrecacheModel("models/gibs/soldier_right_leg.mdl");
+	PrecacheModel("models/gibs/soldier_elite_left_leg.mdl");
+	PrecacheModel("models/gibs/soldier_shotgunner_left_leg.mdl");
+	PrecacheModel("models/gibs/soldier_prisonguard_left_leg.mdl");
+	PrecacheModel("models/gibs/soldier_left_leg.mdl");
+	PrecacheModel("models/gibs/combine_super_soldier_beheaded.mdl");
+	PrecacheModel("models/gibs/combine_shotgunner_beheaded.mdl");
+	PrecacheModel("models/gibs/combine_prisonguard_beheaded.mdl");
+	PrecacheModel("models/gibs/combine_soldier_beheaded.mdl");
 
 	UTIL_PrecacheOther( "item_healthvial" );
 	UTIL_PrecacheOther( "weapon_frag" );
@@ -383,8 +407,6 @@ const char* CNPC_CombineS::GetGibModel(appendage_t appendage)
 			}
 			break;
 	}
-
-	BaseClass::GetGibModel(appendage);
 }
 
 void CNPC_CombineS::DeathSound( const CTakeDamageInfo &info )

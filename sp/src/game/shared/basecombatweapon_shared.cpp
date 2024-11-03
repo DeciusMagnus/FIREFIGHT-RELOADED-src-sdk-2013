@@ -1331,6 +1331,7 @@ void CBaseCombatWeapon::Equip( CBaseCombatCharacter *pOwner )
 
 	if ( pOwner->IsPlayer() )
 	{
+		SetWeaponVisible(true);
 		SetModel( GetViewModel() );
 	}
 	else
@@ -1357,8 +1358,7 @@ void CBaseCombatWeapon::SetActivity( Activity act, float duration )
 
 	//Adrian: Oh man again...
 #if !defined( CLIENT_DLL ) && (defined( HL2MP ) || defined( PORTAL ))
-	if ( GetOwner()->IsPlayer() ) 
-		SetModel( GetViewModel() );
+	SetModel( GetViewModel() );
 #endif
 
 	if ( sequence != ACTIVITY_NOT_AVAILABLE )
@@ -1812,13 +1812,14 @@ Activity CBaseCombatWeapon::GetDrawActivity( void )
 {
 	if (!m_bPlayDeployAnim)
 	{
-		return ACT_INVALID;
+		return ACT_VM_IDLE;
 	}
 	else
 	{
 		return ACT_VM_DRAW;
 	}
 }
+
 
 //-----------------------------------------------------------------------------
 // Purpose: 
