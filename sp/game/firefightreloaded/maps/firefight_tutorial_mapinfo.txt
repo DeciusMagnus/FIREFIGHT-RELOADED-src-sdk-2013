@@ -1,0 +1,5 @@
+"firefight_tutorial"
+{
+    "ForcedLoadout" "training"
+    "AllowMusicSystem" "0"
+}

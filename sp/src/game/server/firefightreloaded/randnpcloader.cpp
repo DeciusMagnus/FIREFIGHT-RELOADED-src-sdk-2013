@@ -66,7 +66,6 @@ bool CRandNPCLoader::Load()
 {
 	bool gamemodeMode = true;
 	const char* gamemodeName = g_pGameRules->GetGamemodeName();
-	const char* mapName = STRING(gpGlobals->mapname);
 
 	if (gamemodeName == NULL || strlen(gamemodeName) == 0 ||
 		(!g_pGameRules->bSkipFuncCheck && !g_fr_spawneroldfunctionality.GetBool()))
@@ -77,9 +76,9 @@ bool CRandNPCLoader::Load()
 	KeyValues* pKV = NULL;
 	bool failed = false;
 
-	char szScriptPath[_MAX_PATH] = { 0 };
 	if (gamemodeMode)
 	{
+		char szScriptPath[_MAX_PATH] = { 0 };
 		Q_snprintf(szScriptPath, sizeof(szScriptPath), "scripts/spawnlists/%s.txt", gamemodeName);
 
 		pKV = new KeyValues(gamemodeName);
@@ -94,21 +93,14 @@ bool CRandNPCLoader::Load()
 	}
 	else
 	{
-		KeyValues* pInfo = CMapInfo::GetMapInfoData();
+		const char* mapName = STRING(gpGlobals->mapname);
+		char szMapScriptPath[_MAX_PATH] = { 0 };
+		Q_snprintf(szMapScriptPath, sizeof(szMapScriptPath), "scripts/spawnlists/maps/%s.txt", mapName);
 
-		if (pInfo != NULL)
+		pKV = new KeyValues(mapName);
+		if (pKV->LoadFromFile(filesystem, szMapScriptPath))
 		{
-			KeyValues *pSpawnerSettings = pInfo->FindKey("Spawnlist");
-			if (pSpawnerSettings)
-			{
-				pKV = pSpawnerSettings->MakeCopy();
-				//KeyValuesDumpAsDevMsg(pKV, 1);
-				DevMsg("CRandNPCLoader: Spawnlist for %s loaded.\n", mapName);
-			}
-			else
-			{
-				failed = true;
-			}
+			DevMsg("CRandNPCLoader: Spawnlist for %s loaded.\n", mapName);
 		}
 		else
 		{
@@ -118,7 +110,7 @@ bool CRandNPCLoader::Load()
 
 	if (failed)
 	{
-		pKV = new KeyValues(mapName);
+		pKV = new KeyValues("Spawnlist");
 		DevWarning("CRandNPCLoader: Failed to load %s spawnlist! File may not exist. Using default spawn list...\n", gamemodeName);
 		if (pKV->LoadFromFile(filesystem, sk_spawner_defaultspawnlist.GetString()))
 		{

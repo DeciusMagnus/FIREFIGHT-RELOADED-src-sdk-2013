@@ -31,7 +31,8 @@ XCOPY /E "%CD%\sound" "%gamesounddir%" /sy
 XCOPY /E "%CD%\resource" "%gamesresourcedir%" /sy
 XCOPY /E "%CD%\scripts" "%gamescriptdir%" /sy
 XCOPY /E "%CD%\cfg" "%gamecfgdir%" /sy
-XCOPY /E "%CD%\maps\graphs" "%gamemapdir%" /s /y
+XCOPY /E "%CD%\maps\graphs" "%gamemapgraphdir%" /s /y
+XCOPY /E "%CD%\maps\*.txt" "%gamemapdir%" /s /y
 XCOPY /E "%CD%\mapadd" "%gamemapadddir%" /sy
 XCOPY /E "%CD%\gamepadui" "%gamepaduidir%" /sy
 XCOPY "%CD%\credits.txt" "%basedir%" /y

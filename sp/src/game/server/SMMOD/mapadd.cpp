@@ -54,73 +54,72 @@ bool CMapAdd::RunLabel( const char *szLabel)
 	if(!szLabel || AllocPooledString(szLabel) == AllocPooledString(""))
 		return false; //Failed to load!
 
-	KeyValues* pInfo = CMapInfo::GetMapInfoData();
+	char szMapadd[128];
+	Q_snprintf(szMapadd, sizeof(szMapadd), "scripts/mapadd/%s.txt", STRING(gpGlobals->mapname));
 
-	if (pInfo != NULL)
+	KeyValues* pInfo = new KeyValues("MapAdd");
+
+	if (pInfo->LoadFromFile(filesystem, szMapadd))
 	{
-		KeyValues* pMapAdd = pInfo->FindKey("MapAdd");
-		if (pMapAdd != NULL)
+		KeyValues* pMapAdd2 = pInfo->FindKey(szLabel);
+		if (pMapAdd2)
 		{
-			KeyValues* pMapAdd2 = pMapAdd->FindKey(szLabel);
-			if (pMapAdd2)
+			KeyValues* pMapAddEnt = pMapAdd2->GetFirstTrueSubKey();
+			while (pMapAddEnt)
 			{
-				KeyValues* pMapAddEnt = pMapAdd2->GetFirstTrueSubKey();
-				while (pMapAddEnt)
+				if (!HandlePlayerEntity(pMapAddEnt, false) && !HandleRemoveEnitity(pMapAddEnt) && !HandleSMODEntity(pMapAddEnt) && !HandleSpecialEnitity(pMapAddEnt))
 				{
-					if (!HandlePlayerEntity(pMapAddEnt, false) && !HandleRemoveEnitity(pMapAddEnt) && !HandleSMODEntity(pMapAddEnt) && !HandleSpecialEnitity(pMapAddEnt))
+					Vector SpawnVector = Vector(0, 0, 0);
+					QAngle SpawnAngle = QAngle(0, 0, 0);
+
+					SpawnVector.x = pMapAddEnt->GetFloat("x", SpawnVector.x);
+					SpawnVector.y = pMapAddEnt->GetFloat("y", SpawnVector.y);
+					SpawnVector.z = pMapAddEnt->GetFloat("z", SpawnVector.z);
+
+					SpawnAngle[PITCH] = pMapAddEnt->GetFloat("pitch", SpawnAngle[PITCH]);
+					SpawnAngle[YAW] = pMapAddEnt->GetFloat("yaw", SpawnAngle[YAW]);
+					SpawnAngle[ROLL] = pMapAddEnt->GetFloat("roll", SpawnAngle[ROLL]);
+
+					CBaseEntity* createEnt = CBaseEntity::CreateNoSpawn(pMapAddEnt->GetName(), SpawnVector, SpawnAngle);
+					KeyValues* pEntKeyValues = pMapAddEnt->FindKey("KeyValues");
+					KeyValues* pEntFlags = pMapAddEnt->FindKey("Flags");
+					if (createEnt)
 					{
-						Vector SpawnVector = Vector(0, 0, 0);
-						QAngle SpawnAngle = QAngle(0, 0, 0);
-
-						SpawnVector.x = pMapAddEnt->GetFloat("x", SpawnVector.x);
-						SpawnVector.y = pMapAddEnt->GetFloat("y", SpawnVector.y);
-						SpawnVector.z = pMapAddEnt->GetFloat("z", SpawnVector.z);
-
-						SpawnAngle[PITCH] = pMapAddEnt->GetFloat("pitch", SpawnAngle[PITCH]);
-						SpawnAngle[YAW] = pMapAddEnt->GetFloat("yaw", SpawnAngle[YAW]);
-						SpawnAngle[ROLL] = pMapAddEnt->GetFloat("roll", SpawnAngle[ROLL]);
-
-						CBaseEntity* createEnt = CBaseEntity::CreateNoSpawn(pMapAddEnt->GetName(), SpawnVector, SpawnAngle);
-						KeyValues* pEntKeyValues = pMapAddEnt->FindKey("KeyValues");
-						KeyValues* pEntFlags = pMapAddEnt->FindKey("Flags");
-						if (createEnt)
+						if (pEntKeyValues)
 						{
-							if (pEntKeyValues)
+							DevMsg("KeyValue for %s Found!\n", pMapAddEnt->GetName());
+							KeyValues* pEntKeyValuesAdd = pEntKeyValues->GetFirstValue();
+							while (pEntKeyValuesAdd && createEnt)
 							{
-								DevMsg("KeyValue for %s Found!\n", pMapAddEnt->GetName());
-								KeyValues* pEntKeyValuesAdd = pEntKeyValues->GetFirstValue();
-								while (pEntKeyValuesAdd && createEnt)
+								if (AllocPooledString(pEntKeyValuesAdd->GetName()) == AllocPooledString("model"))
 								{
-									if (AllocPooledString(pEntKeyValuesAdd->GetName()) == AllocPooledString("model"))
-									{
-										PrecacheModel(pEntKeyValuesAdd->GetString(""));
-										createEnt->SetModel(pEntKeyValuesAdd->GetString(""));
-									}
-									else
-									{
-										createEnt->KeyValue(pEntKeyValuesAdd->GetName(), pEntKeyValuesAdd->GetString(""));
-									}
-									pEntKeyValuesAdd = pEntKeyValuesAdd->GetNextValue();
+									PrecacheModel(pEntKeyValuesAdd->GetString(""));
+									createEnt->SetModel(pEntKeyValuesAdd->GetString(""));
 								}
-							}
-
-							if (pEntFlags)
-							{
-								DevMsg("Flag for %s Found!\n", pMapAddEnt->GetName());
-								KeyValues* pEntFlagsAdd = pEntFlags->GetFirstValue();
-								while (pEntFlagsAdd && createEnt)
+								else
 								{
-									createEnt->AddSpawnFlags(pEntFlagsAdd->GetInt());
-									pEntFlagsAdd = pEntFlagsAdd->GetNextValue();
+									createEnt->KeyValue(pEntKeyValuesAdd->GetName(), pEntKeyValuesAdd->GetString(""));
 								}
+								pEntKeyValuesAdd = pEntKeyValuesAdd->GetNextValue();
 							}
 						}
-						//createEnt->Activate();//Is this a good idea? Not sure!
-						//createEnt->Spawn();
-						DispatchSpawn(createEnt); //I derped
+
+						if (pEntFlags)
+						{
+							DevMsg("Flag for %s Found!\n", pMapAddEnt->GetName());
+							KeyValues* pEntFlagsAdd = pEntFlags->GetFirstValue();
+							while (pEntFlagsAdd && createEnt)
+							{
+								createEnt->AddSpawnFlags(pEntFlagsAdd->GetInt());
+								pEntFlagsAdd = pEntFlagsAdd->GetNextValue();
+							}
+						}
 					}
-					pMapAddEnt = pMapAddEnt->GetNextTrueSubKey(); //Got to keep this!
+					//createEnt->Activate();//Is this a good idea? Not sure!
+					//createEnt->Spawn();
+					DispatchSpawn(createEnt); //I derped
 				}
+				pMapAddEnt = pMapAddEnt->GetNextTrueSubKey(); //Got to keep this!
 			}
 		}
 	}

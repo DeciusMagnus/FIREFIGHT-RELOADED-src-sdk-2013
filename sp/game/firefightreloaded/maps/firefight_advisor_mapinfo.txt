@@ -1,0 +1,5 @@
+"firefight_advisor"
+{
+    "ForcedLoadout" "boss"
+    "AllowMusicSystem" "0"
+}

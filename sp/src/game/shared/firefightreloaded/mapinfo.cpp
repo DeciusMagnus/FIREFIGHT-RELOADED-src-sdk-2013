@@ -30,7 +30,7 @@ KeyValues* CMapInfo::GetMapInfoData()
 #endif
 
 	char szFullName[512];
-	Q_snprintf(szFullName, sizeof(szFullName), "scripts/mapinfo/%s.txt", mapname);
+	Q_snprintf(szFullName, sizeof(szFullName), "maps/%s_mapinfo.txt", mapname);
 
 	char szFullKVName[512];
 	Q_snprintf(szFullKVName, sizeof(szFullKVName), "%s", mapname);
