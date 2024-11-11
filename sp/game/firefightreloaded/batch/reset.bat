@@ -18,6 +18,7 @@ del ep1_gamestats.dat
 del cfg\config.cfg
 del cfg\settings.scr
 del cfg\user.scr
+del cfg\steam_autocloud.vdf
 del bin\client.pdb
 del bin\gamepadui.pdb
 del bin\server.pdb
