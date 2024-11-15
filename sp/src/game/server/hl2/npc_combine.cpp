@@ -514,6 +514,16 @@ bool CNPC_Combine::CorpseDecapitate(const CTakeDamageInfo& info)
 	return false;
 }
 
+Vector GetRagForce(Vector vecDamageDir)
+{
+	Vector vecRagForce;
+	vecRagForce.x = random->RandomFloat(-400, 400);
+	vecRagForce.y = random->RandomFloat(-400, 400);
+	vecRagForce.z = random->RandomFloat(0, 250);
+
+	return (vecRagForce + vecDamageDir) * 100.0f;
+}
+
 bool CNPC_Combine::CorpseGib(const CTakeDamageInfo& info)
 {
 	bool gibs = true;
@@ -537,6 +547,7 @@ bool CNPC_Combine::CorpseGib(const CTakeDamageInfo& info)
 		}
 
 		Vector vecDamageDir = info.GetDamageForce();
+
 		SpawnBlood(GetAbsOrigin(), g_vecAttackDir, BloodColor(), info.GetDamage());
 		DispatchParticleEffect("smod_blood_gib_r", GetAbsOrigin(), GetAbsAngles(), this);
 		EmitSound("Gore.Headshot");
@@ -554,14 +565,7 @@ bool CNPC_Combine::CorpseGib(const CTakeDamageInfo& info)
 			}
 		}
 
-		Vector vecRagForce;
-		vecRagForce.x = random->RandomFloat(-400, 400);
-		vecRagForce.y = random->RandomFloat(-400, 400);
-		vecRagForce.z = random->RandomFloat(0, 250);
-
-		Vector vecRagDmgForce = (vecRagForce + vecDamageDir);
-
-		CBaseEntity* pLeftArmGib = CreateRagGib(this, GetGibModel(APPENDAGE_ARML), GetAbsOrigin(), GetAbsAngles(), vecRagDmgForce, flFadeTime, IsOnFire());
+		CBaseEntity* pLeftArmGib = CreateRagGib(this, GetGibModel(APPENDAGE_ARML), GetAbsOrigin(), GetAbsAngles(), GetRagForce(vecDamageDir), flFadeTime, IsOnFire());
 		if (pLeftArmGib)
 		{
 			color32 color = pLeftArmGib->GetRenderColor();
@@ -574,7 +578,7 @@ bool CNPC_Combine::CorpseGib(const CTakeDamageInfo& info)
 			}
 		}
 
-		CBaseEntity* pRightArmGib = CreateRagGib(this, GetGibModel(APPENDAGE_ARMR), GetAbsOrigin(), GetAbsAngles(), vecRagDmgForce, flFadeTime, IsOnFire());
+		CBaseEntity* pRightArmGib = CreateRagGib(this, GetGibModel(APPENDAGE_ARMR), GetAbsOrigin(), GetAbsAngles(), GetRagForce(vecDamageDir), flFadeTime, IsOnFire());
 		if (pRightArmGib)
 		{
 			color32 color = pRightArmGib->GetRenderColor();
@@ -587,7 +591,7 @@ bool CNPC_Combine::CorpseGib(const CTakeDamageInfo& info)
 			}
 		}
 
-		CBaseEntity* pTorsoGib = CreateRagGib(this, GetGibModel(APPENDAGE_TORSO), GetAbsOrigin(), GetAbsAngles(), vecRagDmgForce, flFadeTime, IsOnFire());
+		CBaseEntity* pTorsoGib = CreateRagGib(this, GetGibModel(APPENDAGE_TORSO), GetAbsOrigin(), GetAbsAngles(), GetRagForce(vecDamageDir), flFadeTime, IsOnFire());
 		if (pTorsoGib)
 		{
 			color32 color = pTorsoGib->GetRenderColor();
@@ -600,7 +604,7 @@ bool CNPC_Combine::CorpseGib(const CTakeDamageInfo& info)
 			}
 		}
 
-		CBaseEntity* pPelvisGib = CreateRagGib(this, GetGibModel(APPENDAGE_PELVIS), GetAbsOrigin(), GetAbsAngles(), vecRagDmgForce, flFadeTime, IsOnFire());
+		CBaseEntity* pPelvisGib = CreateRagGib(this, GetGibModel(APPENDAGE_PELVIS), GetAbsOrigin(), GetAbsAngles(), GetRagForce(vecDamageDir), flFadeTime, IsOnFire());
 		if (pPelvisGib)
 		{
 			color32 color = pPelvisGib->GetRenderColor();
@@ -613,7 +617,7 @@ bool CNPC_Combine::CorpseGib(const CTakeDamageInfo& info)
 			}
 		}
 
-		CBaseEntity* pLeftLegGib = CreateRagGib(this, GetGibModel(APPENDAGE_LEGL), GetAbsOrigin(), GetAbsAngles(), vecRagDmgForce, flFadeTime, IsOnFire());
+		CBaseEntity* pLeftLegGib = CreateRagGib(this, GetGibModel(APPENDAGE_LEGL), GetAbsOrigin(), GetAbsAngles(), GetRagForce(vecDamageDir), flFadeTime, IsOnFire());
 		if (pLeftLegGib)
 		{
 			color32 color = pLeftLegGib->GetRenderColor();
@@ -626,7 +630,7 @@ bool CNPC_Combine::CorpseGib(const CTakeDamageInfo& info)
 			}
 		}
 
-		CBaseEntity* pRightLegGib = CreateRagGib(this, GetGibModel(APPENDAGE_LEGR), GetAbsOrigin(), GetAbsAngles(), vecRagDmgForce, flFadeTime, IsOnFire());
+		CBaseEntity* pRightLegGib = CreateRagGib(this, GetGibModel(APPENDAGE_LEGR), GetAbsOrigin(), GetAbsAngles(), GetRagForce(vecDamageDir), flFadeTime, IsOnFire());
 		if (pRightLegGib)
 		{
 			color32 color = pRightLegGib->GetRenderColor();

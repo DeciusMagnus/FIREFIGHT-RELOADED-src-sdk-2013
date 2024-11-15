@@ -25,6 +25,7 @@
 #include "particle_parse.h"
 #include "gameweaponmanager.h"
 #include "gamestats.h"
+#include "explode.h"
 
 extern ConVar hunter_hate_held_striderbusters;
 extern ConVar hunter_hate_thrown_striderbusters;
@@ -42,6 +43,9 @@ ConVar striderbuster_magnetic_force_hunter("striderbuster_magnetic_force_hunter"
 ConVar striderbuster_falloff_power("striderbuster_falloff_power","4",FCVAR_NONE,"Order of the distance falloff. 1 = linear 2 = quadratic");
 ConVar striderbuster_leg_stick_dist( "striderbuster_leg_stick_dist", "80.0", FCVAR_NONE, "If the buster hits a strider's leg, the max distance from the head at which it sticks anyway." );
 ConVar striderbuster_debugseek( "striderbuster_debugseek", "0" );
+
+ConVar striderbuster_shot_explode_radius("striderbuster_shot_explode_radius", "256.0");
+ConVar sk_striderbuster_dmg("sk_striderbuster_dmg", "120");
 
 ConVar sk_striderbuster_magnet_multiplier( "sk_striderbuster_magnet_multiplier", "2.25" );
 
@@ -261,6 +265,8 @@ void CWeaponStriderBuster::Spawn( void )
 	}
 
 	SetHealth( striderbuster_health.GetFloat() );
+
+	SetDmgModExplosive(1.0);
 	
 	SetNextThink(gpGlobals->curtime + 0.01f);
 }
@@ -566,6 +572,9 @@ void CWeaponStriderBuster::CreateDestroyedEffect( void )
 //-----------------------------------------------------------------------------
 void CWeaponStriderBuster::VPhysicsCollision( int index, gamevcollisionevent_t *pEvent )
 {
+	//this is so explosions can do the damage.
+	PhysSetGameFlags(VPhysicsGetObject(), FVPHYSICS_NO_IMPACT_DMG);
+
 	// Find out what we hit.
 	// Don't do anything special if we're already attached to a strider.
 	CBaseEntity *pVictim = pEvent->pEntities[!index];
@@ -603,11 +612,12 @@ void CWeaponStriderBuster::VPhysicsCollision( int index, gamevcollisionevent_t *
 	bool bVictimIsStrider = ( ( pOwnerEntity != NULL ) && FClassnameIs( pOwnerEntity, "npc_strider" ) );
 
 	// Break if we hit anything other than a strider while going fast enough.
-	// Launched duds detonate if they hit anything other than a strider any speed.
-	if ( ( bVictimIsStrider == false ) && ( ( m_bDud && m_bLaunched ) || m_flCollisionSpeedSqr > Square( 500 ) ) )
+	if ((bVictimIsStrider == false) && (m_bDud && m_bLaunched) || m_flCollisionSpeedSqr > Square(500))
 	{
-		m_OnShatter.FireOutput( this, this );
-		Shatter( pVictim );
+		//In FR, we should allow striderbusters to act like grenades.
+		Detonate();
+		//m_OnShatter.FireOutput( this, this );
+		//Shatter(pVictim);
 		return;
 	}
 
@@ -642,20 +652,30 @@ inline bool CWeaponStriderBuster::IsAttachedToStrider( void ) const
 //-----------------------------------------------------------------------------
 void CWeaponStriderBuster::Detonate( void )
 {
-	CBaseEntity *pVictim = GetOwnerEntity();
-	if ( !m_bDud && pVictim )
+	CBaseEntity* pVictim = GetOwnerEntity();
+
+	if (!m_bDud)
 	{
-		// Kill the strider (with magic effect)
-		CBasePlayer *pPlayer = AI_GetSinglePlayer();
-		CTakeDamageInfo info( pPlayer, this, RandomVector( -100.0f, 100.0f ), GetAbsOrigin(), pVictim->GetHealth(), DMG_GENERIC );
-		pVictim->TakeDamage( info );
+		CBasePlayer* pPlayer = UTIL_GetNearestVisiblePlayer(this);
+		if (pVictim)
+		{
+			// Kill the strider (with magic effect)
+			CTakeDamageInfo info(pPlayer, this, RandomVector(-100.0f, 100.0f), GetAbsOrigin(), pVictim->GetHealth(), DMG_GENERIC);
+			pVictim->TakeDamage(info);
 
-		gamestats->Event_WeaponHit( ToBasePlayer( pPlayer ), true, GetClassname(), info );
+			gamestats->Event_WeaponHit(ToBasePlayer(pPlayer), true, GetClassname(), info);
 
-		// Tracker 62293:  There's a bug where the inflictor/attacker are reversed when calling TakeDamage above so the player never gets
-		//  credit for the strider buster kills.  The code has a bunch of assumptions lower level, so it's safer to just fix it here by 
-		//  crediting a kill to the player directly.
-		gamestats->Event_PlayerKilledOther( pPlayer, pVictim, info );
+			// Tracker 62293:  There's a bug where the inflictor/attacker are reversed when calling TakeDamage above so the player never gets
+			//  credit for the strider buster kills.  The code has a bunch of assumptions lower level, so it's safer to just fix it here by 
+			//  crediting a kill to the player directly.
+			gamestats->Event_PlayerKilledOther(pPlayer, pVictim, info);
+		}
+		else
+		{
+			int nFlags = (SF_ENVEXPLOSION_NOPARTICLES | SF_ENVEXPLOSION_NOSPARKS | SF_ENVEXPLOSION_NODLIGHTS | SF_ENVEXPLOSION_NOSMOKE | SF_ENVEXPLOSION_NOSOUND | SF_ENVEXPLOSION_NODECAL);
+
+			ExplosionCreate(GetAbsOrigin(), GetAbsAngles(), pPlayer, sk_striderbuster_dmg.GetFloat(), striderbuster_shot_explode_radius.GetFloat(), nFlags, 0.0f, this);
+		}
 	}
 
 	m_OnDetonate.FireOutput( this, this );
