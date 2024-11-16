@@ -184,7 +184,7 @@
 		"weapon_striderbuster"
 		{
 				"font"		"WeaponIconsKillFeed"
-				"character"	"4"
+				"character"	"9"
 		}
 		"npc_manhack"
 		{
