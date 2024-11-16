@@ -2772,6 +2772,104 @@
 
 				"textprecision" "2"
 			}
+            
+            "AIGoByeByeMaxDistance"
+			{
+				"text"			"#GameUI_NPCRemoveMaxDistance"
+				"type"			"slideyslide"
+				"advanced"		"1"
+				"convar"		"ai_disappear_max_distance"
+
+				"min"			"128"
+				"max"			"8192"
+				"step"			"128"
+
+				"textprecision" "2"
+			}
+            
+            "AIGoByeByeFPSControl"
+			{
+				"text"			"#GameUI_NPCFPSControl"
+				"type"			"wheelywheel"
+				"advanced"		"1"
+				"convar"		"ai_fps_control"
+
+				"options"
+				{
+					"0"		"#gameui_disabled"
+					"1"		"#gameui_enabled"
+				}
+			}
+            
+            "AIGoByeByeMinFPS"
+			{
+				"text"			"#GameUI_NPCRemoveMinFPS"
+				"type"			"slideyslide"
+				"advanced"		"1"
+				"convar"		"ai_min_fps"
+
+				"min"			"10"
+				"max"			"60"
+				"step"			"5"
+
+				"textprecision" "2"
+			}
+            
+            "AIGoByeByeMinDangerFPS"
+			{
+				"text"			"#GameUI_NPCRemoveMinDangerFPS"
+				"type"			"slideyslide"
+				"advanced"		"1"
+				"convar"		"ai_min_fps"
+
+				"min"			"10"
+				"max"			"60"
+				"step"			"5"
+
+				"textprecision" "2"
+			}
+            
+            "SpawnerFPSControl"
+			{
+				"text"			"#GameUI_SpawnerFPSControl"
+				"type"			"wheelywheel"
+				"advanced"		"1"
+				"convar"		"sk_spawner_fps_control"
+
+				"options"
+				{
+					"0"		"#gameui_disabled"
+					"1"		"#gameui_enabled"
+				}
+			}
+            
+            "SpawnerFPS"
+			{
+				"text"			"#GameUI_SpawnerFPS"
+				"type"			"slideyslide"
+				"advanced"		"1"
+				"convar"		"sk_spawner_min_fps"
+
+				"min"			"10"
+				"max"			"60"
+				"step"			"5"
+
+				"textprecision" "2"
+			}
+            
+            "SpawnerMaxDistance"
+			{
+				"text"			"#GameUI_SpawnerMaxDistance"
+				"type"			"slideyslide"
+				"advanced"		"1"
+				"convar"		"sk_spawner_max_distance"
+
+				"min"			"128"
+				"max"			"8192"
+				"step"			"128"
+
+				"textprecision" "2"
+			}
 			
 			"RagdollFade"
 			{
