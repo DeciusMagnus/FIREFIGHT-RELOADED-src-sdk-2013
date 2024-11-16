@@ -4185,7 +4185,7 @@ void CAI_BaseNPC::NPCThink( void )
 		if (isDeleteable && ai_disappear_debugmsg_overload.GetBool())
 			DevWarning("NPC %s (%s) marked for deletion.\n", GetEntityName(), GetClassname());
 
-		if (fpsDanger && isNotClose)
+		if (fpsDanger && isNotVisible)
 		{
 			DevWarning("Deleted NPC %s (%s). Reason: Severely Low FPS\n", GetEntityName(), GetClassname());
 			SUB_Remove();
