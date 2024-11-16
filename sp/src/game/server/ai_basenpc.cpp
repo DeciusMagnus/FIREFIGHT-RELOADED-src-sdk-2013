@@ -153,6 +153,8 @@ ConVar	ai_disappear("ai_disappear", "1", FCVAR_ARCHIVE, "Makes idling AI disappe
 ConVar	ai_disappear_time("ai_disappear_time", "120", FCVAR_ARCHIVE, "Time to make an NPC disappear.");
 ConVar	ai_disappear_time_rare("ai_disappear_time_rare", "60", FCVAR_ARCHIVE, "Additional time to make rare NPC disappears.");
 
+ConVar	ai_disappear_time_penalty_min_frames("ai_disappear_time_penalty_min_frames", "3", FCVAR_ARCHIVE, "The minimum number of frames we should watch out for when analyzing the game's performance.");
+
 ConVar	ai_use_think_optimizations( "ai_use_think_optimizations", "1" );
 
 ConVar	ai_test_moveprobe_ignoresmall( "ai_test_moveprobe_ignoresmall", "0" );
@@ -4147,20 +4149,43 @@ void CAI_BaseNPC::NPCThink( void )
 		m_flNextDecisionTime = 0;
 	}
 
-	if (ai_disappear.GetBool() && gpGlobals->curtime >= m_fIdleTime && !m_bBoss)
+	float flCurTime = gpGlobals->framecount;
+	int realFrameTime = flCurTime - ((m_lastFrames > -1) ? m_lastFrames : 0);
+	m_lastFrames = flCurTime;
+
+	Msg("%i\n", realFrameTime);
+
+	bool useLagPenalty = false;
+
+	if (realFrameTime < ai_disappear_time_penalty_min_frames.GetInt())
+	{
+		useLagPenalty = true;
+	}
+
+	if (ai_disappear.GetBool() && !m_bBoss)
 	{
 		CBaseEntity* pEnemy = GetEnemy();
 		CBaseCombatCharacter* pComChar = (pEnemy != nullptr) ? pEnemy->MyCombatCharacterPointer() : nullptr;
 
-		if (pComChar != nullptr && !(pComChar->FInViewCone(this) && pComChar->FVisible(this)))
+		bool isNotVisible = (pComChar != nullptr && !pComChar->FInViewCone(this) && !pComChar->FVisible(this));
+
+		if (useLagPenalty && isNotVisible)
 		{
-			// If I don't have an enemy, or if I do and they should be visible and I can't see them,
-			// then I've idled long enough. Get rid of me.
+			//if we are in lag penalty mode, we should delete ourselves to save perf. we are lagging rn.
 			SUB_Remove();
 		}
-		else
+		else if (gpGlobals->curtime >= m_fIdleTime)
 		{
-			m_fIdleTime = gpGlobals->curtime + ai_disappear_time.GetFloat() + (m_isRareEntity ? ai_disappear_time_rare.GetFloat() : 0);
+			if (isNotVisible)
+			{
+				// If I don't have an enemy, or if I do and they should be visible and I can't see them,
+				// then I've idled long enough. Get rid of me.
+				SUB_Remove();
+			}
+			else
+			{
+				m_fIdleTime = gpGlobals->curtime + ai_disappear_time.GetFloat() + (m_isRareEntity ? ai_disappear_time_rare.GetFloat() : 0);
+			}
 		}
 	}
 }
@@ -11781,6 +11806,8 @@ CAI_BaseNPC::CAI_BaseNPC(void)
 	m_bInChoreo = true; // assume so until call to UpdateEfficiency()
 	
 	SetCollisionGroup( COLLISION_GROUP_NPC );
+
+	m_lastFrames = -1;
 
 	if (ai_disappear.GetBool())
 	{
