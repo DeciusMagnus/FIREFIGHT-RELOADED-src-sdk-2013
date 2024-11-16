@@ -181,6 +181,11 @@
 				"font"		"WeaponIconsKillFeed"
 				"character"	"9"
 		}
+		"weapon_striderbuster"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"4"
+		}
 		"npc_manhack"
 		{
 				"font"		"WeaponIconsKillFeed"
