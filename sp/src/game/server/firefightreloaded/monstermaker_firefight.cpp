@@ -359,8 +359,14 @@ bool CNPCMakerFirefight::CanMakeNPC(bool bIgnoreSolidEntities)
 		}
 	}
 
-	bool isNotClose = ((sk_spawner_max_distance.GetFloat() > 0.0f) && 
-		(PlayerDistance(this, UTIL_GetNearestPlayer(GetAbsOrigin())) > sk_spawner_max_distance.GetFloat()));
+	float dist = sk_spawner_max_distance.GetFloat();
+
+	if (dist <= 0.0f)
+	{
+		dist = 4096.0f;
+	}
+
+	bool isNotClose = (PlayerDistance(this, UTIL_GetNearestPlayer(GetAbsOrigin())) > dist);
 
 	if (isNotClose)
 		return false;

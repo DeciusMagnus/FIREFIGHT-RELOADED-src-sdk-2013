@@ -4179,8 +4179,15 @@ void CAI_BaseNPC::NPCThink( void )
 		CBaseCombatCharacter* pComChar = (pEnemy != nullptr) ? pEnemy->MyCombatCharacterPointer() : nullptr;
 
 		bool isNotVisible = (pComChar != nullptr && !pComChar->FInViewCone(this) && !pComChar->FVisible(this));
-		bool isNotClose = ((ai_disappear_max_distance.GetFloat() > 0.0f) && 
-			(EnemyDistance(pEnemy) > ai_disappear_max_distance.GetFloat()));
+
+		float dist = ai_disappear_max_distance.GetFloat();
+
+		if (dist <= 0.0f)
+		{
+			dist = 4096.0f;
+		}
+
+		bool isNotClose = (EnemyDistance(pEnemy) > dist);
 		bool isDeleteable = (isNotVisible && isNotClose);
 
 		if (isDeleteable && ai_disappear_debugmsg_overload.GetBool())
