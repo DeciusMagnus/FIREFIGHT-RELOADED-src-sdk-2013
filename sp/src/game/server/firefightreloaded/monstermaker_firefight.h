@@ -81,7 +81,7 @@ public:
 	bool	m_bLargeNPCsEnabled;
 	bool	m_bUsingMapSpawnTime;
 
-	float	m_lastFrames;
+	float	m_framerate;
 
 	EHANDLE m_hIgnoreEntity;
 	string_t m_iszIngoreEnt;

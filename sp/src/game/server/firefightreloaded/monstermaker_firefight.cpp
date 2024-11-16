@@ -37,10 +37,10 @@ ConVar sk_spawnrareenemies("sk_spawnrareenemies", "1", FCVAR_ARCHIVE);
 ConVar sk_spawnerhidefromplayer("sk_spawnerhidefromplayer", "1", FCVAR_ARCHIVE);
 ConVar sk_spawner_npc_ragdoll_fade("sk_spawner_npc_ragdoll_fade", "1", FCVAR_ARCHIVE);
 ConVar sk_spawner_largenpc_spawndelay("sk_spawner_largenpc_spawntime", "300", FCVAR_CHEAT);
+ConVar sk_spawner_fps_control("sk_spawner_fps_control", "1", FCVAR_ARCHIVE, "Allow spawners to disable themselves based on framerate.");
+ConVar sk_spawner_min_fps("sk_spawner_min_fps", "15", FCVAR_ARCHIVE, "The minimum FPS to disable spawners due to lag.");
 ConVar debug_spawner_info("debug_spawner_info", "0", FCVAR_CHEAT);
 ConVar debug_spawner_disable("debug_spawner_disable", "0", FCVAR_CHEAT);
-
-extern ConVar ai_disappear_min_frames;
 
 //spawn lists (TODO: use KeyValues files)
 static const char *g_CombineSoldierWeapons[] =
@@ -140,7 +140,7 @@ END_DATADESC()
 void CNPCMakerFirefight::Spawn(void)
 {
 	SetSolid( SOLID_NONE );
-	m_lastFrames		= -1;
+	m_framerate			 = 1;
 	m_nLiveChildren		= 0;
 	m_nLiveRareNPCs		= 0;
 	m_flLastLargeNPCSpawn = 0;
@@ -327,6 +327,27 @@ bool CNPCMakerFirefight::CanMakeNPC(bool bIgnoreSolidEntities)
 
 	if ((CAI_BaseNPC::m_nDebugBits & bits_debugDisableAI) == bits_debugDisableAI)
 		return false;
+
+	if (sk_spawner_fps_control.GetBool())
+	{
+		bool useFPSControl = false;
+
+		m_framerate = 0.9 * m_framerate + (1.0 - 0.9) * gpGlobals->absoluteframetime;
+
+		if (m_framerate <= 0.0f)
+			m_framerate = 1.0f;
+
+		int fps = (int)(1.0f / m_framerate);
+
+		//Msg("FPS: %i\n", fps);
+
+		useFPSControl = (fps < sk_spawner_min_fps.GetInt());
+
+		if (useFPSControl)
+		{
+			return false;
+		}
+	}
 
 	/*
 	int iMinPlayersToSpawn = 0;
