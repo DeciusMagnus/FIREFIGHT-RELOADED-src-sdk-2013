@@ -40,6 +40,8 @@ ConVar sk_spawner_largenpc_spawndelay("sk_spawner_largenpc_spawntime", "300", FC
 ConVar debug_spawner_info("debug_spawner_info", "0", FCVAR_CHEAT);
 ConVar debug_spawner_disable("debug_spawner_disable", "0", FCVAR_CHEAT);
 
+extern ConVar ai_disappear_min_frames;
+
 //spawn lists (TODO: use KeyValues files)
 static const char *g_CombineSoldierWeapons[] =
 {
@@ -138,6 +140,7 @@ END_DATADESC()
 void CNPCMakerFirefight::Spawn(void)
 {
 	SetSolid( SOLID_NONE );
+	m_lastFrames		= -1;
 	m_nLiveChildren		= 0;
 	m_nLiveRareNPCs		= 0;
 	m_flLastLargeNPCSpawn = 0;

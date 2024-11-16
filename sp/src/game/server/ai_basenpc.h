@@ -942,7 +942,7 @@ private:
 	int					m_nWakeTick;
 
 	float				m_fIdleTime;
-	float				m_lastFrames;
+	float				m_framerate;
 
 public:
 	//-----------------------------------------------------

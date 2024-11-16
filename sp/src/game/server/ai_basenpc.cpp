@@ -151,9 +151,14 @@ ConVar	ai_debug_dyninteractions( "ai_debug_dyninteractions", "0", FCVAR_NONE, "D
 ConVar	ai_frametime_limit( "ai_frametime_limit", "50", FCVAR_NONE, "frametime limit for min efficiency AIE_NORMAL (in sec's)." );
 ConVar	ai_disappear("ai_disappear", "1", FCVAR_ARCHIVE, "Makes idling AI disappear after a specified amount of time.");
 ConVar	ai_disappear_time("ai_disappear_time", "120", FCVAR_ARCHIVE, "Time to make an NPC disappear.");
-ConVar	ai_disappear_time_rare("ai_disappear_time_rare", "60", FCVAR_ARCHIVE, "Additional time to make rare NPC disappears.");
+ConVar	ai_disappear_time_rare("ai_disappear_time_rare", "60", FCVAR_ARCHIVE, "Additional time to make rare NPC disappear.");
 
-ConVar	ai_disappear_time_penalty_min_frames("ai_disappear_time_penalty_min_frames", "3", FCVAR_ARCHIVE, "The minimum number of frames we should watch out for when analyzing the game's performance.");
+ConVar	ai_disappear_max_distance("ai_disappear_max_distance", "4096", FCVAR_ARCHIVE, "If the NPC is this far away from the enemy, it might be considered for deletion.");
+
+ConVar	ai_disappear_fps_control("ai_disappear_fps_control", "1", FCVAR_ARCHIVE, "Allow NPCs to remove themselves based on framerate.");
+ConVar	ai_disappear_min_fps("ai_disappear_min_fps", "30", FCVAR_ARCHIVE, "The minimum FPS to remove NPCs due to lag.");
+
+ConVar	ai_disappear_debugmsg_overload("ai_disappear_debugmsg_overload", "0", FCVAR_NONE, "");
 
 ConVar	ai_use_think_optimizations( "ai_use_think_optimizations", "1" );
 
@@ -4149,37 +4154,46 @@ void CAI_BaseNPC::NPCThink( void )
 		m_flNextDecisionTime = 0;
 	}
 
-	float flCurTime = gpGlobals->framecount;
-	int realFrameTime = flCurTime - ((m_lastFrames > -1) ? m_lastFrames : 0);
-	m_lastFrames = flCurTime;
+	bool useFPSControl = false;
 
-	Msg("%i\n", realFrameTime);
-
-	bool useLagPenalty = false;
-
-	if (realFrameTime < ai_disappear_time_penalty_min_frames.GetInt())
+	if (ai_disappear_fps_control.GetBool())
 	{
-		useLagPenalty = true;
+		m_framerate = 0.9 * m_framerate + (1.0 - 0.9) * gpGlobals->absoluteframetime;
+
+		if (m_framerate <= 0.0f)
+			m_framerate = 1.0f;
+
+		int fps = (int)(1.0f / m_framerate);
+
+		//Msg("FPS: %i\n", fps);
+
+		useFPSControl = (ai_disappear_fps_control.GetBool() && (fps < ai_disappear_min_fps.GetInt()));
 	}
 
-	if (ai_disappear.GetBool() && !m_bBoss)
+	if (ai_disappear.GetBool() && !m_bBoss && (Classify() != CLASS_PLAYER_ALLY_VITAL))
 	{
 		CBaseEntity* pEnemy = GetEnemy();
 		CBaseCombatCharacter* pComChar = (pEnemy != nullptr) ? pEnemy->MyCombatCharacterPointer() : nullptr;
 
 		bool isNotVisible = (pComChar != nullptr && !pComChar->FInViewCone(this) && !pComChar->FVisible(this));
+		bool isNotClose = (EnemyDistance(pEnemy) > ai_disappear_max_distance.GetFloat());
+		bool isDeleteable = (isNotVisible && isNotClose);
 
-		if (useLagPenalty && isNotVisible)
+		if (isDeleteable && ai_disappear_debugmsg_overload.GetBool())
+			DevWarning("NPC %s (%s) marked for deletion.\n", GetEntityName(), GetClassname());
+
+		if (useFPSControl && isDeleteable)
 		{
-			//if we are in lag penalty mode, we should delete ourselves to save perf. we are lagging rn.
+			DevWarning("Deleted NPC %s (%s). Reason: Low FPS\n", GetEntityName(), GetClassname());
 			SUB_Remove();
 		}
 		else if (gpGlobals->curtime >= m_fIdleTime)
 		{
-			if (isNotVisible)
+			if (isDeleteable)
 			{
 				// If I don't have an enemy, or if I do and they should be visible and I can't see them,
 				// then I've idled long enough. Get rid of me.
+				DevWarning("Deleted NPC %s (%s). Reason: Idle\n", GetEntityName(), GetClassname());
 				SUB_Remove();
 			}
 			else
@@ -5599,6 +5613,9 @@ bool CAI_BaseNPC::FCanCheckAttacks( void )
 //-----------------------------------------------------------------------------
 float CAI_BaseNPC::EnemyDistance( CBaseEntity *pEnemy )
 {
+	if (pEnemy == nullptr)
+		return 0.0f;
+
 	Vector enemyDelta = pEnemy->WorldSpaceCenter() - WorldSpaceCenter();
 	
 	// NOTE: We ignore rotation for computing height.  Assume it isn't an effect
@@ -11806,8 +11823,6 @@ CAI_BaseNPC::CAI_BaseNPC(void)
 	m_bInChoreo = true; // assume so until call to UpdateEfficiency()
 	
 	SetCollisionGroup( COLLISION_GROUP_NPC );
-
-	m_lastFrames = -1;
 
 	if (ai_disappear.GetBool())
 	{
