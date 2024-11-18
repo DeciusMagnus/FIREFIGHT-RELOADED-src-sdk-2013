@@ -873,8 +873,8 @@ void CNPC_CombineAce::Event_Killed( const CTakeDamageInfo &info )
 
 		if (m_pAttributes != NULL)
 		{
-			m_pAttributes->SwitchEntityModel(shield, "new_armor_model", STRING(shield->GetModelName()));
-			m_pAttributes->SwitchEntityColor(shield, "new_armor_color");
+			m_pAttributes->SwitchEntityModel(shield, "new_shield_model", STRING(shield->GetModelName()));
+			m_pAttributes->SwitchEntityColor(shield, "new_shield_color");
 		}
 	}
 
