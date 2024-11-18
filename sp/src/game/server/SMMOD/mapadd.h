@@ -26,7 +26,6 @@ public:
 	virtual void Precache( void );
 	bool RunLabel( const char *szLabel);
 	bool HandlePlayerEntity( KeyValues *playerEntity, bool initLevel = false );
-	bool HandleSMODEntity( KeyValues *smodEntity );
 	bool HandleSpecialEnitity( KeyValues *specialEntity);
 	bool HandleRemoveEnitity( KeyValues *mapaddValue);
 	void InputRunLabel( inputdata_t &inputData);

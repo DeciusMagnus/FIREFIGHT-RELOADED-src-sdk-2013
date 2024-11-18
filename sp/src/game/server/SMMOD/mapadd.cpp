@@ -61,13 +61,18 @@ bool CMapAdd::RunLabel( const char *szLabel)
 
 	if (pInfo->LoadFromFile(filesystem, szMapadd))
 	{
-		KeyValues* pMapAdd2 = pInfo->FindKey(szLabel);
-		if (pMapAdd2)
+		for (auto pMapAddEnt = pInfo->GetFirstSubKey(); pMapAddEnt != NULL; pMapAddEnt = pMapAddEnt->GetNextKey())
 		{
-			KeyValues* pMapAddEnt = pMapAdd2->GetFirstTrueSubKey();
-			while (pMapAddEnt)
+			const char* kvLabel = pMapAddEnt->GetString("label", "Init");
+
+			if (AllocPooledString(kvLabel) != AllocPooledString("") && 
+				AllocPooledString(kvLabel) == AllocPooledString(szLabel))
 			{
-				if (!HandlePlayerEntity(pMapAddEnt, false) && !HandleRemoveEnitity(pMapAddEnt) && !HandleSMODEntity(pMapAddEnt) && !HandleSpecialEnitity(pMapAddEnt))
+				const char* kvEntName = pMapAddEnt->GetString("entity", "");
+				if (AllocPooledString(kvEntName) != AllocPooledString("") && 
+					!HandlePlayerEntity(pMapAddEnt, false) && 
+					!HandleRemoveEnitity(pMapAddEnt) && 
+					!HandleSpecialEnitity(pMapAddEnt))
 				{
 					Vector SpawnVector = Vector(0, 0, 0);
 					QAngle SpawnAngle = QAngle(0, 0, 0);
@@ -80,14 +85,14 @@ bool CMapAdd::RunLabel( const char *szLabel)
 					SpawnAngle[YAW] = pMapAddEnt->GetFloat("yaw", SpawnAngle[YAW]);
 					SpawnAngle[ROLL] = pMapAddEnt->GetFloat("roll", SpawnAngle[ROLL]);
 
-					CBaseEntity* createEnt = CBaseEntity::CreateNoSpawn(pMapAddEnt->GetName(), SpawnVector, SpawnAngle);
+					CBaseEntity* createEnt = CBaseEntity::CreateNoSpawn(kvEntName, SpawnVector, SpawnAngle);
 					KeyValues* pEntKeyValues = pMapAddEnt->FindKey("KeyValues");
 					KeyValues* pEntFlags = pMapAddEnt->FindKey("Flags");
 					if (createEnt)
 					{
 						if (pEntKeyValues)
 						{
-							DevMsg("KeyValue for %s Found!\n", pMapAddEnt->GetName());
+							DevMsg("KeyValue for %s Found!\n", kvEntName);
 							KeyValues* pEntKeyValuesAdd = pEntKeyValues->GetFirstValue();
 							while (pEntKeyValuesAdd && createEnt)
 							{
@@ -106,7 +111,7 @@ bool CMapAdd::RunLabel( const char *szLabel)
 
 						if (pEntFlags)
 						{
-							DevMsg("Flag for %s Found!\n", pMapAddEnt->GetName());
+							DevMsg("Flag for %s Found!\n", kvEntName);
 							KeyValues* pEntFlagsAdd = pEntFlags->GetFirstValue();
 							while (pEntFlagsAdd && createEnt)
 							{
@@ -119,7 +124,10 @@ bool CMapAdd::RunLabel( const char *szLabel)
 					//createEnt->Spawn();
 					DispatchSpawn(createEnt); //I derped
 				}
-				pMapAddEnt = pMapAddEnt->GetNextTrueSubKey(); //Got to keep this!
+			}
+			else
+			{
+				continue;
 			}
 		}
 	}
@@ -129,7 +137,8 @@ bool CMapAdd::RunLabel( const char *szLabel)
 
 bool CMapAdd::HandlePlayerEntity( KeyValues *playerEntityKV, bool initLevel)
 {
-	if(AllocPooledString(playerEntityKV->GetName()) == AllocPooledString("player"))
+	const char* kvEntName = playerEntityKV->GetString("entity", "");
+	if(AllocPooledString(kvEntName) == AllocPooledString("player"))
 	{
 		CBasePlayer *playerEnt = UTIL_GetLocalPlayer();
 		if(!playerEnt) //He doesn't exist, just pretend
@@ -152,15 +161,11 @@ bool CMapAdd::HandlePlayerEntity( KeyValues *playerEntityKV, bool initLevel)
 	return false;
 }
 
-bool CMapAdd::HandleSMODEntity( KeyValues *smodEntity)
-{
-	return false;
-}
-
 bool CMapAdd::HandleSpecialEnitity( KeyValues *specialEntity)
 {
 	//weaponmanagers are moved to HandleSpecialEntity
-	if (AllocPooledString(specialEntity->GetName()) == AllocPooledString("gameweaponmanager"))
+	const char* kvEntName = specialEntity->GetString("entity", "");
+	if (AllocPooledString(kvEntName) == AllocPooledString("gameweaponmanager"))
 	{
 		const char* pWeaponName = "";
 		int iMaxAllowed = 0;
@@ -179,7 +184,9 @@ bool CMapAdd::HandleRemoveEnitity( KeyValues *mapaddValue)
 	static const auto REMOVEALL = AllocPooledString( "remove:all" );
 	static const auto REMOVESPHERE = AllocPooledString( "remove:sphere" );
 
-	if (AllocPooledString(mapaddValue->GetName()) == REMOVESPHERE)
+	const char* kvEntName = mapaddValue->GetString("entity", "");
+
+	if (AllocPooledString(kvEntName) == REMOVESPHERE)
 	{
 		auto pEntKeyValues = mapaddValue->FindKey( "entities" );
 		if ( pEntKeyValues == NULL )
@@ -217,7 +224,7 @@ bool CMapAdd::HandleRemoveEnitity( KeyValues *mapaddValue)
 		}
 		return true;
 	}
-	else if ( AllocPooledString( mapaddValue->GetName() ) == REMOVEALL )
+	else if ( AllocPooledString(kvEntName) == REMOVEALL )
 	{
 		auto pEntKeyValues = mapaddValue->FindKey( "entities" );
 		if ( pEntKeyValues == NULL )
