@@ -2820,7 +2820,7 @@
 				"text"			"#GameUI_NPCRemoveMinDangerFPS"
 				"type"			"slideyslide"
 				"advanced"		"1"
-				"convar"		"ai_min_fps"
+				"convar"		"ai_min_danger_fps"
 
 				"min"			"10"
 				"max"			"60"

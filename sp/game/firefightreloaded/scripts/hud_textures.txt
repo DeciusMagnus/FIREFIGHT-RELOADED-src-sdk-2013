@@ -290,7 +290,7 @@
 				"font"		"WeaponIconsKillFeed3"
 				"character"	"x"
 		}
-                	"weapon_physgun"
+                		"weapon_physgun"
 		{
 				"font"		"WeaponIconsKillFeed2"
 				"character"	"!"
@@ -301,6 +301,26 @@
 				"character"	"D"
 		}
 		"npc_zombie"
+		{
+				"font"		"WeaponIconsKillFeed3"
+				"character"	"D"
+		}
+		"npc_zombie_torso"
+		{
+				"font"		"WeaponIconsKillFeed3"
+				"character"	"D"
+		}
+		"npc_fastzombie"
+		{
+				"font"		"WeaponIconsKillFeed3"
+				"character"	"D"
+		}
+		"npc_fastzombie_torso"
+		{
+				"font"		"WeaponIconsKillFeed3"
+				"character"	"D"
+		}
+		"npc_poisonzombie"
 		{
 				"font"		"WeaponIconsKillFeed3"
 				"character"	"D"
