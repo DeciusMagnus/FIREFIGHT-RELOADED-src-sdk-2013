@@ -1,4 +1,8 @@
-"default"
+//#Spawnlist
+//WARNING: DO NOT REMOVE THESE TOP COMMENTS.
+//FABRICATOR REQUIRES THE FIRST COMMENT TO LOAD THIS FILE.
+
+"all_at_once"
 {
 	"settings"
 	{
