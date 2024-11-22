@@ -135,6 +135,11 @@
 				"font"		"WeaponIconsKillFeed"
 				"character"	"2"
 		}
+		"func_tank"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"2"
+		}
 		"crossbow_bolt"
 		{
 				"font"		"WeaponIconsKillFeed"
