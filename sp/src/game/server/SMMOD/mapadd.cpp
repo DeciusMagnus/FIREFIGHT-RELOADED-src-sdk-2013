@@ -179,14 +179,11 @@ bool CMapAdd::HandleSpecialEnitity( KeyValues *specialEntity)
 
 bool CMapAdd::HandleRemoveEnitity( KeyValues *mapaddValue)
 {
-	static const auto REMOVEALL = AllocPooledString( "remove_all" );
-	static const auto REMOVESPHERE = AllocPooledString( "remove_sphere" );
-
 	const char* kvEntName = mapaddValue->GetString("entity", "");
 	const char* pClassname = mapaddValue->GetString("remove_classname");
 	const char* pTargetname = mapaddValue->GetString("remove_targetname");
 
-	if (AllocPooledString(kvEntName) == REMOVESPHERE)
+	if (AllocPooledString(kvEntName) == AllocPooledString("remove_sphere"))
 	{
 		Vector RemoveVector = Vector(0,0,0);
 		CBaseEntity *ppEnts[256];
@@ -216,7 +213,7 @@ bool CMapAdd::HandleRemoveEnitity( KeyValues *mapaddValue)
 		
 		return true;
 	}
-	else if ( AllocPooledString(kvEntName) == REMOVEALL )
+	else if ( AllocPooledString(kvEntName) == AllocPooledString("remove_all"))
 	{
 		if (AllocPooledString(pClassname) != AllocPooledString(""))
 		{
