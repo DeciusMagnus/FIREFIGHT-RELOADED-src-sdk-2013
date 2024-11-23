@@ -171,6 +171,11 @@
 				"font"		"WeaponIconsKillFeed"
 				"character"	"-"
 		}
+		"npc_houndeye"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"9"
+		}
 		"prop_physics"
 		{
 				"font"		"WeaponIconsKillFeed"
@@ -291,6 +296,11 @@
 				"height"	"32"
 		}
 		"weapon_mp5"
+		{
+				"font"		"WeaponIconsKillFeed3"
+				"character"	"x"
+		}
+		"npc_hgrunt"
 		{
 				"font"		"WeaponIconsKillFeed3"
 				"character"	"x"
