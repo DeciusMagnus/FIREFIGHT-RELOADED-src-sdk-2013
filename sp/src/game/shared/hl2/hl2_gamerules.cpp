@@ -239,6 +239,7 @@ ConVar  sk_npc_dmg_katana("sk_npc_dmg_katana", "0", FCVAR_REPLICATED);
 ConVar	sk_max_turret("sk_max_turret", "0", FCVAR_REPLICATED);
 
 ConVar    sk_npc_dmg_assassinpistol("sk_npc_dmg_assassinpistol", "0", FCVAR_REPLICATED);
+ConVar    sk_npc_dmg_assassinsmg("sk_npc_dmg_assassinsmg", "0", FCVAR_REPLICATED);
 
 // Gunship & Dropship cannons
 ConVar	sk_npc_dmg_gunship			( "sk_npc_dmg_gunship", "0", FCVAR_REPLICATED);
@@ -1785,6 +1786,7 @@ CAmmoDef *GetAmmoDef()
 		def.AddAmmoType("AlyxGun",			DMG_BULLET,					TRACER_LINE,			"sk_plr_dmg_alyxgun",		"sk_npc_dmg_alyxgun",		"sk_max_alyxgun",		BULLET_IMPULSE(200, 1225), 0, 'p' );
 		def.AddAmmoType("Pistol",			DMG_BULLET,					TRACER_LINE_AND_WHIZ,	"sk_plr_dmg_pistol",		"sk_npc_dmg_pistol",		"sk_max_pistol",		BULLET_IMPULSE(200, 1225), 0, 'p' );
 		def.AddAmmoType("AssassinPistol",	DMG_BULLET,					TRACER_LINE_AND_WHIZ, "sk_plr_dmg_pistol", "sk_npc_dmg_assassinpistol", "sk_max_pistol", BULLET_IMPULSE(200, 1225), 0, 'p');
+		def.AddAmmoType("AssassinSMG1",				DMG_BULLET,					TRACER_LINE_AND_WHIZ, "sk_plr_dmg_smg1", "sk_npc_dmg_assassinsmg", "sk_max_smg1", BULLET_IMPULSE(200, 1225), 0, 'r');
 		def.AddAmmoType("SMG1",				DMG_BULLET,					TRACER_LINE_AND_WHIZ,	"sk_plr_dmg_smg1",			"sk_npc_dmg_smg1",			"sk_max_smg1",			BULLET_IMPULSE(200, 1225), 0, 'r' );
 		def.AddAmmoType("357",				DMG_BULLET | DMG_SNIPER,	TRACER_LINE_AND_WHIZ,	"sk_plr_dmg_357",			"sk_npc_dmg_357",			"sk_max_357",			BULLET_IMPULSE(800, 5000), 0, 'q');
 		def.AddAmmoType("XBowBolt",			DMG_BULLET,					TRACER_LINE,			"sk_plr_dmg_crossbow",		"sk_npc_dmg_crossbow",		"sk_max_crossbow",		BULLET_IMPULSE(800, 8000), 0, 'w' );

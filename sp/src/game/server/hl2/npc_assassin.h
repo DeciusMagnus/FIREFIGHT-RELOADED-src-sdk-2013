@@ -59,6 +59,8 @@ public:
 
 	Activity	NPC_TranslateActivity(Activity NewActivity);
 
+	bool		isBeingTargeted(CAI_Hint* pHint);
+
 	bool		FValidateHintType ( CAI_Hint *pHint );
 	bool		IsJumpLegal(const Vector &startPos, const Vector &apex, const Vector &endPos) const;
 	bool		MovementCost( int moveType, const Vector &vecStart, const Vector &vecEnd, float *pCost );
@@ -71,7 +73,7 @@ private:
 
 	void		SetEyeState( eyeState_t state );
 	void		FirePistol( int hand );
-	void		FireSMG1();
+	void		FireSMG1(int hand);
 	bool		CanFlip( int flipType, Activity &activity, const Vector *avoidPosition );
 
 	int			m_nNumFlips;
@@ -85,6 +87,7 @@ private:
 	bool		m_bBlinkState;
 
 	bool		m_bUsingSMGs;
+	bool		m_bAce;
 
 	CSprite				*m_pEyeSprite;
 	CSpriteTrail		*m_pEyeTrail;

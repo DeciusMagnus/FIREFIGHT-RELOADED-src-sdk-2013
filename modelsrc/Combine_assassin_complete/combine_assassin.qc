@@ -492,8 +492,8 @@ $animation "a_Shoot_crouching" "combine_assassin_anims\a_Shoot_crouching.smd" {
 	ikrule "lfoot" release contact 0 fakeorigin 0 0 0 fakerotate 0 0 0 floor 0 height 0 radius 0 range 0 0 8 8 target 3
 }
 
-$animation "a_Shoot_crouching_SMG1" "combine_assassin_anims\a_Shoot_crouching_SMG1.smd" {
-	fps 60
+$animation "a_Shoot_crouching_SMG1" "combine_assassin_anims\a_Shoot_crouching.smd" {
+	fps 30
 	loop
 	ikrule "rhand" release contact 0 fakeorigin 0 0 0 fakerotate 0 0 0 floor 0 height 0 radius 0 range 0 0 8 8 target 0
 	ikrule "lhand" release contact 0 fakeorigin 0 0 0 fakerotate 0 0 0 floor 0 height 0 radius 0 range 0 0 8 8 target 1
@@ -752,7 +752,15 @@ $sequence "Shoot_crouching" {
 $sequence "Shoot_crouching_smg1" {
 	"a_Shoot_crouching_SMG1"
 	activity "ACT_RANGE_ATTACK_SMG1" 1
-	{ event 5 1 "" }
+	{ event 5 0 "" }
+	{ event 6 1 "" }
+    { event 5 2 "" }
+    { event 6 3 "" }
+    { event 5 4 "" }
+    { event 6 5 "" }
+    { event 5 6 "" }
+    { event 6 7 "" }
+    { event 5 8 "" }
 	fadein 0.2
 	fadeout 0.2
 	addlayer "layer_aim_crouch_all"

@@ -30,7 +30,8 @@ ConVar	g_debug_assassin( "g_debug_assassin", "0" );
 #define	ASSASSIN_AE_FIRE_PISTOL_LEFT	2
 #define	ASSASSIN_AE_KICK_HIT			3
 #define ASSASSIN_AE_GRENADE				4
-#define	ASSASSIN_AE_FIRE_SMGS			5
+#define	ASSASSIN_AE_FIRE_SMGS_RIGHT			5
+#define	ASSASSIN_AE_FIRE_SMGS_LEFT			6
 
 //int AE_ASSASIN_FIRE_PISTOL_RIGHT;
 //int AE_ASSASIN_FIRE_PISTOL_LEFT;
@@ -139,6 +140,7 @@ void CNPC_Assassin::Precache( void )
 	PrecacheModel( "models/combine_assassin.mdl" );
 
 	PrecacheScriptSound( "NPC_Assassin.ShootPistol" );
+	PrecacheScriptSound("Weapon_SMG1.NPC_Single");
 	PrecacheScriptSound( "Zombie.AttackHit" );
 	PrecacheScriptSound( "Zombie.AttackMiss" );
 	PrecacheScriptSound( "NPC_Assassin.Footstep" );
@@ -173,26 +175,25 @@ void CNPC_Assassin::Spawn( void )
 	SetBloodColor( BLOOD_COLOR_RED );
 	
 	m_iHealth			= sk_assassin_health.GetFloat();
-	m_flFieldOfView		= 0.1;
+	m_flFieldOfView		= 0.2;
 	m_NPCState			= NPC_STATE_NONE;
 
 	CapabilitiesClear();
-	CapabilitiesAdd( bits_CAP_MOVE_CLIMB | bits_CAP_MOVE_GROUND | bits_CAP_MOVE_JUMP );
-	CapabilitiesAdd( bits_CAP_SQUAD | bits_CAP_USE_WEAPONS | bits_CAP_AIM_GUN | bits_CAP_INNATE_RANGE_ATTACK1 | bits_CAP_INNATE_RANGE_ATTACK2 | bits_CAP_INNATE_MELEE_ATTACK1 | bits_CAP_INNATE_MELEE_ATTACK2);
+	CapabilitiesAdd( bits_CAP_MOVE_CLIMB | bits_CAP_MOVE_GROUND | bits_CAP_MOVE_JUMP | bits_CAP_TURN_HEAD);
+	CapabilitiesAdd( bits_CAP_SQUAD | bits_CAP_NO_HIT_SQUADMATES | bits_CAP_USE_WEAPONS | bits_CAP_AIM_GUN | bits_CAP_INNATE_RANGE_ATTACK1 | bits_CAP_INNATE_RANGE_ATTACK2 | bits_CAP_INNATE_MELEE_ATTACK1 | bits_CAP_INNATE_MELEE_ATTACK2);
 
+	bool DEBUG_ENABLESMGS = false;
 	//Turn on our guns
-	//SetBodygroup( 1, 1 );
-	//m_bUsingSMGs = false;
-	// TODO: add random int for ace to choose between smg1 or pistol (maybe make it like grunt?)
-
-	//TEST FOR ACE
-	//turn on guns
-	SetBodygroup( 1, 2 );
-	//set skin
-	m_nSkin = 4;
-	//set model
-	SetBodygroup(0, 1);
-	m_bUsingSMGs = true;
+	if (DEBUG_ENABLESMGS || Q_stristr(STRING(m_spawnEquipment), "weapon_smg1"))
+	{
+		SetBodygroup(1, 2);
+		m_bUsingSMGs = true;
+	}
+	else
+	{
+		SetBodygroup(1, 1);
+		m_bUsingSMGs = false;
+	}
 
 	int attachment = LookupAttachment( "Eye" );
 
@@ -217,10 +218,22 @@ void CNPC_Assassin::Spawn( void )
 		m_pEyeTrail->SetLifeTime( 0.75f );
 	}
 
-	NPCInit();
-
 	m_bEvade = false;
 	m_bAggressive = false;
+
+	//TODO: remove this after testing
+	m_bAce = false;
+	if (m_bAce)
+	{
+		//set skin
+		m_nSkin = 4;
+		//set model
+		SetBodygroup(0, 1);
+	}
+
+	BaseClass::Spawn();
+
+	NPCInit();
 }
 
 //-----------------------------------------------------------------------------
@@ -402,20 +415,21 @@ void CNPC_Assassin::FirePistol( int hand )
 // Purpose: 
 // Input  : hand - 
 //-----------------------------------------------------------------------------
-void CNPC_Assassin::FireSMG1()
+void CNPC_Assassin::FireSMG1(int hand)
 {
 	if (m_flNextShotTime > gpGlobals->curtime)
 		return;
 
-	m_flNextShotTime = gpGlobals->curtime + random->RandomFloat(0.01f, 0.03f);
+	m_flNextShotTime = gpGlobals->curtime + random->RandomFloat(0.075f, 0.1f);
 
-	Vector	muzzlePos, muzzlePos2, muzzleDir, muzzleDir2;
-	QAngle	muzzleAngle, muzzleAngle2;
+	Vector	muzzlePos;
+	QAngle	muzzleAngle;
 
-	int bulletType = GetAmmoDef()->Index("AssassinPistol");
+	const char* handName = (hand) ? "LeftMuzzle" : "RightMuzzle";
 
-	//hand1
-	GetAttachment("LeftMuzzle", muzzlePos, muzzleAngle);
+	GetAttachment(handName, muzzlePos, muzzleAngle);
+
+	Vector	muzzleDir;
 
 	if (GetEnemy() == NULL)
 	{
@@ -427,29 +441,15 @@ void CNPC_Assassin::FireSMG1()
 		VectorNormalize(muzzleDir);
 	}
 
-	FireBullets(1, muzzlePos, muzzleDir, VECTOR_CONE_6DEGREES, 1024, bulletType, 2);
+	int bulletType = GetAmmoDef()->Index("AssassinSMG1");
+
+	//double the bullets to make us seem like we're shooting really fast.
+	FireBullets((random->RandomInt(0,3) == 3 ? 2 : 1), muzzlePos, muzzleDir, VECTOR_CONE_6DEGREES, 1024, bulletType, 2);
 
 	UTIL_MuzzleFlash(muzzlePos, muzzleAngle, 0.5f, 1);
 
-	//hand 2
-	GetAttachment("RightMuzzle", muzzlePos2, muzzleAngle2);
-
-	if (GetEnemy() == NULL)
-	{
-		AngleVectors(muzzleAngle2, &muzzleDir2);
-	}
-	else
-	{
-		muzzleDir2 = GetEnemy()->BodyTarget(muzzlePos2) - muzzlePos2;
-		VectorNormalize(muzzleDir2);
-	}
-
-	FireBullets(1, muzzlePos2, muzzleDir2, VECTOR_CONE_6DEGREES, 1024, bulletType, 2);
-
-	UTIL_MuzzleFlash(muzzlePos2, muzzleAngle2, 0.5f, 1);
-
 	CPASAttenuationFilter filter(this);
-	EmitSound(filter, entindex(), "NPC_Assassin.ShootPistol");
+	EmitSound(filter, entindex(), "Weapon_SMG1.NPC_Single");
 }
 
 #define COMBINE_GRENADE_TIMER		3.5
@@ -514,7 +514,7 @@ void CNPC_Assassin::HandleAnimEvent( animevent_t *pEvent )
 
 		GetAttachment( "lefthand", vTossPos, vAngles );
 
-		bool bFireGrenade = ((random->RandomInt(0, 1) == 1 && g_pGameRules->GetSkillLevel() >= SKILL_HARD) ? true : false);
+		bool bFireGrenade = ((random->RandomInt(0, 1) == 1 && (m_bAce || g_pGameRules->GetSkillLevel() >= SKILL_HARD)) ? true : false);
 		CBaseGrenade *pGrenade = Fraggrenade_Create( vTossPos, vAngles, m_vecTossVelocity, vec3_origin, this, COMBINE_GRENADE_TIMER, true, bFireGrenade);
 		if ( pGrenade )
 		{
@@ -530,9 +530,15 @@ void CNPC_Assassin::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if (pEvent->event == ASSASSIN_AE_FIRE_SMGS)
+	if (pEvent->event == ASSASSIN_AE_FIRE_SMGS_RIGHT)
 	{
-		FireSMG1();
+		FireSMG1(0);
+		return;
+	}
+
+	if (pEvent->event == ASSASSIN_AE_FIRE_SMGS_LEFT)
+	{
+		FireSMG1(1);
 		return;
 	}
 
@@ -545,6 +551,10 @@ void CNPC_Assassin::HandleAnimEvent( animevent_t *pEvent )
 bool CNPC_Assassin::MovementCost( int moveType, const Vector &vecStart, const Vector &vecEnd, float *pCost )
 {
 	if ( GetEnemy() == NULL )
+		return true;
+
+	//aces should run towards enemies. They should be far more agressive.
+	if (m_bAce)
 		return true;
 
 	float	multiplier = 1.0f;
@@ -598,9 +608,10 @@ int CNPC_Assassin::SelectSchedule ( void )
 			}
 
 			// Need to move
-			if ( /*(	HasCondition( COND_SEE_ENEMY ) && HasCondition( COND_ASSASSIN_ENEMY_TARGETTING_ME ) && random->RandomInt( 0, 32 ) == 0 && m_flNextFlipTime < gpGlobals->curtime ) )*/
-					( m_nNumFlips > 0 ) || 
-					( ( HasCondition ( COND_LIGHT_DAMAGE ) && random->RandomInt( 0, 2 ) == 0 ) ) || ( HasCondition ( COND_HEAVY_DAMAGE ) ) )
+			if ( ( m_nNumFlips > 0 ) || 
+					(HasCondition(COND_ASSASSIN_ENEMY_TARGETTING_ME) || HasCondition(COND_HEAR_MOVE_AWAY) || HasCondition(COND_HEAR_DANGER)) ||
+					( ( HasCondition ( COND_LIGHT_DAMAGE ) && random->RandomInt( 0, 2 ) == 0 ) ) || 
+					( HasCondition ( COND_HEAVY_DAMAGE ) ))
 			{
 				if ( m_nNumFlips <= 0 )
 				{
@@ -634,15 +645,11 @@ int CNPC_Assassin::SelectSchedule ( void )
 			if ( HasCondition( COND_CAN_RANGE_ATTACK1 ) )
 				return SCHED_RANGE_ATTACK1;
 
-			if ( HasCondition( COND_ENEMY_OCCLUDED ) )
+			if ( HasCondition( COND_ENEMY_OCCLUDED ) || !HasCondition(COND_SEE_ENEMY))
 				return SCHED_ASSASSIN_HUNT_ENEMY;
 
 			// Face our enemy
 			if ( HasCondition( COND_SEE_ENEMY ) && !HasCondition( COND_CAN_RANGE_ATTACK1 ) )
-				return SCHED_ASSASSIN_HUNT_ENEMY;
-
-			// new enemy
-			if ( HasCondition( COND_NEW_ENEMY ) )
 				return SCHED_ASSASSIN_HUNT_ENEMY;
 
 			// Face our enemy
@@ -650,8 +657,17 @@ int CNPC_Assassin::SelectSchedule ( void )
 				return SCHED_COMBAT_FACE;
 
 			// new enemy
-			if ( HasCondition( COND_NEW_ENEMY ) )
-				return SCHED_TAKE_COVER_FROM_ENEMY;
+			if (HasCondition(COND_NEW_ENEMY))
+			{
+				if (m_bAce)
+				{
+					return SCHED_CHASE_ENEMY;
+				}
+				else
+				{
+					return SCHED_ASSASSIN_HUNT_ENEMY;
+				}
+			}
 
 			// ALERT( at_console, "stand\n");
 			return SCHED_ASSASSIN_FIND_VANTAGE_POINT;
@@ -1141,30 +1157,39 @@ void CNPC_Assassin::GatherEnemyConditions( CBaseEntity *pEnemy )
 
 	BaseClass::GatherEnemyConditions( pEnemy );
 
+	Vector	enemyDir = GetAbsOrigin() - pEnemy->GetAbsOrigin();
+	VectorNormalize(enemyDir);
+
+	Vector	enemyBodyDir;
+	CBasePlayer* pPlayer = ToBasePlayer(pEnemy);
+
+	if (pPlayer != NULL)
+	{
+		enemyBodyDir = pPlayer->BodyDirection3D();
+	}
+	else
+	{
+		AngleVectors(pEnemy->GetAbsAngles(), &enemyBodyDir);
+	}
+
+	float	enemyDot = DotProduct(enemyBodyDir, enemyDir);
+
 	// See if we're being targetted specifically
 	if ( HasCondition( COND_ENEMY_FACING_ME ) )
 	{
-		Vector	enemyDir = GetAbsOrigin() - pEnemy->GetAbsOrigin();
-		VectorNormalize( enemyDir );
-
-		Vector	enemyBodyDir;
-		CBasePlayer	*pPlayer = ToBasePlayer( pEnemy );
-
-		if ( pPlayer != NULL )
-		{
-			enemyBodyDir = pPlayer->BodyDirection3D();
-		}
-		else
-		{
-			AngleVectors( pEnemy->GetAbsAngles(), &enemyBodyDir );
-		}
-
-		float	enemyDot = DotProduct( enemyBodyDir, enemyDir );
-
 		//FIXME: Need to refine this a bit
 		if ( enemyDot > 0.97f )
 		{
 			SetCondition( COND_ASSASSIN_ENEMY_TARGETTING_ME );
+		}
+	}
+	else
+	{
+		//we may need to move, enemie might be behind us.
+
+		if (enemyDot < 0)
+		{
+			SetCondition(COND_ASSASSIN_ENEMY_TARGETTING_ME);
 		}
 	}
 }
@@ -1226,9 +1251,9 @@ void CNPC_Assassin::Event_Killed( const CTakeDamageInfo &info )
 	// now spawn the guns.
 	if ( !HasSpawnFlags( SF_NPC_NO_WEAPON_DROP ) )
 	{	
-		DropItem( "weapon_pistol", vecGunPos, vecGunAngles );
-		const char* wpnClass = m_spawnEquipment == NULL_STRING ? "weapon_pistol" : STRING( m_spawnEquipment );
-		DropItem( wpnClass, vecGunPos2, vecGunAngles2 );
+		const char* item = m_bUsingSMGs ? "weapon_smg1" : "weapon_pistol";
+		DropItem(item, vecGunPos, vecGunAngles);
+		DropItem(item, vecGunPos2, vecGunAngles2);
 	}
 }
 
