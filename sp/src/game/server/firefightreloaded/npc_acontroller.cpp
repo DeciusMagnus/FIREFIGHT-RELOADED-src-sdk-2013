@@ -393,7 +393,7 @@ int CAlienController::SquadRecruit(int searchRadius, int maxMembers)
 
 			if (pRecruit)
 			{
-				if (!pRecruit->m_pSquad && pRecruit->Classify() == iMyClass && pRecruit != this)
+				if (pRecruit != this && pRecruit->IsAlive() && !pRecruit->m_hCine)
 				{
 					// minimum protection here against user error.in worldcraft. 
 					if (pRecruit->m_SquadName != NULL_STRING && FStrEq(STRING(m_SquadName), STRING(pRecruit->m_SquadName)))
@@ -426,9 +426,7 @@ int CAlienController::SquadRecruit(int searchRadius, int maxMembers)
 			if (pRecruit && pRecruit != this && pRecruit->IsAlive() && !pRecruit->m_hCine)
 			{
 				// Can we recruit this guy?
-				if (!pRecruit->m_pSquad && pRecruit->Classify() == iMyClass &&
-					((!IsEntityAlien(pRecruit)) || FClassnameIs(this, pRecruit->GetClassname())) &&
-					!pRecruit->m_SquadName)
+				if (pRecruit->Classify() == iMyClass && FClassnameIs(this, pRecruit->GetClassname()))
 				{
 					trace_t tr;
 					UTIL_TraceLine(GetAbsOrigin() + GetViewOffset(), pRecruit->GetAbsOrigin() + GetViewOffset(), MASK_NPCSOLID_BRUSHONLY, pRecruit, COLLISION_GROUP_NONE, &tr);// try to hit recruit with a traceline.

@@ -57,6 +57,8 @@ public:
 	void		BuildScheduleTestBits( void );
 	void		Event_Killed( const CTakeDamageInfo &info );
 
+	Activity	NPC_TranslateActivity(Activity NewActivity);
+
 	bool		FValidateHintType ( CAI_Hint *pHint );
 	bool		IsJumpLegal(const Vector &startPos, const Vector &apex, const Vector &endPos) const;
 	bool		MovementCost( int moveType, const Vector &vecStart, const Vector &vecEnd, float *pCost );
@@ -69,6 +71,7 @@ private:
 
 	void		SetEyeState( eyeState_t state );
 	void		FirePistol( int hand );
+	void		FireSMG1();
 	bool		CanFlip( int flipType, Activity &activity, const Vector *avoidPosition );
 
 	int			m_nNumFlips;
@@ -80,6 +83,8 @@ private:
 	bool		m_bEvade;
 	bool		m_bAggressive;		// Sets certain state, including whether or not her eye is visible
 	bool		m_bBlinkState;
+
+	bool		m_bUsingSMGs;
 
 	CSprite				*m_pEyeSprite;
 	CSpriteTrail		*m_pEyeTrail;

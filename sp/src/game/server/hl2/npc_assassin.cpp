@@ -30,6 +30,7 @@ ConVar	g_debug_assassin( "g_debug_assassin", "0" );
 #define	ASSASSIN_AE_FIRE_PISTOL_LEFT	2
 #define	ASSASSIN_AE_KICK_HIT			3
 #define ASSASSIN_AE_GRENADE				4
+#define	ASSASSIN_AE_FIRE_SMGS			5
 
 //int AE_ASSASIN_FIRE_PISTOL_RIGHT;
 //int AE_ASSASIN_FIRE_PISTOL_LEFT;
@@ -180,7 +181,18 @@ void CNPC_Assassin::Spawn( void )
 	CapabilitiesAdd( bits_CAP_SQUAD | bits_CAP_USE_WEAPONS | bits_CAP_AIM_GUN | bits_CAP_INNATE_RANGE_ATTACK1 | bits_CAP_INNATE_RANGE_ATTACK2 | bits_CAP_INNATE_MELEE_ATTACK1 | bits_CAP_INNATE_MELEE_ATTACK2);
 
 	//Turn on our guns
-	SetBodygroup( 1, 1 );
+	//SetBodygroup( 1, 1 );
+	//m_bUsingSMGs = false;
+	// TODO: add random int for ace to choose between smg1 or pistol (maybe make it like grunt?)
+
+	//TEST FOR ACE
+	//turn on guns
+	SetBodygroup( 1, 2 );
+	//set skin
+	m_nSkin = 4;
+	//set model
+	SetBodygroup(0, 1);
+	m_bUsingSMGs = true;
 
 	int attachment = LookupAttachment( "Eye" );
 
@@ -386,6 +398,60 @@ void CNPC_Assassin::FirePistol( int hand )
 	EmitSound( filter, entindex(), "NPC_Assassin.ShootPistol" );
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: 
+// Input  : hand - 
+//-----------------------------------------------------------------------------
+void CNPC_Assassin::FireSMG1()
+{
+	if (m_flNextShotTime > gpGlobals->curtime)
+		return;
+
+	m_flNextShotTime = gpGlobals->curtime + random->RandomFloat(0.01f, 0.03f);
+
+	Vector	muzzlePos, muzzlePos2, muzzleDir, muzzleDir2;
+	QAngle	muzzleAngle, muzzleAngle2;
+
+	int bulletType = GetAmmoDef()->Index("AssassinPistol");
+
+	//hand1
+	GetAttachment("LeftMuzzle", muzzlePos, muzzleAngle);
+
+	if (GetEnemy() == NULL)
+	{
+		AngleVectors(muzzleAngle, &muzzleDir);
+	}
+	else
+	{
+		muzzleDir = GetEnemy()->BodyTarget(muzzlePos) - muzzlePos;
+		VectorNormalize(muzzleDir);
+	}
+
+	FireBullets(1, muzzlePos, muzzleDir, VECTOR_CONE_6DEGREES, 1024, bulletType, 2);
+
+	UTIL_MuzzleFlash(muzzlePos, muzzleAngle, 0.5f, 1);
+
+	//hand 2
+	GetAttachment("RightMuzzle", muzzlePos2, muzzleAngle2);
+
+	if (GetEnemy() == NULL)
+	{
+		AngleVectors(muzzleAngle2, &muzzleDir2);
+	}
+	else
+	{
+		muzzleDir2 = GetEnemy()->BodyTarget(muzzlePos2) - muzzlePos2;
+		VectorNormalize(muzzleDir2);
+	}
+
+	FireBullets(1, muzzlePos2, muzzleDir2, VECTOR_CONE_6DEGREES, 1024, bulletType, 2);
+
+	UTIL_MuzzleFlash(muzzlePos2, muzzleAngle2, 0.5f, 1);
+
+	CPASAttenuationFilter filter(this);
+	EmitSound(filter, entindex(), "NPC_Assassin.ShootPistol");
+}
+
 #define COMBINE_GRENADE_TIMER		3.5
 //---------------------------------------------------------
 //---------------------------------------------------------
@@ -457,9 +523,18 @@ void CNPC_Assassin::HandleAnimEvent( animevent_t *pEvent )
 			// !!!LATER - when in a group, only try to throw grenade if ordered.
 		}
 		else
+		{
 			DevMsg("Assassin failed to create a nade!\n");
+		}
+
+		return;
 	}
-	return;
+
+	if (pEvent->event == ASSASSIN_AE_FIRE_SMGS)
+	{
+		FireSMG1();
+		return;
+	}
 
 	BaseClass::HandleAnimEvent( pEvent );
 }
@@ -603,6 +678,27 @@ void CNPC_Assassin::PrescheduleThink( void )
 			EmitSound( filter, entindex(), "NPC_Assassin.Footstep" );
 		}
 	}
+}
+
+Activity CNPC_Assassin::NPC_TranslateActivity(Activity NewActivity)
+{
+	switch (NewActivity)
+	{
+	case ACT_RANGE_ATTACK1:
+		// grunt is either shooting standing or shooting crouched
+		if (m_bUsingSMGs)
+		{
+			return (Activity)ACT_RANGE_ATTACK_SMG1;
+		}
+		else
+		{
+			// get crouching shoot
+			return (Activity)ACT_RANGE_ATTACK1;
+		}
+		break;
+	}
+
+	return BaseClass::NPC_TranslateActivity(NewActivity);
 }
 
 //-----------------------------------------------------------------------------
@@ -941,7 +1037,8 @@ const Vector &CNPC_Assassin::GetViewOffset( void )
 	//FIXME: Use eye attachment?
 	// If we're crouching, offset appropriately
 	if ( ( GetActivity() == ACT_ASSASSIN_PERCH ) ||
-		 ( GetActivity() == ACT_RANGE_ATTACK1 ) )
+		 ( GetActivity() == ACT_RANGE_ATTACK1 ) || 
+		 (GetActivity() == ACT_RANGE_ATTACK_SMG1))
 	{
 		eyeOffset = Vector( 0, 0, 24.0f );
 	}
