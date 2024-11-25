@@ -114,10 +114,28 @@
 ]
 
 @NPCClass base(BaseNPC) studio("models/bullsquid.mdl") = npc_bullsquid : "Bullsquid" []
-@NPCClass base(BaseNPC) studio("models/houndeye.mdl") = npc_houndeye : "Houndeye" []
-@NPCClass base(BaseNPC) studio("models/agrunt.mdl") = npc_agrunt : "Alien Grunt" []
-@NPCClass base(BaseNPC) studio("models/controller.mdl") = npc_acontroller : "Alien Controller" []
-@NPCClass base(BaseNPC) studio("models/hgrunt.mdl") = monster_human_grunt : "Human Grunt"
+@NPCClass base(BaseNPC) studio("models/houndeye.mdl") = npc_houndeye : "Houndeye" 
+[
+    spawnflags(Flags) =
+	[
+		32 : "Squad Leader" : 0
+	]
+]
+@NPCClass base(BaseNPC) studio("models/agrunt.mdl") = npc_agrunt : "Alien Grunt" 
+[
+    spawnflags(Flags) =
+	[
+		32 : "Squad Leader" : 0
+	]
+]
+@NPCClass base(BaseNPC) studio("models/controller.mdl") = npc_acontroller : "Alien Controller" 
+[
+    spawnflags(Flags) =
+	[
+		32 : "Squad Leader" : 0
+	]
+]
+@NPCClass base(BaseNPC) studio("models/hgrunt.mdl") = npc_hgrunt : "Human Grunt"
 [
 	spawnflags(Flags) =
 	[

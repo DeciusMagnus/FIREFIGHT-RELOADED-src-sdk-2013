@@ -86,6 +86,8 @@ enum
 #define HORNET_RED_SPEED		600
 #define HORNET_ORANGE_SPEED		800
 
+#define SF_GRUNT_LEADER	( 1 << 5  )
+
 extern int iHornetPuff;
 
 //=========================================================

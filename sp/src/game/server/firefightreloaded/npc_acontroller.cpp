@@ -41,6 +41,7 @@
 #include	"ammodef.h"
 #include	"Sprite.h"
 #include	"ai_moveprobe.h"
+#include	"ai_squad.h"
 
 //=========================================================
 // Monster's Anim Events Go Here
@@ -54,6 +55,10 @@
 #define CONTROLLER_FLINCH_DELAY			2		// at most one flinch every n secs
 
 #define DIST_TO_CHECK	200
+
+#define SF_CONTROLLER_LEADER	( 1 << 5  )
+
+int g_iSquadIndex = 0;
 
 ConVar sk_controller_health ( "sk_controller_health", "0" );
 ConVar sk_controller_dmgzap ( "sk_controller_dmgzap", "0" );
@@ -127,6 +132,9 @@ public:
 	void Event_Killed( const CTakeDamageInfo &info );
 	void SetSequence( int nSequence );
 	int IRelationPriority( CBaseEntity *pTarget );
+
+	void StartNPC(void);
+	int	SquadRecruit(int searchRadius, int maxMembers);
 
 public:
 	float m_flNextFlinch;
@@ -344,7 +352,138 @@ void CAlienController::Spawn()
 	CapabilitiesClear();
 	CapabilitiesAdd( bits_CAP_MOVE_FLY | bits_CAP_INNATE_RANGE_ATTACK1 | bits_CAP_INNATE_RANGE_ATTACK2 | bits_CAP_MOVE_SHOOT);
 
+	//HACK
+	g_iSquadIndex = 0;
+
+	BaseClass::Spawn();
+
 	NPCInit();
+}
+
+//=========================================================
+//
+// SquadRecruit(), get some monsters of my classification and
+// link them as a group.  returns the group size
+//
+//=========================================================
+int CAlienController::SquadRecruit(int searchRadius, int maxMembers)
+{
+	int squadCount;
+	int iMyClass = Classify();// cache this monster's class
+
+	if (IsInSquad() && GetSquad()->NumMembers(false) > 1)
+		return 0;
+
+	if (maxMembers < 2)
+		return 0;
+
+	// I am my own leader
+	squadCount = 1;
+
+	CBaseEntity* pEntity = NULL;
+
+	if (m_SquadName != NULL_STRING)
+	{
+		// I have a netname, so unconditionally recruit everyone else with that name.
+		pEntity = gEntList.FindEntityByClassname(pEntity, GetClassname());
+
+		while (pEntity)
+		{
+			CAlienController* pRecruit = (CAlienController*)pEntity->MyNPCPointer();
+
+			if (pRecruit)
+			{
+				if (!pRecruit->m_pSquad && pRecruit->Classify() == iMyClass && pRecruit != this)
+				{
+					// minimum protection here against user error.in worldcraft. 
+					if (pRecruit->m_SquadName != NULL_STRING && FStrEq(STRING(m_SquadName), STRING(pRecruit->m_SquadName)))
+					{
+						pRecruit->InitSquad();
+						squadCount++;
+					}
+				}
+			}
+
+			pEntity = gEntList.FindEntityByClassname(pEntity, GetClassname());
+		}
+
+		return squadCount;
+	}
+	else
+	{
+		char szSquadName[64];
+		Q_snprintf(szSquadName, sizeof(szSquadName), "squad%d\n", g_iSquadIndex);
+
+		m_SquadName = MAKE_STRING(szSquadName);
+
+		while ((pEntity = gEntList.FindEntityInSphere(pEntity, GetAbsOrigin(), searchRadius)) != NULL)
+		{
+			if (!FClassnameIs(pEntity, GetClassname()))
+				continue;
+
+			CAlienController* pRecruit = (CAlienController*)pEntity->MyNPCPointer();
+
+			if (pRecruit && pRecruit != this && pRecruit->IsAlive() && !pRecruit->m_hCine)
+			{
+				// Can we recruit this guy?
+				if (!pRecruit->m_pSquad && pRecruit->Classify() == iMyClass &&
+					((!IsEntityAlien(pRecruit)) || FClassnameIs(this, pRecruit->GetClassname())) &&
+					!pRecruit->m_SquadName)
+				{
+					trace_t tr;
+					UTIL_TraceLine(GetAbsOrigin() + GetViewOffset(), pRecruit->GetAbsOrigin() + GetViewOffset(), MASK_NPCSOLID_BRUSHONLY, pRecruit, COLLISION_GROUP_NONE, &tr);// try to hit recruit with a traceline.
+
+					if (tr.fraction == 1.0)
+					{
+						//We're ready to recruit people, so start a squad if I don't have one.
+						if (!m_pSquad)
+						{
+							InitSquad();
+						}
+
+						pRecruit->m_SquadName = m_SquadName;
+
+						pRecruit->CapabilitiesAdd(bits_CAP_SQUAD);
+						pRecruit->InitSquad();
+
+						squadCount++;
+					}
+				}
+			}
+		}
+
+		if (squadCount > 1)
+		{
+			g_iSquadIndex++;
+		}
+	}
+
+	return squadCount;
+}
+
+void CAlienController::StartNPC(void)
+{
+	if (!m_pSquad)
+	{
+		if (m_SquadName != NULL_STRING)
+		{
+			// if I have a groupname, I can only recruit if I'm flagged as leader
+			if (!(GetSpawnFlags() & SF_CONTROLLER_LEADER))
+			{
+				BaseClass::StartNPC();
+				return;
+			}
+		}
+
+		int iSquadSize = SquadRecruit(1024, 4);
+
+		if (iSquadSize)
+		{
+			Msg("Squad of %d %s formed\n", iSquadSize, GetClassname());
+		}
+	}
+
+	BaseClass::StartNPC();
 }
 
 //=========================================================

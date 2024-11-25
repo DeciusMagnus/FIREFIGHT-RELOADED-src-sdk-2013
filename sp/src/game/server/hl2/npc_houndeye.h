@@ -53,6 +53,9 @@ public:
 	bool			IsAnyoneInSquadAttacking( void );
 	void			SpeakSentence( int sentenceType );
 
+	void			StartNPC(void);
+	int				SquadRecruit(int searchRadius, int maxMembers);
+
 	float			m_flNextSecondaryAttack;
 	bool			m_bLoopClockwise;
 
