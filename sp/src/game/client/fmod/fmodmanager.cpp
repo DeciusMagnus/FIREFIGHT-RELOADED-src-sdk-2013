@@ -273,6 +273,20 @@ void CC_MoveBackInPlaylist(void)
 }
 static ConCommand snd_fmod_musicsystem_backward("snd_fmod_musicsystem_backward", CC_MoveBackInPlaylist, "");
 
+void dumpplaylist_cb()
+{
+	if (GetMusicSystem())
+	{
+		for (int i = 0; i < GetMusicSystem()->m_Songs.Count(); ++i)
+		{
+			const Song_t& song = GetMusicSystem()->m_Songs[i];
+			Msg("#%i: %s - %s (%s) at %f volume from \"%s\"\n", i, song.Title, song.Artist, song.Album, song.Volume, song.SourcePlaylist);
+		}
+	}
+}
+
+static ConCommand dumpplaylist("dumpplaylist", dumpplaylist_cb, "Dumps the playlist.");
+
 CFMODMusicSystem::CFMODMusicSystem() : CAutoGameSystemPerFrame("fmod_music_system")
 {
 	m_pChannel = nullptr;
@@ -334,6 +348,46 @@ void CFMODMusicSystem::Shutdown()
 	Kill();
 }
 
+Song_t CFMODMusicSystem::LoadEntry(KeyValues* pKV)
+{
+	Song_t entry;
+	Song_t nullSong = CreateNullSong();
+	entry.Path = pKV->GetString("path", NULL);
+	entry.Title = pKV->GetString("title", nullSong.Title);
+	entry.Artist = pKV->GetString("artist", nullSong.Artist);
+	entry.Album = pKV->GetString("album", nullSong.Album);
+	entry.Volume = pKV->GetFloat("volume", nullSong.Volume);
+
+	return entry;
+}
+
+bool CFMODMusicSystem::LoadEntries(KeyValues* pKV)
+{
+	int num = 0;
+	bool failed = false;
+	for (auto iter = pKV->GetFirstSubKey(); iter != NULL; iter = iter->GetNextKey())
+	{
+		if (!strcmp(iter->GetName(), "settings"))
+			continue;
+
+		auto newKV = iter->MakeCopy();
+		Song_t entry = LoadEntry(newKV);
+
+		if (entry.Path == NULL)
+		{
+			failed = true;
+			break;
+		}
+
+		entry.SourcePlaylist = pKV->GetName();
+
+		m_Songs.AddToTail(entry);
+		num++;
+	}
+
+	return failed;
+}
+
 void CFMODMusicSystem::ReadPlaylist()
 {
 	if (m_bPlaylistLoaded)
@@ -356,37 +410,15 @@ void CFMODMusicSystem::ReadPlaylist()
 		if (settings)
 		{
 			m_sSettings.Shuffle = settings->GetBool("shuffle");
+			m_sSettings.Extensions = settings->GetBool("extensions");
 		}
 		else
 		{
 			m_sSettings.Shuffle = false;
+			m_sSettings.Extensions = false;
 		}
 
-		int num = 0;
-		bool failed = false;
-		for (auto iter = pKV->GetFirstSubKey(); iter != NULL; iter = iter->GetNextKey())
-		{
-			if (!strcmp(iter->GetName(), "settings"))
-				continue;
-
-			auto newKV = iter->MakeCopy();
-			Song_t entry;
-			Song_t nullSong = CreateNullSong();
-			entry.Path = newKV->GetString("path", NULL);
-			entry.Title = newKV->GetString("title", nullSong.Title);
-			entry.Artist = newKV->GetString("artist", nullSong.Artist);
-			entry.Album = newKV->GetString("album", nullSong.Album);
-			entry.Volume = newKV->GetFloat("volume", nullSong.Volume);
-
-			if (entry.Path == NULL)
-			{
-				failed = true;
-				break;
-			}
-
-			m_Songs.AddToTail(entry);
-			num++;
-		}
+		bool failed = LoadEntries(pKV);
 
 		if (failed)
 		{
@@ -395,6 +427,55 @@ void CFMODMusicSystem::ReadPlaylist()
 				DevWarning("CFMODMusicSystem: Failed to load playlist! File failed to load because entries are missing paths.\n");
 			}
 			return;
+		}
+		else
+		{
+			if (m_sSettings.Extensions)
+			{
+				FileFindHandle_t findHandle;
+
+				const char* pFilename = filesystem->FindFirst("scripts/playlists/extensions/*.txt", &findHandle);
+				while (pFilename)
+				{
+					const char* pszFilename = snd_fmod_musicsystem_playlist.GetString();
+
+					char prefix[256];
+
+					const char* str = Q_strstr(pszFilename, "scripts/playlists/");
+					if (str)
+					{
+						Q_strncpy(prefix, str + 18, sizeof(prefix) - 1);	// scripts/playlists/ + \\ = 29
+					}
+					else
+					{
+						Q_strncpy(prefix, pszFilename, sizeof(prefix) - 1);
+					}
+
+					char* ext = Q_strstr(prefix, ".txt");
+					if (ext)
+					{
+						*ext = 0;
+					}
+
+					if (Q_strncmp(pFilename, prefix, Q_strlen(prefix)) == 0)
+					{
+						char szScriptName[2048];
+						Q_snprintf(szScriptName, sizeof(szScriptName), "scripts/playlists/extensions/%s", pFilename);
+
+						KeyValues* pKV2 = new KeyValues("");
+						if (pKV2->LoadFromFile(filesystem, szScriptName))
+						{
+							LoadEntries(pKV2);
+						}
+
+						DevMsg("'%s' added to playlist!\n", szScriptName);
+					}
+
+					pFilename = filesystem->FindNext(findHandle);
+				}
+
+				filesystem->FindClose(findHandle);
+			}
 		}
 
 		if (snd_fmod_musicsystem_devmessages.GetBool())

@@ -78,12 +78,14 @@ struct Song_t
 	const char* Title;
 	const char* Artist;
 	const char* Album;
+	const char* SourcePlaylist;
 	float Volume;
 };
 
 struct Settings_t
 {
 	bool Shuffle;
+	bool Extensions;
 };
 
 #define FMOD_MUSICSYSTEM_TITLE_LOCALIZED_NAME_FROM_STR( name ) \
@@ -119,6 +121,10 @@ public:
 
 	virtual void ReadPlaylist();
 
+	virtual bool LoadEntries(KeyValues* pKV);
+
+	virtual Song_t LoadEntry(KeyValues *pKV);
+
 private:
 	Song_t CreateNullSong() 
 	{
@@ -135,6 +141,7 @@ private:
 	{
 		Settings_t settings;
 		settings.Shuffle = false;
+		settings.Extensions = false;
 		return settings;
 	}
 

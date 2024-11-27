@@ -4,6 +4,10 @@
 
 "half-life2"
 {
+	"settings"
+	{
+		"extensions"	"1"
+	}
 	"1"
 	{
 		"path"	"hl1/music/Half-Life13.mp3"
