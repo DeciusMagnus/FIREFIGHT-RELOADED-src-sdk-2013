@@ -231,11 +231,6 @@ void CNPC_Assassin::LoadInitAttributes()
 	if (m_pAttributes != NULL)
 	{
 		m_bAce = m_pAttributes->GetBool("is_ace");
-
-		if (m_bAce)
-		{
-			AddSpawnFlags(SF_NPC_LONG_RANGE);
-		}
 	}
 
 	BaseClass::LoadInitAttributes();
