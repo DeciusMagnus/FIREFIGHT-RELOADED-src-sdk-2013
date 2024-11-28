@@ -47,6 +47,7 @@ public:
 	int			RangeAttack2Conditions ( float flDot, float flDist );
 
 	void		Precache( void );
+	void		LoadInitAttributes(void);
 	void		Spawn( void );
 	void		PrescheduleThink( void );
 	void		HandleAnimEvent( animevent_t *pEvent );

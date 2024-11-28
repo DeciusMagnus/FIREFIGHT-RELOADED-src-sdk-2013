@@ -221,19 +221,24 @@ void CNPC_Assassin::Spawn( void )
 	m_bEvade = false;
 	m_bAggressive = false;
 
-	//TODO: remove this after testing
-	m_bAce = false;
-	if (m_bAce)
-	{
-		//set skin
-		m_nSkin = 4;
-		//set model
-		SetBodygroup(0, 1);
-	}
-
 	BaseClass::Spawn();
 
 	NPCInit();
+}
+
+void CNPC_Assassin::LoadInitAttributes()
+{
+	if (m_pAttributes != NULL)
+	{
+		m_bAce = m_pAttributes->GetBool("is_ace");
+
+		if (m_bAce)
+		{
+			AddSpawnFlags(SF_NPC_LONG_RANGE);
+		}
+	}
+
+	BaseClass::LoadInitAttributes();
 }
 
 //-----------------------------------------------------------------------------
