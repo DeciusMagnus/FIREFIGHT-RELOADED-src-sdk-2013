@@ -1178,7 +1178,7 @@ void CNPC_Assassin::GatherEnemyConditions( CBaseEntity *pEnemy )
 	if ( HasCondition( COND_ENEMY_FACING_ME ) )
 	{
 		//FIXME: Need to refine this a bit
-		if ( enemyDot > 0.97f )
+		if (m_bAce && enemyDot > 0.96f )
 		{
 			SetCondition( COND_ASSASSIN_ENEMY_TARGETTING_ME );
 		}
@@ -1189,7 +1189,7 @@ void CNPC_Assassin::GatherEnemyConditions( CBaseEntity *pEnemy )
 
 		if (enemyDot < 0)
 		{
-			SetCondition(COND_ASSASSIN_ENEMY_TARGETTING_ME);
+			SetCondition(COND_ENEMY_OCCLUDED);
 		}
 	}
 }
