@@ -618,9 +618,9 @@ int CNPC_Assassin::SelectSchedule ( void )
 					( ( HasCondition ( COND_LIGHT_DAMAGE ) && random->RandomInt( 0, 2 ) == 0 ) ) || 
 					( HasCondition ( COND_HEAVY_DAMAGE ) ))
 			{
-				if ( m_nNumFlips <= 0 )
+				if (m_nNumFlips <= 0)
 				{
-					m_nNumFlips = random->RandomInt( 1, 2 );
+					m_nNumFlips = random->RandomInt(1, 2);
 				}
 
 				return SCHED_ASSASSIN_EVADE;
@@ -763,7 +763,7 @@ bool CNPC_Assassin::CanFlip( int flipType, Activity &activity, const Vector *avo
 		break;
 	}
 
-	// Make sure we don't flip towards our avoidance position/
+	// Make sure we don't flip towards our avoidance position
 	if ( avoidPosition != NULL )
 	{
 		Vector	avoidDir = (*avoidPosition) - GetAbsOrigin();
