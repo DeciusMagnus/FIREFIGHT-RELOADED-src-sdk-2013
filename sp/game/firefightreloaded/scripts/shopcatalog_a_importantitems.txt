@@ -1,0 +1,19 @@
+//#ShopCatalog
+//WARNING: DO NOT REMOVE THESE TOP COMMENTS.
+//FABRICATOR REQUIRES THE FIRST COMMENT TO LOAD THIS FILE.
+
+"ShopCatalog"
+{
+	"1"
+	{
+		"name"	"HealthKit"
+		"price"	"20"
+		"command"	"healthkit"
+	}
+	"2"
+	{
+		"name"	"SuitBattery"
+		"price"	"100"
+		"command"	"battery"
+	}
+}
