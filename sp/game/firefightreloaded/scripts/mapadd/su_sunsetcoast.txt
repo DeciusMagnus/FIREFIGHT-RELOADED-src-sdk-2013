@@ -1,0 +1,135 @@
+//#MapAdd
+//WARNING: DO NOT REMOVE THESE TOP COMMENTS.
+//FABRICATOR REQUIRES THE FIRST COMMENT TO LOAD THIS FILE.
+
+"MapAdd"
+{
+	"1"
+	{
+		"entity"	"npc_maker_firefight"
+		"x"	"2217.5083"
+		"y"	"-3480.6414"
+		"z"	"522.03125"
+		"roll"	"0"
+		"yaw"	"0"
+		"pitch"	"0"
+		"KeyValues"
+		{
+			"StartDisabled"	"0"
+			"targetname"	"Spawner"
+			"NPCSquadName"	"Squad"
+			"RareNPCRarity"	"5"
+			"SpawnFrequency"	"5"
+			"MaxLiveChildren"	"15"
+			"MaxLiveRareNPCs"	"5"
+		}
+	}
+	"2"
+	{
+		"entity"	"npc_maker_firefight"
+		"x"	"3254.463"
+		"y"	"-5627.442"
+		"z"	"650.03125"
+		"roll"	"0"
+		"yaw"	"0"
+		"pitch"	"0"
+		"KeyValues"
+		{
+			"StartDisabled"	"0"
+			"targetname"	"Spawner"
+			"NPCSquadName"	"Squad"
+			"RareNPCRarity"	"5"
+			"SpawnFrequency"	"5"
+			"MaxLiveChildren"	"15"
+			"MaxLiveRareNPCs"	"5"
+		}
+	}
+	"3"
+	{
+		"entity"	"npc_maker_firefight"
+		"x"	"4577.2236"
+		"y"	"-3863.6218"
+		"z"	"394.03125"
+		"roll"	"0"
+		"yaw"	"0"
+		"pitch"	"0"
+		"KeyValues"
+		{
+			"StartDisabled"	"0"
+			"targetname"	"Spawner"
+			"NPCSquadName"	"Squad"
+			"RareNPCRarity"	"5"
+			"SpawnFrequency"	"5"
+			"MaxLiveChildren"	"15"
+			"MaxLiveRareNPCs"	"5"
+		}
+	}
+	"4"
+	{
+		"entity"	"npc_maker_firefight"
+		"x"	"2117.543"
+		"y"	"-2914.5076"
+		"z"	"522.03125"
+		"roll"	"0"
+		"yaw"	"0"
+		"pitch"	"0"
+		"KeyValues"
+		{
+			"StartDisabled"	"0"
+			"targetname"	"Spawner"
+			"NPCSquadName"	"Squad"
+			"RareNPCRarity"	"5"
+			"SpawnFrequency"	"5"
+			"MaxLiveChildren"	"15"
+			"MaxLiveRareNPCs"	"5"
+		}
+	}
+	"5"
+	{
+		"entity"	"npc_maker_firefight"
+		"x"	"3798.9163"
+		"y"	"-3738.4563"
+		"z"	"126.40448"
+		"roll"	"0"
+		"yaw"	"0"
+		"pitch"	"0"
+		"KeyValues"
+		{
+			"StartDisabled"	"0"
+			"targetname"	"Spawner"
+			"NPCSquadName"	"Squad"
+			"RareNPCRarity"	"5"
+			"SpawnFrequency"	"5"
+			"MaxLiveChildren"	"15"
+			"MaxLiveRareNPCs"	"5"
+		}
+	}
+	"6"
+	{
+		"entity"	"item_lightarmor"
+		"x"	"3325.4043"
+		"y"	"-3538.0312"
+		"z"	"522.03125"
+		"roll"	"0"
+		"yaw"	"0"
+		"pitch"	"0"
+		"KeyValues"
+		{
+			"targetname"	"LightArmor"
+		}
+	}
+	"7"
+	{
+		"entity"	"item_lightarmor"
+		"x"	"4248.3784"
+		"y"	"-2939.6992"
+		"z"	"650.03125"
+		"roll"	"0"
+		"yaw"	"0"
+		"pitch"	"0"
+		"KeyValues"
+		{
+			"targetname"	"LightArmor"
+		}
+	}
+}
