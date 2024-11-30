@@ -35,7 +35,6 @@ del bin_linux\server_srv.so.dbg
 del bin_linux\gamepadui.so.dbg
 del bin_linux\gamepadui_srv.so.dbg
 del sound\sound.cache
-del /q maps\graphs\*.ain
 rmdir /S /Q materials\vgui\logos\ui\
 rmdir /S /Q materials\
 rmdir /S /Q models\

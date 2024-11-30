@@ -1,0 +1,8 @@
+//art by mystycitty, character by kalei.alma
+"DecalModulate"
+{
+	"$translucent" 1
+	"$basetexture" "Decals/kalei"
+	"$decal" 1
+	"$decalscale" 0.25
+}
