@@ -102,8 +102,7 @@ private:
     GamepadUIImage m_Image;
 };
 
-GamepadUIMapChooser::GamepadUIMapChooser( vgui::Panel* pParent, const char* pPanelName)
-	: BaseClass( pParent, pPanelName )
+GamepadUIMapChooser::GamepadUIMapChooser( vgui::Panel* pParent, const char* pPanelName) : BaseClass( pParent, pPanelName )
 {
     vgui::HScheme Scheme = vgui::scheme()->LoadSchemeFromFile( GAMEPADUI_DEFAULT_PANEL_SCHEME, "SchemePanel" );
     SetScheme( Scheme );
@@ -244,7 +243,7 @@ void GamepadUIMapChooser::ScanMaps()
     }
     g_pFullFileSystem->FindClose(findHandle);
     
-    SetFooterButtons( FooterButtons::Back | FooterButtons::Select , FooterButtons::Select);
+    SetFooterButtons( FooterButtons::Back | FooterButtons::Select /*| FooterButtons::Commentary*/ | FooterButtons::Tutorial, FooterButtons::Select);
     
 	SetControlEnabled( "loadsave", false );
 	SetControlEnabled( "delete", false );
@@ -329,7 +328,11 @@ void GamepadUIMapChooser::OnCommand( char const* pCommand )
     {
         Close();
     }
-	 else if ( StringHasPrefixCaseSensitive( pCommand, "load_map " ) )
+    else if (!V_strcmp(pCommand, "action_tutorial"))
+    {
+        GamepadUI::GetInstance().GetEngineClient()->ClientCmd_Unrestricted("gamepadui_starttutorial\n");
+    }
+	else if ( StringHasPrefixCaseSensitive( pCommand, "load_map " ) )
     {
         const char* pszMap = pCommand + 9;
         

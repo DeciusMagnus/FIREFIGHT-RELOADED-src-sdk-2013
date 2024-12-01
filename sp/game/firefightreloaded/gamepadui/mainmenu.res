@@ -15,20 +15,12 @@
 		"priority"		"11"
 		"family"		"all"
 	}
-    
-    "NewTutorial"
-	{
-		"text"			"#GameUI_TrainingRoom"
-		"command"		"cmd gamepadui_starttutorial"
-		"priority"		"10"
-		"family"		"all"
-	}
 	
 	"SaveGame"
 	{
 		"text"			"#GameUI_GameMenu_SaveGame"
 		"command"		"cmd gamepadui_opensavegamedialog"
-		"priority"		"9"
+		"priority"		"10"
 		"family"		"ingame"
 	}
 
@@ -36,7 +28,7 @@
 	{
 		"text"			"#GameUI_GameMenu_LoadGame"
 		"command"		"cmd gamepadui_openloadgamedialog"
-		"priority"		"8"
+		"priority"		"9"
 		"family"		"all"
 	}
 
@@ -44,6 +36,14 @@
 	{
 		"text"			"#GameUI_GameMenu_Options"
 		"command"		"cmd gamepadui_openoptionsdialog"
+		"priority"		"8"
+		"family"		"all"
+	}
+    
+    "OptionsOriginal"
+	{
+		"text"			"#GameUI_GameMenu_LegacyOptions"
+		"command"		"cmd gamemenucommand OpenOptionsDialog"
 		"priority"		"7"
 		"family"		"all"
 	}

@@ -172,11 +172,12 @@ namespace FooterButtons
         BonusMaps  = ( 1 << 7 ),
         Challenge  = ( 1 << 8 ),
         UseDefaults  = ( 1 << 9 ),
+        Tutorial = (1 << 10),
 
         // Buttons that are 'confirmatory'
         ConfirmMask = ( LeftSelect | Select | Okay ),
     };
-    static const int MaxFooterButtons = 10;
+    static const int MaxFooterButtons = 11;
 
     inline const char* GetButtonName( FooterButton button )
     {
@@ -192,6 +193,7 @@ namespace FooterButtons
             case BonusMaps: return "#Deck_BonusMaps";
             case Challenge: return "#Deck_Challenges";
             case UseDefaults: return "#GameUI_UseDefaults";
+            case Tutorial: return "#Tutorial_Menu_Alt";
         }
         return "Unknown";
     }
@@ -210,6 +212,7 @@ namespace FooterButtons
             case BonusMaps: return "action_bonus_maps";
             case Challenge: return "action_challenges";
             case UseDefaults: return "action_usedefaults";
+            case Tutorial: return "action_tutorial";
         }
         return "";
     }
@@ -228,6 +231,7 @@ namespace FooterButtons
             case BonusMaps: return "menu_x";
             case Challenge: return "menu_y";
             case UseDefaults: return "menu_x";
+            case Tutorial: return "menu_x";
         }
         return "";
     }
@@ -236,16 +240,17 @@ namespace FooterButtons
     {
         switch (button)
         {
-        case Back:   return ButtonLabels::GetLabelName(setting, ButtonLabels::B);
-        case Cancel: return ButtonLabels::GetLabelName(setting, ButtonLabels::B);
-        case LeftSelect:
-        case Select: return ButtonLabels::GetLabelName(setting, ButtonLabels::A);
-        case Apply:  return ButtonLabels::GetLabelName(setting, ButtonLabels::Y);
-        case Okay:   return ButtonLabels::GetLabelName(setting, ButtonLabels::A);
-        case Commentary: return ButtonLabels::GetLabelName(setting, ButtonLabels::Y);
-        case BonusMaps: return ButtonLabels::GetLabelName(setting, ButtonLabels::X);
-        case Challenge: return ButtonLabels::GetLabelName(setting, ButtonLabels::Y);
-        case UseDefaults: return ButtonLabels::GetLabelName(setting, ButtonLabels::X);
+            case Back:   return ButtonLabels::GetLabelName(setting, ButtonLabels::B);
+            case Cancel: return ButtonLabels::GetLabelName(setting, ButtonLabels::B);
+            case LeftSelect:
+            case Select: return ButtonLabels::GetLabelName(setting, ButtonLabels::A);
+            case Apply:  return ButtonLabels::GetLabelName(setting, ButtonLabels::Y);
+            case Okay:   return ButtonLabels::GetLabelName(setting, ButtonLabels::A);
+            case Commentary: return ButtonLabels::GetLabelName(setting, ButtonLabels::Y);
+            case BonusMaps: return ButtonLabels::GetLabelName(setting, ButtonLabels::X);
+            case Challenge: return ButtonLabels::GetLabelName(setting, ButtonLabels::Y);
+            case UseDefaults: return ButtonLabels::GetLabelName(setting, ButtonLabels::X);
+            case Tutorial: return ButtonLabels::GetLabelName(setting, ButtonLabels::X);
         }
         return L"N";
     }
