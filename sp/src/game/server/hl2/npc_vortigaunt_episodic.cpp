@@ -202,6 +202,7 @@ BEGIN_DATADESC( CNPC_Vortigaunt )
 END_DATADESC()
 
 LINK_ENTITY_TO_CLASS( npc_vortigaunt, CNPC_Vortigaunt );
+LINK_ENTITY_TO_CLASS(npc_vortigaunt_enemy, CNPC_Vortigaunt);
 
 IMPLEMENT_SERVERCLASS_ST( CNPC_Vortigaunt, DT_NPC_Vortigaunt )
 	SendPropTime( SENDINFO (m_flBlueEndFadeTime ) ),
@@ -490,6 +491,17 @@ void CNPC_Vortigaunt::AlertSound( void )
 	{
 		Speak( VORT_ATTACK );
 	}
+}
+
+Class_T	CNPC_Vortigaunt::Classify(void) 
+{ 
+	if (IsGameEndAlly())
+		return CLASS_PLAYER_ALLY_VITAL;
+
+	if (m_fIsEnemy)
+		return CLASS_VORTIGAUNT_ENEMY;
+
+	return CLASS_VORTIGAUNT; 
 }
 
 //-----------------------------------------------------------------------------
@@ -1080,16 +1092,33 @@ void CNPC_Vortigaunt::Event_Killed( const CTakeDamageInfo &info )
 //-----------------------------------------------------------------------------
 void CNPC_Vortigaunt::Spawn( void )
 {
+	if (FClassnameIs(this, "npc_vortigaunt_enemy"))
+	{
+		AddSpawnFlags(SF_VORTIGAUNT_ENEMY);
+	}
+
 #if !defined( HL2_EPISODIC )
 	// Disable back-away
 	AddSpawnFlags( SF_NPC_NO_PLAYER_PUSHAWAY );
 #endif // HL2_EPISODIC
 
+	if (HasSpawnFlags(SF_VORTIGAUNT_ENEMY))
+	{
+		m_fIsEnemy = true;
+	}
+
 	// Allow multiple models (for slaves), but default to vortigaunt.mdl
 	char *szModel = (char *)STRING( GetModelName() );
 	if (!szModel || !*szModel)
 	{
-		szModel = "models/vortigaunt.mdl";
+		if (m_fIsEnemy)
+		{
+			szModel = "models/vortigaunt_slave.mdl";
+		}
+		else
+		{
+			szModel = "models/vortigaunt.mdl";
+		}
 		SetModelName( AllocPooledString(szModel) );
 	}
 

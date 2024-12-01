@@ -55,19 +55,19 @@
 #define	VORTIGAUNT_HL2_LEFT_CLAW				"leftclaw"
 #define	VORTIGAUNT_HL2_RIGHT_CLAW				"rightclaw"
 
-#define VORT_CURE "VORT_CURE"
-#define VORT_CURESTOP "VORT_CURESTOP"
-#define VORT_CURE_INTERRUPT "VORT_CURE_INTERRUPT"
-#define VORT_ATTACK "VORT_ATTACK"
-#define VORT_MAD "VORT_MAD"
-#define VORT_SHOT "VORT_SHOT"
-#define VORT_PAIN "VORT_PAIN"
-#define VORT_DIE "VORT_DIE"
-#define VORT_KILL "VORT_KILL"
-#define VORT_LINE_FIRE "VORT_LINE_FIRE"
-#define VORT_POK "VORT_POK"
-#define VORT_EXTRACT_START "VORT_EXTRACT_START"
-#define VORT_EXTRACT_FINISH "VORT_EXTRACT_FINISH"
+#define VORT_HL2_CURE "VORT_HL2_CURE"
+#define VORT_HL2_CURESTOP "VORT_HL2_CURESTOP"
+#define VORT_HL2_CURE_INTERRUPT "VORT_HL2_CURE_INTERRUPT"
+#define VORT_HL2_ATTACK "VORT_HL2_ATTACK"
+#define VORT_HL2_MAD "VORT_HL2_MAD"
+#define VORT_HL2_SHOT "VORT_HL2_SHOT"
+#define VORT_HL2_PAIN "VORT_HL2_PAIN"
+#define VORT_HL2_DIE "VORT_HL2_DIE"
+#define VORT_HL2_KILL "VORT_HL2_KILL"
+#define VORT_HL2_LINE_FIRE "VORT_HL2_LINE_FIRE"
+#define VORT_HL2_POK "VORT_HL2_POK"
+#define VORT_HL2_EXTRACT_START "VORT_HL2_EXTRACT_START"
+#define VORT_HL2_EXTRACT_FINISH "VORT_HL2_EXTRACT_FINISH"
 
 // Target must be within this range to heal
 #define	HEAL_RANGE			256
@@ -108,6 +108,8 @@ extern int AE_VORTIGAUNT_HEAL_STARTSOUND;
 extern int AE_VORTIGAUNT_SWING_SOUND;
 extern int AE_VORTIGAUNT_SHOOT_SOUNDSTART;
 int AE_VORTIGAUNT_DEFEND_BEAMS;
+extern int AE_VORTIGAUNT_START_HURT_GLOW;	// Start the hurt handglow: 0=left, 1=right
+extern int AE_VORTIGAUNT_STOP_HURT_GLOW;	// Turn off the hurt handglow: 0=left, 1=right
 
 
 //-----------------------------------------------------------------------------
@@ -170,6 +172,7 @@ BEGIN_DATADESC( CNPC_Vortigaunt_HL2 )
 
 END_DATADESC()
 LINK_ENTITY_TO_CLASS( npc_vortigaunt_hl2, CNPC_Vortigaunt_HL2 );
+LINK_ENTITY_TO_CLASS( npc_vortigaunt_hl2_enemy, CNPC_Vortigaunt_HL2);
 
 // for special behavior with rollermines
 static bool IsRoller( CBaseEntity *pRoller )
@@ -184,7 +187,7 @@ static bool IsRoller( CBaseEntity *pRoller )
 //-----------------------------------------------------------------------------
 bool CNPC_Vortigaunt_HL2::IsHealPositionValid(void)
 {
-	CBasePlayer *pPlayer = AI_GetSinglePlayer();
+	CBasePlayer *pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 	if ( !pPlayer )
 		return false;
 
@@ -218,7 +221,7 @@ bool CNPC_Vortigaunt_HL2::CheckHealPosition( void )
 		return true;
 
 	// Heal position isn't valid. Abort heal.
-	Speak( VORT_CURE_INTERRUPT );
+	Speak( VORT_HL2_CURE_INTERRUPT );
 	ClearBeams();
 	EndHandGlow();
 	m_flNextHealTime = gpGlobals->curtime + 5.0;
@@ -231,31 +234,31 @@ bool CNPC_Vortigaunt_HL2::CheckHealPosition( void )
 // Input   :
 // Output  :
 //------------------------------------------------------------------------------
-#define VORT_HEAL_SENTENCE				0
-#define VORT_DONE_HEAL_SENTENCE			1
-#define	VORT_START_EXTRACT_SENTENCE		2
-#define VORT_FINISH_EXTRACT_SENTENCE	3
+#define VORT_HL2_HEAL_SENTENCE				0
+#define VORT_HL2_DONE_HEAL_SENTENCE			1
+#define	VORT_HL2_START_EXTRACT_SENTENCE		2
+#define VORT_HL2_FINISH_EXTRACT_SENTENCE	3
 
 void CNPC_Vortigaunt_HL2::SpeakSentence( int sentenceType )
 {
-	if (sentenceType == VORT_HEAL_SENTENCE)
+	if (sentenceType == VORT_HL2_HEAL_SENTENCE)
 	{
 		if ( IsHealPositionValid() )
 		{
-			Speak( VORT_CURE );
+			Speak( VORT_HL2_CURE );
 		}
 	}
-	else if (sentenceType == VORT_DONE_HEAL_SENTENCE)
+	else if (sentenceType == VORT_HL2_DONE_HEAL_SENTENCE)
 	{
-		Speak( VORT_CURESTOP );
+		Speak( VORT_HL2_CURESTOP );
 	}
-	else if (sentenceType == VORT_START_EXTRACT_SENTENCE)
+	else if (sentenceType == VORT_HL2_START_EXTRACT_SENTENCE)
 	{
-		Speak( VORT_EXTRACT_START );
+		Speak( VORT_HL2_EXTRACT_START );
 	}
-	else if (sentenceType == VORT_FINISH_EXTRACT_SENTENCE)
+	else if (sentenceType == VORT_HL2_FINISH_EXTRACT_SENTENCE)
 	{
-		Speak( VORT_EXTRACT_FINISH );
+		Speak( VORT_HL2_EXTRACT_FINISH );
 	}
 }
 
@@ -569,7 +572,7 @@ void CNPC_Vortigaunt_HL2::RunTask( const Task_t *pTask )
 		}
 	case TASK_VORTIGAUNT_HL2_HEAL:
 		{
-			CBasePlayer *pPlayer = AI_GetSinglePlayer();
+			CBasePlayer *pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 			if (pPlayer)
 			{
 				if (!CheckHealPosition())
@@ -620,7 +623,7 @@ void CNPC_Vortigaunt_HL2::RunTask( const Task_t *pTask )
 		{
 			// Wait for the player to get near (before starting the bugbait sequence)
 			// Get edict for one player
-			CBasePlayer *pPlayer = AI_GetSinglePlayer();
+			CBasePlayer *pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 			if ( pPlayer )
 			{
 				GetMotor()->SetIdealYawToTargetAndUpdate( pPlayer->GetAbsOrigin(), AI_KEEP_YAW_SPEED );
@@ -675,7 +678,10 @@ int CNPC_Vortigaunt_HL2::GetSoundInterests ( void)
 //-----------------------------------------------------------------------------
 Class_T	CNPC_Vortigaunt_HL2::Classify ( void )
 {
-	return	CLASS_VORTIGAUNT_ENEMY;
+	if (m_fIsEnemy)
+		return CLASS_VORTIGAUNT_ENEMY;
+
+	return CLASS_VORTIGAUNT;
 }
 
 //=========================================================
@@ -687,7 +693,7 @@ void CNPC_Vortigaunt_HL2::AlertSound( void )
 	{
 		if ( IsOkToCombatSpeak() )
 		{
-			Speak( VORT_ATTACK );
+			Speak( VORT_HL2_ATTACK );
 		}
 	}
 
@@ -923,7 +929,7 @@ void CNPC_Vortigaunt_HL2::HandleAnimEvent( animevent_t *pEvent )
 				// HACK: If we've still failed, just spawn it on the player 
 				if ( i == iNumAttempts )
 				{
-					CBasePlayer	*pPlayer = AI_GetSinglePlayer();
+					CBasePlayer	*pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 					if ( pPlayer )
 					{
 						vecSpawnOrigin = pPlayer->WorldSpaceCenter();
@@ -973,6 +979,20 @@ void CNPC_Vortigaunt_HL2::HandleAnimEvent( animevent_t *pEvent )
 		return;
 
 		//m_nSkin = m_iBeams / 2;
+	}
+
+	// Start our hurt glows (choreo driven)
+	if (pEvent->event == AE_VORTIGAUNT_START_HURT_GLOW)
+	{
+		StartHandGlow(VORTIGAUNT_HL2_BEAM_HURT);
+		return;
+	}
+
+	// Stop our hurt glows (choreo driven)
+	if (pEvent->event == AE_VORTIGAUNT_STOP_HURT_GLOW)
+	{
+		EndHandGlow();
+		return;
 	}
 
 	if( pEvent->event == AE_VORTIGAUNT_KICK )
@@ -1194,11 +1214,28 @@ bool CNPC_Vortigaunt_HL2::CreateBehaviors()
 //=========================================================
 void CNPC_Vortigaunt_HL2::Spawn()
 {
+	if (FClassnameIs(this, "npc_vortigaunt_hl2_enemy"))
+	{
+		AddSpawnFlags(SF_VORTIGAUNT_HL2_ENEMY);
+	}
+
+	if (HasSpawnFlags(SF_VORTIGAUNT_HL2_ENEMY))
+	{
+		m_fIsEnemy = true;
+	}
+
 	// Allow multiple models (for slaves), but default to vortigaunt_hl2.mdl
 	char *szModel = (char *)STRING( GetModelName() );
 	if (!szModel || !*szModel)
 	{
-		szModel = "models/vortigaunt_hl2.mdl";
+		if (m_fIsEnemy)
+		{
+			szModel = "models/vortigaunt_hl2_slave.mdl";
+		}
+		else
+		{
+			szModel = "models/vortigaunt_hl2.mdl";
+		}
 		SetModelName( AllocPooledString(szModel) );
 	}
 
@@ -1284,7 +1321,8 @@ void CNPC_Vortigaunt_HL2::TalkInit()
 
 	// vortigaunt_hl2 will try to talk to friends in this order:
 	m_szFriends[0] = "npc_vortigaunt_hl2";
-	m_szFriends[1] = "npc_citizen";
+	m_szFriends[1] = "npc_vortigaunt";
+	m_szFriends[2] = "npc_citizen";
 
 	// get voice for head - just one barney voice for now
 	GetExpresser()->SetVoicePitch( 100 );
@@ -1348,7 +1386,7 @@ int	CNPC_Vortigaunt_HL2::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 			if (m_afMemory & bits_MEMORY_SUSPICIOUS)
 			{
 				// Alright, now I'm pissed!
-				Speak( VORT_MAD );
+				Speak( VORT_HL2_MAD );
 
 				Remember( bits_MEMORY_PROVOKED );
 
@@ -1360,13 +1398,13 @@ int	CNPC_Vortigaunt_HL2::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 			else
 			{
 				// Hey, be careful with that
-				Speak( VORT_SHOT );
+				Speak( VORT_HL2_SHOT );
 				Remember( bits_MEMORY_SUSPICIOUS );
 			}
 		}
 		else if ( !(GetEnemy()->IsPlayer()) && (m_lifeState != LIFE_DEAD ))
 		{
-			Speak( VORT_SHOT );
+			Speak( VORT_HL2_SHOT );
 		}
 	}
 	return ret;
@@ -1383,7 +1421,7 @@ void CNPC_Vortigaunt_HL2::PainSound ( void )
 	
 	m_painTime = gpGlobals->curtime + random->RandomFloat(0.5, 0.75);
 
-	Speak( VORT_PAIN );
+	Speak( VORT_HL2_PAIN );
 }
 
 //=========================================================
@@ -1391,7 +1429,7 @@ void CNPC_Vortigaunt_HL2::PainSound ( void )
 //=========================================================
 void CNPC_Vortigaunt_HL2::DeathSound ( void )
 {
-	Speak( VORT_DIE );
+	Speak( VORT_HL2_DIE );
 }
 
 //-----------------------------------------------------------------------------
@@ -1679,7 +1717,7 @@ int CNPC_Vortigaunt_HL2::SelectSchedule( void )
 
 			if ( HasCondition( COND_ENEMY_DEAD ) && IsOkToCombatSpeak() )
 			{
-				Speak( VORT_KILL );
+				Speak( VORT_HL2_KILL );
 			}
 
 			// If I might hit the player shooting...
@@ -1687,7 +1725,7 @@ int CNPC_Vortigaunt_HL2::SelectSchedule( void )
 			{
 				if ( IsOkToCombatSpeak() && m_nextLineFireTime	< gpGlobals->curtime)
 				{
-					Speak( VORT_LINE_FIRE );
+					Speak( VORT_HL2_LINE_FIRE );
 					m_nextLineFireTime = gpGlobals->curtime + 3.0f;
 				}
 
@@ -1714,7 +1752,7 @@ int CNPC_Vortigaunt_HL2::SelectSchedule( void )
 
 		if ( HasCondition( COND_ENEMY_DEAD ) && IsOkToCombatSpeak() )
 		{
-			Speak( VORT_KILL );
+			Speak( VORT_HL2_KILL );
 		}
 
 		break;
@@ -1772,7 +1810,7 @@ bool CNPC_Vortigaunt_HL2::HandleInteraction(int interactionType, void *data, CBa
 //-----------------------------------------------------------------------------
 void CNPC_Vortigaunt_HL2::DeclineFollowing( void )
 {
-	Speak( VORT_POK );
+	Speak( VORT_HL2_POK );
 }
 
 //-----------------------------------------------------------------------------
@@ -2502,10 +2540,10 @@ AI_BEGIN_CUSTOM_NPC( npc_vortigaunt_hl2, CNPC_Vortigaunt_HL2 )
 		"		TASK_GET_PATH_TO_TARGET			0"
 		"		TASK_MOVE_TO_TARGET_RANGE		128"				// Move within 128 of target ent (client)
 		"		TASK_FACE_PLAYER				0"
-		"		TASK_SPEAK_SENTENCE				0"					// VORT_HEAL_SENTENCE
+		"		TASK_SPEAK_SENTENCE				0"					// VORT_HL2_HEAL_SENTENCE
 		"		TASK_VORTIGAUNT_HL2_HEAL_WARMUP		0"
 		"		TASK_VORTIGAUNT_HL2_HEAL			0"
-		"		TASK_SPEAK_SENTENCE				1"					// VORT_DONE_HEAL_SENTENCE
+		"		TASK_SPEAK_SENTENCE				1"					// VORT_HL2_DONE_HEAL_SENTENCE
 		""
 		"	Interrupts"
 		"		COND_LIGHT_DAMAGE"

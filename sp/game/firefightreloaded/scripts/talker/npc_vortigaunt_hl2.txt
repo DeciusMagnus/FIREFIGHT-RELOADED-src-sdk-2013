@@ -1,26 +1,26 @@
 //============================================================================================================
-// Vortigaunt criteria
+// VortigauntHL2 criteria
 //============================================================================================================
-criterion "IsVortigaunt" "classname" "npc_vortigaunt_hl2" required
+criterion "IsVortigauntHL2" "classname" "npc_vortigaunt_hl2" required
 
-criterion "VortigauntCure"  concept" "VORT_CURE" required
-criterion "VortigauntCureStop" "concept" "VORT_CURESTOP" required
-criterion "VortigauntCureInterrupt" "concept" "VORT_CURE_INTERRUPT" required
-criterion "VortigauntAttack" "concept" "VORT_ATTACK" required
-criterion "VortigauntMad" "concept" "VORT_MAD" required
-criterion "VortigauntShot" "concept" "VORT_SHOT" required
-criterion "VortigauntPain" "concept" "VORT_PAIN" required
-criterion "VortigauntDie" "concept" "VORT_DIE" required
-criterion "VortigauntKill" "concept" "VORT_KILL" required
-criterion "VortigauntLineOfFire" "concept" "VORT_LINE_FIRE" required
-criterion "VortigauntPOk" "concept" "VORT_POK" required
-criterion "VortigauntExtractBugbait" "concept" "VORT_EXTRACT_START" required
-criterion "VortigauntExtractBugbaitFinish" "concept" "VORT_EXTRACT_FINISH" required
+criterion "VortigauntHL2Cure"  concept" "VORT_HL2_CURE" required
+criterion "VortigauntHL2CureStop" "concept" "VORT_HL2_CURESTOP" required
+criterion "VortigauntHL2CureInterrupt" "concept" "VORT_HL2_CURE_INTERRUPT" required
+criterion "VortigauntHL2Attack" "concept" "VORT_HL2_ATTACK" required
+criterion "VortigauntHL2Mad" "concept" "VORT_HL2_MAD" required
+criterion "VortigauntHL2Shot" "concept" "VORT_HL2_SHOT" required
+criterion "VortigauntHL2Pain" "concept" "VORT_HL2_PAIN" required
+criterion "VortigauntHL2Die" "concept" "VORT_HL2_DIE" required
+criterion "VortigauntHL2Kill" "concept" "VORT_HL2_KILL" required
+criterion "VortigauntHL2LineOfFire" "concept" "VORT_HL2_LINE_FIRE" required
+criterion "VortigauntHL2POk" "concept" "VORT_HL2_POK" required
+criterion "VortigauntHL2ExtractBugbait" "concept" "VORT_HL2_EXTRACT_START" required
+criterion "VortigauntHL2ExtractBugbaitFinish" "concept" "VORT_HL2_EXTRACT_FINISH" required
 
 //============================================================================================================
-// Vortigaunt Hello speech
+// VortigauntHL2 Hello speech
 //============================================================================================================
-response "VortigauntHello" 
+response "VortigauntHL2Hello" 
 {
 	scene "scenes/npc/vortigaunt/wellmet.vcd" delay "3,3.5" speakonce 
 	scene "scenes/npc/vortigaunt/isitthefm.vcd" delay "3,3.5" speakonce 
@@ -40,23 +40,23 @@ response "VortigauntHello"
 	scene "scenes/npc/vortigaunt/putaside.vcd" delay "3,3.5" speakonce 
 	scene "scenes/npc/vortigaunt/mystery.vcd" delay "3,3.5" speakonce 
 }
-rule VortigauntTlkHello
+rule VortigauntHL2TlkHello
 {
-	criteria		IsVortigaunt ConceptTalkHello  PlayerNear SeePlayer
-	response		VortigauntHello
+	criteria		IsVortigauntHL2 ConceptTalkHello  PlayerNear SeePlayer
+	response		VortigauntHL2Hello
 }
 
 //------------------------------------------------------------------------------------------------------------
-rule VortigauntPlayerHello
+rule VortigauntHL2PlayerHello
 {
-	criteria		IsVortigaunt ConceptTalkPHello
+	criteria		IsVortigauntHL2 ConceptTalkPHello
 	response		NullResponse
 }
 
 //============================================================================================================
-// Vortigaunt Questions & Responses speech
+// VortigauntHL2 Questions & Responses speech
 //============================================================================================================
-response "VortigauntQuestion" 
+response "VortigauntHL2Question" 
 {
 	scene "scenes/npc/vortigaunt/vques01.vcd" delay 1
 	scene "scenes/npc/vortigaunt/vques02.vcd" delay 1
@@ -70,14 +70,14 @@ response "VortigauntQuestion"
 	scene "scenes/npc/vortigaunt/vques10.vcd" delay 1
 
 }
-rule VortigauntTlkQuestion
+rule VortigauntHL2TlkQuestion
 {
-	criteria		IsVortigaunt ConceptTalkQuestion
-	response		VortigauntQuestion
+	criteria		IsVortigauntHL2 ConceptTalkQuestion
+	response		VortigauntHL2Question
 }
 
 //------------------------------------------------------------------------------------------------------------
-response "VortigauntAnswer" 
+response "VortigauntHL2Answer" 
 {
 	scene "scenes/npc/vortigaunt/vanswer01.vcd" delay 1
 	scene "scenes/npc/vortigaunt/vanswer02.vcd" delay 1
@@ -99,14 +99,14 @@ response "VortigauntAnswer"
 	scene "scenes/npc/vortigaunt/vanswer18.vcd" delay 1
 }
 
-rule VortigauntTlkAnswer
+rule VortigauntHL2TlkAnswer
 {
-	criteria		IsVortigaunt ConceptTalkAnswer
-	response		VortigauntAnswer
+	criteria		IsVortigauntHL2 ConceptTalkAnswer
+	response		VortigauntHL2Answer
 }
 
 //------------------------------------------------------------------------------------------------------------
-response "VortigauntTalkUse"
+response "VortigauntHL2TalkUse"
 {
 	sequential
 	norepeat
@@ -142,16 +142,16 @@ response "VortigauntTalkUse"
   	scene "scenes/npc/vortigaunt/vmono_30.vcd" defaultdelay
 }
 
-rule VortigauntTalkUse
+rule VortigauntHL2TalkUse
 {
-	criteria		IsVortigaunt ConceptTalkUse
-	response		VortigauntTalkUse
+	criteria		IsVortigauntHL2 ConceptTalkUse
+	response		VortigauntHL2TalkUse
 }
 
 //============================================================================================================
-// Vortigaunt Combat speech
+// VortigauntHL2 Combat speech
 //============================================================================================================
-response "VortigauntCure" 
+response "VortigauntHL2Cure" 
 {
   	scene "scenes/npc/vortigaunt/allowrecharge.vcd" defaultdelay
   	scene "scenes/npc/vortigaunt/wewillcharge.vcd" defaultdelay
@@ -165,14 +165,14 @@ response "VortigauntCure"
 }
 
 
-rule VortigauntCure
+rule VortigauntHL2Cure
 {
-	criteria		IsVortigaunt  VortigauntCure
-	response		VortigauntCure
+	criteria		IsVortigauntHL2  VortigauntHL2Cure
+	response		VortigauntHL2Cure
 }
 
 //------------------------------------------------------------------------------------------------------------
-response "VortigauntCureStop" 
+response "VortigauntHL2CureStop" 
 {
   	scene "scenes/npc/vortigaunt/allwecanspare.vcd" defaultdelay
   	scene "scenes/npc/vortigaunt/allfornow.vcd" defaultdelay
@@ -181,14 +181,14 @@ response "VortigauntCureStop"
   	scene "scenes/npc/vortigaunt/keepfmsafe.vcd" defaultdelay
 }
 
-rule VortigauntCureStop
+rule VortigauntHL2CureStop
 {
-	criteria		IsVortigaunt VortigauntCureStop
-	response		VortigauntCureStop
+	criteria		IsVortigauntHL2 VortigauntHL2CureStop
+	response		VortigauntHL2CureStop
 }
 
 //------------------------------------------------------------------------------------------------------------
-response "VortigauntCureInterrupt" 
+response "VortigauntHL2CureInterrupt" 
 {
   	scene "scenes/npc/vortigaunt/holdorcantcharge.vcd" defaultdelay
   	scene "scenes/npc/vortigaunt/hold.vcd" defaultdelay
@@ -198,14 +198,14 @@ response "VortigauntCureInterrupt"
   	scene "scenes/npc/vortigaunt/movingtarget.vcd" defaultdelay
 }
 
-rule VortigauntCureInterrupt
+rule VortigauntHL2CureInterrupt
 {
-	criteria		IsVortigaunt VortigauntCureInterrupt
-	response		VortigauntCureInterrupt
+	criteria		IsVortigauntHL2 VortigauntHL2CureInterrupt
+	response		VortigauntHL2CureInterrupt
 }
 
 //------------------------------------------------------------------------------------------------------------
-response "VortigauntAttack" 
+response "VortigauntHL2Attack" 
 {
   	scene "scenes/npc/vortigaunt/tothevoid.vcd" defaultdelay
   	scene "scenes/npc/vortigaunt/allinoneinall.vcd" defaultdelay
@@ -220,64 +220,64 @@ response "VortigauntAttack"
 }
 
 
-rule VortigauntAttack
+rule VortigauntHL2Attack
 {
-	criteria		IsVortigaunt VortigauntAttack
-	response		VortigauntAttack
+	criteria		IsVortigauntHL2 VortigauntHL2Attack
+	response		VortigauntHL2Attack
 }
 
 //------------------------------------------------------------------------------------------------------------
-response "VortigauntMad"
+response "VortigauntHL2Mad"
 {
-//	sentence "VORT_MAD" soundlevel "SNDLVL_NORM" delay "4"
+//	sentence "VORT_HL2_MAD" soundlevel "SNDLVL_NORM" delay "4"
 }
-rule VortigauntMad
+rule VortigauntHL2Mad
 {
-	criteria		IsVortigaunt VortigauntMad
-	response		VortigauntMad
-}
-
-//------------------------------------------------------------------------------------------------------------
-response "VortigauntShot" 
-
-{
-//	sentence "VORT_SHOT" soundlevel "SNDLVL_NORM" delay "4"
-}
-rule VortigauntShot
-{
-	criteria		IsVortigaunt VortigauntShot
-	response		VortigauntShot
+	criteria		IsVortigauntHL2 VortigauntHL2Mad
+	response		VortigauntHL2Mad
 }
 
 //------------------------------------------------------------------------------------------------------------
-response "VortigauntPain" 
+response "VortigauntHL2Shot" 
 
 {
-//	sentence "VORT_PAIN"  defaultdelay
+//	sentence "VORT_HL2_SHOT" soundlevel "SNDLVL_NORM" delay "4"
 }
-
-rule VortigauntPain
+rule VortigauntHL2Shot
 {
-	criteria		IsVortigaunt VortigauntPain
-	response		VortigauntPain
-}
-
-//------------------------------------------------------------------------------------------------------------
-response "VortigauntDie"
-
-{
-// sentence "VORT_DIE"  defaultdelay
-
-}
-
-rule VortigauntDie
-{
-	criteria		IsVortigaunt VortigauntDie
-	response		VortigauntDie
+	criteria		IsVortigauntHL2 VortigauntHL2Shot
+	response		VortigauntHL2Shot
 }
 
 //------------------------------------------------------------------------------------------------------------
-response "VortigauntKill" 
+response "VortigauntHL2Pain" 
+
+{
+//	sentence "VORT_HL2_PAIN"  defaultdelay
+}
+
+rule VortigauntHL2Pain
+{
+	criteria		IsVortigauntHL2 VortigauntHL2Pain
+	response		VortigauntHL2Pain
+}
+
+//------------------------------------------------------------------------------------------------------------
+response "VortigauntHL2Die"
+
+{
+// sentence "VORT_HL2_DIE"  defaultdelay
+
+}
+
+rule VortigauntHL2Die
+{
+	criteria		IsVortigauntHL2 VortigauntHL2Die
+	response		VortigauntHL2Die
+}
+
+//------------------------------------------------------------------------------------------------------------
+response "VortigauntHL2Kill" 
 {
  scene "scenes/npc/vortigaunt/forthefm.vcd" delay 4
  scene "scenes/npc/vortigaunt/forfreedom.vcd" delay 4
@@ -295,14 +295,14 @@ response "VortigauntKill"
 }
 
 
-rule VortigauntKill
+rule VortigauntHL2Kill
 {
-	criteria		IsVortigaunt VortigauntKill
-	response		VortigauntKill
+	criteria		IsVortigauntHL2 VortigauntHL2Kill
+	response		VortigauntHL2Kill
 }
 
 //------------------------------------------------------------------------------------------------------------
-response "VortigauntLineOfFire" 
+response "VortigauntHL2LineOfFire" 
 {
  scene "scenes/npc/vortigaunt/cautionfm.vcd" delay 4
  scene "scenes/npc/vortigaunt/caution.vcd" delay 4
@@ -318,30 +318,30 @@ response "VortigauntLineOfFire"
 
 }
 
-rule VortigauntLineOfFire
+rule VortigauntHL2LineOfFire
 {
-	criteria		IsVortigaunt VortigauntLineOfFire
-	response		VortigauntLineOfFire
+	criteria		IsVortigauntHL2 VortigauntHL2LineOfFire
+	response		VortigauntHL2LineOfFire
 }
 
 //------------------------------------------------------------------------------------------------------------
-response "VortigauntPOk" 
+response "VortigauntHL2POk" 
 
 {
-//	sentence "VORT_POK" soundlevel "SNDLVL_NORM" delay "2"
+//	sentence "VORT_HL2_POK" soundlevel "SNDLVL_NORM" delay "2"
 }
 
-rule VortigauntPOk
+rule VortigauntHL2POk
 {
-	criteria		IsVortigaunt VortigauntPOk
-	response		VortigauntLineOfFire
+	criteria		IsVortigauntHL2 VortigauntHL2POk
+	response		VortigauntHL2LineOfFire
 }
 
 
 //============================================================================================================
-// Vortigaunt Misc speech
+// VortigauntHL2 Misc speech
 //============================================================================================================
-response "VortigauntIdle" 
+response "VortigauntHL2Idle" 
 
 {
  scene "scenes/npc/vortigaunt/poet.vcd"
@@ -354,21 +354,21 @@ response "VortigauntIdle"
  scene "scenes/npc/vortigaunt/whereto.vcd"
 }
 
-rule VortigauntTlkIdle
+rule VortigauntHL2TlkIdle
 {
-	criteria		IsVortigaunt ConceptTalkIdle
-	response		VortigauntIdle
+	criteria		IsVortigauntHL2 ConceptTalkIdle
+	response		VortigauntHL2Idle
 }
 
 //------------------------------------------------------------------------------------------------------------
-rule VortigauntPlayerIdle
+rule VortigauntHL2PlayerIdle
 {
-	criteria		IsVortigaunt ConceptTalkPIdle
+	criteria		IsVortigauntHL2 ConceptTalkPIdle
 	response		NullResponse
 }
 
 //------------------------------------------------------------------------------------------------------------
-response "VortigauntStare" 
+response "VortigauntHL2Stare" 
 
 {
  scene "scenes/npc/vortigaunt/optical.vcd"
@@ -381,14 +381,14 @@ response "VortigauntStare"
 }
 
 
-rule VortigauntTlkStare
+rule VortigauntHL2TlkStare
 {
-	criteria		IsVortigaunt ConceptTalkStare
-	response		VortigauntStare
+	criteria		IsVortigauntHL2 ConceptTalkStare
+	response		VortigauntHL2Stare
 }
 
 //------------------------------------------------------------------------------------------------------------
-response "VortigauntOk" 
+response "VortigauntHL2Ok" 
 {
  scene "scenes/npc/vortigaunt/itishonor.vcd"
  scene "scenes/npc/vortigaunt/wehonored.vcd"
@@ -418,14 +418,14 @@ response "VortigauntOk"
 }
 
 
-rule VortigauntTlkStartFollow
+rule VortigauntHL2TlkStartFollow
 {
-	criteria		IsVortigaunt ConceptTalkStartFollow
-	response		VortigauntOk
+	criteria		IsVortigauntHL2 ConceptTalkStartFollow
+	response		VortigauntHL2Ok
 }
 
 //------------------------------------------------------------------------------------------------------------
-response "VortigauntWait" 
+response "VortigauntHL2Wait" 
 {
  scene "scenes/npc/vortigaunt/canconvince.vcd"
  scene "scenes/npc/vortigaunt/fmknowsbest.vcd"
@@ -441,195 +441,195 @@ response "VortigauntWait"
 }
 
 
-rule VortigauntTlkStopFollow
+rule VortigauntHL2TlkStopFollow
 {
-	criteria		IsVortigaunt ConceptTalkStopFollow
-	response		VortigauntWait
+	criteria		IsVortigauntHL2 ConceptTalkStopFollow
+	response		VortigauntHL2Wait
 }
 
 //------------------------------------------------------------------------------------------------------------
-response "VortigauntStop" 
+response "VortigauntHL2Stop" 
 
 {
-//	sentence "VORT_STOP" delay "2,2.5" soundlevel "SNDLVL_NORM"
+//	sentence "VORT_HL2_STOP" delay "2,2.5" soundlevel "SNDLVL_NORM"
 }
 
-rule VortigauntTlkStop
+rule VortigauntHL2TlkStop
 {
-	criteria		IsVortigaunt ConceptTalkStop
-	response		VortigauntStop
-}
-
-//------------------------------------------------------------------------------------------------------------
-response "VortigauntScared" 
-
-{
-//	sentence "VORT_SCARED" delay "0,0.4"
-}
-
-rule VortigauntTlkNoShoot
-{
-	criteria		IsVortigaunt ConceptTalkNoShoot
-	response		VortigauntScared
+	criteria		IsVortigauntHL2 ConceptTalkStop
+	response		VortigauntHL2Stop
 }
 
 //------------------------------------------------------------------------------------------------------------
-response "VortigauntCureA" 
+response "VortigauntHL2Scared" 
 
 {
-//	sentence "VORT_CUREA"  defaultdelay speakonce
+//	sentence "VORT_HL2_SCARED" delay "0,0.4"
 }
 
-rule VortigauntPlayerHurt1
+rule VortigauntHL2TlkNoShoot
 {
-	criteria		IsVortigaunt ConceptTalkPlayerHurt1
-	response		VortigauntCureA
-}
-
-//------------------------------------------------------------------------------------------------------------
-response "VortigauntCureB" 
-
-{
-//	sentence "VORT_CUREB"  defaultdelay speakonce
-}
-
-rule VortigauntPlayerHurt2
-{
-	criteria		IsVortigaunt ConceptTalkPlayerHurt2
-	response		VortigauntCureB
+	criteria		IsVortigauntHL2 ConceptTalkNoShoot
+	response		VortigauntHL2Scared
 }
 
 //------------------------------------------------------------------------------------------------------------
-response "VortigauntCureC" 
+response "VortigauntHL2CureA" 
 
 {
-//	sentence "VORT_CUREC"  defaultdelay speakonce
+//	sentence "VORT_HL2_CUREA"  defaultdelay speakonce
 }
 
-rule VortigauntPlayerHurt3
+rule VortigauntHL2PlayerHurt1
 {
-	criteria		IsVortigaunt ConceptTalkPlayerHurt3
-	response		VortigauntCureC
-}
-
-//------------------------------------------------------------------------------------------------------------
-response "VortigauntPQuest" 
-
-{
-//	sentence "VORT_PQUEST" defaultdelay
-}
-
-rule VortigauntPlayerQuestion
-{
-	criteria		IsVortigaunt ConceptTalkPQuestion
-	response		VortigauntPQuest
+	criteria		IsVortigauntHL2 ConceptTalkPlayerHurt1
+	response		VortigauntHL2CureA
 }
 
 //------------------------------------------------------------------------------------------------------------
-response "VortigauntSmell" 
+response "VortigauntHL2CureB" 
 
 {
-//	sentence "VORT_SMELL" defaultdelay respeakdelay "60"
+//	sentence "VORT_HL2_CUREB"  defaultdelay speakonce
 }
 
-rule VortigauntTlkSmell
+rule VortigauntHL2PlayerHurt2
 {
-	criteria		IsVortigaunt ConceptTalkSmell
-	response		VortigauntSmell
-}
-
-//------------------------------------------------------------------------------------------------------------
-response "VortigauntWound" 
-
-{
-//	sentence "VORT_WOUND" speakonce defaultdelay
-}
-
-rule VortigauntTlkWound
-{
-	criteria		IsVortigaunt ConceptTalkWound
-	response		VortigauntWound
+	criteria		IsVortigauntHL2 ConceptTalkPlayerHurt2
+	response		VortigauntHL2CureB
 }
 
 //------------------------------------------------------------------------------------------------------------
-response "VortigauntMortal" 
+response "VortigauntHL2CureC" 
 
 {
-//	sentence "VORT_MORTAL"  speakonce defaultdelay
+//	sentence "VORT_HL2_CUREC"  defaultdelay speakonce
+}
+
+rule VortigauntHL2PlayerHurt3
+{
+	criteria		IsVortigauntHL2 ConceptTalkPlayerHurt3
+	response		VortigauntHL2CureC
+}
+
+//------------------------------------------------------------------------------------------------------------
+response "VortigauntHL2PQuest" 
+
+{
+//	sentence "VORT_HL2_PQUEST" defaultdelay
+}
+
+rule VortigauntHL2PlayerQuestion
+{
+	criteria		IsVortigauntHL2 ConceptTalkPQuestion
+	response		VortigauntHL2PQuest
+}
+
+//------------------------------------------------------------------------------------------------------------
+response "VortigauntHL2Smell" 
+
+{
+//	sentence "VORT_HL2_SMELL" defaultdelay respeakdelay "60"
+}
+
+rule VortigauntHL2TlkSmell
+{
+	criteria		IsVortigauntHL2 ConceptTalkSmell
+	response		VortigauntHL2Smell
+}
+
+//------------------------------------------------------------------------------------------------------------
+response "VortigauntHL2Wound" 
+
+{
+//	sentence "VORT_HL2_WOUND" speakonce defaultdelay
+}
+
+rule VortigauntHL2TlkWound
+{
+	criteria		IsVortigauntHL2 ConceptTalkWound
+	response		VortigauntHL2Wound
+}
+
+//------------------------------------------------------------------------------------------------------------
+response "VortigauntHL2Mortal" 
+
+{
+//	sentence "VORT_HL2_MORTAL"  speakonce defaultdelay
 }
 
 
-rule VortigauntTlkMortal
+rule VortigauntHL2TlkMortal
 {
-	criteria		IsVortigaunt ConceptTalkMortal
-	response		VortigauntMortal
+	criteria		IsVortigauntHL2 ConceptTalkMortal
+	response		VortigauntHL2Mortal
 }
 
 //============================================================================================================
-// Vortigaunt Leader speech (a vortigaunt that's leading the player somewhere)
+// VortigauntHL2 Leader speech (a vortigaunt that's leading the player somewhere)
 //============================================================================================================
 
-response "VortigauntLeadStart"
+response "VortigauntHL2LeadStart"
 {
 	scene "scenes/npc/vortigaunt/fmmustfollow.vcd"
 }
 
-rule VortigauntLeadStart
+rule VortigauntHL2LeadStart
 {
-	criteria		IsVortigaunt ConceptLeadStart
-	response		VortigauntLeadStart
+	criteria		IsVortigauntHL2 ConceptLeadStart
+	response		VortigauntHL2LeadStart
 }
 
 
 //------------------------------------------------------------------------------------------------------------
-response "VortigauntLeadCatchup"
+response "VortigauntHL2LeadCatchup"
 {
 	scene "scenes/npc/vortigaunt/yesforward.vcd"
 	scene "scenes/npc/vortigaunt/followfm.vcd"
 }
 
-rule VortigauntLeadCatchup
+rule VortigauntHL2LeadCatchup
 {
-	criteria		IsVortigaunt ConceptLeadCatchup
-	response		VortigauntLeadCatchup
+	criteria		IsVortigauntHL2 ConceptLeadCatchup
+	response		VortigauntHL2LeadCatchup
 }
 
 
 
 //============================================================================================================
-// Vortigaunt coast specific speech
+// VortigauntHL2 coast specific speech
 //============================================================================================================
-response "VortigauntExtractBugbait"
+response "VortigauntHL2ExtractBugbait"
 {
 	scene "scenes/coast/bugbait/vort_extract01.vcd" defaultdelay
 }
 
-rule VortigauntTlkExtractBugbait
+rule VortigauntHL2TlkExtractBugbait
 {
-	criteria		IsVortigaunt VortigauntExtractBugbait
-	response		VortigauntExtractBugbait
+	criteria		IsVortigauntHL2 VortigauntHL2ExtractBugbait
+	response		VortigauntHL2ExtractBugbait
 }
 
 //------------------------------------------------------------------------------------------------------------
-response "VortigauntExtractBugbaitFinish"
+response "VortigauntHL2ExtractBugbaitFinish"
 {
 	scene "scenes/coast/bugbait/vort_podsforyou01.vcd" defaultdelay
 }
 
-rule VortigauntTlkExtractBugbaitFinish
+rule VortigauntHL2TlkExtractBugbaitFinish
 {
-	criteria		IsVortigaunt VortigauntExtractBugbaitFinish
-	response		VortigauntExtractBugbaitFinish
+	criteria		IsVortigauntHL2 VortigauntHL2ExtractBugbaitFinish
+	response		VortigauntHL2ExtractBugbaitFinish
 }
 
 //------------------------------------------------------------------------------------------------------------
-response "VortigauntGetBugbait"
+response "VortigauntHL2GetBugbait"
 {
 	scene "scenes/coast/bugbait/vort_podnag.vcd" defaultdelay
 }
 
-rule VortigauntTlkLeadGetBugbait
+rule VortigauntHL2TlkLeadGetBugbait
 {
-	criteria		IsVortigaunt ConceptLeadMissingWeapon
-	response		VortigauntGetBugbait
+	criteria		IsVortigauntHL2 ConceptLeadMissingWeapon
+	response		VortigauntHL2GetBugbait
 }

@@ -19,6 +19,8 @@
 
 #define		VORTIGAUNT_MAX_BEAMS				8
 
+#define SF_VORTIGAUNT_ENEMY	( 1 << 5  )
+
 #define VORTIGAUNT_BEAM_ALL		-1
 #define	VORTIGAUNT_BEAM_ZAP		0
 #define	VORTIGAUNT_BEAM_HEAL	1
@@ -75,7 +77,7 @@ public:
 
 	virtual void		Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
 	virtual void		AlertSound( void );
-	virtual Class_T		Classify ( void ) { return IsGameEndAlly() ? CLASS_PLAYER_ALLY_VITAL : CLASS_VORTIGAUNT; }
+	virtual Class_T		Classify(void);
 	virtual void		HandleAnimEvent( animevent_t *pEvent );
 	virtual Activity	NPC_TranslateActivity( Activity eNewActivity );
 
@@ -261,6 +263,8 @@ private:
 	int				m_iRightHandAttachment;
 	bool			m_bStopLoopingSounds;
 	float			m_flAimDelay;			// Amount of time to suppress aiming
+
+	bool			m_fIsEnemy;
 
 	// used for fading from green vort to blue vort
 	CNetworkVar( bool,  m_bIsBlue );

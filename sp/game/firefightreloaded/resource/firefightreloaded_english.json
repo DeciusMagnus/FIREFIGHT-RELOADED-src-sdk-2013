@@ -137,6 +137,8 @@
             "fr_npc_hgrunt_friendly_1": "Reformed HECU Marine",
             "fr_npc_assassin_1": "Combine Assassin Ace",
             "fr_npc_vortigaunt_hl2": "Classic Vortigaunt",
+            "fr_npc_vortigaunt_hl2_enemy": "Classic Vortigaunt",
+            "fr_npc_vortigaunt_enemy": "Vortigaunt",
             "FIREFIGHTRELOADED_Controls_Title": "FIREFIGHT RELOADED CONTROLS",
             "FIREFIGHTRELOADED_Toggle_Ironsight": "Ironsights/Crossbow Quick-Scope (Toggle)",
             "FIREFIGHTRELOADED_Hold_Ironsight": "Ironsights/Crossbow Quick-Scope (Hold)",

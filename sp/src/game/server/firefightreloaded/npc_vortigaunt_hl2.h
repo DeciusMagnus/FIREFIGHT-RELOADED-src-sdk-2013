@@ -19,6 +19,8 @@
 
 #define		VORTIGAUNT_HL2_MAX_BEAMS				8
 
+#define SF_VORTIGAUNT_HL2_ENEMY	( 1 << 5  )
+
 class CBeam;
 class CSprite;
 
@@ -206,6 +208,7 @@ private:
 	int m_iLeftHandAttachment;
 	int m_iRightHandAttachment;
 	bool				m_bStopLoopingSounds;
+	bool	m_fIsEnemy;
 
 public:
 	DECLARE_DATADESC();
