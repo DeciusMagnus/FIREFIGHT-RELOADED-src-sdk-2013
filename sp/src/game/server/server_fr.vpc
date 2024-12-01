@@ -429,6 +429,8 @@ $Project "Server (FR)"
 				$File	"hl2\npc_assassin.h"
 				$File	"episodic\grenade_hopwire.cpp"
                 $File	"episodic\grenade_hopwire.h"
+                $File	"firefightreloaded\npc_vortigaunt_hl2.cpp"
+                $File	"firefightreloaded\npc_vortigaunt_hl2.h"
 			}
 			
 			$Folder	"HL1 Imported"
