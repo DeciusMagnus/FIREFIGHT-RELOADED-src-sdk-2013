@@ -1582,7 +1582,7 @@ void CNPC_Combine::Event_Killed( const CTakeDamageInfo &info )
 				}
 
 				// In the Citadel we need to dissolve this
-				if ( PlayerHasMegaPhysCannon() )
+				if (PlayerHasMegaPhysCannon())
 				{
 					CBaseCombatWeapon *pWeapon = static_cast<CBaseCombatWeapon *>(pItem);
 

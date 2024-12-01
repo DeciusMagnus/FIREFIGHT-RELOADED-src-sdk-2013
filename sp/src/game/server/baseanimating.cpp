@@ -3447,6 +3447,15 @@ bool CBaseAnimating::Dissolve( const char *pMaterialName, float flStartTime, boo
 	if( bNPCOnly && !(GetFlags() & FL_NPC) )
 		return false;
 
+	// for some reason dissolve is being triggered on entities that don't support dissolving.
+	if (IsEFlagSet(EFL_NO_DISSOLVE))
+		return false;
+
+	// Don't dissolve if we're being held
+	auto phys = VPhysicsGetObject();
+	if (phys != nullptr && phys->GetGameFlags() & FVPHYSICS_PLAYER_HELD)
+		return false;
+
 	// Can't dissolve twice
 	if ( IsDissolving() )
 		return false;
