@@ -266,19 +266,26 @@
 	}
 	"33"
 	{
+		"classname"	"npc_vortigaunt_hl2_enemy"
+		"min_level"	"11"
+		"rare"	"1"
+        "exp"	"75"
+	}
+	"34"
+	{
 		"classname"	"npc_antlionguardian"
 		"min_level"	"12"
 		"rare"	"1"
 		"exp"	"65"
 	}
-	"34"
+	"35"
 	{
 		"classname"	"npc_stalker"
 		"min_level"	"12"
 		"rare"	"1"
 		"exp"	"60"
 	}
-	"35"
+	"36"
 	{
 		"classname"	"npc_bullsquid"
 		"preset"	"1"
@@ -286,7 +293,7 @@
 		"rare"	"1"
 		"exp"	"50"
 	}
-	"36"
+	"37"
 	{
 		"classname"	"npc_combine_ace"
 		"min_level"	"13"
@@ -305,7 +312,7 @@
 			"weapon_gatling"	"3"
 		}
 	}
-	"37"
+	"38"
 	{
 		"classname"	"npc_assassin"
 		"preset"	"1"
@@ -318,19 +325,19 @@
 			"weapon_pistol"	"5"
 		}
 	}
-	"38"
+	"39"
 	{
 		"classname"	"npc_rollermine"
 		"min_level"	"13"
 		"exp"	"65"
 	}
-	"39"
+	"40"
 	{
 		"classname"	"npc_cscanner"
 		"min_level"	"13"
 		"exp"	"25"
 	}
-	"40"
+	"41"
 	{
 		"classname"	"npc_hunter"
 		"preset"	"3"
@@ -338,7 +345,7 @@
 		"rare"	"1"
 		"exp"	"55"
 	}
-	"41"
+	"42"
 	{
 		"classname"	"npc_headcrab_fast"
 		"preset"	"1"
@@ -346,7 +353,7 @@
 		"rare"	"1"
 		"exp"	"45"
 	}
-	"42"
+	"43"
 	{
 		"classname"	"npc_hunter"
 		"preset"	"2"
@@ -354,7 +361,7 @@
 		"rare"	"1"
 		"exp"	"65"
 	}
-	"43"
+	"44"
 	{
 		"classname"	"npc_hunter"
 		"preset"	"1"
@@ -362,7 +369,7 @@
 		"rare"	"1"
 		"exp"	"70"
 	}
-	"44"
+	"45"
 	{
 		"classname"	"npc_combine_ace"
 		"preset"	"1"
@@ -382,7 +389,7 @@
 			"weapon_gatling"	"3"
 		}
 	}
-	"45"
+	"46"
 	{
 		"classname"	"npc_combine_ace_friendly"
 		"min_level"	"15"
@@ -401,7 +408,7 @@
 			"weapon_oicw"	"5"
 		}
 	}
-	"46"
+	"47"
 	{
 		"classname"	"npc_combine_s"
 		"wildcard"	"1"
@@ -410,7 +417,7 @@
 		"rare"	"1"
 		"exp"	"60"
 	}
-	"47"
+	"48"
 	{
 		"classname"	"npc_metropolice"
 		"wildcard"	"1"
@@ -419,7 +426,7 @@
 		"rare"	"1"
 		"exp"	"60"
 	}
-	"48"
+	"49"
 	{
 		"classname"	"npc_hunter"
 		"wildcard"	"1"
@@ -428,7 +435,7 @@
 		"rare"	"1"
 		"exp"	"75"
 	}
-	"49"
+	"50"
 	{
 		"classname"	"npc_combine_ace"
 		"wildcard"	"1"
@@ -448,7 +455,7 @@
 			"weapon_oicw"	"5"
 		}
 	}
-	"50"
+	"51"
 	{
 		"classname"	"npc_hunter"
 		"preset"	"5"
@@ -456,7 +463,7 @@
 		"rare"	"1"
 		"exp"	"75"
 	}
-	"51"
+	"52"
 	{
 		"classname"	"npc_combine_s"
 		"wildcard"	"1"
@@ -464,7 +471,7 @@
 		"min_level"	"19"
 		"exp"	"60"
 	}
-	"52"
+	"53"
 	{
 		"classname"	"npc_metropolice"
 		"wildcard"	"1"
@@ -472,7 +479,7 @@
 		"min_level"	"19"
 		"exp"	"60"
 	}
-	"53"
+	"54"
 	{
 		"classname"	"npc_hunter"
 		"wildcard"	"1"
@@ -480,7 +487,7 @@
 		"min_level"	"19"
 		"exp"	"75"
 	}
-	"54"
+	"55"
 	{
 		"classname"	"npc_combine_ace"
 		"wildcard"	"1"
