@@ -14,8 +14,6 @@
 #include "ai_basenpc.h"
 #include "soundent.h"
 
-
-
 abstract_class CBaseHeadcrab : public CAI_BaseNPC
 {
 	DECLARE_CLASS( CBaseHeadcrab, CAI_BaseNPC );
@@ -290,5 +288,30 @@ private:
 	float m_flNextHopTime;		// Keeps us from hopping too often due to damage.
 };
 
+//=========================================================
+//=========================================================
+// The ever popular chubby classic headcrab
+//=========================================================
+//=========================================================
+class CArmoredHeadcrab : public CBaseHeadcrab
+{
+	DECLARE_CLASS(CArmoredHeadcrab, CBaseHeadcrab);
+
+public:
+	void Precache(void);
+	void Spawn(void);
+
+	float	MaxYawSpeed(void);
+	Activity NPC_TranslateActivity(Activity eNewActivity);
+	float	GetHitgroupDamageMultiplier(int iHitGroup, const CTakeDamageInfo& info);
+
+	void	BiteSound(void);
+	void	PainSound(const CTakeDamageInfo& info);
+	void	DeathSound(const CTakeDamageInfo& info);
+	void	IdleSound(void);
+	void	AlertSound(void);
+	void	AttackSound(void);
+	void	TelegraphSound(void);
+};
 
 #endif // NPC_HEADCRAB_H

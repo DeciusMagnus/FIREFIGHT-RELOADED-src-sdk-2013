@@ -187,6 +187,7 @@ int ACT_HEADCRAB_CEILING_LAND;
 // Skill settings.
 //-----------------------------------------------------------------------------
 ConVar	sk_headcrab_health( "sk_headcrab_health","0");
+ConVar	sk_headcrab_armored_health("sk_headcrab_armored_health", "0");
 ConVar	sk_headcrab_fast_health( "sk_headcrab_fast_health","0");
 ConVar	sk_headcrab_poison_health( "sk_headcrab_poison_health","0");
 ConVar	sk_headcrab_melee_dmg( "sk_headcrab_melee_dmg","0");
@@ -3616,6 +3617,181 @@ void CBlackHeadcrab::ImpactSound( void )
 	}
 }
 
+LINK_ENTITY_TO_CLASS(npc_headcrab_armored, CArmoredHeadcrab);
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CArmoredHeadcrab::Precache(void)
+{
+	PrecacheModel("models/headcrabclassic_armored.mdl");
+
+	PrecacheScriptSound("NPC_HeadCrab.Gib");
+	PrecacheScriptSound("NPC_HeadCrab.Idle");
+	PrecacheScriptSound("NPC_HeadCrab.Alert");
+	PrecacheScriptSound("NPC_HeadCrab.Pain");
+	PrecacheScriptSound("NPC_HeadCrab.Die");
+	PrecacheScriptSound("NPC_HeadCrab.Attack");
+	PrecacheScriptSound("NPC_HeadCrab.Bite");
+	PrecacheScriptSound("NPC_Headcrab.BurrowIn");
+	PrecacheScriptSound("NPC_Headcrab.BurrowOut");
+
+	BaseClass::Precache();
+}
+
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CArmoredHeadcrab::Spawn(void)
+{
+	Precache();
+	SetModel("models/headcrabclassic_armored.mdl");
+
+	BaseClass::Spawn();
+
+	m_iHealth = sk_headcrab_armored_health.GetFloat();
+	m_flBurrowTime = 0.0f;
+	m_bCrawlFromCanister = false;
+	m_bMidJump = false;
+
+	NPCInit();
+	HeadcrabInit();
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+float CArmoredHeadcrab::GetHitgroupDamageMultiplier(int iHitGroup, const CTakeDamageInfo& info)
+{
+	switch (iHitGroup)
+	{
+	case HITGROUP_HEAD:
+		SetBloodColor(BLOOD_COLOR_MECH);
+		return 0.25;
+	default:
+		SetBloodColor(BLOOD_COLOR_GREEN);
+		return BaseClass::GetHitgroupDamageMultiplier(iHitGroup, info);
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+Activity CArmoredHeadcrab::NPC_TranslateActivity(Activity eNewActivity)
+{
+	if (eNewActivity == ACT_WALK)
+		return ACT_RUN;
+
+	return BaseClass::NPC_TranslateActivity(eNewActivity);
+}
+
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CArmoredHeadcrab::IdleSound(void)
+{
+	EmitSound("NPC_HeadCrab.Idle");
+}
+
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CArmoredHeadcrab::AlertSound(void)
+{
+	EmitSound("NPC_HeadCrab.Alert");
+}
+
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CArmoredHeadcrab::PainSound(const CTakeDamageInfo& info)
+{
+	if (IsOnFire() && random->RandomInt(0, HEADCRAB_BURN_SOUND_FREQUENCY) > 0)
+	{
+		// Don't squeak every think when burning.
+		return;
+	}
+
+	EmitSound("NPC_HeadCrab.Pain");
+}
+
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CArmoredHeadcrab::DeathSound(const CTakeDamageInfo& info)
+{
+	if (IsOnFire())
+		return;
+
+	EmitSound("NPC_HeadCrab.Die");
+}
+
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CArmoredHeadcrab::TelegraphSound(void)
+{
+	//FIXME: Need a real one
+	EmitSound("NPC_HeadCrab.Alert");
+}
+
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CArmoredHeadcrab::AttackSound(void)
+{
+	EmitSound("NPC_Headcrab.Attack");
+}
+
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CArmoredHeadcrab::BiteSound(void)
+{
+	EmitSound("NPC_HeadCrab.Bite");
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+// Input  :
+// Output : 
+//-----------------------------------------------------------------------------
+float CArmoredHeadcrab::MaxYawSpeed(void)
+{
+	switch (GetActivity())
+	{
+	case ACT_IDLE:
+		return 30;
+
+	case ACT_RUN:
+	case ACT_WALK:
+		return 20;
+
+	case ACT_TURN_LEFT:
+	case ACT_TURN_RIGHT:
+		return 15;
+
+	case ACT_RANGE_ATTACK1:
+	{
+		const Task_t* pCurTask = GetTask();
+		if (pCurTask && pCurTask->iTask == TASK_HEADCRAB_JUMP_FROM_CANISTER)
+			return 15;
+	}
+	return 30;
+
+	default:
+		return 30;
+	}
+
+	return BaseClass::MaxYawSpeed();
+}
 
 //-----------------------------------------------------------------------------
 //

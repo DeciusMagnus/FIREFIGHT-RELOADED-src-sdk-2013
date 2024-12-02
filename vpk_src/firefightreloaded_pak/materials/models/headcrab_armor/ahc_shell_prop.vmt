@@ -1,0 +1,18 @@
+VertexLitGeneric
+{
+	$basetexture		"models/headcrab_armor/ahc_shell_prop_albedo"
+	$bumpmap			"models/headcrab_armor/ahc_shell_prop_bump"
+
+	$envmap						"env_cubemap"
+	$envmaptint					"[0 0 0]"
+	$envmapcontrast				1.0
+	"$normalmapalphaenvmapmask" 1
+	$phongwarptexture 			"models/headcrab_armor/warp"
+	"$nodecal" "1"
+	"$model" "1"
+
+	$phong 1
+	$phongexponenttexture		"models/headcrab_armor/ahc_shell_prop_phongexp"
+	$phongboost					5.0
+	"$phongfresnelranges"   "[1 .7 .3]"
+}
