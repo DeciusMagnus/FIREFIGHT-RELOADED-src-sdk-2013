@@ -71,7 +71,7 @@ CON_COMMAND(fr_version, "")
 	Msg(verString);
 }
 
-CON_COMMAND(leaksun, "")
+CON_COMMAND(leaksun, "Sets fullbright to 1 and spams \"THE SUN IS LEAKING\" in the console repeatedly.")
 {
 	engine->ClientCmd("mat_fullbright 1\n");
 	Warning("THE SUN IS LEAKING.\nTHE SUN IS LEAKING.\nTHE SUN IS LEAKING.\nTHE SUN IS LEAKING.\nTHE SUN IS LEAKING.\nTHE SUN IS LEAKING.\nTHE SUN IS LEAKING.\nTHE SUN IS LEAKING.\nTHE SUN IS LEAKING.\nTHE SUN IS LEAKING.\nTHE SUN IS LEAKING.\n\n\n\n\n\n\nRestore the lighting with mat_fullbright 0\n");
