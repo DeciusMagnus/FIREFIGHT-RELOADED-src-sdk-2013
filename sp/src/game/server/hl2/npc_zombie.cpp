@@ -351,28 +351,31 @@ float CZombie::GetHitgroupDamageMultiplier(int iHitGroup, const CTakeDamageInfo&
 	{
 		case HITGROUP_HEAD:
 		{
-			SetBloodColor(BLOOD_COLOR_MECH);
-			if (info.GetDamageType() & DMG_BUCKSHOT)
+			if (m_bArmored)
 			{
-				float flDist = FLT_MAX;
-
-				if (info.GetAttacker())
+				SetBloodColor(BLOOD_COLOR_MECH);
+				if (info.GetDamageType() & DMG_BUCKSHOT)
 				{
-					flDist = (GetAbsOrigin() - info.GetAttacker()->GetAbsOrigin()).Length();
-				}
+					float flDist = FLT_MAX;
 
-				if (flDist <= ZOMBIE_BUCKSHOT_TRIPLE_DAMAGE_DIST)
-				{
-					return 0.75f;
+					if (info.GetAttacker())
+					{
+						flDist = (GetAbsOrigin() - info.GetAttacker()->GetAbsOrigin()).Length();
+					}
+
+					if (flDist <= ZOMBIE_BUCKSHOT_TRIPLE_DAMAGE_DIST)
+					{
+						return 0.75f;
+					}
+					else
+					{
+						return 0.25;
+					}
 				}
 				else
 				{
 					return 0.25;
 				}
-			}
-			else
-			{
-				return 0.25;
 			}
 		}
 	}

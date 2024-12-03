@@ -325,7 +325,9 @@ float CNPC_Zombine::GetHitgroupDamageMultiplier(int iHitGroup, const CTakeDamage
 {
 	switch (iHitGroup)
 	{
-		case HITGROUP_HEAD:
+	case HITGROUP_HEAD:
+		{
+		if (m_bArmored)
 		{
 			SetBloodColor(BLOOD_COLOR_MECH);
 			if (info.GetDamageType() & DMG_BUCKSHOT)
@@ -350,6 +352,7 @@ float CNPC_Zombine::GetHitgroupDamageMultiplier(int iHitGroup, const CTakeDamage
 			{
 				return 0.25;
 			}
+		}
 		}
 	}
 
