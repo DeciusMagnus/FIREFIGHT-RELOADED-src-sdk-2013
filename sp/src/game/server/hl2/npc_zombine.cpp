@@ -74,6 +74,8 @@ int AE_ZOMBINE_PULLPIN;
 extern bool IsAlyxInDarknessMode();
 
 ConVar	sk_zombie_soldier_health( "sk_zombie_soldier_health","0");
+extern ConVar sk_zombie_armored;
+extern ConVar sk_zombie_armored_rarity;
 
 float g_flZombineGrenadeTimes = 0;
 
@@ -115,6 +117,8 @@ public:
 	virtual void TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator );
 	virtual void RunTask( const Task_t *pTask );
 	virtual int  MeleeAttack1Conditions ( float flDot, float flDist );
+
+	virtual float GetHitgroupDamageMultiplier(int iHitGroup, const CTakeDamageInfo& info);
 
 	virtual bool ShouldBecomeTorso( const CTakeDamageInfo &info, float flDamageThreshold );
 
@@ -172,6 +176,8 @@ private:
 	
 	int		m_iGrenadeCount;
 
+	bool	m_bArmored;
+
 	EHANDLE	m_hGrenade;
 
 protected:
@@ -188,6 +194,7 @@ BEGIN_DATADESC( CNPC_Zombine )
 	DEFINE_FIELD( m_hGrenade, FIELD_EHANDLE ),
 	DEFINE_FIELD( m_flGrenadePullTime, FIELD_TIME ),
 	DEFINE_FIELD( m_iGrenadeCount, FIELD_INTEGER ),
+	DEFINE_FIELD(m_bArmored, FIELD_BOOLEAN),
 	DEFINE_INPUTFUNC( FIELD_VOID,	"StartSprint", InputStartSprint ),
 	DEFINE_INPUTFUNC( FIELD_VOID,	"PullGrenade", InputPullGrenade ),
 END_DATADESC()
@@ -204,6 +211,17 @@ void CNPC_Zombine::Spawn( void )
 	Precache();
 
 	m_fIsTorso = false;
+
+	int rare = random->RandomInt(0, sk_zombie_armored_rarity.GetInt());
+	if (sk_zombie_armored.GetBool() && (g_pGameRules->GetSkillLevel() == SKILL_NIGHTMARE || rare == sk_zombie_armored_rarity.GetInt()))
+	{
+		m_bArmored = true;
+	}
+
+	if (m_bArmored)
+	{
+		m_bNoHeadshotGore = true;
+	}
 	
 #ifdef HL2_EPISODIC
 	SetBloodColor( BLOOD_COLOR_ZOMBIE );
@@ -260,6 +278,7 @@ void CNPC_Zombine::SetZombieModel( void )
 	SetHullType( HULL_HUMAN );
 
 	SetBodygroup( ZOMBIE_BODYGROUP_HEADCRAB, !IsHeadless() );
+	SetBodygroup(ZOMBIE_BODYGROUP_HEADCRAB_SHELL, (!IsHeadless() && m_bArmored));
 
 	SetHullSizeNormal( true );
 	SetDefaultEyeOffset();
@@ -299,6 +318,47 @@ void CNPC_Zombine::PrescheduleThink( void )
 	}
 
 	BaseClass::PrescheduleThink();
+}
+
+#define ZOMBIE_BUCKSHOT_TRIPLE_DAMAGE_DIST	96.0f // Triple damage from buckshot at 8 feet (headshot only)
+float CNPC_Zombine::GetHitgroupDamageMultiplier(int iHitGroup, const CTakeDamageInfo& info)
+{
+	switch (iHitGroup)
+	{
+		case HITGROUP_HEAD:
+		{
+			SetBloodColor(BLOOD_COLOR_MECH);
+			if (info.GetDamageType() & DMG_BUCKSHOT)
+			{
+				float flDist = FLT_MAX;
+
+				if (info.GetAttacker())
+				{
+					flDist = (GetAbsOrigin() - info.GetAttacker()->GetAbsOrigin()).Length();
+				}
+
+				if (flDist <= ZOMBIE_BUCKSHOT_TRIPLE_DAMAGE_DIST)
+				{
+					return 0.75f;
+				}
+				else
+				{
+					return 0.25;
+				}
+			}
+			else
+			{
+				return 0.25;
+			}
+		}
+	}
+
+#ifdef HL2_EPISODIC
+	SetBloodColor(BLOOD_COLOR_ZOMBIE);
+#else
+	SetBloodColor(BLOOD_COLOR_GREEN);
+#endif // HL2_EPISODIC
+	return BaseClass::GetHitgroupDamageMultiplier(iHitGroup, info);
 }
 
 void CNPC_Zombine::OnScheduleChange( void )
@@ -903,6 +963,9 @@ void CNPC_Zombine::AttackSound( void )
 //-----------------------------------------------------------------------------
 const char *CNPC_Zombine::GetHeadcrabModel( void )
 {
+	if (m_bArmored)
+		return "models/headcrabclassic_armored.mdl";
+
 	return "models/headcrabclassic.mdl";
 }
 
@@ -937,6 +1000,9 @@ void CNPC_Zombine::MoanSound( envelopePoint_t *pEnvelope, int iEnvelopeSize )
 //-----------------------------------------------------------------------------
 const char *CNPC_Zombine::GetHeadcrabClassname( void )
 {
+	if (m_bArmored)
+		return "npc_headcrab_armored";
+
 	return "npc_headcrab";
 }
 

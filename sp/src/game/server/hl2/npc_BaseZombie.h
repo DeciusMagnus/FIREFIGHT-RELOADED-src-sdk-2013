@@ -36,6 +36,7 @@ extern int AE_ZOMBIE_GET_UP;
 extern int AE_ZOMBIE_POUND;
 
 #define ZOMBIE_BODYGROUP_HEADCRAB	1	// The crab on our head
+#define ZOMBIE_BODYGROUP_HEADCRAB_SHELL	2	// The crab on our head
 
 // Pass these to claw attack so we know where to draw the blood.
 #define ZOMBIE_BLOOD_LEFT_HAND		0
@@ -238,7 +239,7 @@ public:
 public:
 	CAI_ActBusyBehavior		m_ActBusyBehavior;
 
-
+	bool m_bNoHeadshotGore;
 
 protected:
 

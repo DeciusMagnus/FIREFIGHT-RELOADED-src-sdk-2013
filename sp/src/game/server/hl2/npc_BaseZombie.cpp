@@ -221,6 +221,7 @@ BEGIN_DATADESC( CNPC_BaseZombie )
 	DEFINE_FIELD( m_iMoanSound, FIELD_INTEGER ),
 	DEFINE_FIELD( m_hObstructor, FIELD_EHANDLE ),
 	DEFINE_FIELD( m_bIsSlumped, FIELD_BOOLEAN ),
+	DEFINE_FIELD(m_bNoHeadshotGore, FIELD_BOOLEAN ),
 
 END_DATADESC()
 
@@ -659,7 +660,7 @@ float CNPC_BaseZombie::GetHitgroupDamageMultiplier( int iHitGroup, const CTakeDa
 	{
 	case HITGROUP_HEAD:
 		{
-			if (!(g_Language.GetInt() == LANGUAGE_GERMAN || UTIL_IsLowViolence()) && g_fr_headshotgore.GetBool())
+			if (!(g_Language.GetInt() == LANGUAGE_GERMAN || UTIL_IsLowViolence()) && g_fr_headshotgore.GetBool() && !m_bNoHeadshotGore)
 			{
 				if (!IsHeadless() && (info.GetDamageType() & (DMG_SNIPER | DMG_BUCKSHOT)) && !(info.GetDamageType() & DMG_NEVERGIB) && !FClassnameIs(this, "npc_poisonzombie"))
 				{
@@ -1121,12 +1122,18 @@ void CNPC_BaseZombie::DieChopped( const CTakeDamageInfo &info)
 
 	forceVector += CalcDamageForceVector( info );
 
-	if( !IsHeadless() && !bSquashed && !(info.GetDamageType() & DMG_BLAST))
+	if( !IsHeadless() && !bSquashed)
 	{
 		int randInt = random->RandomInt(0, 1);
 		bool SpawnCrabRagdoll = (randInt == 0 ? true : false);
+		
+		if ((info.GetDamageType() & DMG_BLAST))
+		{
+			SpawnCrabRagdoll = true;
+		}
+
 		// Drop a live crab half of the time.
-		ReleaseHeadcrab(EyePosition(), forceVector * 0.005, true, SpawnCrabRagdoll, false);
+		ReleaseHeadcrab(EyePosition(), forceVector * 0.005, true, false, SpawnCrabRagdoll, false);
 	}
 
 	float flFadeTime = 0.0;
@@ -1781,6 +1788,7 @@ void CNPC_BaseZombie::Spawn( void )
 void CNPC_BaseZombie::Precache( void )
 {
 	UTIL_PrecacheOther( GetHeadcrabClassname() );
+	UTIL_PrecacheOther("npc_headcrab_armored");
 
 	PrecacheScriptSound( "E3_Phystown.Slicer" );
 	PrecacheScriptSound( "NPC_BaseZombie.PoundDoor" );

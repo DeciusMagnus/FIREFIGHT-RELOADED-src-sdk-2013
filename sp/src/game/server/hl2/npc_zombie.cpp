@@ -26,6 +26,8 @@
 
 ConVar	sk_zombie_health( "sk_zombie_health","0");
 ConVar	sk_zombie_raremoans("sk_zombie_raremoans", "5", FCVAR_CHEAT);
+ConVar	sk_zombie_armored("sk_zombie_armored", "1", FCVAR_ARCHIVE);
+ConVar	sk_zombie_armored_rarity("sk_zombie_armored_rarity", "5", FCVAR_ARCHIVE);
 
 envelopePoint_t envZombieMoanVolumeFast[] =
 {
@@ -111,6 +113,8 @@ public:
 
 	Activity NPC_TranslateActivity( Activity newActivity );
 
+	virtual float GetHitgroupDamageMultiplier(int iHitGroup, const CTakeDamageInfo& info);
+
 	void OnStateChange( NPC_STATE OldState, NPC_STATE NewState );
 
 	void StartTask( const Task_t *pTask );
@@ -163,6 +167,8 @@ private:
 	
 	CRandSimTimer 		 m_DurationDoorBash;
 	CSimTimer 	  		 m_NextTimeToStartDoorBash;
+
+	bool				 m_bArmored;
 
 	Vector				 m_vPositionCharged;
 };
@@ -231,6 +237,7 @@ BEGIN_DATADESC( CZombie )
 	DEFINE_EMBEDDED( m_DurationDoorBash ),
 	DEFINE_EMBEDDED( m_NextTimeToStartDoorBash ),
 	DEFINE_FIELD( m_vPositionCharged, FIELD_POSITION_VECTOR ),
+	DEFINE_FIELD(m_bArmored, FIELD_BOOLEAN),
 
 END_DATADESC()
 
@@ -278,11 +285,23 @@ void CZombie::Spawn( void )
 	if( FClassnameIs( this, "npc_zombie" ) )
 	{
 		m_fIsTorso = false;
+
+		int rare = random->RandomInt(0, sk_zombie_armored_rarity.GetInt());
+		if (sk_zombie_armored.GetBool() && (g_pGameRules->GetSkillLevel() == SKILL_NIGHTMARE || rare == sk_zombie_armored_rarity.GetInt()))
+		{
+			m_bArmored = true;
+		}
 	}
 	else
 	{
 		// This was placed as an npc_zombie_torso
 		m_fIsTorso = true;
+		m_bArmored = false;
+	}
+
+	if (m_bArmored)
+	{
+		m_bNoHeadshotGore = true;
 	}
 
 #ifdef HL2_EPISODIC
@@ -323,6 +342,47 @@ void CZombie::PrescheduleThink( void )
   	}
 
 	BaseClass::PrescheduleThink();
+}
+
+#define ZOMBIE_BUCKSHOT_TRIPLE_DAMAGE_DIST	96.0f // Triple damage from buckshot at 8 feet (headshot only)
+float CZombie::GetHitgroupDamageMultiplier(int iHitGroup, const CTakeDamageInfo& info)
+{
+	switch (iHitGroup)
+	{
+		case HITGROUP_HEAD:
+		{
+			SetBloodColor(BLOOD_COLOR_MECH);
+			if (info.GetDamageType() & DMG_BUCKSHOT)
+			{
+				float flDist = FLT_MAX;
+
+				if (info.GetAttacker())
+				{
+					flDist = (GetAbsOrigin() - info.GetAttacker()->GetAbsOrigin()).Length();
+				}
+
+				if (flDist <= ZOMBIE_BUCKSHOT_TRIPLE_DAMAGE_DIST)
+				{
+					return 0.75f;
+				}
+				else
+				{
+					return 0.25;
+				}
+			}
+			else
+			{
+				return 0.25;
+			}
+		}
+	}
+
+#ifdef HL2_EPISODIC
+	SetBloodColor(BLOOD_COLOR_ZOMBIE);
+#else
+	SetBloodColor(BLOOD_COLOR_GREEN);
+#endif // HL2_EPISODIC
+	return BaseClass::GetHitgroupDamageMultiplier(iHitGroup, info);
 }
 
 //-----------------------------------------------------------------------------
@@ -427,7 +487,7 @@ void CZombie::AlertSound( void )
 const char *CZombie::GetMoanSound( int nSound )
 {
 	int raremoanrandom = random->RandomInt(0, sk_zombie_raremoans.GetInt());
-	if (raremoanrandom == 0)
+	if (raremoanrandom == sk_zombie_raremoans.GetInt())
 	{
 		return pMoanRareSounds[nSound % ARRAYSIZE(pMoanRareSounds)];
 	}
@@ -471,6 +531,9 @@ void CZombie::AttackSound( void )
 //-----------------------------------------------------------------------------
 const char *CZombie::GetHeadcrabClassname( void )
 {
+	if (m_bArmored)
+		return "npc_headcrab_armored";
+
 	return "npc_headcrab";
 }
 
@@ -478,6 +541,9 @@ const char *CZombie::GetHeadcrabClassname( void )
 //-----------------------------------------------------------------------------
 const char *CZombie::GetHeadcrabModel( void )
 {
+	if (m_bArmored)
+		return "models/headcrabclassic_armored.mdl";
+
 	return "models/headcrabclassic.mdl";
 }
 
@@ -515,6 +581,7 @@ void CZombie::SetZombieModel( void )
 	}
 
 	SetBodygroup( ZOMBIE_BODYGROUP_HEADCRAB, !IsHeadless() );
+	SetBodygroup(ZOMBIE_BODYGROUP_HEADCRAB_SHELL, (!IsHeadless() && m_bArmored && !m_fIsTorso));
 
 	SetHullSizeNormal( true );
 	SetDefaultEyeOffset();
@@ -556,6 +623,9 @@ bool CZombie::ShouldBecomeTorso( const CTakeDamageInfo &info, float flDamageThre
 		// velocities because the pieces weigh less than the whole.
 		return false;
 	}
+
+	if (m_bArmored)
+		return false;
 
 	return BaseClass::ShouldBecomeTorso( info, flDamageThreshold );
 }
