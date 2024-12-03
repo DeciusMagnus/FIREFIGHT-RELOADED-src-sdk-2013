@@ -334,6 +334,8 @@
             "GameUI_CombinePrisonGrenades": "Allow Combine Prison Guards to spawn with frag grenades.",
             "GameUI_CombineEliteGrenades": "Allow Combine Elites to spawn with frag grenades.",
             "GameUI_CombineAceGrenades": "Allow Combine Aces to spawn with frag grenades.",
+            "GameUI_ZombieArmor": "Enable Armored Headcrab Zombies",
+            "GameUI_ZombieArmorRarity": "Rarity of Armored Headcrab Zombies outside of NIGHTMARE",
             "GameUI_StoreSoundBuy": "Toggle Store sound for successful purchases",
             "GameUI_StoreSoundDeny": "Toggle Store sound for failed purchases",
             "GameUI_PlayerDamageSounds": "Toggle sounds when you're taking damage",

@@ -918,6 +918,34 @@
 				}
 			}
             
+            "Armored"
+			{
+				"text"			"#GameUI_ZombieArmor"
+				"type"			"wheelywheel"
+				"advanced"		"1"
+				"convar"		"sk_zombie_armored"
+
+				"options"
+				{
+					"0"		"#gameui_disabled"
+					"1"		"#gameui_enabled"
+				}
+			}
+            
+            "ArmoredRarity"
+			{
+				"text"			"#GameUI_ZombieArmorRarity"
+				"type"			"slideyslide"
+				"convar"		"sk_zombie_armored_rarity"
+				"advanced"		"1"
+
+				"min"			"0"
+				"max"			"20"
+				"step"			"1"
+
+				"textprecision" "2"
+			}
+            
             "SayCheese"
 			{
 				"text"			"#GameUI_ScannersBlindPlayer"
