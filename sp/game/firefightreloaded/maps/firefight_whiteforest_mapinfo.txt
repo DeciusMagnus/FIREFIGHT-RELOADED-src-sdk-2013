@@ -1,0 +1,4 @@
+"firefight_whiteforest"
+{
+    "MapSpecificMaxSpawnerDistance"	"4096"
+}
