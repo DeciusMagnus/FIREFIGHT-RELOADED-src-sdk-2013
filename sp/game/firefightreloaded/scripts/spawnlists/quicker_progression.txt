@@ -43,6 +43,13 @@
 		"rare"	"1"
 		"exp"	"75"
 	}
+    "7"
+	{
+		"classname"	"npc_zombie_armored"
+		"min_level"	"3"
+		"exp"	"75"
+		"rare"	"1"
+	}
 	"7"
 	{
 		"classname"	"npc_metropolice"
@@ -192,6 +199,13 @@
 	{
 		"classname"	"npc_zombine"
 		"min_level"	"6"
+		"exp"	"75"
+	}
+    "28"
+	{
+		"classname"	"npc_zombine_armored"
+		"min_level"	"7"
+		"rare"	"1"
 		"exp"	"75"
 	}
 	"27"
