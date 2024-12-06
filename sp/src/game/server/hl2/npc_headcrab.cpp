@@ -943,11 +943,23 @@ void CBaseHeadcrab::LeapTouch( CBaseEntity *pOther )
 
 					if (Kamikaze)
 					{
-						ExplosionCreate(GetAbsOrigin(), GetAbsAngles(), this, 50, 100, true, 1000, false, false);
-						if (pOther->IsPlayer())
+						if (pOther->IsPlayer() || pOther->IsNPC())
 						{
-							CBasePlayer* pPlayer = (CBasePlayer*)pOther;
-							UTIL_ScreenShake(pPlayer->GetAbsOrigin(), 16.0f, 150.0, 1.0, 400.0f, SHAKE_START);
+							ExplosionCreate(GetAbsOrigin(), GetAbsAngles(), this, 50, 100, true, 1000, false, false);
+
+							if (pOther->IsPlayer())
+							{
+								CBasePlayer* pPlayer = (CBasePlayer*)pOther;
+								UTIL_ScreenShake(pPlayer->GetAbsOrigin(), 16.0f, 150.0, 1.0, 400.0f, SHAKE_START);
+							}
+
+							// Kill!
+							CTakeDamageInfo info;
+							info.SetDamage(GetHealth());
+							info.SetAttacker(this);
+							info.SetInflictor(this);
+							info.SetDamageType(DMG_BLAST);
+							TakeDamage(info);
 						}
 					}
 					else

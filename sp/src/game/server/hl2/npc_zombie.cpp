@@ -26,7 +26,7 @@
 
 ConVar	sk_zombie_health( "sk_zombie_health","0");
 ConVar	sk_zombie_raremoans("sk_zombie_raremoans", "5", FCVAR_CHEAT);
-ConVar	sk_zombie_armored("sk_zombie_armored", "1", FCVAR_ARCHIVE);
+ConVar	sk_zombie_armored("sk_zombie_armored", "0", FCVAR_ARCHIVE);
 ConVar	sk_zombie_armored_rarity("sk_zombie_armored_rarity", "5", FCVAR_ARCHIVE);
 
 envelopePoint_t envZombieMoanVolumeFast[] =
@@ -174,6 +174,7 @@ private:
 };
 
 LINK_ENTITY_TO_CLASS( npc_zombie, CZombie );
+LINK_ENTITY_TO_CLASS( npc_zombie_armored, CZombie);
 LINK_ENTITY_TO_CLASS( npc_zombie_torso, CZombie );
 
 //---------------------------------------------------------
@@ -282,12 +283,12 @@ void CZombie::Spawn( void )
 {
 	Precache();
 
-	if( FClassnameIs( this, "npc_zombie" ) )
+	if( FClassnameIs( this, "npc_zombie" ) || FClassnameIs(this, "npc_zombie_armored"))
 	{
 		m_fIsTorso = false;
 
 		int rare = random->RandomInt(0, sk_zombie_armored_rarity.GetInt());
-		if (sk_zombie_armored.GetBool() && (g_pGameRules->GetSkillLevel() == SKILL_NIGHTMARE || rare == sk_zombie_armored_rarity.GetInt()))
+		if (FClassnameIs(this, "npc_zombie_armored") || (sk_zombie_armored.GetBool() && (g_pGameRules->GetSkillLevel() == SKILL_NIGHTMARE || rare == sk_zombie_armored_rarity.GetInt())))
 		{
 			m_bArmored = true;
 		}

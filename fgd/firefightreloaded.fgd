@@ -182,6 +182,16 @@
 	output OnPlayerUse(void) : "Fires when a player +USEs the vortigaunt."
 ]
 
+@NPCClass base(BaseNPC) studio("models/Zombie/Classic.mdl") = npc_zombie_armored : "Zombie (Armored)"
+[
+]
+
+@NPCClass base(BaseNPC) studio("models/Zombie/zombie_soldier.mdl") = npc_zombine_armored : "Combine Soldier Zombie (Armored)"
+[
+	input StartSprint(void) : "Forces the zombine to sprint."
+	input PullGrenade(void) : "Forces the zombine to pull a grenade."
+]
+
 @PointClass base(Item) studio("models/items/grenadeammo.mdl") = item_ammo_grenade : "Frag Grenade (ammo)" []
 @PointClass base(Weapon) studio("models/weapons/w_sniper_new.mdl") = weapon_sniper_rifle : "Sniper Rifle" []
 @PointClass base(Weapon) studio("models/weapons/w_gauss.mdl") = weapon_gauss : "Tau Cannon" []

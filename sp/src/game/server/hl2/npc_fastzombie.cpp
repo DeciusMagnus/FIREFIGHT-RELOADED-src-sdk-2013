@@ -26,6 +26,7 @@
 #include "props.h"
 #include "physics_npc_solver.h"
 #include "physics_prop_ragdoll.h"
+#include "explode.h"
 
 #ifdef HL2_EPISODIC
 #include "episodic/ai_behavior_passenger_zombie.h"
@@ -217,6 +218,8 @@ public:
 
 	Activity NPC_TranslateActivity( Activity baseAct );
 
+	CBaseEntity* ClawAttack(float flDist, int iDamage, QAngle& qaViewPunch, Vector& vecVelocityPunch, int BloodOrigin);
+	void TouchDamage(void);
 	void LeapAttackTouch( CBaseEntity *pOther );
 	void ClimbTouch( CBaseEntity *pOther );
 
@@ -1473,6 +1476,67 @@ Activity CFastZombie::NPC_TranslateActivity( Activity baseAct )
 	return BaseClass::NPC_TranslateActivity( baseAct );
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: Look in front and see if the claw hit anything.
+//
+// Input  :	flDist				distance to trace		
+//			iDamage				damage to do if attack hits
+//			vecViewPunch		camera punch (if attack hits player)
+//			vecVelocityPunch	velocity punch (if attack hits player)
+//
+// Output : The entity hit by claws. NULL if nothing.
+//-----------------------------------------------------------------------------
+CBaseEntity* CFastZombie::ClawAttack(float flDist, int iDamage, QAngle& qaViewPunch, Vector& vecVelocityPunch, int BloodOrigin)
+{
+	CBaseEntity *ent = BaseClass::ClawAttack(flDist, iDamage, qaViewPunch, vecVelocityPunch, BloodOrigin);
+
+	if (ent && ent->m_takedamage != DAMAGE_NO)
+	{
+		if (m_pAttributes != NULL)
+		{
+			bool Kamikaze = m_pAttributes->GetBool("kamikaze");
+
+			if (Kamikaze)
+			{
+				if (ent->IsPlayer() || ent->IsNPC())
+				{
+					ExplosionCreate(GetAbsOrigin(), GetAbsAngles(), this, 50, 100, true, 2000, false, false);
+
+					if (ent->IsPlayer())
+					{
+						CBasePlayer* pPlayer = (CBasePlayer*)ent;
+						UTIL_ScreenShake(pPlayer->GetAbsOrigin(), 16.0f, 150.0, 1.0, 400.0f, SHAKE_START);
+					}
+
+					// Kill!
+					CTakeDamageInfo info;
+					info.SetDamage(GetHealth());
+					info.SetAttacker(this);
+					info.SetInflictor(this);
+					info.SetDamageType(DMG_BLAST);
+					TakeDamage(info);;
+				}
+			}
+		}
+	}
+
+	return ent;
+}
+
+void CFastZombie::TouchDamage(void)
+{
+	// Stop the zombie and knock the player back
+	Vector vecNewVelocity(0, 0, GetAbsVelocity().z);
+	SetAbsVelocity(vecNewVelocity);
+
+	Vector forward;
+	AngleVectors(GetLocalAngles(), &forward);
+	forward *= 500;
+	QAngle qaPunch(15, random->RandomInt(-5, 5), random->RandomInt(-5, 5));
+
+	ClawAttack(GetClawAttackRange(), 5, qaPunch, forward, ZOMBIE_BLOOD_BOTH_HANDS);
+}
+
 //---------------------------------------------------------
 //---------------------------------------------------------
 void CFastZombie::LeapAttackTouch( CBaseEntity *pOther )
@@ -1483,16 +1547,43 @@ void CFastZombie::LeapAttackTouch( CBaseEntity *pOther )
 		return;
 	}
 
-	// Stop the zombie and knock the player back
-	Vector vecNewVelocity( 0, 0, GetAbsVelocity().z );
-	SetAbsVelocity( vecNewVelocity );
+	if (pOther->m_takedamage != DAMAGE_NO)
+	{
+		if (m_pAttributes != NULL)
+		{
+			bool Kamikaze = m_pAttributes->GetBool("kamikaze");
 
-	Vector forward;
-	AngleVectors( GetLocalAngles(), &forward );
-	forward *= 500;
-	QAngle qaPunch( 15, random->RandomInt(-5,5), random->RandomInt(-5,5) );
-	
-	ClawAttack( GetClawAttackRange(), 5, qaPunch, forward, ZOMBIE_BLOOD_BOTH_HANDS );
+			if (Kamikaze)
+			{
+				if (pOther->IsPlayer() || pOther->IsNPC())
+				{
+					ExplosionCreate(GetAbsOrigin(), GetAbsAngles(), this, 50, 100, true, 2000, false, false);
+
+					if (pOther->IsPlayer())
+					{
+						CBasePlayer* pPlayer = (CBasePlayer*)pOther;
+						UTIL_ScreenShake(pPlayer->GetAbsOrigin(), 16.0f, 150.0, 1.0, 400.0f, SHAKE_START);
+					}
+
+					// Kill!
+					CTakeDamageInfo info;
+					info.SetDamage(GetHealth());
+					info.SetAttacker(this);
+					info.SetInflictor(this);
+					info.SetDamageType(DMG_BLAST);
+					TakeDamage(info);
+				}
+			}
+			else
+			{
+				TouchDamage();
+			}
+		}
+		else
+		{
+			TouchDamage();
+		}
+	}
 
 	SetTouch( NULL );
 }
@@ -1818,6 +1909,16 @@ void CFastZombie::OnStateChange( NPC_STATE OldState, NPC_STATE NewState )
 //-----------------------------------------------------------------------------
 void CFastZombie::Event_Killed( const CTakeDamageInfo &info )
 {
+	if (m_pAttributes != NULL)
+	{
+		bool Kamikaze = m_pAttributes->GetBool("kamikaze");
+
+		if (Kamikaze)
+		{
+			ExplosionCreate(GetAbsOrigin(), GetAbsAngles(), this, 1, 10, false, 500, false, false);
+		}
+	}
+
 	// Shut up my screaming sounds.
 	CPASAttenuationFilter filter( this );
 	EmitSound( filter, entindex(), "NPC_FastZombie.NoSound" );

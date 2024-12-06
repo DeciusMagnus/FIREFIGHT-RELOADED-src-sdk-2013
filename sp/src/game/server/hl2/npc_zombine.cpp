@@ -186,6 +186,7 @@ protected:
 };
 
 LINK_ENTITY_TO_CLASS( npc_zombine, CNPC_Zombine );
+LINK_ENTITY_TO_CLASS(npc_zombine_armored, CNPC_Zombine);
 
 BEGIN_DATADESC( CNPC_Zombine )
 	DEFINE_FIELD( m_flSprintTime, FIELD_TIME ),
@@ -213,7 +214,8 @@ void CNPC_Zombine::Spawn( void )
 	m_fIsTorso = false;
 
 	int rare = random->RandomInt(0, sk_zombie_armored_rarity.GetInt());
-	if (sk_zombie_armored.GetBool() && (g_pGameRules->GetSkillLevel() == SKILL_NIGHTMARE || rare == sk_zombie_armored_rarity.GetInt()))
+	if (FClassnameIs(this, "npc_zombine_armored") || 
+		(sk_zombie_armored.GetBool() && (g_pGameRules->GetSkillLevel() == SKILL_NIGHTMARE || rare == sk_zombie_armored_rarity.GetInt())))
 	{
 		m_bArmored = true;
 	}

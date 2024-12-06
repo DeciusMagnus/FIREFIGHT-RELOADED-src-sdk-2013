@@ -166,6 +166,11 @@
 				"font"		"WeaponIconsKillFeed"
 				"character"	"4"
 		}
+		"env_explosion"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"7"
+		}
 		"npc_zombine"
 		{
 				"font"		"WeaponIconsKillFeed3"
