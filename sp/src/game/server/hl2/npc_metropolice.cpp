@@ -2760,6 +2760,9 @@ void CNPC_MetroPolice::IdleSound( void )
 //-----------------------------------------------------------------------------
 void CNPC_MetroPolice::PainSound( const CTakeDamageInfo &info )
 {
+	if (!IsAlive())
+		return;
+
 	if ( gpGlobals->curtime < m_flNextPainSoundTime )
 		return;
 

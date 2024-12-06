@@ -3154,6 +3154,9 @@ void CNPC_Combine::SpeakSentence( int sentenceType )
 //=========================================================
 void CNPC_Combine::PainSound (const CTakeDamageInfo& info)
 {
+	if (!IsAlive())
+		return;
+
 	if (IsOnFire())
 		return;
 
