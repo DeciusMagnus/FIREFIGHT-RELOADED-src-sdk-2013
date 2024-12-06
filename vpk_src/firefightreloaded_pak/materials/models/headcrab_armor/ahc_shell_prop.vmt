@@ -6,13 +6,12 @@ VertexLitGeneric
 	$envmap						"env_cubemap"
 	$envmaptint					"[0.1 0.1 0.1]"
 	$envmapcontrast				1.0
-	$envmapmask					"models/headcrab_armor/ahc_shell_prop_envmap"
 	$envmapfresnel				1
 
 	$phong 1
 	$phongexponenttexture		"models/headcrab_armor/ahc_shell_prop_phongexp"
-	$phongboost					30.0
+	$phongboost					40.0
 	//$phongfresnelranges			"[1 3 8]"
-    "$phongfresnelranges"   "[1 .7 .3]"
+   	 "$phongfresnelranges"   "[1 .7 .3]"
 	"$phongwarptexture"  "models/headcrab_armor/ahc_iridescence"
 }
