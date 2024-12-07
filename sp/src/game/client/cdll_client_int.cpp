@@ -1319,7 +1319,7 @@ void CHLClient::PostInit()
 		bool bReqStats = steamapicontext->SteamUserStats()->RequestCurrentStats();
 		if (!bReqStats)
 		{
-			DevMsg("SteamUserStats::RequestCurrentStats() - Cannot aquire stats from Steam to achive FIREFIGHTRELOADED_KILLMILLIONENEMIES");
+			DevMsg("SteamUserStats::RequestCurrentStats() - Cannot aquire stats from Steam to achieve FIREFIGHTRELOADED_KILLMILLIONENEMIES");
 		}
 		else
 		{
