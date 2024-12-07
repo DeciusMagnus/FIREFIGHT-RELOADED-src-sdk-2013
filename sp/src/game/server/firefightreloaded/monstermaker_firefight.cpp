@@ -361,18 +361,15 @@ bool CNPCMakerFirefight::CanMakeNPC(bool bIgnoreSolidEntities)
 
 	float dist = sk_spawner_max_distance.GetFloat();
 
-	if (dist <= 0.0f)
+	KeyValues* pInfo = CMapInfo::GetMapInfoData();
+
+	if (pInfo != NULL)
 	{
-		KeyValues* pInfo = CMapInfo::GetMapInfoData();
+		float MaxSpawnerDistance = pInfo->GetFloat("MaxSpawnerDistanceOverride", 0);
 
-		if (pInfo != NULL)
+		if (MaxSpawnerDistance > 0)
 		{
-			float MaxSpawnerDistance = pInfo->GetFloat("MaxSpawnerDistanceOverride", 2048);
-
-			if (MaxSpawnerDistance > 0)
-			{
-				dist = MaxSpawnerDistance;
-			}
+			dist = MaxSpawnerDistance;
 		}
 	}
 
@@ -454,8 +451,6 @@ bool CNPCMakerFirefight::CanMakeNPC(bool bIgnoreSolidEntities)
 	}
 
 	bool hideFromPlayer = sk_spawnerhidefromplayer.GetBool();
-
-	KeyValues* pInfo = CMapInfo::GetMapInfoData();
 
 	if (pInfo != NULL)
 	{
