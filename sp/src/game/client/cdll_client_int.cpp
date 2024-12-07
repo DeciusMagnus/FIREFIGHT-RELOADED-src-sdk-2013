@@ -1315,9 +1315,21 @@ void CHLClient::PostInit()
 #ifndef NO_STEAM
 	if (steamapicontext->SteamUserStats())
 	{
-		VPROF_BUDGET("AwardAchievement", VPROF_BUDGETGROUP_STEAM);
-		// set this achieved in the Steam client
-		steamapicontext->SteamUserStats()->SetAchievement("FIREFIGHTRELOADED_KILLMILLIONENEMIES");
+		// request stat download; will get called back at OnUserStatsReceived when complete
+		bool bReqStats = steamapicontext->SteamUserStats()->RequestCurrentStats();
+		if (!bReqStats)
+		{
+			DevMsg("SteamUserStats::RequestCurrentStats() - Cannot aquire stats from Steam to achive FIREFIGHTRELOADED_KILLMILLIONENEMIES");
+		}
+		else
+		{
+			VPROF_BUDGET("AwardAchievement", VPROF_BUDGETGROUP_STEAM);
+			// set this achieved in the Steam client
+			steamapicontext->SteamUserStats()->SetAchievement("FIREFIGHTRELOADED_KILLMILLIONENEMIES");
+			// Upload current Steam client achievements & stats state to Steam.  Will get called back at OnUserStatsStored when complete.
+			// Only values previously set via SteamUserStats() get uploaded
+			steamapicontext->SteamUserStats()->StoreStats();
+		}
 	}
 #endif
 }
