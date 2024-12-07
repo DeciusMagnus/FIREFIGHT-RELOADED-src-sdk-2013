@@ -367,7 +367,7 @@ bool CNPCMakerFirefight::CanMakeNPC(bool bIgnoreSolidEntities)
 
 		if (pInfo != NULL)
 		{
-			float MaxSpawnerDistance = pInfo->GetFloat("MapSpecificMaxSpawnerDistance", 2048);
+			float MaxSpawnerDistance = pInfo->GetFloat("MaxSpawnerDistanceOverride", 2048);
 
 			if (MaxSpawnerDistance > 0)
 			{
@@ -453,8 +453,22 @@ bool CNPCMakerFirefight::CanMakeNPC(bool bIgnoreSolidEntities)
 		}
 	}
 
+	bool hideFromPlayer = sk_spawnerhidefromplayer.GetBool();
+
+	KeyValues* pInfo = CMapInfo::GetMapInfoData();
+
+	if (pInfo != NULL)
+	{
+		int hide = pInfo->GetInt("HideFromPlayerOverride", -1);
+
+		if (hide > -1 && hide < 2)
+		{
+			hideFromPlayer = (hide == 1 ? true : false);
+		}
+	}
+
 	// Do we need to check to see if the player's looking?
-	if (sk_spawnerhidefromplayer.GetBool())
+	if (hideFromPlayer)
 	{
 		for ( int i = 1; i <= gpGlobals->maxClients; i++ )
 		{
