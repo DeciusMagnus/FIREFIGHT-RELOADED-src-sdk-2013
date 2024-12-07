@@ -361,8 +361,6 @@ ConVar cl_glyphtype("cl_glyphtype", "0", FCVAR_ARCHIVE);
 
 ConVar cl_deck_override_client_settings("cl_deck_override_client_settings", "1", FCVAR_ARCHIVE);
 
-ConVar cl_achieve_killionare("cl_achieve_killionare", "0", FCVAR_ARCHIVE);
-
 #ifdef HL1MP_CLIENT_DLL
 static ConVar s_cl_load_hl1_content("cl_load_hl1_content", "0", FCVAR_ARCHIVE, "Mount the content from Half-Life: Source if possible");
 #endif
@@ -1315,14 +1313,11 @@ void CHLClient::PostInit()
 
 	//reward the killionare achievement
 #ifndef NO_STEAM
-	if (cl_achieve_killionare.GetBool())
+	if (steamapicontext->SteamUserStats())
 	{
-		if (steamapicontext->SteamUserStats())
-		{
-			VPROF_BUDGET("AwardAchievement", VPROF_BUDGETGROUP_STEAM);
-			// set this achieved in the Steam client
-			steamapicontext->SteamUserStats()->SetAchievement("FIREFIGHTRELOADED_KILLMILLIONENEMIES");
-		}
+		VPROF_BUDGET("AwardAchievement", VPROF_BUDGETGROUP_STEAM);
+		// set this achieved in the Steam client
+		steamapicontext->SteamUserStats()->SetAchievement("FIREFIGHTRELOADED_KILLMILLIONENEMIES");
 	}
 #endif
 }
