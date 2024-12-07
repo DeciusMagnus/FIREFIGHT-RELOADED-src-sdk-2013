@@ -2898,6 +2898,20 @@
 
 				"textprecision" "2"
 			}
+            
+            "SpawnerMaxDistanceOverrideFactor"
+			{
+				"text"			"#GameUI_SpawnerMaxDistanceOverrideFactor"
+				"type"			"slideyslide"
+				"advanced"		"1"
+				"convar"		"sk_spawner_max_distance_override_factor"
+
+				"min"			"0"
+				"max"			"1"
+				"step"			"0.1"
+
+				"textprecision" "2"
+			}
 			
 			"RagdollFade"
 			{

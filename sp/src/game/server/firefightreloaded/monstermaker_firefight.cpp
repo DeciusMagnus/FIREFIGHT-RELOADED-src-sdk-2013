@@ -39,6 +39,7 @@ ConVar sk_spawner_npc_ragdoll_fade("sk_spawner_npc_ragdoll_fade", "1", FCVAR_ARC
 ConVar sk_spawner_largenpc_spawndelay("sk_spawner_largenpc_spawntime", "300", FCVAR_CHEAT);
 ConVar sk_spawner_fps_control("sk_spawner_fps_control", "1", FCVAR_ARCHIVE, "Allow spawners to disable themselves based on framerate.");
 ConVar sk_spawner_max_distance("sk_spawner_max_distance", "2048", FCVAR_ARCHIVE, "If the NPC is this far away from the players, it might be considered to be disabled.");
+ConVar sk_spawner_max_distance_override_factor("sk_spawner_max_distance_override_factor", "0.4", FCVAR_ARCHIVE, "The amount to multiply by if we have a set value in sk_spawner_max_distance.");
 ConVar sk_spawner_min_fps("sk_spawner_min_fps", "20", FCVAR_ARCHIVE, "The minimum FPS to disable spawners due to lag.");
 ConVar debug_spawner_info("debug_spawner_info", "0", FCVAR_CHEAT);
 ConVar debug_spawner_disable("debug_spawner_disable", "0", FCVAR_CHEAT);
@@ -369,7 +370,27 @@ bool CNPCMakerFirefight::CanMakeNPC(bool bIgnoreSolidEntities)
 
 		if (MaxSpawnerDistance > 0)
 		{
-			dist = MaxSpawnerDistance;
+			float calcfactor = sk_spawner_max_distance_override_factor.GetFloat();
+
+			if (calcfactor > 0)
+			{
+				if (dist < MaxSpawnerDistance)
+				{
+					dist = (dist + (MaxSpawnerDistance * calcfactor));
+				}
+				else if (dist > MaxSpawnerDistance)
+				{
+					dist = (dist - (MaxSpawnerDistance * calcfactor));
+				}
+				else if (dist <= 0)
+				{
+					dist = MaxSpawnerDistance;
+				}
+			}
+			else
+			{
+				dist = MaxSpawnerDistance;
+			}
 		}
 	}
 

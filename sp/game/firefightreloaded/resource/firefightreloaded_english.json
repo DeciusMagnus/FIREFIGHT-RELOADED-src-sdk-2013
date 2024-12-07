@@ -413,6 +413,7 @@
             "GameUI_ToggleHUD": "Toggle the HEV HUD",
             "GameUI_ToggleViewmodel": "Toggle the Viewmodel",
             "GameUI_SpawnerMaxDistance": "Distance to disable spawners at",
+            "GameUI_SpawnerMaxDistanceOverrideFactor": "Spawner Distance Override Adjustment Factor",
             "GameUI_RewardSystem": "Reward System Settings",
             "GameUI_RewardSystem_1": "Give weapons, items, Kash Bonuses, and Perks when you level up.",
             "GameUI_RewardSystem_2": "Give only Perks when you level up.",
