@@ -1,5 +1,5 @@
 "firefight_whiteforest"
 {
-	"MaxSpawnerDistanceOverride"	"4608"
+	"MaxSpawnerDistanceOverride"	"3584"
 	"HideFromPlayerOverride"	"0"
 }

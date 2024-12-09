@@ -173,8 +173,8 @@
 		}
 		"npc_zombine"
 		{
-				"font"		"WeaponIconsKillFeed3"
-				"character"	"D"
+				"font"		"WeaponIconsKillFeed"
+				"character"	"9"
 		}
 		"weapon_pistol"
 		{
@@ -315,7 +315,7 @@
 				"font"		"WeaponIconsKillFeed3"
 				"character"	"x"
 		}
-                		"weapon_physgun"
+        "weapon_physgun"
 		{
 				"font"		"WeaponIconsKillFeed2"
 				"character"	"!"
@@ -327,28 +327,28 @@
 		}
 		"npc_zombie"
 		{
-				"font"		"WeaponIconsKillFeed3"
-				"character"	"D"
+				"font"		"WeaponIconsKillFeed"
+				"character"	"9"
 		}
 		"npc_zombie_torso"
 		{
-				"font"		"WeaponIconsKillFeed3"
-				"character"	"D"
+				"font"		"WeaponIconsKillFeed"
+				"character"	"9"
 		}
 		"npc_fastzombie"
 		{
-				"font"		"WeaponIconsKillFeed3"
-				"character"	"D"
+				"font"		"WeaponIconsKillFeed"
+				"character"	"9"
 		}
 		"npc_fastzombie_torso"
 		{
-				"font"		"WeaponIconsKillFeed3"
-				"character"	"D"
+				"font"		"WeaponIconsKillFeed"
+				"character"	"9"
 		}
 		"npc_poisonzombie"
 		{
-				"font"		"WeaponIconsKillFeed3"
-				"character"	"D"
+				"font"		"WeaponIconsKillFeed"
+				"character"	"9"
 		}
 		"env_flare"
 		{
