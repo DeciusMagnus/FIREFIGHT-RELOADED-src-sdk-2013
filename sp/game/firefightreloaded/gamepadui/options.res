@@ -579,6 +579,20 @@
 				"textprecision" "2"
 			}
             
+            "PumpSecondaryFire"
+			{
+				"text"			"#GameUI_PumpSecondaryFire"
+				"type"			"wheelywheel"
+				"advanced"		"1"
+				"convar"		"sv_shotgun_pumpsecondaryfire"
+
+				"options"
+				{
+					"0"		"#gameui_disabled"
+					"1"		"#gameui_enabled"
+				}
+			}
+            
             "InfiniteKnives"
 			{
 				"text"			"#GameUI_InfiniteKnives"
@@ -818,6 +832,20 @@
 					"0"		"#gameui_disabled"
 					"1"		"#gameui_enabled"
 				}
+			}
+            
+            "SecondaryFireShotgunnerChance"
+			{
+				"text"			"#GameUI_CombineSecondaryChance"
+				"type"			"slideyslide"
+				"convar"		"sv_combine_shotgunner_secondaryfire_chance"
+				"advanced"		"1"
+
+				"min"			"0"
+				"max"			"20"
+				"step"			"5"
+
+				"textprecision" "2"
 			}
             
             "CombineSoldierGrenades"

@@ -28,7 +28,9 @@ extern ConVar sk_auto_reload_time;
 extern ConVar sk_plr_num_shotgun_pellets;
 
 ConVar	sv_combine_shotgunner_secondaryfire("sv_combine_shotgunner_secondaryfire", "1", FCVAR_ARCHIVE);
-ConVar	sv_combine_shotgunner_secondaryfire_chance("sv_combine_shotgunner_secondaryfire_chance", "5", FCVAR_CHEAT);
+ConVar	sv_combine_shotgunner_secondaryfire_chance("sv_combine_shotgunner_secondaryfire_chance", "5", FCVAR_ARCHIVE);
+
+ConVar	sv_shotgun_pumpsecondaryfire("sv_shotgun_pumpsecondaryfire", "1", FCVAR_ARCHIVE);
 
 class CWeaponShotgun : public CBaseHLCombatWeapon
 {
@@ -100,6 +102,9 @@ public:
 	DECLARE_ACTTABLE();
 
 	CWeaponShotgun(void);
+
+private:
+	bool m_bFiredSecondary;
 };
 
 IMPLEMENT_SERVERCLASS_ST(CWeaponShotgun, DT_WeaponShotgun)
@@ -113,7 +118,8 @@ BEGIN_DATADESC( CWeaponShotgun )
 	DEFINE_FIELD( m_bNeedPump, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_bDelayedFire1, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_bDelayedFire2, FIELD_BOOLEAN ),
-	DEFINE_FIELD(m_iFireMode, FIELD_INTEGER)
+	DEFINE_FIELD(m_iFireMode, FIELD_INTEGER),
+	DEFINE_FIELD(m_bFiredSecondary, FIELD_BOOLEAN),
 END_DATADESC()
 
 acttable_t	CWeaponShotgun::m_acttable[] = 
@@ -423,7 +429,17 @@ bool CWeaponShotgun::StartReload( void )
 	}
 	else
 	{
-		m_bNeedPump = false;
+		if ((m_bFiredSecondary && sv_shotgun_pumpsecondaryfire.GetBool()))
+		{
+			if (m_iClip1 <= 0)
+			{
+				m_bNeedPump = true;
+			}
+		}
+		else
+		{
+			m_bNeedPump = false;
+		}
 	}
 
 	int j = MIN(1, pOwner->GetAmmoCount(m_iPrimaryAmmoType));
@@ -549,12 +565,9 @@ void CWeaponShotgun::FillClip( void )
 //-----------------------------------------------------------------------------
 void CWeaponShotgun::Pump( void )
 {
-	if (m_iFireMode == 1)
-		return;
+	CBaseCombatCharacter* pOwner = GetOwner();
 
-	CBaseCombatCharacter *pOwner  = GetOwner();
-
-	if ( pOwner == NULL )
+	if (pOwner == NULL)
 		return;
 	
 	m_bNeedPump = false;
@@ -641,6 +654,8 @@ void CWeaponShotgun::PrimaryAttack( void )
 
 	CSoundEnt::InsertSound( SOUND_COMBAT, GetAbsOrigin(), SOUNDENT_VOLUME_SHOTGUN, 0.2, GetOwner() );
 
+	m_bFiredSecondary = false;
+
 	if (!m_iClip1 && pPlayer->GetAmmoCount(m_iPrimaryAmmoType) <= 0)
 	{
 		// HEV suit - indicate out of ammo condition
@@ -696,14 +711,16 @@ void CWeaponShotgun::SecondaryAttack( void )
 	}
 
 	// Don't fire again until fire animation has completed
-	if (m_iFireMode == 1)
-	{
-		m_flNextPrimaryAttack = gpGlobals->curtime + GetViewModelSequenceDuration() + GetFireRate();
-	}
-	else
+
+	if (sv_shotgun_pumpsecondaryfire.GetBool() || m_iFireMode == 0)
 	{
 		m_flNextPrimaryAttack = gpGlobals->curtime + GetViewModelSequenceDuration();
 	}
+	else
+	{
+		m_flNextPrimaryAttack = gpGlobals->curtime + GetViewModelSequenceDuration() + GetFireRate();
+	}
+
 	m_iClip1 -= 2;	// Shotgun uses same clip for primary and secondary attacks
 
 	Vector vecSrc	 = pPlayer->Weapon_ShootPosition();
@@ -717,13 +734,15 @@ void CWeaponShotgun::SecondaryAttack( void )
 
 	CSoundEnt::InsertSound( SOUND_COMBAT, GetAbsOrigin(), SOUNDENT_VOLUME_SHOTGUN, 0.2 );
 
+	m_bFiredSecondary = true;
+
 	if (!m_iClip1 && pPlayer->GetAmmoCount(m_iPrimaryAmmoType) <= 0)
 	{
 		// HEV suit - indicate out of ammo condition
 		pPlayer->SetSuitUpdate("!HEV_AMO0", FALSE, 0); 
 	}
 
-	if (m_iFireMode == 0)
+	if (sv_shotgun_pumpsecondaryfire.GetBool() || m_iFireMode == 0)
 	{
 		if (m_iClip1)
 		{
@@ -731,7 +750,7 @@ void CWeaponShotgun::SecondaryAttack( void )
 			m_bNeedPump = true;
 		}
 	}
-	else
+	else 
 	{
 		m_bNeedPump = false;
 	}
@@ -877,6 +896,8 @@ void CWeaponShotgun::ItemPostFrame( void )
 			if ( m_iClip1 == 1 )
 			{
 				PrimaryAttack();
+				//We are TECHNICALLY firing a secondary shot, so set the bool to true.
+				m_bFiredSecondary = true;
 			}
 			else if (!pOwner->GetAmmoCount(m_iPrimaryAmmoType))
 			{
@@ -987,6 +1008,7 @@ CWeaponShotgun::CWeaponShotgun( void )
 	m_bNeedPump		= false;
 	m_bDelayedFire1 = false;
 	m_bDelayedFire2 = false;
+	m_bFiredSecondary = false;
 
 	m_fMinRange1		= 0.0;
 	m_fMaxRange1		= 500;
