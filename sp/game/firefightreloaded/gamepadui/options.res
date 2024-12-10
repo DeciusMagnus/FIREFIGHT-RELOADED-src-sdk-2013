@@ -40,6 +40,7 @@
                     "gaussrail"		        "#GameUI_LoadoutRailgun"
                     "explosives"		        "#GameUI_LoadoutExplosives"
                     "snipers"		        "#GameUI_LoadoutSnipers"
+                    "mapadd"		        "#FIREFIGHTRELOADED_ModMapping_Mapadd"
 				}
 			}
             
