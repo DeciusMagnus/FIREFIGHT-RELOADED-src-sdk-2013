@@ -11,8 +11,6 @@ WeaponData
 	"bucket"				"4"
 	"bucket_position"		"1"
 	"autoswitchfrom"		"0"
-	"bucket_360"			"3"
-	"bucket_position_360"	"1"
 
 	"clip_size"				"-1"
 	"clip2_size"			"-1"

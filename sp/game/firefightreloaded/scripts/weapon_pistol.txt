@@ -10,8 +10,6 @@ WeaponData
 	"weapon_type"		"pistol"
 	"bucket"			"1"
 	"bucket_position"	"0"
-	"bucket_360"			"0"
-	"bucket_position_360"	"0"
 
 	"clip_size"			"18"
 	"default_clip"			"54"

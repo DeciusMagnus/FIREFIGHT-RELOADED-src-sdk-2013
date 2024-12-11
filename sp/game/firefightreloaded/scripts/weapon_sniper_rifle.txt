@@ -10,8 +10,6 @@ WeaponData
 	"weapon_type"		"sniper"
 	"bucket"			"3"
 	"bucket_position"	"2"
-	"bucket_360"			"0"
-	"bucket_position_360"	"2"
 
 	"clip_size"			"2"
 	"default_clip"		"6"

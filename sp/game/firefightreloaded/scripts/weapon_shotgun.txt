@@ -10,8 +10,6 @@ WeaponData
 	"weapon_type"			"shotgun"
 	"bucket"				"3"
 	"bucket_position"		"0"
-	"bucket_360"			"1"
-	"bucket_position_360"	"1"
 
 	"clip_size"				"8"
 	"default_clip"				"24"

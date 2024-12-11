@@ -8,11 +8,12 @@ WeaponData
 	"playermodel"			"models/weapons/w_oicw_remake.mdl"
 	"anim_prefix"			"ar2"
 	"weapon_type"			"smg"
-	"bucket"			"2"
+	"bucket"			    "2"
 	"bucket_position"		"4"
 
 	"clip_size"				"60"
 	"clip2_size"			"-1"
+    
 	"default_clip"			"180"
 	"default_clip2"			"-1"
 
@@ -20,6 +21,7 @@ WeaponData
 	"secondary_ammo"		"None"
 
 	"weight"				"2"
+    "rumble"			    "4"
 	"item_flags"			"0"
 	
 	"BuiltRightHanded" 		"1" 
@@ -72,11 +74,8 @@ WeaponData
 		}
 		"crosshair"
 		{
-				"file"		"sprites/crosshairs"
-				"x"			"0"
-				"y"			"48"
-				"width"		"24"
-				"height"	"24"
+				"font"		"Crosshairs"
+				"character"	"Q"
 		}
 		"autoaim"
 		{

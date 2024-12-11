@@ -8,10 +8,8 @@ WeaponData
 	"playermodel"			"models/weapons/w_irifle.mdl"
 	"anim_prefix"			"ar2"
 	"weapon_type"			"smg"
-	"bucket"			"2"
+	"bucket"			    "2"
 	"bucket_position"		"1"
-	"bucket_360"			"1"
-	"bucket_position_360"		"2"
 
 	"clip_size"			"30"
 	"default_clip"			"120"
@@ -23,7 +21,7 @@ WeaponData
 	"secondary_ammo"		"AR2AltFire"
 
 	"weight"				"5"
-	"rumble"			"4"
+	"rumble"			    "4"
 	"item_flags"			"0" 
 	
 	"BuiltRightHanded" 		"1" 

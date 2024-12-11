@@ -140,4 +140,8 @@
 		"ammotype"	"gatling"
 		"ammonum"	"999"
 	}
+	"25"
+	{
+		"weapon"	"weapon_turret"
+	}
 }

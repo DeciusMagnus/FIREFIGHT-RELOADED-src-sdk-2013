@@ -10,8 +10,6 @@ WeaponData
 	"weapon_type"			"smg"
 	"bucket"				"2"
 	"bucket_position"		"3"
-	"bucket_360"			"1"
-	"bucket_position_360"	"2"
 
 	"clip_size"				"30"
 	"clip2_size"			"-1"
@@ -23,7 +21,7 @@ WeaponData
 	"secondary_ammo"		"None"
 
 	"weight"				"7"
-	"rumble"			"5"
+	"rumble"			    "3"
 	"item_flags"			"0"
 	
 	"BuiltRightHanded" 		"1" 

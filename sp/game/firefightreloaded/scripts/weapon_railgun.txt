@@ -7,9 +7,9 @@ WeaponData
 	"viewmodel"			"models/weapons/v_railgun.mdl"
 	"playermodel"			"models/weapons/w_railgun.mdl"
 	"anim_prefix"			"crossbow"
-	"weapon_type"			"sniper"
-	"bucket"			"3"
-	"bucket_position"		"3"
+	"weapon_type"			"energy"
+	"bucket"			    "3"
+	"bucket_position"		"4"
 
 	"clip_size"			"-1"
 	"clip2_size"			"-1"

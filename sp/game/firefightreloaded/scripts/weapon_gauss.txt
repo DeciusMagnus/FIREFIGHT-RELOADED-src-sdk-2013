@@ -7,8 +7,9 @@ WeaponData
 	"viewmodel"			"models/weapons/v_gauss.mdl"
 	"playermodel"			"models/weapons/w_gauss.mdl"
 	"anim_prefix"			"gauss"
-	"bucket"			"3"
-	"bucket_position"		"2"
+    "weapon_type"			"energy"
+	"bucket"			    "3"
+	"bucket_position"		"3"
 
 	"clip_size"			"-1"
 	"clip2_size"			"-1"

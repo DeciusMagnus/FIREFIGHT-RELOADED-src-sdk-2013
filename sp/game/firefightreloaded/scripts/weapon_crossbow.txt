@@ -10,8 +10,6 @@ WeaponData
 	"weapon_type"	"crossbow"
 	"bucket"			"3"
 	"bucket_position"	"1"
-	"bucket_360"			"0"
-	"bucket_position_360"	"2"
 
 	"clip_size"		"1"
 	"default_clip"		"10"

@@ -8,8 +8,6 @@ WeaponData
 	"weapon_type"			"explosive"
 	"bucket"				"4"
 	"bucket_position"		"0"
-	"bucket_360"			"3"
-	"bucket_position_360"		"0"
 
 	"clip_size"				"-1"
 	"clip2_size"			"-1"

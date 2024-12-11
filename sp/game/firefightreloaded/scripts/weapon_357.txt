@@ -10,8 +10,6 @@ WeaponData
 	"weapon_type"		"revolver"
 	"bucket"			"1"
 	"bucket_position"	"1"
-	"bucket_360"			"0"
-	"bucket_position_360"	"1"
 
 	"clip_size"			"6"
 	"default_clip"		"24"

@@ -10,8 +10,8 @@ WeaponData
 	"weapon_type"		"utility"
 	"bucket"			"0"
 	"bucket_position"	"4"
-	"bucket_360"			"2"
-	"bucket_position_360"	"4"
+    
+
 	"clip_size"			"1"
 	"clip2_size"		"0"
 	"primary_ammo"		"None"
