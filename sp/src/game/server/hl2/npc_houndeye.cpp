@@ -41,7 +41,7 @@
 
 #define SF_HOUNDEYE_LEADER	( 1 << 5  )
 
-int g_iSquadIndex = 0;
+int g_iHoundeyeSquadIndex = 0;
 
 ConVar	sk_Houndeye_health( "sk_Houndeye_health","0");
 ConVar	sk_Houndeye_dmg_blast( "sk_Houndeye_dmg_blast","0");
@@ -436,7 +436,7 @@ void CNPC_Houndeye::Spawn()
 	SetCollisionGroup( HL2COLLISION_GROUP_HOUNDEYE ); 
 
 	//HACK
-	g_iSquadIndex = 0;
+	g_iHoundeyeSquadIndex = 0;
 
 	BaseClass::Spawn();
 
@@ -495,7 +495,7 @@ int CNPC_Houndeye::SquadRecruit(int searchRadius, int maxMembers)
 	else
 	{
 		char szSquadName[64];
-		Q_snprintf(szSquadName, sizeof(szSquadName), "squad%d\n", g_iSquadIndex);
+		Q_snprintf(szSquadName, sizeof(szSquadName), "squad%d\n", g_iHoundeyeSquadIndex);
 
 		m_SquadName = MAKE_STRING(szSquadName);
 
@@ -536,7 +536,7 @@ int CNPC_Houndeye::SquadRecruit(int searchRadius, int maxMembers)
 
 		if (squadCount > 1)
 		{
-			g_iSquadIndex++;
+			g_iHoundeyeSquadIndex++;
 		}
 	}
 

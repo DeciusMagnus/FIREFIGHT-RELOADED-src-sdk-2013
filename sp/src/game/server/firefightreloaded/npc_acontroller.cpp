@@ -58,7 +58,7 @@
 
 #define SF_CONTROLLER_LEADER	( 1 << 5  )
 
-int g_iSquadIndex = 0;
+int g_iAControllerSquadIndex = 0;
 
 ConVar sk_controller_health ( "sk_controller_health", "0" );
 ConVar sk_controller_dmgzap ( "sk_controller_dmgzap", "0" );
@@ -353,7 +353,7 @@ void CAlienController::Spawn()
 	CapabilitiesAdd( bits_CAP_MOVE_FLY | bits_CAP_INNATE_RANGE_ATTACK1 | bits_CAP_INNATE_RANGE_ATTACK2 | bits_CAP_MOVE_SHOOT);
 
 	//HACK
-	g_iSquadIndex = 0;
+	g_iAControllerSquadIndex = 0;
 
 	BaseClass::Spawn();
 
@@ -412,7 +412,7 @@ int CAlienController::SquadRecruit(int searchRadius, int maxMembers)
 	else
 	{
 		char szSquadName[64];
-		Q_snprintf(szSquadName, sizeof(szSquadName), "squad%d\n", g_iSquadIndex);
+		Q_snprintf(szSquadName, sizeof(szSquadName), "squad%d\n", g_iAControllerSquadIndex);
 
 		m_SquadName = MAKE_STRING(szSquadName);
 
@@ -452,7 +452,7 @@ int CAlienController::SquadRecruit(int searchRadius, int maxMembers)
 
 		if (squadCount > 1)
 		{
-			g_iSquadIndex++;
+			g_iAControllerSquadIndex++;
 		}
 	}
 

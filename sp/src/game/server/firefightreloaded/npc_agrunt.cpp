@@ -46,7 +46,7 @@
 
 int iHornetTrail;
 int iHornetPuff;
-int g_iSquadIndex = 0;
+int g_iAGruntSquadIndex = 0;
 
 ConVar sk_agrunt_health( "sk_agrunt_health", "0" );
 ConVar sk_agrunt_dmg_punch( "sk_agrunt_dmg_punch", "0" );
@@ -655,7 +655,7 @@ int CAGrunt::SquadRecruit(int searchRadius, int maxMembers)
 	else
 	{
 		char szSquadName[64];
-		Q_snprintf(szSquadName, sizeof(szSquadName), "squad%d\n", g_iSquadIndex);
+		Q_snprintf(szSquadName, sizeof(szSquadName), "squad%d\n", g_iAGruntSquadIndex);
 
 		m_SquadName = MAKE_STRING(szSquadName);
 
@@ -695,7 +695,7 @@ int CAGrunt::SquadRecruit(int searchRadius, int maxMembers)
 
 		if (squadCount > 1)
 		{
-			g_iSquadIndex++;
+			g_iAGruntSquadIndex++;
 		}
 	}
 
@@ -985,7 +985,7 @@ void CAGrunt::Spawn()
 	m_flNextSpeakTime	= m_flNextWordTime = gpGlobals->curtime + 10 + random->RandomInt(0, 10);
 	
 	//HACK
-	g_iSquadIndex = 0;
+	g_iAGruntSquadIndex = 0;
 
 	BaseClass::Spawn();
 
