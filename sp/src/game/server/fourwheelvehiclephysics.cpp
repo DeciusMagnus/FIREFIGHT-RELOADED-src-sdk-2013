@@ -802,11 +802,18 @@ bool CFourWheelVehiclePhysics::Think()
 	return m_bIsOn;
 }
 
+extern ConVar g_debug_vehiclebase;
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
 bool CFourWheelVehiclePhysics::VPhysicsUpdate( IPhysicsObject *pPhysics )
 {
+	if (g_debug_vehiclebase.GetBool())
+	{
+		DrawDebugGeometryOverlays();
+	}
+
 	// must be a wheel
 	if ( pPhysics == m_pOuter->VPhysicsGetObject() )
 		return true;

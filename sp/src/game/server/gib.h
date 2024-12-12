@@ -98,29 +98,25 @@ public:
 	CHandle<CBasePlayer>	m_hPhysicsAttacker;
 	float					m_flLastPhysicsInfluenceTime;
 
+	int		m_bloodColor;
+
 private:
 	// A little piece of duplicated code
 	void AdjustVelocityBasedOnHealth(int nHealth, Vector &vecVelocity);
-	int		m_bloodColor;
 
 	EHANDLE m_hSprite;
 	EHANDLE m_hFlame;
 };
 
-class CRagGib : public CBaseAnimating,
-	public CDefaultPlayerPickupVPhysics
+class CRagGib : public CGib
 {
 public:
-	DECLARE_CLASS(CRagGib, CBaseAnimating);
+	DECLARE_CLASS(CRagGib, CGib);
 
 	void Spawn(CBaseEntity *pVictim, const char *szModel, const Vector &vecOrigin, const Vector &vecForce, float flFadeTime);
 	void RagGibTouch(CBaseEntity *pOther);
-	void SetBloodColor(int nBloodColor);
 
 	DECLARE_DATADESC();
-
-private:
-	int		m_bloodColor;
 
 };
 

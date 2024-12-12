@@ -741,6 +741,8 @@ void CGib::Spawn(const char *szGibModel)
 	m_lifeTime = 25;
 	SetTouch(&CGib::BounceGibTouch);
 
+	CCleanupManager::AddGib(this);
+
 	m_bForceRemove = false;
 
 	m_material = matNone;
@@ -812,6 +814,7 @@ void CRagGib::Spawn(CBaseEntity *pVictim, const char *szModel, const Vector &vec
 	UTIL_SetSize(this, vec3_origin, vec3_origin);
 	UTIL_SetOrigin(this, vecOrigin);
 	SetBloodColor(pVictim->BloodColor());
+	CCleanupManager::AddGib(this);
 	if (!BecomeRagdollOnClient(vecForce))
 	{
 		AddSolidFlags(FSOLID_NOT_STANDABLE);
@@ -884,11 +887,6 @@ void CRagGib::RagGibTouch(CBaseEntity *pOther)
 			CBreakable::MaterialSoundRandom(entindex(), matFlesh, volume);
 		}
 	}
-}
-
-void CRagGib::SetBloodColor(int nBloodColor)
-{
-	m_bloodColor = nBloodColor;
 }
 
 LINK_ENTITY_TO_CLASS(raggib, CRagGib);
