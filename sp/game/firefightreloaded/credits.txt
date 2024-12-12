@@ -40,7 +40,7 @@ Modular Combat for the HL2: Deathmatch map nodegraphs.
 Real Beb for various weapon icons.
 Nicolas Kirsch for the enhanced cubemaps.
 Gmadador for the Gasmask Citizen remake model.
-Facepunch Studios for some player models and viewmodels.
+Facepunch Studios for some player models, viewmodels, and various model fixes.
 xDShot for the two-handed pistol animations used in the Pistol and Alyxgun.
 Mister Sandman for the OICW model.
 Running with Scissors for the kick sound effects.

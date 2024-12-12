@@ -1,4 +1,4 @@
-// This is an amazing american muscle car that must be experienced
+// This is a test jeep type vehicle for the wasteland
 
 "vehicle"
 {
@@ -31,11 +31,11 @@
 
 		"boost"
 		{
-			"force"		"1.1"	// 1.1 car body mass * gravity * inches / second ^ 2
+			"force"		"1.5"	// 1.5 car body mass * gravity * inches / second ^ 2
 			"duration"	"3.0"	// 3.0 second of boost
 			"delay"		"3.0"	// 3 seconds before you can use it again
-			"torqueboost"	"1"	// enable "sprint" mode of vehicle, not	force type booster			
-			"maxspeed"	"42"	// maximum turbo speed
+			"torqueboost"	"1"	// enable "sprint" mode of vehicle, not	force type booster		
+			"maxspeed"	"50"	// maximum turbo speed
 		}
 	}
 	"steering"
@@ -73,8 +73,8 @@
 			"mass"		"100"
 			"damping"	"0"
 			"rotdamping"	"0.0"
-			"material"	"jalopytire"
-			"skidmaterial"	"slidingrubbertire_jalopyfront"
+			"material"	"jeeptire"
+			"skidmaterial"	"slidingrubbertire"
 			"brakematerial" "brakingrubbertire"
 		}
 		"suspension"
@@ -95,12 +95,12 @@
 	{
 		"wheel"
 		{
-			"radius"	"19.5"
+			"radius"	"22"
 			"mass"		"100"
 			"damping"	"0"
 			"rotdamping"	"0.0"
-			"material"	"jalopytire"
-			"skidmaterial"	"slidingrubbertire_jalopyrear"
+			"material"	"jeeptire"
+			"skidmaterial"	"slidingrubbertire"
 			"brakematerial" "brakingrubbertire"
 		}
 		"suspension"
@@ -160,7 +160,7 @@
 	"state"
 	{
 		"name"		"SS_START_IDLE"
-		"sound"		"JNK_engine_start"
+		"sound"		"ATV_engine_start"
 		"min_time"	"4.0"
 	}
 	"state"
@@ -171,96 +171,96 @@
 	"state"
 	{
 		"name"		"SS_IDLE"
-		"sound"		"JNK_engine_idle"
+		"sound"		"ATV_engine_idle"
 	}
 	"state"
 	{
 		"name"		"SS_REVERSE"
-		"sound"		"JNK_reverse"
+		"sound"		"ATV_reverse"
 		"min_time"	"0.5"
 	}
 	"state"
 	{
 		"name"		"SS_GEAR_0"
-		"sound"		"JNK_rev"
+		"sound"		"ATV_rev"
 		"min_time"	"0.5"
 	}
 	"state"
 	{
 		"name"		"SS_GEAR_0_RESUME"
-		"sound"		"JNK_engine_idle"
+		"sound"		"ATV_engine_idle"
 		"min_time"	"0.75"
 	}
 	"state"
 	{
 		"name"		"SS_GEAR_1"
-		"sound"		"JNK_firstgear"
+		"sound"		"ATV_firstgear"
 		"min_time"	"0.5"
 	}
 	"state"
 	{
 		"name"		"SS_GEAR_1_RESUME"
-		"sound"		"JNK_firstgear_noshift"
+		"sound"		"ATV_firstgear_noshift"
 		"min_time"	"0.5"
 	}
 	"state"
 	{
 		"name"		"SS_GEAR_2"
-		"sound"		"JNK_secondgear"
+		"sound"		"ATV_secondgear"
 		"min_time"	"0.5"
 	}
 	"state"
 	{
 		"name"		"SS_GEAR_2_RESUME"
-		"sound"		"JNK_secondgear_noshift"
+		"sound"		"ATV_secondgear_noshift"
 		"min_time"	"0.5"
 	}
 	"state"
 	{
 		"name"		"SS_GEAR_3"
-		"sound"		"JNK_thirdgear"
+		"sound"		"ATV_thirdgear"
 		"min_time"	"0.5"
 	}
 	"state"
 	{
 		"name"		"SS_GEAR_3_RESUME"
-		"sound"		"JNK_thirdgear_noshift"
+		"sound"		"ATV_thirdgear_noshift"
 		"min_time"	"0.5"
 	}
 	"state"
 	{
 		"name"		"SS_GEAR_4"
-		"sound"		"JNK_fourthgear"
+		"sound"		"ATV_fourthgear"
 		"min_time"	"0.5"
 	}
 	"state"
 	{
 		"name"		"SS_GEAR_4_RESUME"
-		"sound"		"JNK_fourthgear_noshift"
+		"sound"		"ATV_fourthgear_noshift"
 		"min_time"	"0.5"
 	}
 	"state"
 	{
 		"name"		"SS_SLOWDOWN_HIGHSPEED"
-		"sound"		"JNK_throttleoff_fastspeed"
+		"sound"		"ATV_throttleoff_fastspeed"
 		"min_time"	"2.0"
 	}
 	"state"
 	{
 		"name"		"SS_SLOWDOWN"
-		"sound"		"JNK_throttleoff_slowspeed"
+		"sound"		"ATV_throttleoff_slowspeed"
 		"min_time"	"2.0"
 	}
 	"state"
 	{
 		"name"		"SS_TURBO"
-		"sound"		"JNK_turbo_on"
+		"sound"		"ATV_turbo_on"
 		"min_time"	"2.5"
 	}
 	"state"
 	{
 		"name"		"SS_SHUTDOWN"
-		"sound"		"JNK_engine_stop"
+		"sound"		"ATV_engine_stop"
 	}
 	"crashsound"
 	{
@@ -277,7 +277,7 @@
 	}
 
 	
-	"skid_lowfriction"		"JNK_skid_lowfriction"
-	"skid_normalfriction"	"JNK_skid_normalfriction"
-	"skid_highfriction"		"JNK_skid_highfriction"
+	"skid_lowfriction"		"ATV_skid_lowfriction"
+	"skid_normalfriction"		"ATV_skid_normalfriction"
+	"skid_highfriction"		"ATV_skid_highfriction"
 }

@@ -92,7 +92,7 @@
 	" "	"CreditsOutroText"
 	"Gmadador for the Gasmask Citizen remake model."	"CreditsOutroText"
 	" "	"CreditsOutroText"
-	"Facepunch Studios for some player models and viewmodels."	"CreditsOutroText"
+	"Facepunch Studios for some player models, viewmodels, and various model fixes."	"CreditsOutroText"
 	" "	"CreditsOutroText"
 	"xDShot for the two-handed pistol animations used in the Pistol and Alyxgun."	"CreditsOutroText"
 	" "	"CreditsOutroText"
