@@ -201,6 +201,11 @@
 				"font"		"WeaponIconsKillFeed"
 				"character"	"9"
 		}
+		"prop_vehicle_jeep"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"9"
+		}
 		"weapon_striderbuster"
 		{
 				"font"		"WeaponIconsKillFeed"

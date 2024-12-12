@@ -1294,8 +1294,12 @@ static void KillBlockingEnemyNPCs( CBasePlayer *pPlayer, CBaseEntity *pVehicleEn
 	{
 		for ( int i = npcList.Count(); --i >= 0; )
 		{
+			IPhysicsObject* physicsObj = npcList[i]->VPhysicsGetObject();
+			if (physicsObj == NULL)
+				return;
+
 			Vector damageForce;
-			npcList[i]->VPhysicsGetObject()->GetVelocity( &damageForce, NULL );
+			physicsObj->GetVelocity( &damageForce, NULL );
 			Vector vel;
 			pVehiclePhysics->GetVelocityAtPoint( contactList[i], &vel );
 			damageForce -= vel;
@@ -1303,18 +1307,17 @@ static void KillBlockingEnemyNPCs( CBasePlayer *pPlayer, CBaseEntity *pVehicleEn
 			VectorNormalize(normal);
 			SimpleCollisionResponse( damageForce, normal, 1.0, &damageForce );
 			damageForce += (normal * 300.0f);
-			damageForce *= npcList[i]->VPhysicsGetObject()->GetMass();
+			damageForce *= physicsObj->GetMass();
 			float len = damageForce.Length();
 			damageForce.z += len*phys_upimpactforcescale.GetFloat();
 			Vector vehicleForce = -damageForce;
 
-			CTakeDamageInfo dmgInfo( pVehicleEntity, pVehicleEntity, damageForce, contactList[i], 200.0f, DMG_CRUSH|DMG_VEHICLE );
+			CTakeDamageInfo dmgInfo(pVehicleEntity, pVehicleEntity, damageForce, contactList[i], 200.0f, DMG_CRUSH | DMG_VEHICLE);
+
 			npcList[i]->TakeDamage( dmgInfo );
-			IPhysicsObject*physicsObj = npcList[i]->VPhysicsGetObject();
-			if (physicsObj == NULL)
-				return;
+
 			pVehiclePhysics->ApplyForceOffset( vehicleForce, contactList[i] );
-			PhysCollisionSound( pVehicleEntity, npcList[i]->VPhysicsGetObject(), CHAN_BODY, pVehiclePhysics->GetMaterialIndex(), npcList[i]->VPhysicsGetObject()->GetMaterialIndex(), gpGlobals->frametime, 200.0f );
+			PhysCollisionSound( pVehicleEntity, physicsObj, CHAN_BODY, pVehiclePhysics->GetMaterialIndex(), physicsObj->GetMaterialIndex(), gpGlobals->frametime, 200.0f );
 		}
 	}
 }

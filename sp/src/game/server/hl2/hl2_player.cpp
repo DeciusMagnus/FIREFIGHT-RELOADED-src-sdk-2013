@@ -1261,7 +1261,7 @@ CBaseEntity* CHL2_Player::CheckKickPropAction(CBaseViewModel* vm, const Vector& 
 void CHL2_Player::KickAttack(void)
 {
 	MDLCACHE_CRITICAL_SECTION();
-	if (!IsDead())
+	if (!IsDead() && !IsInAVehicle())
 	{
 		CBaseViewModel *vm = GetViewModel(1);
 
@@ -1437,7 +1437,7 @@ void CHL2_Player::PostThink( void )
 
 	m_pPlayerAnimState->Update();
 
-	if (!IsDead())
+	if (!IsDead() && !IsInAVehicle())
 	{
 		if (m_afButtonReleased & IN_KICK && m_flNextKickAttack < gpGlobals->curtime /* && m_flNextKickAttack < gpGlobals->curtime  && !m_bIsKicking*/)
 		{
@@ -1445,7 +1445,7 @@ void CHL2_Player::PostThink( void )
 		}
 	}
 
-	if (!IsDead())
+	if (!IsDead() && !IsInAVehicle())
 	{
 		if (m_flNextKickAttack < gpGlobals->curtime)
 		{

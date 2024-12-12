@@ -18,9 +18,11 @@
 #include "func_break.h"
 #include "physics_impact_damage.h"
 #include "entityblocker.h"
+#include "singleplay_gamerules.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
+
 
 #define SF_PROP_VEHICLE_ALWAYSTHINK		0x00000001
 
@@ -589,6 +591,7 @@ void CPropVehicleDriveable::EnterVehicle( CBaseCombatCharacter *pPassenger )
 		}
 
 		m_hPlayer = pPlayer;
+		SetOwnerEntity(pPlayer);
 		m_playerOn.FireOutput( pPlayer, this, 0 );
 
 		// Don't start the engine if the player's using an entry animation,
@@ -625,6 +628,7 @@ void CPropVehicleDriveable::ExitVehicle( int nRole )
 		return;
 
 	m_hPlayer = NULL;
+	SetOwnerEntity(NULL);
 	ResetUseKey( pPlayer );
 	
 	m_playerOff.FireOutput( pPlayer, this, 0 );
@@ -1083,6 +1087,13 @@ void CPropVehicleDriveable::Event_KilledOther( CBaseEntity *pVictim, const CTake
 	CBaseEntity *pDriver = GetDriver();
 	if ( pDriver != NULL )
 	{
+		if (pVictim->MyNPCPointer())
+		{
+			CTakeDamageInfo new_info(info);
+			new_info.SetAttacker(pDriver);
+			((CSingleplayRules*)GameRules())->NPCKilled(pVictim, new_info);
+		}
+
 		pDriver->Event_KilledOther( pVictim, info );
 	}
 
