@@ -69,7 +69,7 @@ CON_COMMAND( ai_debug_node_connect, "Debug the attempted connection between two 
 // line to properly override the node graph building.
 
 ConVar g_ai_norebuildgraph( "ai_norebuildgraph", "0" );
-
+ConVar g_ai_buildairnodes("ai_txt_buildairnodes", "0", FCVAR_ARCHIVE);
 
 //-----------------------------------------------------------------------------
 // CAI_NetworkManager
@@ -977,6 +977,38 @@ void CAI_NetworkManager::InitializeAINetworks()
 					pNode->m_NodeData.nWCNodeID = g_pAINetworkManager->GetEditOps()->m_nNextWCIndex;
 					pNode->Spawn(); // spawning it adds it into the node graph
 					num++;
+				}
+
+				if (g_ai_buildairnodes.GetBool())
+				{
+					//create fly nodes
+
+					// now we want to create a CNodeEnt (info_node) at the location these coordinates describe
+					CNodeEnt* pNodeFly = (CNodeEnt*)CreateNoSpawn("info_node_air", origin + Vector(0, 0, 32), vec3_angle, NULL);
+					if (pNodeFly)
+					{//	setting this index stops it moaning, doesn't seem to affect anything else though
+						pNodeFly->m_NodeData.nWCNodeID = g_pAINetworkManager->GetEditOps()->m_nNextWCIndex;
+						pNodeFly->Spawn(); // spawning it adds it into the node graph
+						num++;
+					}
+
+					// now we want to create a CNodeEnt (info_node) at the location these coordinates describe
+					CNodeEnt* pNodeFly2 = (CNodeEnt*)CreateNoSpawn("info_node_air", origin + Vector(0, 0, 64), vec3_angle, NULL);
+					if (pNodeFly2)
+					{//	setting this index stops it moaning, doesn't seem to affect anything else though
+						pNodeFly2->m_NodeData.nWCNodeID = g_pAINetworkManager->GetEditOps()->m_nNextWCIndex;
+						pNodeFly2->Spawn(); // spawning it adds it into the node graph
+						num++;
+					}
+
+					// now we want to create a CNodeEnt (info_node) at the location these coordinates describe
+					CNodeEnt* pNodeFly3 = (CNodeEnt*)CreateNoSpawn("info_node_air", origin + Vector(0, 0, 128), vec3_angle, NULL);
+					if (pNodeFly3)
+					{//	setting this index stops it moaning, doesn't seem to affect anything else though
+						pNodeFly3->m_NodeData.nWCNodeID = g_pAINetworkManager->GetEditOps()->m_nNextWCIndex;
+						pNodeFly3->Spawn(); // spawning it adds it into the node graph
+						num++;
+					}
 				}
 
 				//create hint nodes for striders

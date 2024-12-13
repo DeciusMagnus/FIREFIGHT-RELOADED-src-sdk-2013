@@ -617,7 +617,11 @@ void CNPCMakerFirefight::MakeNPC()
 
 	m_OnSpawnNPC.Set(pent, pent, this);
 
-	pent->SetAbsOrigin(GetAbsOrigin());
+	//adjust the z azis so mortars don't break.
+	Vector origin = GetAbsOrigin();
+	//stole this from the antlion makers.
+	origin.z += 25;
+	pent->SetAbsOrigin(origin);
 
 	// Strip pitch and roll from the spawner's angles. Pass only yaw to the spawned NPC.
 	QAngle angles = GetAbsAngles();

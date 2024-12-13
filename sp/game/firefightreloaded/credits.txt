@@ -54,7 +54,7 @@ The Obsidian Conflict Team and Maestro Fénix for the Grappling Hook code.
 OrangeBox CoOperative Base Modification for the multiplayer AI code.
 The Source SDK 2013 CE Team for making the many fixes implemented in this mod.
 Momentum Mod team for the FOV patch and some Mobility Mod code changes.
-Maestra Fénix for the following:" "CreditsOutroText
+Maestra Fénix for the following:
  - Improved Combine Assassin model and code.
  - Improved Advisor model and code.
 
