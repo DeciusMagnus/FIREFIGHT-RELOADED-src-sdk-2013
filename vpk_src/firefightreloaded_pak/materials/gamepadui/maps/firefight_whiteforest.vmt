@@ -1,0 +1,6 @@
+//"LightmappedGeneric"
+"UnlitGeneric"
+{
+	"$baseTexture" "gamepadui\maps\firefight_whiteforest"
+	"$vertexalpha" 1
+}
