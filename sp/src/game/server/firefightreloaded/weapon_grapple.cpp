@@ -296,8 +296,17 @@ void CGrappleHook::HookedThink( void )
 					if (m_hPlayer->CanEnterVehicle(pVehicleInterface, VEHICLE_ROLE_DRIVER))
 					{
 						m_hPlayer->GetInVehicle(pVehicleInterface, VEHICLE_ROLE_DRIVER);
-						pVehicle->ResetUseKey(m_hPlayer);
 						pVehicle->GetServerVehicle()->HandlePassengerEntry(m_hPlayer, true);
+						pVehicle->ResetUseKey(m_hPlayer);
+
+						QAngle angle = m_hPlayer->GetLocalAngles();
+
+						if (FClassnameIs(pVehicle, "prop_vehicle_airboat"))
+						{
+							angle.y = angle.y + 90.0f;
+						}
+
+						m_hPlayer->SnapEyeAngles(angle);
 					}
 				}
 			}

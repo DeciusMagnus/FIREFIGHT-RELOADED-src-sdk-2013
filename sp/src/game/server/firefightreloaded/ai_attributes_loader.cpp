@@ -37,7 +37,7 @@ CAttributesLoader *LoadRandomPresetFile(const char* className)
 		}
 	}
 
-	if (!loader->GetBool("spawner_only"))
+	if (!loader->GetBool("manual_spawn"))
 	{
 		int randChance = random->RandomInt(1, entity_attributes_chance.GetInt());
 
@@ -47,14 +47,12 @@ CAttributesLoader *LoadRandomPresetFile(const char* className)
 		}
 		else
 		{
-			loader->Die();
 			return NULL;
 		}
 	}
 	else
 	{
-		DevWarning("CAttributesLoader: Preset %i for %s can only be spawned-in manually. Disable \"spawner_only\" to allow this preset to spawn randomly.\n", randPreset, className);
-		loader->Die();
+		DevWarning("CAttributesLoader: Preset %i for %s can only be spawned-in manually. Disable \"manual_spawn\" to allow this preset to spawn randomly.\n", randPreset, className);
 		return NULL;
 	}
 }
