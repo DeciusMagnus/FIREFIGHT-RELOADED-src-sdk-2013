@@ -150,14 +150,14 @@ ConVar	ai_debug_efficiency( "ai_debug_efficiency", "0" );
 ConVar	ai_debug_dyninteractions( "ai_debug_dyninteractions", "0", FCVAR_NONE, "Debug the NPC dynamic interaction system." );
 ConVar	ai_frametime_limit( "ai_frametime_limit", "50", FCVAR_NONE, "frametime limit for min efficiency AIE_NORMAL (in sec's)." );
 ConVar	ai_disappear("ai_disappear", "1", FCVAR_ARCHIVE, "Makes idling AI disappear after a specified amount of time.");
-ConVar	ai_disappear_time("ai_disappear_time", "120", FCVAR_ARCHIVE, "Time to make an NPC disappear.");
-ConVar	ai_disappear_time_rare("ai_disappear_time_rare", "60", FCVAR_ARCHIVE, "Additional time to make rare NPC disappear.");
+ConVar	ai_disappear_time("ai_disappear_time", "60", FCVAR_ARCHIVE, "Time to make an NPC disappear.");
+ConVar	ai_disappear_time_rare("ai_disappear_time_rare", "30", FCVAR_ARCHIVE, "Additional time to make rare NPC disappear.");
 
-ConVar	ai_disappear_max_distance("ai_disappear_max_distance", "4096", FCVAR_ARCHIVE, "If the NPC is this far away from the enemy, it might be considered for deletion.");
+ConVar	ai_disappear_max_distance("ai_disappear_max_distance", "3584", FCVAR_ARCHIVE, "If the NPC is this far away from the enemy, it might be considered for deletion.");
 
 ConVar	ai_fps_control("ai_fps_control", "1", FCVAR_ARCHIVE, "Allow NPCs to remove themselves based on framerate.");
-ConVar	ai_min_fps("ai_min_fps", "45", FCVAR_ARCHIVE, "The minimum FPS to remove NPCs due to lag.");
-ConVar	ai_min_danger_fps("ai_min_danger_fps", "25", FCVAR_ARCHIVE, "The minimum danger FPS to remove NPCs due to severe lag.");
+ConVar	ai_min_fps("ai_min_fps", "55", FCVAR_ARCHIVE, "The minimum FPS to remove NPCs due to lag.");
+ConVar	ai_min_danger_fps("ai_min_danger_fps", "35", FCVAR_ARCHIVE, "The minimum danger FPS to remove NPCs due to severe lag.");
 
 ConVar	ai_disappear_debugmsg_overload("ai_disappear_debugmsg_overload", "0", FCVAR_NONE, "");
 

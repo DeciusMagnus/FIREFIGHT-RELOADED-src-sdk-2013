@@ -28,6 +28,7 @@
 #include "vphysics/constraints.h"
 #include "physics_saverestore.h"
 #include "hl2_player.h"
+#include "vehicle_base.h"
  
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -151,6 +152,8 @@ void CGrappleHook::HookTouch( CBaseEntity *pOther )
 {
 	if (!pOther || pOther->IsSolidFlagSet(FSOLID_NOT_SOLID | FSOLID_VOLUME_CONTENTS) || pOther->IsEffectActive(EF_NODRAW))
 		return;
+
+	m_hGrappledEntity = pOther;
  
 	EmitSound("Weapon_AR2.Reload_Push");
 
@@ -227,7 +230,8 @@ void CGrappleHook::HookTouch( CBaseEntity *pOther )
 	SetThink(&CGrappleHook::HookedThink);
 	SetNextThink(gpGlobals->curtime);
 }
- 
+
+extern IGameMovement* g_pGameMovement;
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -276,6 +280,28 @@ void CGrappleHook::HookedThink( void )
 
 		m_hOwner->NotifyHookDied();
 		m_hPlayer->SelectLastItem();
+
+		//if we grappled onto a vehicle, get into the vehicle.
+		//!! this is assuming we are NOT in a vehicle.
+		if (m_hGrappledEntity.Get())
+		{
+			CPropVehicleDriveable* pVehicle = (CPropVehicleDriveable*)m_hGrappledEntity.Get();
+
+			if (pVehicle)
+			{
+				IServerVehicle* pVehicleInterface = pVehicle->GetServerVehicle();
+
+				if (pVehicleInterface)
+				{
+					if (m_hPlayer->CanEnterVehicle(pVehicleInterface, VEHICLE_ROLE_DRIVER))
+					{
+						m_hPlayer->GetInVehicle(pVehicleInterface, VEHICLE_ROLE_DRIVER);
+						pVehicle->ResetUseKey(m_hPlayer);
+						pVehicle->GetServerVehicle()->HandlePassengerEntry(m_hPlayer, true);
+					}
+				}
+			}
+		}
 
 		UTIL_Remove(this);
 	}

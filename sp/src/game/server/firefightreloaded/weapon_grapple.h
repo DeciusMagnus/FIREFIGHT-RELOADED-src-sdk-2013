@@ -65,6 +65,7 @@ private:
 	CHandle<CWeaponGrapple>		m_hOwner;
 	CHandle<CBasePlayer>		m_hPlayer;
 	CHandle<CDynamicProp>		m_hBolt;
+	CHandle<CBaseEntity>		m_hGrappledEntity;
 	bool						m_bPlayerWasStanding;
 };
      
