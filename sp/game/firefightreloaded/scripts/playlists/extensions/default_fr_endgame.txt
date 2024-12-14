@@ -2,7 +2,7 @@
 //WARNING: DO NOT REMOVE THESE TOP COMMENTS.
 //FABRICATOR REQUIRES THE FIRST COMMENT TO LOAD THIS FILE.
 
-"default_fr"
+"default_fr_endgame"
 {
 	//FR tracks here
 	"1"
