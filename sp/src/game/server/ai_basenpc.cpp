@@ -7275,6 +7275,11 @@ void CAI_BaseNPC::LoadInitAttributes()
 
 		m_IsAdvisorDrone = m_pAttributes->GetBool("advisor_drone", 0);
 
+		if (m_bForceServerRagdoll == false)
+		{
+			m_bForceServerRagdoll = m_pAttributes->GetBool("use_server_ragdoll", 0);
+		}
+
 		m_iAttributePresetNum = m_pAttributes->presetNum;
 		m_IsWildcard = m_pAttributes->wildcard;
 	}

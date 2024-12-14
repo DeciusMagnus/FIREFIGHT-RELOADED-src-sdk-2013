@@ -1547,7 +1547,9 @@ bool CBaseCombatCharacter::BecomeRagdoll( const CTakeDamageInfo &info, const Vec
 	// Mega physgun requires everything to be a server-side ragdoll. when we have a different material color, that also makes us qualify for a serverside ragdoll since we can't replicate it on clientside ragdolls.
 	if (m_bForceServerRagdoll == true || 
 		HL2GameRules()->MegaPhyscannonActive() || 
-		(npc && npc->m_pAttributes != NULL && npc->m_pAttributes->GetVector("new_material_color") != Vector(0, 0, 0)))
+		(npc && npc->m_pAttributes != NULL && 
+			(npc->m_pAttributes->GetVector("new_material_color") != Vector(0, 0, 0) || 
+			npc->m_pAttributes->GetBool("new_material_color_random") != false) ))
 	{
 		if ( CanBecomeServerRagdoll() == false )
 			return false;
