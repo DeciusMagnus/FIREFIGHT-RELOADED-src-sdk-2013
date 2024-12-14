@@ -1,6 +1,7 @@
 // random hunter (used for testing)
 "npc_hunter_preset6"
 {
+	"name"		"projectile testing hunter"
 	"new_model"		"models/hunter_colorable.mdl"
 	"is_rare"		"1"
 	"new_projectile_random"	"1"
