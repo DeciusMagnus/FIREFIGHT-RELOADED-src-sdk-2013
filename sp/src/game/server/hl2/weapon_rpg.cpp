@@ -1396,6 +1396,7 @@ acttable_t	CWeaponRPG::m_acttable[] =
 {
 	{ ACT_RANGE_ATTACK1, ACT_RANGE_ATTACK_RPG, true },
 
+	//unique rpg animations
 	{ ACT_IDLE_RELAXED,				ACT_IDLE_RPG_RELAXED,			true },
 	{ ACT_IDLE_STIMULATED,			ACT_IDLE_ANGRY_RPG,				true },
 	{ ACT_IDLE_AGITATED,			ACT_IDLE_ANGRY_RPG,				true },
@@ -1407,6 +1408,8 @@ acttable_t	CWeaponRPG::m_acttable[] =
 	{ ACT_RUN,						ACT_RUN_RPG,					true },
 	{ ACT_RUN_CROUCH,				ACT_RUN_CROUCH_RPG,				true },
 	{ ACT_COVER_LOW,				ACT_COVER_LOW_RPG,				true },
+
+	//mp anims
 	{ ACT_HL2MP_IDLE,				ACT_HL2MP_IDLE_RPG,				false },
 	{ ACT_HL2MP_RUN,				ACT_HL2MP_RUN_RPG,				false },
 	{ ACT_HL2MP_IDLE_CROUCH,		ACT_HL2MP_IDLE_CROUCH_RPG,		false },
@@ -1528,7 +1531,7 @@ void CWeaponRPG::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatChara
 			{
 				// check to see if it's relativly free
 				trace_t tr;
-				AI_TraceHull( altLaunchPoint, altLaunchPoint + vecShootDir * (10.0f*12.0f), Vector( -24, -24, -24 ), Vector( 24, 24, 24 ), MASK_NPCSOLID, NULL, &tr );
+				AI_TraceHull(altLaunchPoint, altLaunchPoint + vecShootDir * (10.0f * 12.0f), Vector(-24, -24, -24), Vector(24, 24, 24), MASK_NPCSOLID, npc, COLLISION_GROUP_NONE, &tr);
 
 				if( tr.fraction == 1.0)
 				{
@@ -2051,7 +2054,7 @@ bool CWeaponRPG::WeaponLOSCondition( const Vector &ownerPos, const Vector &targe
 			Vector vecShootDir = npcOwner->GetActualShootTrajectory( vecMuzzle );
 
 			// Make sure I have a good 10 feet of wide clearance in front, or I'll blow my teeth out.
-			AI_TraceHull( vecMuzzle, vecMuzzle + vecShootDir * (10.0f*12.0f), Vector( -24, -24, -24 ), Vector( 24, 24, 24 ), MASK_NPCSOLID, NULL, &tr );
+			AI_TraceHull(vecMuzzle, vecMuzzle + vecShootDir * (10.0f * 12.0f), Vector(-24, -24, -24), Vector(24, 24, 24), MASK_NPCSOLID, npcOwner, COLLISION_GROUP_NONE, &tr);
 
 			if( tr.fraction != 1.0f )
 				bResult = false;
@@ -2101,7 +2104,7 @@ int CWeaponRPG::WeaponRangeAttack1Condition( float flDot, float flDist )
 		Vector vecShootDir = pOwner->GetActualShootTrajectory( vecMuzzle );
 
 		// Make sure I have a good 10 feet of wide clearance in front, or I'll blow my teeth out.
-		AI_TraceHull( vecMuzzle, vecMuzzle + vecShootDir * (10.0f*12.0f), Vector( -24, -24, -24 ), Vector( 24, 24, 24 ), MASK_NPCSOLID, NULL, &tr );
+		AI_TraceHull( vecMuzzle, vecMuzzle + vecShootDir * (10.0f*12.0f), Vector( -24, -24, -24 ), Vector( 24, 24, 24 ), MASK_NPCSOLID, pOwner, COLLISION_GROUP_NONE, &tr );
 
 		if( tr.fraction != 1.0 )
 		{

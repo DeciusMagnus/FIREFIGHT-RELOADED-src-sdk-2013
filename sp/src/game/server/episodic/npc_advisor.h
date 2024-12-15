@@ -207,7 +207,7 @@ public:
 
 	void StopPinPlayer(inputdata_t &inputdata);
 
-	COutputEvent m_OnPickingThrowable, m_OnThrowWarn, m_OnThrow;
+	COutputEvent m_OnPickingThrowable, m_OnThrowWarn, m_OnThrow, m_OnPlayerPin, m_OnStopPlayerPin;
 
 	enum { kMaxThrownObjectsTracked = 4 };
 #endif
@@ -261,6 +261,7 @@ protected:
 	float  m_playerPinFailsafeTime;
 	int  m_playerPinDamage;
 	bool  m_playerPinnedBecauseWallRunning;
+	bool  m_playerPinOutputCalled;
 
 	// keep track of up to four objects after we have thrown them, to prevent oscillation or levitation of recently thrown ammo.
 	EHANDLE m_haRecentlyThrownObjects[kMaxThrownObjectsTracked]; 

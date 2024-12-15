@@ -66,7 +66,7 @@ ConVar sk_controller_speedball ( "sk_controller_speedball", "750", FCVAR_ARCHIVE
 ConVar sk_controller_dmgball ( "sk_controller_dmgball", "0" );
 
 class CSprite;
-class CNPC_Controller;
+//class CAlienController;
 
 enum
 {

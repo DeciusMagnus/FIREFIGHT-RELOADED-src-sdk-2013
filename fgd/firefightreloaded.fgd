@@ -97,6 +97,8 @@
 	output OnThrowWarn(void)        : "Fires when I trigger the warning green glow before tossing"
 	output OnThrow(void)            : "Fires just after I throw something"
 	output OnHealthIsNow(integer)       : "When I am damaged, my hitpoints thereafter"
+    output OnPlayerPin(void)       : "Fires when the player gets pinned"
+    output OnStopPlayerPin(void)       : "Fires when the player gets unpinned"
 	
 	input SetThrowRate(float) : "Advisor will throw an object once per this many seconds (plus a little more)"
 	input WrenchImmediate(string) : "Advisor will immediately start levitating all objects with this name"

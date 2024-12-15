@@ -386,7 +386,8 @@ const char* g_charPlayerbotMidRangeWeapons[] =
 	"weapon_m249para",
 	"weapon_sniper_rifle",
 	"weapon_mp5",
-	"weapon_oicw"
+	"weapon_oicw",
+	"weapon_rpg"
 };
 
 const char* g_charPlayerbotShortRangeWeapons[] =

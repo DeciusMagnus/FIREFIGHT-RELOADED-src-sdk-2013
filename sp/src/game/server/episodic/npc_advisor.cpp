@@ -120,6 +120,8 @@ BEGIN_DATADESC( CNPC_Advisor )
 	DEFINE_FIELD( m_bWasScripting, FIELD_BOOLEAN ),
 	DEFINE_FIELD(m_bStopMoving, FIELD_BOOLEAN),
 
+	DEFINE_FIELD(m_playerPinOutputCalled, FIELD_BOOLEAN),
+
 	DEFINE_FIELD( m_flLastThrowTime, FIELD_TIME ),
 	DEFINE_FIELD( m_vSavedLeadVel, FIELD_VECTOR ),
 
@@ -132,6 +134,8 @@ BEGIN_DATADESC( CNPC_Advisor )
 	DEFINE_OUTPUT( m_OnThrowWarn, "OnThrowWarn" ),
 	DEFINE_OUTPUT( m_OnThrow, "OnThrow" ),
 	DEFINE_OUTPUT( m_OnHealthIsNow, "OnHealthIsNow" ),
+	DEFINE_OUTPUT(m_OnPlayerPin, "OnPlayerPin"),
+	DEFINE_OUTPUT(m_OnStopPlayerPin, "OnStopPlayerPin"),
 
 	DEFINE_INPUTFUNC( FIELD_FLOAT,   "SetThrowRate",    InputSetThrowRate ),
 	DEFINE_INPUTFUNC( FIELD_STRING,  "WrenchImmediate", InputWrenchImmediate ),
@@ -199,6 +203,7 @@ void CNPC_Advisor::Spawn()
 #if NPC_ADVISOR_HAS_BEHAVIOR
 	m_bBulletResistanceOutlineDisabled = true;
 	m_bBulletResistanceBroken = advisor_disablebulletresistance.GetBool();
+	m_playerPinOutputCalled = false;
 #endif
 
 	//CapabilitiesClear();
@@ -1114,6 +1119,8 @@ void CNPC_Advisor::RunTask( const Task_t *pTask )
 					{
 						m_hPlayerPinPos.Set(NULL);
 					}
+					m_OnStopPlayerPin.FireOutput(this, this);
+					m_playerPinOutputCalled = false;
 					TaskComplete();
 					break;
 				}
@@ -1131,6 +1138,8 @@ void CNPC_Advisor::RunTask( const Task_t *pTask )
 					{
 						m_hPlayerPinPos.Set(NULL);
 					}
+					m_OnStopPlayerPin.FireOutput(this, this);
+					m_playerPinOutputCalled = false;
 					Warning("Advisor did not leave PIN PLAYER mode. Aborting due to failsafe!\n");
 					TaskFail("Advisor did not leave PIN PLAYER mode. Aborting due to failsafe!\n");
 					FlingPlayer(pPinEnt, advisor_flingentity_force_pin.GetFloat(), true);
@@ -1150,6 +1159,8 @@ void CNPC_Advisor::RunTask( const Task_t *pTask )
 					{
 						m_hPlayerPinPos.Set(NULL);
 					}
+					m_OnStopPlayerPin.FireOutput(this, this);
+					m_playerPinOutputCalled = false;
 					TaskFail("Player is not the enemy?!");
 					break;
 				}
@@ -1175,6 +1186,12 @@ void CNPC_Advisor::RunTask( const Task_t *pTask )
 					pPlayer->m_flCoyoteTime = 0;
 					pPlayer->m_Local.m_vecTargetPunchAngle.Set(ROLL, 0);
 					pPlayer->m_vecLastWallRunPos = pPlayer->GetAbsOrigin();
+				}
+
+				if (!m_playerPinOutputCalled)
+				{
+					m_OnPlayerPin.FireOutput(this, this);
+					m_playerPinOutputCalled = true;
 				}
 
 				// use exponential falloff to peg the player to the pin point
