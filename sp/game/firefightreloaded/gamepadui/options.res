@@ -40,6 +40,8 @@
                     "gaussrail"		        "#GameUI_LoadoutRailgun"
                     "explosives"		        "#GameUI_LoadoutExplosives"
                     "snipers"		        "#GameUI_LoadoutSnipers"
+                    "randomizer"            "#GameUI_LoadoutRandomizer"
+                    "randomizer_hardcore"   "#GameUI_LoadoutRandomizerPermadeath"
                     "mapadd"		        "#FIREFIGHTRELOADED_ModMapping_Mapadd"
 				}
 			}

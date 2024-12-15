@@ -393,6 +393,8 @@
             "GameUI_LoadoutRailgun": "Gausses and Rails",
             "GameUI_LoadoutExplosives": "Explosion Day",
             "GameUI_LoadoutSnipers": "Nightfall",
+            "GameUI_LoadoutRandomizer": "Randomizer",
+            "GameUI_LoadoutRandomizerPermadeath": "Permadeath Randomizer",
             "GameUI_CrosshairOff": "Off",
             "GameUI_CrosshairOn": "On",
             "GameUI_Crosshair": "Crosshair settings",
