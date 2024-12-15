@@ -6252,7 +6252,6 @@ void CBasePlayer::LoadLoadoutFile(const char* kvName, bool savetoLoadout)
 	}
 
 	bool gaveWeapons = false;
-
 	if (m_loadoutWeapons.Size() > 0)
 	{
 		for (int i = m_loadoutWeapons.Size() - 1; i >= 0; i--)
