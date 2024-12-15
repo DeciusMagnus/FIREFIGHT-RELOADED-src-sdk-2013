@@ -1492,14 +1492,17 @@ void CNPC_Manhack::Slice( CBaseEntity *pHitEntity, float flInterval, trace_t &tr
 		flDamage = 1.0f;
 	}
 
-	CTakeDamageInfo info( this, this, flDamage, DMG_SLASH );
+	CBaseEntity* pOwner = (GetOwnerEntity()) ? GetOwnerEntity() : this;
+
+	CTakeDamageInfo info( this, pOwner, flDamage, DMG_SLASH );
 
 	// check for actual "ownership" of damage
-	CBasePlayer *pPlayer = HasPhysicsAttacker( MANHACK_SMASH_TIME );
-	if (pPlayer)
-	{
-		info.SetAttacker( pPlayer );
-	}
+	// no longer need this.
+	//CBasePlayer *pPlayer = HasPhysicsAttacker( MANHACK_SMASH_TIME );
+	//if (pPlayer)
+	//{
+		//info.SetAttacker( pPlayer );
+	//}
 
 	Vector dir = (tr.endpos - tr.startpos);
 	if ( dir == vec3_origin )
