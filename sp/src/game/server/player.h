@@ -996,6 +996,9 @@ public:
 	int m_StuckLast;
 
 	KeyValues* m_kvLoadout;
+	CUtlVector<string_t> m_loadoutWeapons;
+	CUtlVector<string_t> m_loadoutAmmo;
+	CUtlVector<int> m_loadoutAmmoAmt;
 	CUtlVector<string_t> m_awardedWeapons;
 	CUtlVector<string_t> m_boughtWeapons;
 	CUtlVector<string_t> m_droppedWeapons;

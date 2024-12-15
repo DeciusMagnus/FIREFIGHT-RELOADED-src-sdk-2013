@@ -649,6 +649,12 @@ BEGIN_DATADESC( CBasePlayer )
 	DEFINE_FIELD(m_bForcedLoadout, FIELD_BOOLEAN),
 	DEFINE_FIELD(m_szForcedLoadoutName, FIELD_STRING),
 
+	DEFINE_FIELD(m_bIronKick, FIELD_BOOLEAN),
+	DEFINE_FIELD(m_bIronKickNoWeaponPickupOnly, FIELD_BOOLEAN),
+	DEFINE_FIELD(m_bHardcore, FIELD_BOOLEAN),
+	DEFINE_FIELD(m_bHardcoreNoDisconnect, FIELD_BOOLEAN),
+
+
 #if !defined( NO_ENTITY_PREDICTION )
 	// DEFINE_FIELD( m_SimulatedByThisPlayer, CUtlVector < CHandle < CBaseEntity > > ),
 #endif
@@ -708,6 +714,9 @@ BEGIN_DATADESC( CBasePlayer )
 	DEFINE_FIELD( m_nWallRunState, FIELD_INTEGER),
 	DEFINE_FIELD( m_vecWallNorm, FIELD_POSITION_VECTOR ),
 
+	DEFINE_UTLVECTOR(m_loadoutWeapons, FIELD_STRING),
+	DEFINE_UTLVECTOR(m_loadoutAmmo, FIELD_STRING),
+	DEFINE_UTLVECTOR(m_loadoutAmmoAmt, FIELD_INTEGER),
 	DEFINE_UTLVECTOR(m_awardedWeapons, FIELD_STRING),
 	DEFINE_UTLVECTOR(m_boughtWeapons, FIELD_STRING),
 	DEFINE_UTLVECTOR(m_droppedWeapons, FIELD_STRING),
@@ -6095,7 +6104,8 @@ void CBasePlayer::LoadLoadoutFile(const char* kvName, bool savetoLoadout)
 
 		if (itemName)
 		{
-			GiveNamedItem(itemName);
+			string_t ConvertedClassname = MAKE_STRING(itemName);
+			m_loadoutWeapons.AddToTail(ConvertedClassname);
 		}
 
 		const char* itemAmmoType = pNode->GetString("ammotype", "");
@@ -6103,7 +6113,9 @@ void CBasePlayer::LoadLoadoutFile(const char* kvName, bool savetoLoadout)
 
 		if (itemAmmoType && itemAmmoNum > 0)
 		{
-			BaseClass::GiveAmmo(itemAmmoNum, itemAmmoType);
+			string_t ConvertedAmmoname = MAKE_STRING(itemAmmoType);
+			m_loadoutAmmo.AddToTail(ConvertedAmmoname);
+			m_loadoutAmmoAmt.AddToTail(itemAmmoNum);
 
 			//only read ammo2 if ammo 1 is available lol.
 			const char* itemAmmo2Type = pNode->GetString("ammo2type", "");
@@ -6111,7 +6123,9 @@ void CBasePlayer::LoadLoadoutFile(const char* kvName, bool savetoLoadout)
 
 			if (itemAmmo2Type && itemAmmo2Num > 0)
 			{
-				BaseClass::GiveAmmo(itemAmmo2Num, itemAmmo2Type);
+				string_t ConvertedAmmo2name = MAKE_STRING(itemAmmo2Type);
+				m_loadoutAmmo.AddToTail(ConvertedAmmo2name);
+				m_loadoutAmmoAmt.AddToTail(itemAmmo2Num);
 			}
 		}
 
@@ -6211,6 +6225,47 @@ void CBasePlayer::LoadLoadoutFile(const char* kvName, bool savetoLoadout)
 		}
 
 		pNode = pNode->GetNextKey();
+	}
+
+	bool gaveWeapons = false;
+
+	if (m_loadoutWeapons.Size() > 0)
+	{
+		for (int i = m_loadoutWeapons.Size() - 1; i >= 0; i--)
+		{
+			const char* ConvertedString = STRING(m_loadoutWeapons[i]);
+
+			if (ConvertedString)
+			{
+				GiveNamedItem(ConvertedString);
+				if (!gaveWeapons)
+				{
+					gaveWeapons = true;
+				}
+			}
+		}
+
+		m_loadoutWeapons.Purge();
+	}
+
+	if (gaveWeapons)
+	{
+		if (m_loadoutAmmo.Size() > 0 && m_loadoutAmmo.Size() == m_loadoutAmmoAmt.Size())
+		{
+			for (int i = m_loadoutAmmo.Size() - 1; i >= 0; i--)
+			{
+				const char* ConvertedAmmoString = STRING(m_loadoutAmmo[i]);
+				int amt = m_loadoutAmmoAmt[i];
+
+				if (ConvertedAmmoString && amt)
+				{
+					BaseClass::GiveAmmo(amt, ConvertedAmmoString);
+				}
+			}
+
+			m_loadoutAmmo.Purge();
+			m_loadoutAmmoAmt.Purge();
+		}
 	}
 
 	if (sk_saveweapons.GetBool() || sk_savepurchasedweapons.GetBool() || sk_savedroppedweapons.GetBool())
