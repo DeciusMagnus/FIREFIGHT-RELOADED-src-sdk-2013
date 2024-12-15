@@ -228,6 +228,7 @@ void CWeaponTurret::SpawnTurret(void)
 	{
 		pTurret->SetName(AllocPooledString("spawnedTurret"));
 		pTurret->m_bDisableInitAttributes = true;
+		pTurret->SetOwnerEntity(pOwner);
 		DispatchSpawn(pTurret);
 		if (pHologram)
 		{
