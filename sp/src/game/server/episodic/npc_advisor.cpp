@@ -61,10 +61,10 @@ ConVar advisor_flingentity_force_pin("advisor_flingentity_force_pin", "75", FCVA
 ConVar advisor_speed("advisor_speed", "250", FCVAR_ARCHIVE);
 ConVar advisor_bulletresistance_speed("advisor_bulletresistance_speed", "120", FCVAR_ARCHIVE);
 
-ConVar advisor_enable_premature_droning("advisor_enable_premature_droning", "0", FCVAR_ARCHIVE);
+ConVar advisor_enable_premature_droning("advisor_enable_premature_droning", "1", FCVAR_ARCHIVE);
 ConVar advisor_enable_droning("advisor_enable_droning", "1", FCVAR_ARCHIVE);
 
-ConVar advisor_droning_wait_time("advisor_droning_wait_time", "30", FCVAR_ARCHIVE);
+ConVar advisor_droning_wait_time("advisor_droning_wait_time", "60", FCVAR_ARCHIVE);
 
 extern ConVar sk_combine_ace_shielddamage_normal;
 extern ConVar sk_combine_ace_shielddamage_hard;
@@ -822,7 +822,8 @@ void CNPC_Advisor::StartTask( const Task_t *pTask )
 
 float CNPC_Advisor::MaxYawSpeed()
 { 
-	return (!m_bBulletResistanceBroken ? advisor_bulletresistance_speed.GetFloat() : advisor_speed.GetFloat());
+	float speedvar = (!m_bBulletResistanceBroken ? advisor_bulletresistance_speed.GetFloat() : advisor_speed.GetFloat());
+	return speedvar;
 }
 
 void CNPC_Advisor::MovetoTarget(Vector vecTarget)
@@ -1258,9 +1259,11 @@ void CNPC_Advisor::RunTask( const Task_t *pTask )
 
 				if (m_droneObjects.Count() > 0)
 				{
+					StopSound("NPC_Advisor.Blast");
+					EmitSound("NPC_Advisor.Blast");
 					int nRandomIndex = random->RandomInt(0, m_droneObjects.Count() - 1);
 					Dronify(m_droneObjects[nRandomIndex]);
-					m_fllastDronifiedTime = gpGlobals->curtime + advisor_droning_wait_time.GetFloat();
+					m_fllastDronifiedTime = gpGlobals->curtime + advisor_droning_wait_time.GetFloat() * (m_bBulletResistanceBroken ? advisor_throw_rate.GetFloat() : 1);
 					TaskComplete();
 				}
 				else
@@ -1828,8 +1831,14 @@ int CNPC_Advisor::SelectSchedule()
 
 void CNPC_Advisor::Touch(CBaseEntity* pOther)
 {
-	if (pOther->IsPlayer() || pOther->IsNPC())
+	if (pOther->IsPlayer())
+	{
 		FlingPlayer(pOther, advisor_flingentity_force_touch.GetFloat());
+	}
+	else if (pOther->IsNPC())
+	{
+		FlingPlayer(pOther, advisor_flingentity_force_touch.GetFloat());
+	}
 }
 
 void CNPC_Advisor::Dronify(CBaseEntity* pOther)
