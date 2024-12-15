@@ -2,4 +2,5 @@
 {
     "ForcedLoadout" "boss"
     "AllowMusicSystem" "0"
+    "HideFromPlayerOverride"	"0"
 }

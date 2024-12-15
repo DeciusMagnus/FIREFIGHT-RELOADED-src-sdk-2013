@@ -2550,6 +2550,20 @@
 				}
 			}
             
+            "GaussBeam"
+			{
+				"text"			"#GameUI_GaussBeamOption"
+				"type"			"wheelywheel"
+				"advanced"		"1"
+				"convar"		"sv_gauss_jeep_beam"
+
+				"options"
+				{
+					"0"		"#Song_Album_HalfLife"
+					"1"		"#Song_Album_HalfLife2"
+				}
+			}
+            
             "BullettimeBulletSpeed"
 			{
 				"text"			"#GameUI_Bullettime_Bullet_Speed"

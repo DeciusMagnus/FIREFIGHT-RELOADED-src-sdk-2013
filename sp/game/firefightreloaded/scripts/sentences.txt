@@ -502,20 +502,20 @@ COMBINE_ACE_GREN1 npc/combine_ace/vo/(v100) on1(p120) flaredown off1 {Len 1.17 c
  
 // Something dangerous nearby, need to run
 
-COMBINE_ACE_DANGER0 npc/combine_soldier/vo/(v100) on1(p120) displace off1 {Len 1.17}
-COMBINE_ACE_DANGER1 npc/combine_soldier/vo/(v100) on1(p120) displace2 off3 {Len 1.17}
-COMBINE_ACE_DANGER2 npc/combine_soldier/vo/(v100) on1(p120) ripcordripcord off1 {Len 1.17}
+COMBINE_ACE_DANGER0 npc/combine_ace/vo/(v100) on1(p120) displace off1 {Len 1.17}
+COMBINE_ACE_DANGER1 npc/combine_ace/vo/(v100) on1(p120) displace2 off3 {Len 1.17}
+COMBINE_ACE_DANGER2 npc/combine_ace/vo/(v100) on1(p120) shit ripcordripcord off1 {Len 1.17}
 
 //Shield Breaks
 
-COMBINE_ACE_SHIELDDANGER0 npc/combine_ace/vo/(v100) on1(p120) displace off1 {Len 1.17 closecaption NPC_Combine.Alert}
-COMBINE_ACE_SHIELDDANGER1 npc/combine_ace/vo/(v100) on1(p120) displace2 off3 {Len 1.17 closecaption NPC_Combine.Alert}
-COMBINE_ACE_SHIELDDANGER2 npc/combine_ace/vo/(v100) on1(p120) ripcordripcord off1 {Len 1.17 closecaption NPC_Combine.Alert}
-COMBINE_ACE_SHIELDDANGER3 npc/combine_ace/vo/(v100) on1(p120) shit shit shit overwatchsectoroverrun off1 {Len 1.17 closecaption NPC_Combine.Alert}
-COMBINE_ACE_SHIELDDANGER4 npc/combine_ace/vo/(v100) on1(p120) coverhurt off1 {Len 1.17 closecaption NPC_Combine.Alert}
-COMBINE_ACE_SHIELDDANGER5 npc/combine_ace/vo/(v100) on1(p120) displace2 off1 {Len 1.17 closecaption NPC_Combine.Alert}
-COMBINE_ACE_SHIELDDANGER6 npc/combine_ace/vo/(v100) on2(p120) V_MYNAMES V_MYNUMS requestmedical off1 {Len 1.17 closecaption NPC_Combine.Alert}
-COMBINE_ACE_SHIELDDANGER7 npc/combine_ace/vo/(v100) on1(p120) V_MYNAMES V_MYNUMS requeststimdose off1 {Len 1.17 closecaption NPC_Combine.Alert}
+COMBINE_ACE_SHIELDDANGER0 npc/combine_ace/vo/pain1 (v100) on1(p120) displace off1 {Len 1.17 closecaption NPC_Combine.Alert}
+COMBINE_ACE_SHIELDDANGER1 npc/combine_ace/vo/pain2 (v100) on1(p120) displace2 off3 {Len 1.17 closecaption NPC_Combine.Alert}
+COMBINE_ACE_SHIELDDANGER2 npc/combine_ace/vo/pain1 (v100) on1(p120) ripcordripcord off1 {Len 1.17 closecaption NPC_Combine.Alert}
+COMBINE_ACE_SHIELDDANGER3 npc/combine_ace/vo/pain2 (v100) on1(p120) shit (p110)shit (p120)shit overwatchsectoroverrun off1 {Len 1.17 closecaption NPC_Combine.Alert}
+COMBINE_ACE_SHIELDDANGER4 npc/combine_ace/vo/pain1 (v100) on1(p120) coverhurt off1 {Len 1.17 closecaption NPC_Combine.Alert}
+COMBINE_ACE_SHIELDDANGER5 npc/combine_ace/vo/pain2 (v100) on1(p120) displace2 off1 {Len 1.17 closecaption NPC_Combine.Alert}
+COMBINE_ACE_SHIELDDANGER6 npc/combine_ace/vo/pain1 (v100) on2(p120) V_MYNAMES V_MYNUMS requestmedical off1 {Len 1.17 closecaption NPC_Combine.Alert}
+COMBINE_ACE_SHIELDDANGER7 npc/combine_ace/vo/pain2 (v100) on1(p120) V_MYNAMES V_MYNUMS requeststimdose off1 {Len 1.17 closecaption NPC_Combine.Alert}
 
 // Player Alert - first contact and I'm the squad leader
 

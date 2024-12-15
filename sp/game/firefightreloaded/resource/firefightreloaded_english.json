@@ -605,6 +605,7 @@
             "GameUI_SuitBootupMode_FRS": "Bell Only",
             "GameUI_FMOD_Credit": "This mod uses FMOD. FMOD created by Firelight Technologies Pty Ltd.",
             "GameUI_StoreMusic": "Store Music",
+            "GameUI_GaussBeamOption": "Gauss Beam Style",
             "GameUI_MusicSystem_NowPlaying": "NOW PLAYING:",
             "Song_Title_Loading": "LOADING...",
             "Song_Album_HalfLife": "Half-Life",
