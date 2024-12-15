@@ -21,6 +21,7 @@
 
 #include "weapon_gauss.h"
 
+ConVar sv_gauss_jeep_beam("sv_gauss_jeep_beam", "0", FCVAR_ARCHIVE);
 ConVar sk_plr_dmg_gauss("sk_plr_dmg_gauss", "0");
 ConVar sk_plr_max_dmg_gauss("sk_plr_max_dmg_gauss", "0");
 
@@ -118,8 +119,6 @@ void CWeaponGaussGun::Fire( void )
 			m_hViewModel.Set( vm );
 		}
 	}
-
-	Vector	startPos= pOwner->Weapon_ShootPosition();
 	Vector	aimDir	= pOwner->GetAutoaimVector( AUTOAIM_5DEGREES );
 
 	Vector vecUp, vecRight;
@@ -136,81 +135,15 @@ void CWeaponGaussGun::Fire( void )
 
 	aimDir = aimDir + x * GetBulletSpread().x * vecRight + y * GetBulletSpread().y * vecUp;
 
-	Vector	endPos	= startPos + ( aimDir * MAX_TRACE_LENGTH );
-	
-	//Shoot a shot straight out
-	trace_t	tr;
-	UTIL_TraceLine( startPos, endPos, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, &tr );
-	
-	ClearMultiDamage();
+	FireBulletsInfo_t info(1, pOwner->Weapon_ShootPosition(), aimDir, VECTOR_CONE_1DEGREES, MAX_TRACE_LENGTH, GetPrimaryAmmoType());
 
-	CBaseEntity *pHit = tr.m_pEnt;
-	
-	CTakeDamageInfo dmgInfo( this, pOwner, sk_plr_dmg_gauss.GetFloat(), DMG_SHOCK );
+	info.m_nFlags = FIRE_BULLETS_ALLOW_WATER_SURFACE_IMPACTS;
+	info.m_pAttacker = pOwner;
 
-	if ( pHit != NULL )
-	{
-		CalculateBulletDamageForce( &dmgInfo, m_iPrimaryAmmoType, aimDir, tr.endpos );
-		pHit->DispatchTraceAttack( dmgInfo, aimDir, &tr );
-	}
-	
-	if ( tr.DidHitWorld() )
-	{
-		float hitAngle = -DotProduct( tr.plane.normal, aimDir );
-
-		if ( hitAngle < 0.5f )
-		{
-			Vector vReflection;
-		
-			vReflection = 2.0 * tr.plane.normal * hitAngle + aimDir;
-			
-			startPos	= tr.endpos;
-			endPos		= startPos + ( vReflection * MAX_TRACE_LENGTH );
-			
-			//Draw beam to reflection point
-			DrawBeam( tr.startpos, tr.endpos, 1.6);
-
-			CPVSFilter filter( tr.endpos );
-			te->GaussExplosion( filter, 0.0f, tr.endpos, tr.plane.normal, 0 );
-
-			UTIL_ImpactTrace( &tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss" );
-
-			//Find new reflection end position
-			UTIL_TraceLine( startPos, endPos, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, &tr );
-
-			if ( tr.m_pEnt != NULL )
-			{
-				dmgInfo.SetDamageForce( GetAmmoDef()->DamageForce(m_iPrimaryAmmoType) * vReflection );
-				dmgInfo.SetDamagePosition( tr.endpos );
-				tr.m_pEnt->DispatchTraceAttack( dmgInfo, vReflection, &tr );
-			}
-
-			//Connect reflection point to end
-			DrawBeam( tr.startpos, tr.endpos, 0.4 );
-		}
-		else
-		{
-			DrawBeam( tr.startpos, tr.endpos, 1.6);
-		}
-	}
-	else
-	{
-		DrawBeam( tr.startpos, tr.endpos, 1.6);
-	}
-	
-	ApplyMultiDamage();
-
-	UTIL_ImpactTrace( &tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss" );
-
-	CPVSFilter filter( tr.endpos );
-	te->GaussExplosion( filter, 0.0f, tr.endpos, tr.plane.normal, 0 );
-
-	m_flNextSecondaryAttack = gpGlobals->curtime + 0.5f;
-
-	AddViewKick();
+	FireBullets(info);
 
 	// Register a muzzleflash for the AI
-	pOwner->SetMuzzleFlashTime( gpGlobals->curtime + 0.5 );
+	pOwner->SetMuzzleFlashTime(gpGlobals->curtime + 0.5);
 }
 
 //-----------------------------------------------------------------------------
@@ -314,7 +247,7 @@ void CWeaponGaussGun::ChargedFire( void )
 
 	if ( penetrated == true )
 	{
-		RadiusDamage( CTakeDamageInfo( this, this, flDamage, DMG_SHOCK ), tr.endpos, 200.0f, CLASS_NONE, NULL );
+		RadiusDamage( CTakeDamageInfo( this, pOwner, flDamage, DMG_SHOCK ), tr.endpos, 200.0f, CLASS_NONE, NULL );
 	}
 
 	// Register a muzzleflash for the AI
@@ -323,36 +256,91 @@ void CWeaponGaussGun::ChargedFire( void )
 
 //-----------------------------------------------------------------------------
 // Purpose: 
+// Input  : &tr - 
+//			nDamageType - 
+//-----------------------------------------------------------------------------
+void CWeaponGaussGun::DoImpactEffect(trace_t& tr, int nDamageType)
+{
+	//Draw our beam
+	DrawBeam(tr.startpos, tr.endpos, 2.4);
+
+	if ((tr.surface.flags & SURF_SKY) == false)
+	{
+		CPVSFilter filter(tr.endpos);
+		te->GaussExplosion(filter, 0.0f, tr.endpos, tr.plane.normal, 0);
+
+		UTIL_ImpactTrace(&tr, GetAmmoDef()->DamageType(m_iPrimaryAmmoType), "ImpactGauss");
+		UTIL_DecalTrace(&tr, "RedGlowFade");
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
 //-----------------------------------------------------------------------------
 void CWeaponGaussGun::DrawBeam( const Vector &startPos, const Vector &endPos, float width)
 {
-	//Draw the main beam shaft
-	CBeam *pBeam = CBeam::BeamCreate( GAUSS_BEAM_SPRITE, width );
-	
-	pBeam->SetStartPos(startPos);
-	pBeam->PointEntInit(endPos, this);
-	pBeam->SetEndAttachment(LookupAttachment("muzzle"));
-
-	pBeam->SetBrightness( 255 );
-	pBeam->SetColor( 255, 145+random->RandomInt( -16, 16 ), 0 );
-	pBeam->RelinkBeam();
-	pBeam->LiveForTime( 0.1f );
-
-	//Draw electric bolts along shaft
-	for ( int i = 0; i < 3; i++ )
+	if (sv_gauss_jeep_beam.GetBool())
 	{
-		pBeam = CBeam::BeamCreate( GAUSS_BEAM_SPRITE, (width/2.0f) + i );
-		
+		//Tracer down the middle
+		UTIL_Tracer(startPos, endPos, 0, TRACER_DONT_USE_ATTACHMENT, 6500, false, "GaussTracer");
+
+		//Draw the main beam shaft
+		CBeam* pBeam = CBeam::BeamCreate(GAUSS_BEAM_SPRITE, 0.5);
+
 		pBeam->SetStartPos(startPos);
 		pBeam->PointEntInit(endPos, this);
 		pBeam->SetEndAttachment(LookupAttachment("muzzle"));
-		
-		pBeam->SetBrightness( random->RandomInt( 64, 255 ) );
-		pBeam->SetColor( 255, 255, 150+random->RandomInt( 0, 64 ) );
+		pBeam->SetWidth(width);
+		pBeam->SetEndWidth(0.05f);
+		pBeam->SetBrightness(255);
+		pBeam->SetColor(255, 185 + random->RandomInt(-16, 16), 40);
 		pBeam->RelinkBeam();
-		pBeam->LiveForTime( 0.1f );
-		pBeam->SetNoise( 1.6f * i );
-		pBeam->SetEndWidth( 0.1f );
+		pBeam->LiveForTime(0.1f);
+
+		//Draw electric bolts along shaft
+		pBeam = CBeam::BeamCreate(GAUSS_BEAM_SPRITE, 3.0f);
+
+		pBeam->SetStartPos(startPos);
+		pBeam->PointEntInit(endPos, this);
+		pBeam->SetEndAttachment(LookupAttachment("muzzle"));
+
+		pBeam->SetBrightness(random->RandomInt(64, 255));
+		pBeam->SetColor(255, 255, 150 + random->RandomInt(0, 64));
+		pBeam->RelinkBeam();
+		pBeam->LiveForTime(0.1f);
+		pBeam->SetNoise(1.6f);
+		pBeam->SetEndWidth(0.1f);
+	}
+	else
+	{
+		//Draw the main beam shaft
+		CBeam* pBeam = CBeam::BeamCreate(GAUSS_BEAM_SPRITE, width);
+
+		pBeam->SetStartPos(startPos);
+		pBeam->PointEntInit(endPos, this);
+		pBeam->SetEndAttachment(LookupAttachment("muzzle"));
+
+		pBeam->SetBrightness(255);
+		pBeam->SetColor(255, 145 + random->RandomInt(-16, 16), 0);
+		pBeam->RelinkBeam();
+		pBeam->LiveForTime(0.1f);
+
+		//Draw electric bolts along shaft
+		for (int i = 0; i < 3; i++)
+		{
+			pBeam = CBeam::BeamCreate(GAUSS_BEAM_SPRITE, (width / 2.0f) + i);
+
+			pBeam->SetStartPos(startPos);
+			pBeam->PointEntInit(endPos, this);
+			pBeam->SetEndAttachment(LookupAttachment("muzzle"));
+
+			pBeam->SetBrightness(random->RandomInt(64, 255));
+			pBeam->SetColor(255, 255, 150 + random->RandomInt(0, 64));
+			pBeam->RelinkBeam();
+			pBeam->LiveForTime(0.1f);
+			pBeam->SetNoise(1.6f * i);
+			pBeam->SetEndWidth(0.1f);
+		}
 	}
 }
 

@@ -350,7 +350,17 @@ void CNPC_Combine::Spawn( void )
 	m_flNextLostSoundTime		= 0;
 	m_flAlertPatrolTime			= 0;
 
-	m_flNextAltFireTime = gpGlobals->curtime;
+	//this is so aces can actually be fair.
+	m_flNextAltFireTime = gpGlobals->curtime + 6;
+
+	if (g_pGameRules->IsSkillLevel(SKILL_HARD))
+		m_flNextGrenadeCheck = gpGlobals->curtime + random->RandomFloat(2, 5);// wait a random amount of time before shooting again
+	else if (g_pGameRules->IsSkillLevel(SKILL_VERYHARD))
+		m_flNextGrenadeCheck = gpGlobals->curtime + random->RandomFloat(2, 4);// wait a random amount of time before shooting again
+	else if (g_pGameRules->IsSkillLevel(SKILL_NIGHTMARE))
+		m_flNextGrenadeCheck = gpGlobals->curtime + random->RandomFloat(2, 3);// wait a random amount of time before shooting again
+	else
+		m_flNextGrenadeCheck = gpGlobals->curtime + 6;// wait six seconds before even looking again to see if a grenade can be thrown.
 
 	bool variantoverride = false;
 	//change manhack number
@@ -2176,6 +2186,14 @@ int CNPC_Combine::SelectSchedule( void )
 	if ( nSched != SCHED_NONE )
 		return nSched;
 
+	if (IsAce() && !m_hForcedGrenadeTarget)
+	{
+		if ((GetEnemy() && !(HasCondition(COND_ENEMY_OCCLUDED) || HasCondition(COND_LOST_ENEMY))))
+		{
+			m_hForcedGrenadeTarget = GetEnemy();
+		}
+	}
+
 	if ( m_hForcedGrenadeTarget )
 	{
 		if ( m_flNextGrenadeCheck < gpGlobals->curtime )
@@ -2184,11 +2202,44 @@ int CNPC_Combine::SelectSchedule( void )
 
 			if (IsElite() || IsAce())
 			{
-				if (FVisible(m_hForcedGrenadeTarget))
+				//aces don't care about workplace safety
+				if (IsAce())
 				{
-					m_vecAltFireTarget = vecTarget;
-					m_hForcedGrenadeTarget = NULL;
-					return SCHED_COMBINE_AR2_ALTFIRE;
+					//aces are more accurate
+					if (gpGlobals->curtime > m_flNextAltFireTime)
+					{
+						m_vecAltFireTarget = vecTarget;
+						m_hForcedGrenadeTarget = NULL;
+						DelayAltFireAttack(6);
+						return SCHED_COMBINE_AR2_ALTFIRE;
+					}
+					else
+					{
+						// If we can, throw a grenade at the target. 
+						// Ignore grenade count / distance / etc
+						if (CheckCanThrowGrenade(vecTarget))
+						{
+							if (g_pGameRules->IsSkillLevel(SKILL_HARD))
+								m_flNextGrenadeCheck = gpGlobals->curtime + random->RandomFloat(2, 5);// wait a random amount of time before shooting again
+							else if (g_pGameRules->IsSkillLevel(SKILL_VERYHARD))
+								m_flNextGrenadeCheck = gpGlobals->curtime + random->RandomFloat(2, 4);// wait a random amount of time before shooting again
+							else if (g_pGameRules->IsSkillLevel(SKILL_NIGHTMARE))
+								m_flNextGrenadeCheck = gpGlobals->curtime + random->RandomFloat(2, 3);// wait a random amount of time before shooting again
+							else
+								m_flNextGrenadeCheck = gpGlobals->curtime + 6;// wait six seconds before even looking again to see if a grenade can be thrown.
+							m_hForcedGrenadeTarget = NULL;
+							return SCHED_COMBINE_FORCED_GRENADE_THROW;
+						}
+					}
+				}
+				else
+				{
+					if (FVisible(m_hForcedGrenadeTarget))
+					{
+						m_vecAltFireTarget = vecTarget;
+						m_hForcedGrenadeTarget = NULL;
+						return SCHED_COMBINE_AR2_ALTFIRE;
+					}
 				}
 			}
 			else
@@ -2204,7 +2255,7 @@ int CNPC_Combine::SelectSchedule( void )
 		}
 
 		// Can't throw at the target, so lets try moving to somewhere where I can see it
-		if ( !FVisible( m_hForcedGrenadeTarget ) )
+		if (!FVisible( m_hForcedGrenadeTarget ) )
 		{
 			return SCHED_COMBINE_MOVE_TO_FORCED_GREN_LOS;
 		}
@@ -2741,7 +2792,7 @@ int CNPC_Combine::TranslateSchedule( int scheduleType )
 			}
 			else
 			{
-				if (OccupyStrategySlot(SQUAD_SLOT_SPECIAL_ATTACK))
+				if (CanAltFireEnemy(true) && OccupyStrategySlot(SQUAD_SLOT_SPECIAL_ATTACK))
 				{
 					// Since I'm holding this squadslot, no one else can try right now. If I die before the shot 
 					// goes off, I won't have affected anyone else's ability to use this attack at their nearest
@@ -2987,7 +3038,14 @@ void CNPC_Combine::HandleAnimEvent( animevent_t *pEvent )
 				}
 
 				// wait six seconds before even looking again to see if a grenade can be thrown.
-				m_flNextGrenadeCheck = gpGlobals->curtime + 6;
+				if (g_pGameRules->IsSkillLevel(SKILL_HARD))
+					m_flNextGrenadeCheck = gpGlobals->curtime + random->RandomFloat(2, 5);// wait a random amount of time before shooting again
+				else if (g_pGameRules->IsSkillLevel(SKILL_VERYHARD))
+					m_flNextGrenadeCheck = gpGlobals->curtime + random->RandomFloat(2, 4);// wait a random amount of time before shooting again
+				else if (g_pGameRules->IsSkillLevel(SKILL_NIGHTMARE))
+					m_flNextGrenadeCheck = gpGlobals->curtime + random->RandomFloat(2, 3);// wait a random amount of time before shooting again
+				else
+					m_flNextGrenadeCheck = gpGlobals->curtime + 6;// wait six seconds before even looking again to see if a grenade can be thrown.
 			}
 			handledEvent = true;
 			break;
@@ -3492,13 +3550,13 @@ bool CNPC_Combine::CheckCanThrowGrenade( const Vector &vecTarget )
 //-----------------------------------------------------------------------------
 bool CNPC_Combine::CanAltFireEnemy( bool bUseFreeKnowledge )
 {
-	if (!IsElite())
+	if (!IsElite() && !IsAce())
 		return false;
 
 	if (GetActiveWeapon() && !GetActiveWeapon()->HasSecondaryAmmo())
 		return false;
 
-	if (IsCrouching())
+	if (!IsAce() && IsCrouching())
 		return false;
 
 	if( gpGlobals->curtime < m_flNextAltFireTime )

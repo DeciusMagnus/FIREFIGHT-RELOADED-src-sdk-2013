@@ -5734,7 +5734,6 @@ void CBasePlayer::PostThink()
 				}
 				else 
 				{
-					SetSuitUpdate("!HEV_MED2", false, SUIT_NEXT_IN_30SEC);
 					SetSuitUpdate("!HEV_HEAL6", false, SUIT_NEXT_IN_30SEC);
 					TakeHealth(m_fRegenRemander, DMG_GENERIC);
 					m_fRegenRemander = 0;

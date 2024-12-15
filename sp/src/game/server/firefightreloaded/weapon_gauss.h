@@ -50,6 +50,8 @@ public:
 
 	float	GetFireRate( void ) { return 0.2f; }
 
+	void	DoImpactEffect(trace_t& tr, int nDamageType);
+
 	virtual const Vector &GetBulletSpread( void )
 	{
 		static Vector cone = VECTOR_CONE_1DEGREES;	
