@@ -2205,12 +2205,18 @@ int CNPC_Combine::SelectSchedule( void )
 				//aces don't care about workplace safety
 				if (IsAce())
 				{
-					//aces are more accurate
 					if (gpGlobals->curtime > m_flNextAltFireTime)
 					{
 						m_vecAltFireTarget = vecTarget;
 						m_hForcedGrenadeTarget = NULL;
-						DelayAltFireAttack(6);
+						if (g_pGameRules->IsSkillLevel(SKILL_HARD))
+							DelayAltFireAttack(random->RandomFloat(2, 5));// wait a random amount of time before shooting again
+						else if (g_pGameRules->IsSkillLevel(SKILL_VERYHARD))
+							DelayAltFireAttack(random->RandomFloat(2, 4));// wait a random amount of time before shooting again
+						else if (g_pGameRules->IsSkillLevel(SKILL_NIGHTMARE))
+							DelayAltFireAttack(random->RandomFloat(2, 3));// wait a random amount of time before shooting again
+						else
+							DelayAltFireAttack(6);// wait six seconds before even looking again to see if a grenade can be thrown.
 						return SCHED_COMBINE_AR2_ALTFIRE;
 					}
 					else
