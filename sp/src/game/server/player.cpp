@@ -6100,32 +6100,56 @@ void CBasePlayer::LoadLoadoutFile(const char* kvName, bool savetoLoadout)
 			}
 		}
 
+		bool randomizer = pNode->GetBool("randomizermode", false);
+		int randMin = pNode->GetInt("randmin", 1);
+		int randMax = pNode->GetInt("randmax", 5);
+
 		const char* itemName = pNode->GetString("weapon", "");
+		//later.
+		//int itemPreset = pNode->GetInt("weaponpreset", -1);
+		bool weaponAddedToPool = false;
 
 		if (itemName)
 		{
-			string_t ConvertedClassname = MAKE_STRING(itemName);
-			m_loadoutWeapons.AddToTail(ConvertedClassname);
-		}
-
-		const char* itemAmmoType = pNode->GetString("ammotype", "");
-		int itemAmmoNum = pNode->GetInt("ammonum", 0);
-
-		if (itemAmmoType && itemAmmoNum > 0)
-		{
-			string_t ConvertedAmmoname = MAKE_STRING(itemAmmoType);
-			m_loadoutAmmo.AddToTail(ConvertedAmmoname);
-			m_loadoutAmmoAmt.AddToTail(itemAmmoNum);
-
-			//only read ammo2 if ammo 1 is available lol.
-			const char* itemAmmo2Type = pNode->GetString("ammo2type", "");
-			int itemAmmo2Num = pNode->GetInt("ammo2num", 0);
-
-			if (itemAmmo2Type && itemAmmo2Num > 0)
+			if (randomizer)
 			{
-				string_t ConvertedAmmo2name = MAKE_STRING(itemAmmo2Type);
-				m_loadoutAmmo.AddToTail(ConvertedAmmo2name);
-				m_loadoutAmmoAmt.AddToTail(itemAmmo2Num);
+				int rand = random->RandomInt(randMin, randMax);
+
+				if (rand == randMax)
+				{
+					weaponAddedToPool = true;
+					string_t ConvertedClassname = MAKE_STRING(itemName);
+					m_loadoutWeapons.AddToTail(ConvertedClassname);
+				}
+			}
+			else
+			{
+				string_t ConvertedClassname = MAKE_STRING(itemName);
+				m_loadoutWeapons.AddToTail(ConvertedClassname);
+			}
+
+			if (!randomizer || (randomizer && weaponAddedToPool))
+			{
+				const char* itemAmmoType = pNode->GetString("ammotype", "");
+				int itemAmmoNum = pNode->GetInt("ammonum", 0);
+
+				if (itemAmmoType && itemAmmoNum > 0)
+				{
+					string_t ConvertedAmmoname = MAKE_STRING(itemAmmoType);
+					m_loadoutAmmo.AddToTail(ConvertedAmmoname);
+					m_loadoutAmmoAmt.AddToTail(itemAmmoNum);
+
+					//only read ammo2 if ammo 1 is available lol.
+					const char* itemAmmo2Type = pNode->GetString("ammo2type", "");
+					int itemAmmo2Num = pNode->GetInt("ammo2num", 0);
+
+					if (itemAmmo2Type && itemAmmo2Num > 0)
+					{
+						string_t ConvertedAmmo2name = MAKE_STRING(itemAmmo2Type);
+						m_loadoutAmmo.AddToTail(ConvertedAmmo2name);
+						m_loadoutAmmoAmt.AddToTail(itemAmmo2Num);
+					}
+				}
 			}
 		}
 
@@ -6246,25 +6270,25 @@ void CBasePlayer::LoadLoadoutFile(const char* kvName, bool savetoLoadout)
 		}
 
 		m_loadoutWeapons.Purge();
-	}
 
-	if (gaveWeapons)
-	{
-		if (m_loadoutAmmo.Size() > 0 && m_loadoutAmmo.Size() == m_loadoutAmmoAmt.Size())
+		if (gaveWeapons)
 		{
-			for (int i = m_loadoutAmmo.Size() - 1; i >= 0; i--)
+			if (m_loadoutAmmo.Size() > 0 && m_loadoutAmmo.Size() == m_loadoutAmmoAmt.Size())
 			{
-				const char* ConvertedAmmoString = STRING(m_loadoutAmmo[i]);
-				int amt = m_loadoutAmmoAmt[i];
-
-				if (ConvertedAmmoString && amt)
+				for (int i = m_loadoutAmmo.Size() - 1; i >= 0; i--)
 				{
-					BaseClass::GiveAmmo(amt, ConvertedAmmoString);
-				}
-			}
+					const char* ConvertedAmmoString = STRING(m_loadoutAmmo[i]);
+					int amt = m_loadoutAmmoAmt[i];
 
-			m_loadoutAmmo.Purge();
-			m_loadoutAmmoAmt.Purge();
+					if (ConvertedAmmoString && amt)
+					{
+						BaseClass::GiveAmmo(amt, ConvertedAmmoString);
+					}
+				}
+
+				m_loadoutAmmo.Purge();
+				m_loadoutAmmoAmt.Purge();
+			}
 		}
 	}
 
