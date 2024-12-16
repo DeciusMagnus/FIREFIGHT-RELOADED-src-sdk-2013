@@ -1,45 +1,38 @@
-// Pistol
-
 WeaponData
 {
 	// Weapon data is loaded by both the Game and Client DLLs.
-	"printname"	"#HL2_Turret"
-	"viewmodel"		"models/weapons/v_turret_b.mdl"
-	"playermodel"		"models/weapons/w_turret_rb.mdl"
-	"anim_prefix"		"slam"
-	"weapon_type"		"utility"
-	"bucket"			"5"
-	"bucket_position"	"1"
+	"printname"	"#HL2_Manhack"
+	"viewmodel"				"models/weapons/v_manhack.mdl"
+	"playermodel"			"models/weapons/w_manhack.mdl"
+	"anim_prefix"			"Grenade"
+	"weapon_type"			"utility"
+	"bucket"				"5"
+	"bucket_position"			"2"
 
-	"clip_size"			"-1"
+	"clip_size"				"-1"
+	"clip2_size"			"-1"
 	"default_clip"			"1"
-	"primary_ammo"		"turret"
-	"secondary_ammo"	"None"
+	"default_clip2"			"-1"
 
-	"weight"		"2"
-	"rumble"		"1"
-	"item_flags"		"0"
+	"primary_ammo"			"manhack"
+	"secondary_ammo"		"None"
+
+	"weight"				"1"
+	"item_flags"			"18"	// ITEM_FLAG_NOAUTORELOAD | ITEM_FLAG_EXHAUSTIBLE
 	
 	"BuiltRightHanded" 		"1" 
 	"AllowFlipping" 		"1"
-	"MagazineStyledReloads"		"1"
-	"UseMuzzleSmoke"		"1"
+	"UseMuzzleSmoke"		"0"
 	"useironsights"			"0"
-	"LowerWeapon"			"1"
-	"useironsightcrosshair" 	"0"
-	"MeleeWeapon"			"1"
-
-	Adjust
-	{
-		"right"		"5.5"
-	}
+	"LowerWeapon"			"0"
+	"useironsightcrosshair" "0"
 
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
 	SoundData
 	{
-		"single_shot"		"HL2Player.Use"
-		"empty"			"Weapon_Pistol.Empty"
-		"special1"		"SolidMetal.ImpactHard"
+		"special1"		"WeaponFrag.Roll"
+		"double_shot"	"common/null.wav"
+		"single_shot"	"common/null.wav"
 	}
 
 	// Weapon Sprite data is loaded by the Client DLL.
@@ -47,7 +40,7 @@ WeaponData
 	{
 		"weapon"
 		{
-				"file"		"VGUI/basic2d_linear/ex_weaponicon_36"
+				"file"		"VGUI/basic2d_linear/ex_weaponicon_52"
 				"x"			"0"
 				"y"			"0"
 				"width"		"128"
@@ -55,7 +48,7 @@ WeaponData
 		}
 		"weapon_s"
 		{	
-				"file"		"VGUI/basic2d_linear/ex_weaponicon_36"
+				"file"		"VGUI/basic2d_linear/ex_weaponicon_52"
 				"x"			"0"
 				"y"			"0"
 				"width"		"128"
@@ -74,8 +67,8 @@ WeaponData
 		"autoaim"
 		{
 				"file"		"sprites/crosshairs"
-				"x"			"0"
-				"y"			"48"
+				"x"			"48"
+				"y"			"72"
 				"width"		"24"
 				"height"	"24"
 		}

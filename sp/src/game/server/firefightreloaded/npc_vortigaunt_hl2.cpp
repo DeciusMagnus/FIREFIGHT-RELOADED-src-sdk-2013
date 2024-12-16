@@ -72,7 +72,8 @@
 // Target must be within this range to heal
 #define	HEAL_RANGE			256
 
-ConVar	sk_vortigaunt_hl2_health( "sk_vortigaunt_hl2_health","0");
+extern ConVar sk_vortigaunt_enemy_health;
+extern ConVar sk_vortigaunt_ally_health;
 ConVar	sk_vortigaunt_hl2_armor_charge( "sk_vortigaunt_hl2_armor_charge","30");
 ConVar	sk_vortigaunt_hl2_dmg_claw( "sk_vortigaunt_hl2_dmg_claw","0");
 ConVar	sk_vortigaunt_hl2_dmg_rake( "sk_vortigaunt_hl2_dmg_rake","0");
@@ -1249,7 +1250,16 @@ void CNPC_Vortigaunt_HL2::Spawn()
 	AddSolidFlags( FSOLID_NOT_STANDABLE );
 	SetMoveType( MOVETYPE_STEP );
 	m_bloodColor		= BLOOD_COLOR_GREEN;
-	m_iHealth			= sk_vortigaunt_hl2_health.GetFloat();
+
+	if (HasSpawnFlags(SF_VORTIGAUNT_HL2_ENEMY))
+	{
+		m_iHealth = sk_vortigaunt_enemy_health.GetFloat();
+	}
+	else
+	{
+		m_iHealth = sk_vortigaunt_ally_health.GetFloat();
+	}
+
 	SetViewOffset( Vector ( 0, 0, 64 ) );// position of the eyes relative to monster's origin.
 	m_flFieldOfView		= VIEW_FIELD_WIDE; // NOTE: we need a wide field of view so npc will notice player and say hello
 	m_NPCState			= NPC_STATE_NONE;

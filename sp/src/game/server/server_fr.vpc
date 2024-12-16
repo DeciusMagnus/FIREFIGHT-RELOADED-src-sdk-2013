@@ -413,6 +413,7 @@ $Project "Server (FR)"
                 $File   "firefightreloaded\weapon_oicw.cpp"
                 $File   "firefightreloaded\weapon_gatling.cpp"
                 $File   "firefightreloaded\weapon_turret.cpp"
+                $File   "firefightreloaded\weapon_manhackthrower.cpp"
 			}
 			
 			$Folder	"HL2 Imported"

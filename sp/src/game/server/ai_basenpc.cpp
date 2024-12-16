@@ -4156,7 +4156,7 @@ void CAI_BaseNPC::NPCThink( void )
 		m_flNextDecisionTime = 0;
 	}
 
-	if (ai_disappear.GetBool() && !m_bBoss && (Classify() != CLASS_PLAYER_ALLY_VITAL))
+	if (ai_disappear.GetBool() && !m_bBoss && !m_bNoRemove && (Classify() != CLASS_PLAYER_ALLY_VITAL))
 	{
 		bool fpsRemoval = false;
 		bool fpsDanger = false;
@@ -11136,6 +11136,7 @@ BEGIN_DATADESC( CAI_BaseNPC )
 	DEFINE_FIELD( m_bImportanRagdoll,			FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_bPlayerAvoidState,			FIELD_BOOLEAN ),
 	DEFINE_FIELD(m_bBoss, FIELD_BOOLEAN),
+	DEFINE_FIELD(m_bNoRemove, FIELD_BOOLEAN),
 	DEFINE_FIELD(m_IsAdvisorDrone, FIELD_BOOLEAN),
 	DEFINE_FIELD(m_iAttributePresetNum, FIELD_INTEGER),
 	DEFINE_FIELD(m_IsWildcard, FIELD_BOOLEAN),

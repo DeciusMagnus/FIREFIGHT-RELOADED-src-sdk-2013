@@ -1268,6 +1268,7 @@ int CAGrunt::TranslateSchedule( int iType )
 			return SCHED_AGRUNT_VICTORY_DANCE;
 			break;
 
+		case SCHED_COWER:
 		case SCHED_FAIL:
 			// no fail schedule specified, so pick a good generic one.
 			{

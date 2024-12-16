@@ -3191,8 +3191,9 @@ Activity CNPC_MetroPolice::NPC_TranslateActivity( Activity newActivity )
 //-----------------------------------------------------------------------------
 void CNPC_MetroPolice::ReleaseManhack( void )
 {
-	if (!IsAlive())
-		return;
+	// this gets called in event_killed so this check is stupid
+	//if (!IsAlive())
+		//return;
 
 	Assert( m_hManhack );
 
@@ -3207,6 +3208,12 @@ void CNPC_MetroPolice::ReleaseManhack( void )
 	m_hManhack->RemoveSolidFlags( FSOLID_NOT_SOLID );
 	m_hManhack->SetMoveType( MOVETYPE_VPHYSICS );
 	m_hManhack->SetParent( NULL );
+
+	//this is so we can claim manhack based kills
+	if (IsAlive())
+	{
+		m_hManhack->SetOwnerEntity(this);
+	}
 
 	// Make us active
 	m_hManhack->RemoveSpawnFlags( SF_NPC_WAIT_FOR_SCRIPT );

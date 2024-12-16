@@ -166,4 +166,11 @@
 		"randomizermode" "1"
 		"weapon"	"weapon_turret"
 	}
+	"26"
+	{
+		"randomizermode" "1"
+		"weapon"	"weapon_manhackthrower"
+		"ammotype"	"manhack"
+		"ammonum"	"999"
+	}
 }

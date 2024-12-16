@@ -237,6 +237,7 @@ ConVar  sk_plr_dmg_katana("sk_plr_dmg_katana", "0", FCVAR_REPLICATED);
 ConVar  sk_npc_dmg_katana("sk_npc_dmg_katana", "0", FCVAR_REPLICATED);
 
 ConVar	sk_max_turret("sk_max_turret", "0", FCVAR_REPLICATED);
+ConVar	sk_max_manhack("sk_max_manhack", "0", FCVAR_REPLICATED);
 
 ConVar    sk_npc_dmg_assassinpistol("sk_npc_dmg_assassinpistol", "0", FCVAR_REPLICATED);
 ConVar    sk_npc_dmg_assassinsmg("sk_npc_dmg_assassinsmg", "0", FCVAR_REPLICATED);
@@ -1871,6 +1872,7 @@ CAmmoDef *GetAmmoDef()
 		def.AddAmmoType("gatling", DMG_BULLET, TRACER_LINE_AND_WHIZ, "sk_plr_dmg_gatling", "sk_npc_dmg_gatling", "sk_max_gatling", BULLET_IMPULSE(200, 1225), 0, 'r');
 		def.AddAmmoType("Katana", DMG_SLASH, TRACER_NONE, "sk_plr_dmg_katana", "sk_npc_dmg_katana", 1, BULLET_IMPULSE(200, 1225), 0, 'r');
 		def.AddAmmoType("turret", DMG_GENERIC, TRACER_NONE, 0, 0, "sk_max_turret", 0, 0, BULLET_IMPULSE(200, 1225), 0, 'r');
+		def.AddAmmoType("manhack", DMG_GENERIC, TRACER_NONE, 0, 0, "sk_max_manhack", 0, 0, BULLET_IMPULSE(200, 1225), 0, 'r');
 		//CUSTOM AMMO TYPES HERE.
 		def.AddAmmoType("CustomBullet1_Normal", DMG_BULLET, TRACER_LINE_AND_WHIZ, "sk_plr_dmg_custom_normal", "sk_npc_dmg_custom_normal", "sk_max_custom_normal", BULLET_IMPULSE(800, 5000), 0);
 		def.AddAmmoType("CustomBullet2_NormalBurn", DMG_BULLET | DMG_BURN, TRACER_LINE_AND_WHIZ, "sk_plr_dmg_custom_normal", "sk_npc_dmg_custom_normal", "sk_max_custom_normal", BULLET_IMPULSE(800, 5000), 0);

@@ -135,6 +135,11 @@
 				"font"		"WeaponIconsKillFeed"
 				"character"	"2"
 		}
+        "npc_turret_floor"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"2"
+		}
         "npc_turret_floor_weapon"
 		{
 				"font"		"WeaponIconsKillFeed"
@@ -228,8 +233,21 @@
 		}
 		"npc_manhack"
 		{
-				"font"		"WeaponIconsKillFeed"
-				"character"	"9"
+				"file"		"VGUI/basic2d_linear/ex_weaponicon_52_killicon"
+				"x"			"0"
+				"y"			"0"
+				"width"		"32"
+				"height"	"32"
+				"weaponicon"	"1"
+		}
+        "npc_manhack_weapon"
+		{
+				"file"		"VGUI/basic2d_linear/ex_weaponicon_52_killicon"
+				"x"			"0"
+				"y"			"0"
+				"width"		"32"
+				"height"	"32"
+				"weaponicon"	"1"
 		}
 		"kick"
 		{

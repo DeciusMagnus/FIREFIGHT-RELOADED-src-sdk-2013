@@ -73,7 +73,8 @@ static const char *VORT_EXTRACT_FINISH = "VORT_EXTRACT_FINISH";
 ConVar sk_vortigaunt_armor_charge( "sk_vortigaunt_armor_charge","30");
 ConVar sk_vortigaunt_armor_charge_per_token( "sk_vortigaunt_armor_charge_per_token","5");
 
-ConVar sk_vortigaunt_health( "sk_vortigaunt_health","0");
+ConVar sk_vortigaunt_enemy_health( "sk_vortigaunt_enemy_health","0");
+ConVar sk_vortigaunt_ally_health("sk_vortigaunt_ally_health", "0");
 ConVar sk_vortigaunt_dmg_claw( "sk_vortigaunt_dmg_claw","0");
 ConVar sk_vortigaunt_dmg_rake( "sk_vortigaunt_dmg_rake","0");
 ConVar sk_vortigaunt_dmg_zap( "sk_vortigaunt_dmg_zap","0");
@@ -1132,7 +1133,16 @@ void CNPC_Vortigaunt::Spawn( void )
 	SetHullSizeNormal();
 
 	m_bloodColor		= BLOOD_COLOR_GREEN;
-	m_iHealth			= sk_vortigaunt_health.GetFloat();
+
+	if (HasSpawnFlags(SF_VORTIGAUNT_ENEMY))
+	{
+		m_iHealth = sk_vortigaunt_enemy_health.GetFloat();
+	}
+	else
+	{
+		m_iHealth = sk_vortigaunt_ally_health.GetFloat();
+	}
+
 	SetViewOffset( Vector ( 0, 0, 64 ) );// position of the eyes relative to monster's origin.
 
 	CapabilitiesAdd( bits_CAP_INNATE_MELEE_ATTACK1 | bits_CAP_INNATE_RANGE_ATTACK1 );

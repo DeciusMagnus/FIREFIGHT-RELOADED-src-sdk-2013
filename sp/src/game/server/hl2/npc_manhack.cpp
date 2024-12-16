@@ -1471,6 +1471,10 @@ void CNPC_Manhack::Slice( CBaseEntity *pHitEntity, float flInterval, trace_t &tr
 		// Deal 100 damage/sec
 		flDamage = 100.0f * flInterval;
 	}
+	else if (IsWeaponHack())
+	{
+		flDamage = 60.0f * flInterval;
+	}
 	else if ( pHitEntity->IsNPC() && HasPhysicsAttacker( MANHACK_SMASH_TIME ) )
 	{
 		extern ConVar sk_combine_guard_health;
@@ -1543,8 +1547,11 @@ void CNPC_Manhack::Slice( CBaseEntity *pHitEntity, float flInterval, trace_t &tr
 	// Save off when we last hit something
 	m_flLastDamageTime = gpGlobals->curtime;
 
-	// Reset our state and give the player time to react
-	StopBurst( true );
+	if (!IsWeaponHack())
+	{
+		// Reset our state and give the player time to react
+		StopBurst(true);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1741,20 +1748,40 @@ void CNPC_Manhack::CheckCollisions(float flInterval)
 			return;
 		}
 
+		Disposition_t disp = IRelationType(pHitEntity);
+		bool shouldHurtClass = ((pHitEntity->Classify() == CLASS_MANHACK && disp == D_HT) || pHitEntity->Classify() != CLASS_MANHACK);
+
 		if ( pHitEntity != NULL && 
 			 pHitEntity->m_takedamage == DAMAGE_YES && 
-			 pHitEntity->Classify() != CLASS_MANHACK && 
+			 shouldHurtClass &&
 			 gpGlobals->curtime > m_flWaterSuspendTime )
 		{
 			// Slice this thing
 			Slice( pHitEntity, flInterval, tr );
-			m_flBladeSpeed = 20.0;
+
+			if (IsWeaponHack())
+			{
+				//weapon hacks are more efficient
+				m_flBladeSpeed = 60.0;
+			}
+			else
+			{
+				m_flBladeSpeed = 20.0;
+			}
 		}
 		else
 		{
 			// Just bump into this thing.
 			Bump( pHitEntity, flInterval, tr );
-			m_flBladeSpeed = 20.0;
+			if (IsWeaponHack())
+			{
+				//weapon hacks are more efficient
+				m_flBladeSpeed = 60.0;
+			}
+			else
+			{
+				m_flBladeSpeed = 20.0;
+			}
 		}
 	}
 }
@@ -2880,7 +2907,7 @@ float CNPC_Manhack::ManhackMaxSpeed( void )
 		return MANHACK_MAX_SPEED * 0.1;
 	}
 
-	if ( HasPhysicsAttacker( MANHACK_SMASH_TIME ) )
+	if (IsWeaponHack() || HasPhysicsAttacker( MANHACK_SMASH_TIME ) )
 	{
 		return MANHACK_NPC_BURST_SPEED;
 	}

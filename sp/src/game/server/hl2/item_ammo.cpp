@@ -624,6 +624,54 @@ public:
 };
 LINK_ENTITY_TO_CLASS(item_ammo_grenade, CItem_AmmoGrenade);
 
+// ========================================================================
+//	>> CItem_AmmoManhack
+// ========================================================================
+class CItem_AmmoManhack : public CItem
+{
+public:
+	DECLARE_CLASS(CItem_AmmoManhack, CItem);
+
+	void Spawn(void)
+	{
+		Precache();
+		SetModel("models/weapons/w_manhack.mdl");
+		BaseClass::Spawn();
+	}
+	void Precache(void)
+	{
+		PrecacheModel("models/weapons/w_manhack.mdl");
+	}
+	bool MyTouch(CBasePlayer* pPlayer)
+	{
+		if (pPlayer->HasNamedPlayerItem("weapon_manhackthrower"))
+		{
+			if (ITEM_GiveAmmo(pPlayer, 1, "manhack"))
+			{
+				if (g_pGameRules->ItemShouldRespawn(this) == GR_ITEM_RESPAWN_NO)
+				{
+					UTIL_Remove(this);
+				}
+
+				return true;
+			}
+		}
+		else
+		{
+			pPlayer->GiveNamedItem("weapon_manhackthrower", 0, true);
+
+			if (g_pGameRules->ItemShouldRespawn(this) == GR_ITEM_RESPAWN_NO)
+			{
+				UTIL_Remove(this);
+			}
+
+			return true;
+		}
+		return false;
+	}
+};
+LINK_ENTITY_TO_CLASS(item_ammo_manhack, CItem_AmmoManhack);
+
 class CItem_BoxSniperRifle : public CItem
 {
 public:
