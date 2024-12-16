@@ -22,6 +22,7 @@
 #define SF_MANHACK_CARRIED				(1 << 19)	// Being carried by a metrocop
 #define SF_MANHACK_NO_DANGER_SOUNDS		(1 << 20)
 #define SF_MANHACK_FRIENDLY				(1 << 21)
+#define SF_MANHACK_WEAPON				(1 << 22)
 
 enum
 {
@@ -81,6 +82,8 @@ public:
 
 	virtual void	DeathSound( const CTakeDamageInfo &info );
 	virtual bool	ShouldGib( const CTakeDamageInfo &info );
+    
+    bool	        IsWeaponHack(void) { return HasSpawnFlags(SF_MANHACK_WEAPON); }
 
 	Activity		NPC_TranslateActivity( Activity baseAct );
 	virtual int		TranslateSchedule( int scheduleType );

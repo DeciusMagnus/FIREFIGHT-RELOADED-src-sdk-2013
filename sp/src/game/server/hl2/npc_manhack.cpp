@@ -197,6 +197,7 @@ END_DATADESC()
 
 LINK_ENTITY_TO_CLASS( npc_manhack, CNPC_Manhack );
 LINK_ENTITY_TO_CLASS(npc_manhack_friendly, CNPC_Manhack);
+LINK_ENTITY_TO_CLASS( npc_manhack_weapon, CNPC_Manhack );
 
 IMPLEMENT_SERVERCLASS_ST(CNPC_Manhack, DT_NPC_Manhack)
 	SendPropIntWithMinusOneFlag	(SENDINFO(m_nEnginePitch1), 8 ),
@@ -2166,9 +2167,20 @@ void CNPC_Manhack::Precache(void)
 	//
 	// Model.
 	//
-	PrecacheModel("models/manhack.mdl");
+    const char *pModelName = STRING( GetModelName() );
+
+	if (IsWeaponHack())
+	{
+		pModelName = "models/weapons/manhack_rb.mdl";
+	}
+	else
+	{
+		pModelName = "models/manhack.mdl";
+	}
+    
+	PrecacheModel(pModelName);
 	PrecacheModel( MANHACK_GLOW_SPRITE );
-	PropBreakablePrecacheAll( MAKE_STRING("models/manhack.mdl") );
+	PropBreakablePrecacheAll( MAKE_STRING(pModelName) );
 	
 	PrecacheScriptSound( "NPC_Manhack.Die" );
 	PrecacheScriptSound( "NPC_Manhack.Bat" );
@@ -2359,6 +2371,11 @@ void CNPC_Manhack::Spawn(void)
 	{
 		AddSpawnFlags(SF_MANHACK_FRIENDLY);
 	}
+    else if (FClassnameIs(this, "npc_manhack_weapon"))
+	{
+        AddSpawnFlags(SF_MANHACK_FRIENDLY);
+		AddSpawnFlags(SF_MANHACK_WEAPON);
+	}
 
 	if (HasSpawnFlags(SF_MANHACK_FRIENDLY))
 	{
@@ -2372,7 +2389,19 @@ void CNPC_Manhack::Spawn(void)
 	AddSpawnFlags( SF_NPC_FADE_CORPSE );
 #endif // _XBOX
 
-	SetModel( "models/manhack.mdl" );
+    const char *pModelName = STRING( GetModelName() );
+
+	if (IsWeaponHack())
+	{
+		pModelName = "models/weapons/manhack_rb.mdl";
+	}
+	else
+	{
+		pModelName = "models/manhack.mdl";
+	}
+
+	SetModel( pModelName );
+    
 	SetHullType(HULL_TINY_CENTERED); 
 	SetHullSizeNormal();
 

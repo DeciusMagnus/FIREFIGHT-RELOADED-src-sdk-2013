@@ -188,7 +188,7 @@ bool CWeaponTurret::Deploy(void)
 void CWeaponTurret::Precache( void )
 {
 	BaseClass::Precache();
-	UTIL_PrecacheOther( "npc_turret_floor" );
+	UTIL_PrecacheOther( "npc_turret_floor_weapon" );
 }
 
 void CWeaponTurret::ItemPreFrame(void)
