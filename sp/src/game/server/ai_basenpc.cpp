@@ -3462,7 +3462,7 @@ void CAI_BaseNPC::UpdateSleepState( bool bInPVS )
 		CBasePlayer *pLocalPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 		if ( !pLocalPlayer )
 		{
-			if ( gpGlobals->maxClients > 1 )
+			if ( gpGlobals->maxClients >= 1 )
 			{
 				Wake();
 			}

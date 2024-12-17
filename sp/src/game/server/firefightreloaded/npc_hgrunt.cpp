@@ -55,6 +55,7 @@
 #include	"hl2_gamerules.h"
 
 ConVar	sk_hgrunt_health( "sk_hgrunt_health","0");
+ConVar	sk_hgrunt_robot_health("sk_hgrunt_robot_health", "0");
 ConVar	sk_hgrunt_limp_health("sk_hgrunt_limp_health", "20");
 ConVar  sk_hgrunt_kick ( "sk_hgrunt_kick", "0" );
 ConVar  sk_hgrunt_shotgun_pellets ( "sk_hgrunt_shotgun_pellets", "0" );
@@ -87,6 +88,18 @@ const char* CHGrunt::pGruntSentences[] =
 	"HG_TAUNT_EASTEREGG", //MY ASS IS HEAVY
 };
 
+const char* CHGrunt::pRobotGruntSentences[] =
+{
+	"RG_GREN", // grenade scared grunt
+	"RG_ALERT", // sees player
+	"RG_MONSTER", // sees monster
+	"RG_COVER", // running to cover
+	"RG_THROW", // about to throw grenade
+	"RG_CHARGE",  // running out to get the enemy
+	"RG_TAUNT", // say rude things
+	"RG_TAUNT_EASTEREGG", //MY ASS IS HEAVY
+};
+
 enum
 {
 	HGRUNT_SENT_NONE = -1,
@@ -102,6 +115,8 @@ enum
 
 LINK_ENTITY_TO_CLASS( npc_hgrunt, CHGrunt );
 LINK_ENTITY_TO_CLASS(npc_hgrunt_friendly, CHGrunt);
+LINK_ENTITY_TO_CLASS(npc_hgrunt_robot, CHGrunt);
+LINK_ENTITY_TO_CLASS(npc_hgrunt_friendly_robot, CHGrunt);
 
 //---------------------------------------------------------
 // Save/Restore
@@ -146,7 +161,14 @@ void CHGrunt::SpeakSentence( void )
 
 	if ( FOkToSpeak() )
 	{
-		SENTENCEG_PlayRndSz( edict(), pGruntSentences[ m_iSentence ], 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+		if (HasSpawnFlags(SF_GRUNT_ROBOT))
+		{
+			SENTENCEG_PlayRndSz(edict(), pRobotGruntSentences[m_iSentence], 1.0f, SNDLVL_TALKING, 0, m_voicePitch);
+		}
+		else
+		{
+			SENTENCEG_PlayRndSz(edict(), pGruntSentences[m_iSentence], 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+		}
 		JustSpoke();
 	}
 }
@@ -599,15 +621,36 @@ void CHGrunt::IdleSound( void )
 			switch ( random->RandomInt( 0,2 ) )
 			{
 			case 0: // check in
-				SENTENCEG_PlayRndSz( edict(), "HG_CHECK", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+				if (HasSpawnFlags(SF_GRUNT_ROBOT))
+				{
+					SENTENCEG_PlayRndSz(edict(), "RG_CHECK", 1.0f, SNDLVL_TALKING, 0, m_voicePitch);
+				}
+				else
+				{
+					SENTENCEG_PlayRndSz(edict(), "HG_CHECK", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+				}
 				g_fGruntQuestion = 1;
 				break;
 			case 1: // question
-				SENTENCEG_PlayRndSz( edict(), "HG_QUEST", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+				if (HasSpawnFlags(SF_GRUNT_ROBOT))
+				{
+					SENTENCEG_PlayRndSz(edict(), "RG_QUEST", 1.0f, SNDLVL_TALKING, 0, m_voicePitch);
+				}
+				else
+				{
+					SENTENCEG_PlayRndSz(edict(), "HG_QUEST", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+				}
 				g_fGruntQuestion = 2;
 				break;
 			case 2: // statement
-				SENTENCEG_PlayRndSz( edict(), "HG_IDLE", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+				if (HasSpawnFlags(SF_GRUNT_ROBOT))
+				{
+					SENTENCEG_PlayRndSz(edict(), "RG_IDLE", 1.0f, SNDLVL_TALKING, 0, m_voicePitch);
+				}
+				else
+				{
+					SENTENCEG_PlayRndSz(edict(), "HG_IDLE", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+				}
 				break;
 			}
 		}
@@ -616,10 +659,24 @@ void CHGrunt::IdleSound( void )
 			switch (g_fGruntQuestion)
 			{
 			case 1: // check in
-				SENTENCEG_PlayRndSz( edict(), "HG_CLEAR", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+				if (HasSpawnFlags(SF_GRUNT_ROBOT))
+				{
+					SENTENCEG_PlayRndSz(edict(), "RG_CLEAR", 1.0f, SNDLVL_TALKING, 0, m_voicePitch);
+				}
+				else
+				{
+					SENTENCEG_PlayRndSz(edict(), "HG_CLEAR", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+				}
 				break;
 			case 2: // question 
-				SENTENCEG_PlayRndSz( edict(), "HG_ANSWER", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+				if (HasSpawnFlags(SF_GRUNT_ROBOT))
+				{
+					SENTENCEG_PlayRndSz(edict(), "RG_ANSWER", 1.0f, SNDLVL_TALKING, 0, m_voicePitch);
+				}
+				else
+				{
+					SENTENCEG_PlayRndSz(edict(), "HG_ANSWER", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+				}
 				break;
 			}
 			g_fGruntQuestion = 0;
@@ -866,8 +923,15 @@ void CHGrunt::HandleAnimEvent( animevent_t *pEvent )
 		{
 			if ( FOkToSpeak() )
 			{
-				SENTENCEG_PlayRndSz( edict(), "HG_ALERT", 0.75f, SNDLVL_NORM, 0, m_voicePitch);
-				 JustSpoke();
+				if (HasSpawnFlags(SF_GRUNT_ROBOT))
+				{
+					SENTENCEG_PlayRndSz(edict(), "RG_ALERT", 1.0f, SNDLVL_NORM, 0, m_voicePitch);
+				}
+				else
+				{
+					SENTENCEG_PlayRndSz(edict(), "HG_ALERT", 0.75f, SNDLVL_NORM, 0, m_voicePitch);
+				}
+				JustSpoke();
 			}
 
 		}
@@ -887,10 +951,28 @@ void CHGrunt::Spawn()
 	{
 		AddSpawnFlags(SF_GRUNT_FRIENDLY);
 	}
+	else if (FClassnameIs(this, "npc_hgrunt_robot"))
+	{
+		AddSpawnFlags(SF_GRUNT_ROBOT);
+	}
+	else if (FClassnameIs(this, "npc_hgrunt_friendly_robot"))
+	{
+		AddSpawnFlags(SF_GRUNT_FRIENDLY);
+		AddSpawnFlags(SF_GRUNT_ROBOT);
+	}
 
 	Precache( );
 
-	SetModel( "models/hgrunt.mdl" );
+	if (HasSpawnFlags(SF_GRUNT_ROBOT))
+	{
+		SetModel("models/g_hgrunt.mdl");
+	}
+	else
+	{
+		SetModel("models/hgrunt.mdl");
+	}
+
+	BaseClass::Spawn();
 
 	SetHullType(HULL_HUMAN);
 	SetHullSizeNormal();
@@ -898,10 +980,32 @@ void CHGrunt::Spawn()
 	SetSolid( SOLID_BBOX );
 	AddSolidFlags( FSOLID_NOT_STANDABLE );
 	SetMoveType( MOVETYPE_STEP );
-	m_bloodColor		= BLOOD_COLOR_RED;
+	if (HasSpawnFlags(SF_GRUNT_ROBOT))
+	{
+		m_bloodColor = BLOOD_COLOR_MECH;
+	}
+	else
+	{
+		m_bloodColor = BLOOD_COLOR_RED;
+	}
 	ClearEffects();
-	m_iHealth			= sk_hgrunt_health.GetFloat();
-	m_flFieldOfView		= 0.2;// indicates the width of this monster's forward view cone ( as a dotproduct result )
+	if (HasSpawnFlags(SF_GRUNT_ROBOT))
+	{
+		m_iHealth = sk_hgrunt_robot_health.GetFloat();
+	}
+	else
+	{
+		m_iHealth = sk_hgrunt_health.GetFloat();
+	}
+	
+	if (HasSpawnFlags(SF_GRUNT_ROBOT))
+	{
+		m_flFieldOfView = VIEW_FIELD_WIDE;// indicates the width of this monster's forward view cone ( as a dotproduct result )
+	}
+	else
+	{
+		m_flFieldOfView = 0.2;// indicates the width of this monster's forward view cone ( as a dotproduct result )
+	}
 	m_NPCState			= NPC_STATE_NONE;
 	m_flNextGrenadeCheck = gpGlobals->curtime + 1;
 	m_flNextPainTime	= gpGlobals->curtime;
@@ -921,6 +1025,8 @@ void CHGrunt::Spawn()
 	{
 		BecomeFriendly();
 	}
+
+	NPCInit();
 			
 	m_fFirstEncounter	= true;// this is true when the grunt spawns, because he hasn't encountered an enemy yet.
 
@@ -962,13 +1068,8 @@ void CHGrunt::Spawn()
 
 	m_flTalkWaitTime = 0;
 
-
 	//HACK
 	g_iSquadIndex = 0;
-
-	BaseClass::Spawn();
-
-	NPCInit();
 }
 
 void CHGrunt::BecomeFriendly()
@@ -984,7 +1085,14 @@ void CHGrunt::Precache()
 {
 	m_iAmmoType = GetAmmoDef()->Index("MP5Ammo");
 
-	PrecacheModel("models/hgrunt.mdl");
+	if (HasSpawnFlags(SF_GRUNT_ROBOT))
+	{
+		PrecacheModel("models/g_hgrunt.mdl");
+	}
+	else
+	{
+		PrecacheModel("models/hgrunt.mdl");
+	}
 
 	// get voice pitch
 	if ( random->RandomInt(0,1))
@@ -996,8 +1104,16 @@ void CHGrunt::Precache()
 	PrecacheScriptSound( "HGrunt.GrenadeLaunch" );
 	PrecacheScriptSound( "HGrunt.9MM" );
 	PrecacheScriptSound( "HGrunt.Shotgun" );
-	PrecacheScriptSound( "HGrunt.Pain" );
-	PrecacheScriptSound( "HGrunt.Die" );
+	if (HasSpawnFlags(SF_GRUNT_ROBOT))
+	{
+		PrecacheScriptSound("HGrunt.Pain_Robot");
+		PrecacheScriptSound("HGrunt.Die_Robot");
+	}
+	else
+	{
+		PrecacheScriptSound("HGrunt.Pain");
+		PrecacheScriptSound("HGrunt.Die");
+	}
 
 	BaseClass::Precache();
 
@@ -1089,7 +1205,14 @@ void CHGrunt::PainSound( const CTakeDamageInfo &info )
 	if ( gpGlobals->curtime > m_flNextPainTime )
 	{
 		CPASAttenuationFilter filter( this );
-		EmitSound( filter, entindex(), "HGrunt.Pain" );
+		if (HasSpawnFlags(SF_GRUNT_ROBOT))
+		{
+			EmitSound(filter, entindex(), "HGrunt.Pain_Robot");
+		}
+		else
+		{
+			EmitSound(filter, entindex(), "HGrunt.Pain");
+		}
 
 		m_flNextPainTime = gpGlobals->curtime + 1;
 	}
@@ -1101,7 +1224,14 @@ void CHGrunt::PainSound( const CTakeDamageInfo &info )
 void CHGrunt::DeathSound( const CTakeDamageInfo &info )
 {
 	CPASAttenuationFilter filter( this, ATTN_IDLE );
-	EmitSound( filter, entindex(), "HGrunt.Die" );	
+	if (HasSpawnFlags(SF_GRUNT_ROBOT))
+	{
+		EmitSound(filter, entindex(), "HGrunt.Die_Robot");
+	}
+	else
+	{
+		EmitSound(filter, entindex(), "HGrunt.Die");
+	}
 }
 
 //=========================================================
@@ -1190,7 +1320,6 @@ Activity CHGrunt::NPC_TranslateActivity( Activity NewActivity )
 
 int CHGrunt::SelectSchedule( void )
 {
-    
 	// clear old sentence
 	m_iSentence = HGRUNT_SENT_NONE;
 
@@ -1214,6 +1343,12 @@ int CHGrunt::SelectSchedule( void )
 		}
 	}
 
+	//If we are in idle, try to find the enemy by walking.
+	if (GetMoveType() != MOVETYPE_FLYGRAVITY && (m_NPCState == NPC_STATE_IDLE || m_NPCState == NPC_STATE_ALERT))
+	{
+		return SCHED_PATROL_WALK_LOOP;
+	}
+
 	// grunts place HIGH priority on running away from danger sounds.
 	if ( HasCondition ( COND_HEAR_DANGER ) )
 	{
@@ -1227,7 +1362,14 @@ int CHGrunt::SelectSchedule( void )
 				
 		if (FOkToSpeak())
 		{
-			SENTENCEG_PlayRndSz( edict(), "HG_GREN", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+			if (HasSpawnFlags(SF_GRUNT_ROBOT))
+			{
+				SENTENCEG_PlayRndSz(edict(), "RG_GREN", 1.0f, SNDLVL_TALKING, 0, m_voicePitch);
+			}
+			else
+			{
+				SENTENCEG_PlayRndSz(edict(), "HG_GREN", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+			}
 			JustSpoke();
 		}
 		return SCHED_TAKE_COVER_FROM_BEST_SOUND;
@@ -1252,7 +1394,14 @@ int CHGrunt::SelectSchedule( void )
 				{
 					if (random->RandomInt(1, sk_hgrunt_eastereggtaunt_prob.GetInt()) == sk_hgrunt_eastereggtaunt_prob.GetInt())
 					{
-						SENTENCEG_PlayRndSz(edict(), "HG_TAUNT_EASTEREGG", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+						if (HasSpawnFlags(SF_GRUNT_ROBOT))
+						{
+							SENTENCEG_PlayRndSz(edict(), "RG_TAUNT_EASTEREGG", 1.0f, SNDLVL_TALKING, 0, m_voicePitch);
+						}
+						else
+						{
+							SENTENCEG_PlayRndSz(edict(), "HG_TAUNT_EASTEREGG", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+						}
 						JustSpoke();
 					}
 				}
@@ -1293,10 +1442,24 @@ int CHGrunt::SelectSchedule( void )
 						{
 							if ((GetEnemy() != NULL) && (GetEnemy()->IsPlayer()) || (GetEnemy()->Classify() == CLASS_PLAYER_NPC))
 								// player
-								SENTENCEG_PlayRndSz( edict(), "HG_ALERT", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+								if (HasSpawnFlags(SF_GRUNT_ROBOT))
+								{
+									SENTENCEG_PlayRndSz(edict(), "RG_ALERT", 1.0f, SNDLVL_TALKING, 0, m_voicePitch);
+								}
+								else
+								{
+									SENTENCEG_PlayRndSz(edict(), "HG_ALERT", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+								}
 							else if ((GetEnemy() != NULL) && (IsEntityAlien(GetEnemy())))
 								// monster
-								SENTENCEG_PlayRndSz( edict(), "HG_MONST", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+								if (HasSpawnFlags(SF_GRUNT_ROBOT))
+								{
+									SENTENCEG_PlayRndSz(edict(), "RG_MONST", 1.0f, SNDLVL_TALKING, 0, m_voicePitch);
+								}
+								else
+								{
+									SENTENCEG_PlayRndSz(edict(), "HG_MONST", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+								}
 
 							JustSpoke();
 						}
@@ -1336,7 +1499,14 @@ int CHGrunt::SelectSchedule( void )
 					//!!!KELLY - this grunt was hit and is going to run to cover.
 					if (FOkToSpeak() && random->RandomInt(0, 1))
 					{
-						SENTENCEG_PlayRndSz( edict(), "HG_COVER", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+						if (HasSpawnFlags(SF_GRUNT_ROBOT))
+						{
+							SENTENCEG_PlayRndSz(edict(), "RG_COVER", 1.0f, SNDLVL_TALKING, 0, m_voicePitch);
+						}
+						else
+						{
+							SENTENCEG_PlayRndSz(edict(), "HG_COVER", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+						}
 						m_iSentence = HGRUNT_SENT_COVER;
 						JustSpoke();
 					}
@@ -1403,7 +1573,14 @@ int CHGrunt::SelectSchedule( void )
 					//!!!KELLY - this grunt is about to throw or fire a grenade at the player. Great place for "fire in the hole"  "frag out" etc
 					if (FOkToSpeak())
 					{
-						SENTENCEG_PlayRndSz( edict(), "HG_THROW", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+						if (HasSpawnFlags(SF_GRUNT_ROBOT))
+						{
+							SENTENCEG_PlayRndSz(edict(), "RG_THROW", 1.0f, SNDLVL_TALKING, 0, m_voicePitch);
+						}
+						else
+						{
+							SENTENCEG_PlayRndSz(edict(), "HG_THROW", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+						}
 						JustSpoke();
 					}
 					return SCHED_RANGE_ATTACK2;
@@ -1414,7 +1591,14 @@ int CHGrunt::SelectSchedule( void )
 					// charge the enemy's position. 
 					if (FOkToSpeak() && random->RandomInt(0, 1))
 					{
-						SENTENCEG_PlayRndSz(edict(), "HG_CHARGE", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+						if (HasSpawnFlags(SF_GRUNT_ROBOT))
+						{
+							SENTENCEG_PlayRndSz(edict(), "RG_CHARGE", 1.0f, SNDLVL_TALKING, 0, m_voicePitch);
+						}
+						else
+						{
+							SENTENCEG_PlayRndSz(edict(), "HG_CHARGE", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+						}
 						m_iSentence = HGRUNT_SENT_CHARGE;
 						JustSpoke();
 					}
@@ -1428,14 +1612,28 @@ int CHGrunt::SelectSchedule( void )
 					// grunt's covered position. Good place for a taunt, I guess?
 					if (FOkToSpeak() && random->RandomInt(0,1))
 					{
-                        if (random->RandomInt(1, sk_hgrunt_eastereggtaunt_prob.GetInt()) == sk_hgrunt_eastereggtaunt_prob.GetInt())
-                        {
-                            SENTENCEG_PlayRndSz( edict(), "HG_TAUNT_EASTEREGG", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
-                        }
-                        else
-                        {
-                            SENTENCEG_PlayRndSz( edict(), "HG_TAUNT", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
-                        }
+						if (HasSpawnFlags(SF_GRUNT_ROBOT))
+						{
+							if (random->RandomInt(1, sk_hgrunt_eastereggtaunt_prob.GetInt()) == sk_hgrunt_eastereggtaunt_prob.GetInt())
+							{
+								SENTENCEG_PlayRndSz(edict(), "RG_TAUNT_EASTEREGG", 1.0f, SNDLVL_TALKING, 0, m_voicePitch);
+							}
+							else
+							{
+								SENTENCEG_PlayRndSz(edict(), "RG_TAUNT", 1.0f, SNDLVL_TALKING, 0, m_voicePitch);
+							}
+						}
+						else
+						{
+							if (random->RandomInt(1, sk_hgrunt_eastereggtaunt_prob.GetInt()) == sk_hgrunt_eastereggtaunt_prob.GetInt())
+							{
+								SENTENCEG_PlayRndSz(edict(), "HG_TAUNT_EASTEREGG", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+							}
+							else
+							{
+								SENTENCEG_PlayRndSz(edict(), "HG_TAUNT", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+							}
+						}
                         
 						JustSpoke();
 					}
@@ -1480,7 +1678,14 @@ int CHGrunt::TranslateSchedule( int scheduleType )
 				{
 					if (FOkToSpeak())
 					{
-						SENTENCEG_PlayRndSz( edict(), "HG_THROW", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+						if (HasSpawnFlags(SF_GRUNT_ROBOT))
+						{
+							SENTENCEG_PlayRndSz(edict(), "RG_THROW", 1.0f, SNDLVL_TALKING, 0, m_voicePitch);
+						}
+						else
+						{
+							SENTENCEG_PlayRndSz(edict(), "HG_THROW", 0.75f, SNDLVL_TALKING, 0, m_voicePitch);
+						}
 						JustSpoke();
 					}
 					return SCHED_GRUNT_TOSS_GRENADE_COVER;

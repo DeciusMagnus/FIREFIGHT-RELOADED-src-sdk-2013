@@ -15,6 +15,7 @@
 
 #define SF_GRUNT_LEADER	( 1 << 5  )
 #define SF_GRUNT_FRIENDLY ( 1 << 6  )
+#define SF_GRUNT_ROBOT ( 1 << 15  )
 
 #define HGRUNT_GUN_SPREAD 0.08716f
 
@@ -194,6 +195,7 @@ public:
 	int		m_iWeapons;
     
     static const char *pGruntSentences[];
+	static const char* pRobotGruntSentences[];
 };
 
 #endif // MONSTERMAKER_H

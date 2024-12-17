@@ -143,6 +143,7 @@
 	[
 		32 : "Squad Leader" : 0
         64 : "Friendly" : 0
+        32768 : "Mr. Roboto" : 0
 	]
 	netname(string) : "Squad Name"
 	weapons(Choices) : "Weapons" : 1 =

@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/hgrunt/RG_Eye1"
+    "$selfillum"   "1"
+    "$selfillummask" "models/hgrunt/RG_Eye1_selfillum"
+}

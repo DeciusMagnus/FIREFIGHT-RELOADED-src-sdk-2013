@@ -1,10 +1,10 @@
 // Created by Crowbar 0.72
 
-$modelname "combine_assassin.mdl"
+$modelname "combine_assassin_survivor.mdl"
 
 $bodygroup "sniper_f"
 {
-	studio "sniper_f.smd"
+    studio "combine_sniper_female_reference.smd"
 }
 $bodygroup "guns"
 {
@@ -16,8 +16,8 @@ $bodygroup "guns"
 
 $lod 20
 {
-	replacemodel "sniper_f.smd" "sniper_f_lod1.smd"
 	replacemodel "w_pistol_Pistol_reference.smd" "w_pistol_Pistol_reference_lod1.smd"
+    replacemodel "combine_sniper_female_reference.smd" "combine_sniper_female_reference_lod1.smd"
 	replacebone "ValveBiped.forward" "ValveBiped.Bip01_Head1"
 	replacebone "ValveBiped.Anim_Attachment_LH" "ValveBiped.Bip01_L_Hand"
 	replacebone "ValveBiped.Anim_Attachment_RH" "ValveBiped.Bip01_R_Hand"
@@ -38,8 +38,8 @@ $lod 20
 }
 $lod 40
 {
-	replacemodel "sniper_f.smd" "sniper_f_lod2.smd"
 	replacemodel "w_pistol_Pistol_reference.smd" "w_pistol_Pistol_reference_lod2.smd"
+    replacemodel "combine_sniper_female_reference.smd" "combine_sniper_female_reference_lod2.smd"
 	replacebone "ValveBiped.forward" "ValveBiped.Bip01_Head1"
 	replacebone "ValveBiped.Anim_Attachment_LH" "ValveBiped.Bip01_L_Hand"
 	replacebone "ValveBiped.Anim_Attachment_RH" "ValveBiped.Bip01_R_Hand"
@@ -60,8 +60,8 @@ $lod 40
 }
 $lod 50
 {
-	replacemodel "sniper_f.smd" "sniper_f_lod3.smd"
 	replacemodel "w_pistol_Pistol_reference.smd" "w_pistol_Pistol_reference_lod3.smd"
+    replacemodel "combine_sniper_female_reference.smd" "combine_sniper_female_reference_lod3.smd"
 	replacebone "ValveBiped.forward" "ValveBiped.Bip01_Head1"
 	replacebone "ValveBiped.Anim_Attachment_LH" "ValveBiped.Bip01_L_Hand"
 	replacebone "ValveBiped.Anim_Attachment_RH" "ValveBiped.Bip01_R_Hand"
@@ -92,8 +92,8 @@ $lod 50
 }
 $lod 60
 {
-	replacemodel "sniper_f.smd" "sniper_f_lod4.smd"
 	replacemodel "w_pistol_Pistol_reference.smd" "w_pistol_Pistol_reference_lod4.smd"
+    replacemodel "combine_sniper_female_reference.smd" "combine_sniper_female_reference_lod4.smd"
 	replacebone "ValveBiped.forward" "ValveBiped.Bip01_Head1"
 	replacebone "ValveBiped.Anim_Attachment_LH" "ValveBiped.Bip01_L_Hand"
 	replacebone "ValveBiped.Anim_Attachment_RH" "ValveBiped.Bip01_R_Hand"
@@ -134,8 +134,8 @@ $lod 60
 }
 $lod 70
 {
-	replacemodel "sniper_f.smd" "sniper_f_lod5.smd"
 	replacemodel "w_pistol_Pistol_reference.smd" "w_pistol_Pistol_reference_lod5.smd"
+    replacemodel "combine_sniper_female_reference.smd" "combine_sniper_female_reference_lod5.smd"
 	replacebone "ValveBiped.forward" "ValveBiped.Bip01_Head1"
 	replacebone "ValveBiped.Anim_Attachment_LH" "ValveBiped.Bip01_L_Hand"
 	replacebone "ValveBiped.Anim_Attachment_RH" "ValveBiped.Bip01_R_Hand"
@@ -177,8 +177,8 @@ $lod 70
 }
 $shadowlod
 {
-	replacemodel "sniper_f.smd" "sniper_f_lod6.smd"
 	replacemodel "w_pistol_Pistol_reference.smd" "w_pistol_Pistol_reference_lod6.smd"
+    replacemodel "combine_sniper_female_reference.smd" "combine_sniper_female_reference_lod6.smd"
 	replacebone "ValveBiped.forward" "ValveBiped.Bip01_Head1"
 	replacebone "ValveBiped.Anim_Attachment_LH" "ValveBiped.Bip01_L_Hand"
 	replacebone "ValveBiped.Anim_Attachment_RH" "ValveBiped.Bip01_R_Hand"
