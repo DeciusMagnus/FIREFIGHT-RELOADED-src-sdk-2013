@@ -15,7 +15,6 @@
 	{
 		"name"	"Manhack"
 		"price"	"1500"
-		"limit"	"1"
 		"command"	"item item_ammo_manhack 1"
 	}
 	"3"
