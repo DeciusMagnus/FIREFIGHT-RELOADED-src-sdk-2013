@@ -680,7 +680,10 @@ void CNPCMakerFirefight::MakeNPC()
 			int randomChoiceSoldier = random->RandomInt(0, nWeaponsSoldier - 1);
 			equip = g_CombineSoldierWeapons[randomChoiceSoldier];
 		}
-		else if (Q_stristr(pRandomName, "npc_hgrunt"))
+		else if (Q_stristr(pRandomName, "npc_hgrunt") ||
+			Q_stristr(pRandomName, "npc_hgrunt_friendly") ||
+			Q_stristr(pRandomName, "npc_hgrunt_robot") ||
+			Q_stristr(pRandomName, "npc_hgrunt_friendly_robot"))
 		{
 			int nWeaponsHGrunt = ARRAYSIZE(g_HGruntWeapons);
 			int randomChoiceHGrunt = random->RandomInt(0, nWeaponsHGrunt - 1);
@@ -690,7 +693,9 @@ void CNPCMakerFirefight::MakeNPC()
 	else
 	{
 		if (Q_stristr(pRandomName, "npc_hgrunt") ||
-			Q_stristr(pRandomName, "npc_hgrunt_friendly"))
+			Q_stristr(pRandomName, "npc_hgrunt_friendly") ||
+			Q_stristr(pRandomName, "npc_hgrunt_robot") || 
+			Q_stristr(pRandomName, "npc_hgrunt_friendly_robot"))
 		{
 			if (Q_stristr(equip, "weapon_9mmar_gl"))
 			{
@@ -728,7 +733,9 @@ void CNPCMakerFirefight::MakeNPC()
 	}
 
 	if (Q_stristr(pRandomName, "npc_hgrunt") ||
-		Q_stristr(pRandomName, "npc_hgrunt_friendly"))
+		Q_stristr(pRandomName, "npc_hgrunt_friendly") ||
+		Q_stristr(pRandomName, "npc_hgrunt_robot") ||
+		Q_stristr(pRandomName, "npc_hgrunt_friendly_robot"))
 	{
 		CHGrunt *pGrunt = dynamic_cast<CHGrunt*>(pent);
 		if (pGrunt)
@@ -754,8 +761,10 @@ void CNPCMakerFirefight::MakeNPC()
 		if (g_pGameRules->GetSkillLevel() > SKILL_HARD)
 			pent->AddSpawnFlags(SF_CSCANNER_STRIDER_SCOUT);
 	}
-	else if (Q_stristr(pRandomName, "npc_hgrunt") || 
-		Q_stristr(pRandomName, "npc_hgrunt_friendly") || 
+	else if (Q_stristr(pRandomName, "npc_hgrunt") ||
+		Q_stristr(pRandomName, "npc_hgrunt_friendly") ||
+		Q_stristr(pRandomName, "npc_hgrunt_robot") ||
+		Q_stristr(pRandomName, "npc_hgrunt_friendly_robot") ||
 		Q_stristr(pRandomName, "npc_agrunt") || 
 		Q_stristr(pRandomName, "npc_acontroller") ||
 		Q_stristr(pRandomName, "npc_houndeye"))
