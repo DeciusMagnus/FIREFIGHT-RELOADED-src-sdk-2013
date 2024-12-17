@@ -1066,6 +1066,19 @@ void CBaseServerVehicle::HandlePassengerEntry( CBaseCombatCharacter *pPassenger,
 				pAnimating->InvalidateBoneCache();	// This is necessary because we need to query attachment points this frame for blending!
 				GetDrivableVehicle()->SetVehicleEntryAnim( true );
 
+				// Re-deploy our weapon
+				if (pPlayer && pPlayer->IsAlive())
+				{
+					if (pPlayer->GetActiveWeapon())
+					{
+						pPlayer->GetActiveWeapon()->Holster();
+						pPlayer->ShowCrosshair(false);
+					}
+
+					CBaseViewModel* vm = pPlayer->GetViewModel();
+					vm->AddEffects(EF_NODRAW);
+				}
+
 				pPlayer->GetInVehicle( this, VEHICLE_ROLE_DRIVER );
 			}
 		}
@@ -1133,6 +1146,9 @@ bool CBaseServerVehicle::HandlePassengerExit( CBaseCombatCharacter *pPassenger )
 				// Re-deploy our weapon
 				if ( pPlayer && pPlayer->IsAlive() )
 				{
+					CBaseViewModel* vm = pPlayer->GetViewModel();
+					vm->RemoveEffects(EF_NODRAW);
+
 					if ( pPlayer->GetActiveWeapon() )
 					{
 						pPlayer->GetActiveWeapon()->Deploy();

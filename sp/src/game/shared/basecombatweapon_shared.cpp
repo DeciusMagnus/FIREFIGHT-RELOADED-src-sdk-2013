@@ -1642,6 +1642,19 @@ void CBaseCombatWeapon::SetWeaponVisible( bool visible )
 		vm = pOwner->GetViewModel( m_nViewModelIndex );
 	}
 
+	//only hide the VM if we're in a vehicle. vehicle handles the VM
+	//server ownly because it crashes on the client for whatever reason....
+#if !defined( CLIENT_DLL )
+	if (pOwner->IsInAVehicle())
+	{
+		if (vm)
+		{
+			vm->AddEffects(EF_NODRAW);
+		}
+		return;
+	}
+#endif
+
 	if ( visible )
 	{
 		RemoveEffects( EF_NODRAW );
