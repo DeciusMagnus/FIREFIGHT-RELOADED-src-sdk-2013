@@ -167,6 +167,7 @@ ConVar	ai_test_moveprobe_ignoresmall( "ai_test_moveprobe_ignoresmall", "0" );
 
 ConVar	sk_gotoboss_ondronekill("sk_gotoboss_ondronekill", "1", FCVAR_ARCHIVE);
 ConVar	sk_gotoboss_onlevel("sk_gotoboss_onlevel", "20", FCVAR_ARCHIVE);
+ConVar	sk_gotoboss_classic_onkillcount("sk_gotoboss_classic_onkillcount", "350", FCVAR_ARCHIVE);
 
 #ifdef HL2_EPISODIC
 extern ConVar ai_vehicle_avoidance;
@@ -695,7 +696,13 @@ void CAI_BaseNPC::Event_Killed( const CTakeDamageInfo &info )
 			if (!pWeapon)
 				return;
 
-			if (pPlayer->GetLevel() == sk_gotoboss_onlevel.GetInt() && m_IsAdvisorDrone && !(FStrEq(pWeapon->GetClassname(), "weapon_physcannon") && PlayerHasMegaPhysCannon()))
+			bool PlayerFulfillsRequirements = (!g_fr_classic.GetBool()) ?
+				(pPlayer->GetLevel() == sk_gotoboss_onlevel.GetInt()) :
+				(pPlayer->FragCount() >= sk_gotoboss_classic_onkillcount.GetInt());
+
+			if (PlayerFulfillsRequirements && 
+				m_IsAdvisorDrone && 
+				!(FStrEq(pWeapon->GetClassname(), "weapon_physcannon") && PlayerHasMegaPhysCannon()))
 			{
 				//spawn a portal to send him to our daddy.
 				CBaseGrenade* hopwire = HopWire_Create_Simple(origin, angle, this, 1.0f, true);

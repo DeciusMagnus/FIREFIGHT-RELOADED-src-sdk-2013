@@ -90,7 +90,7 @@ void CHudLevel::VidInit( void )
 
 bool CHudLevel::ShouldDraw(void)
 {
-	bool bNeedsDraw = (!g_fr_classic.GetBool()) || (GetAlpha() > 0);
+	bool bNeedsDraw = (GetAlpha() > 0);
 
 	return (bNeedsDraw && CHudElement::ShouldDraw());
 }
@@ -106,14 +106,5 @@ void CHudLevel::OnThink(void)
 		m_iEXP = pPlayer->GetLevel();
 
 		SetDisplayValue(m_iEXP);
-	}
-
-	if (g_fr_classic.GetBool())
-	{
-		SetAlpha(0);
-	}
-	else
-	{
-		SetAlpha(255);
 	}
 }

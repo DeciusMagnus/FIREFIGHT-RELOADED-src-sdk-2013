@@ -1132,6 +1132,34 @@
 				}
 			}
             
+            "BossGoTo_Level"
+			{
+				"text"			"#GameUI_BossGoTo_Level"
+				"type"			"slideyslide"
+				"convar"		"sk_gotoboss_onlevel"
+				"advanced"		"1"
+
+				"min"			"0"
+				"max"			"20"
+				"step"			"5"
+
+				"textprecision" "2"
+			}
+            
+            "BossGoTo_ClassicKillCount"
+			{
+				"text"			"#GameUI_BossGoTo_ClassicKillCount"
+				"type"			"slideyslide"
+				"convar"		"sk_gotoboss_classic_onkillcount"
+				"advanced"		"1"
+
+				"min"			"0"
+				"max"			"1000"
+				"step"			"10"
+
+				"textprecision" "2"
+			}
+            
             "AdvisorSpeed"
 			{
 				"text"			"#GameUI_AdvisorSpeed"

@@ -31,7 +31,6 @@ public:
 	virtual void ApplySchemeSettings( vgui::IScheme *pScheme );
 	int GetXpMultiplier();
 	bool ShouldDraw();
-	void OnThink(void);
 
 protected:
 	virtual void Paint();
@@ -88,7 +87,7 @@ bool CHudEXP::ShouldDraw(void)
 {
 	C_BasePlayer* pPlayer = C_BasePlayer::GetLocalPlayer();
 
-	bool bNeedsDraw = pPlayer && ((!g_fr_classic.GetBool()) || (GetAlpha() > 0));
+	bool bNeedsDraw = pPlayer && (GetAlpha() > 0);
 
 	return (bNeedsDraw && CHudElement::ShouldDraw());
 }
@@ -161,28 +160,32 @@ void CHudEXP::Paint()
 			surface()->DrawSetTextColor(clrText);
 			surface()->DrawSetTextPos(text_xpos2, text_ypos2);
 
-			wchar_t* tempString = g_pVGuiLocalize->Find("#Valve_Hud_EXPERIENCE_MaxLevel");
-
-			if (tempString)
+			if (!g_fr_classic.GetBool())
 			{
-				surface()->DrawPrintText(tempString, wcslen(tempString));
+				wchar_t* tempString = g_pVGuiLocalize->Find("#Valve_Hud_EXPERIENCE_MaxLevel");
+
+				if (tempString)
+				{
+					surface()->DrawPrintText(tempString, wcslen(tempString));
+				}
+				else
+				{
+					surface()->DrawPrintText(L"MAXIMUM LEVEL REACHED", wcslen(L"MAXIMUM LEVEL REACHED"));
+				}
 			}
 			else
 			{
-				surface()->DrawPrintText(L"MAXIMUM LEVEL REACHED", wcslen(L"MAXIMUM LEVEL REACHED"));
+				wchar_t* tempString = g_pVGuiLocalize->Find("#Valve_Hud_EXPERIENCE_ClassicMode");
+
+				if (tempString)
+				{
+					surface()->DrawPrintText(tempString, wcslen(tempString));
+				}
+				else
+				{
+					surface()->DrawPrintText(L"DISABLED", wcslen(L"DISABLED"));
+				}
 			}
 		}
-	}
-}
-
-void CHudEXP::OnThink(void)
-{
-	if (g_fr_classic.GetBool())
-	{
-		SetAlpha(0);
-	}
-	else
-	{
-		SetAlpha(255);
 	}
 }

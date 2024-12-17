@@ -93,7 +93,7 @@ void CHudMoney::VidInit( void )
 
 bool CHudMoney::ShouldDraw(void)
 {
-	bool bNeedsDraw = (!g_fr_classic.GetBool() && g_fr_economy.GetBool()) || (GetAlpha() > 0);
+	bool bNeedsDraw = g_fr_economy.GetBool() || (GetAlpha() > 0);
 
 	return (bNeedsDraw && CHudElement::ShouldDraw());
 }
@@ -111,16 +111,9 @@ void CHudMoney::OnThink(void)
 		SetDisplayValue(m_iMoney);
 	}
 
-	if (!g_fr_classic.GetBool())
+	if (g_fr_economy.GetBool())
 	{
-		if (g_fr_economy.GetBool())
-		{
-			SetAlpha(255);
-		}
-		else
-		{
-			SetAlpha(0);
-		}
+		SetAlpha(255);
 	}
 	else
 	{

@@ -145,17 +145,6 @@
 		"BarChunkGap" "1"
 	}
 
-	HudLocator
-	{
-		"fieldName" "HudLocator"
-		"visible" "1"
-		"PaintBackgroundType"	"2"
-		"xpos"	"c8"
-		"ypos"	"r36"
-		"wide"	"64"
-		"tall"  "24"
-	}
-
 	HudDamageIndicator
 	{
 		"fieldName" "HudDamageIndicator"
@@ -502,23 +491,6 @@
 		"TextColor"	"FgColor"
 		"PaintBackgroundType"	"2"
 	}
-    
-    HudNowPlaying
-	{
-		"fieldName"	"HudNowPlaying"
-		"visible"	"1"
-		"enabled" "1"
-		"xpos"	 "16"
-		"ypos"	 "5"
-		"wide"	"180"
-		"tall"	"47"
-		"text_xpos"	"4"
-		"text_ypos"	"4"
-		"text_ygap" "10"
-		"TextColor"	"FgColor"
-        "SongFont"  "HudSelectionText"
-		"PaintBackgroundType"	"2"
-	}
 
 	HudCredits
 	{
@@ -627,24 +599,6 @@
 	HudLevel
 	{
 		"fieldName"		"HudLevel"
-		"xpos"	"184"
-		"ypos"	"424"
-		"wide"	"60"
-		"tall"  "44"
-		"visible" "1"
-		"enabled" "1"
-
-		"PaintBackgroundType"	"2"
- 		
-		"text_xpos" "8"
-		"text_ypos" "5"
-		"digit_xpos" "4"
-		"digit_ypos" "16"
-	}
-	
-	HudKills
-	{
-		"fieldName"		"HudKills"
 		"xpos"	"120"
 		"ypos"	"424"
 		"wide"	"60"
@@ -659,14 +613,49 @@
 		"digit_xpos" "4"
 		"digit_ypos" "16"
 	}
+    
+    HudNowPlaying
+	{
+		"fieldName"	"HudNowPlaying"
+		"visible"	"1"
+		"enabled" "1"
+		"xpos"	 "16"
+		"ypos"	 "5"
+		"wide"	"180"
+		"tall"	"47"
+		"text_xpos"	"4"
+		"text_ypos"	"4"
+		"text_ygap" "10"
+		"TextColor"	"FgColor"
+        "SongFont"  "HudSelectionText"
+		"PaintBackgroundType"	"2"
+	}
 	
-	HudEXP
+	HudMoney
+	{
+		"fieldName"		"HudMoney"
+        "xpos"	"184"
+		"ypos"	"413"
+		"wide"	"150"
+		"tall"  "27"
+		"visible" "1"
+		"enabled" "1"
+
+		"PaintBackgroundType"	"2"
+ 		
+		"text_xpos" "5"
+		"text_ypos" "3"
+		"digit_xpos" "7"
+		"digit_ypos" "10"
+	}
+    
+    HudEXP
 	{
 		"fieldName" "HudEXP"
 		"visible" "1"
 		"PaintBackgroundType"	"2"
-		"xpos"	"250"
-		"ypos"	"443"		
+        "xpos"	"184"
+		"ypos"	"443"
 		"tall"  "25"
 		"wide"	"150"
 		
@@ -687,53 +676,28 @@
 		"BarChunkGap" "1"
 	}
 	
-	HudMoney
-	{
-		"fieldName"		"HudMoney"
-		"xpos"	"250"
-		"ypos"	"413"
-		"wide"	"150"
-		"tall"  "27"
-		"visible" "1"
-		"enabled" "1"
-
-		"PaintBackgroundType"	"2"
- 		
-		"text_xpos" "5"
-		"text_ypos" "3"
-		"digit_xpos" "7"
-		"digit_ypos" "10"
-	}
-	
-	HudMoneyClassic
-	{
-		"fieldName"		"HudMoneyClassic"
-		"xpos"	"184"
-		"ypos"	"424"
-		"wide"	"150"
-		"tall"  "44"
-		"visible" "1"
-		"enabled" "1"
-
-		"PaintBackgroundType"	"2"
- 		
-		"text_xpos" "8"
-		"text_ypos" "5"
-		"digit_xpos" "4"
-		"digit_ypos" "16"
-	}
-	
 	HudTimer
 	{
 		"fieldName"   "HudTimer"
-		"xpos"	"180"
-		"ypos"	"394"
-		"wide"  "60"
-		"tall"  "27"
+		"xpos"	"c-25"
+		"ypos"	"447"
+		"wide"  "45"
+		"tall"  "20"
 		"visible" "1"
 		"enabled" "1"
 		"PaintBackgroundType" "2"
-		"digit_xpos" "2"
-		"digit_ypos" "2"
+		"digit_xpos" "1"
+		"digit_ypos" "1"
+	}
+    
+    HudLocator
+	{
+		"fieldName" "HudLocator"
+		"visible" "1"
+		"PaintBackgroundType"	"2"
+		"xpos"	"c-68"
+		"ypos"	"424"
+		"wide"	"128"
+		"tall"  "20"
 	}
 }

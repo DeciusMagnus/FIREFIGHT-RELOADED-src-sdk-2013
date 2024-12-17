@@ -780,9 +780,9 @@ Scheme
 		{
 			"1"
 			{
-				"name"		"HalfLife2"
+				"name"		"Verdana"
 				"tall"		"16"
-				"weight"	"1000"
+				"weight"	"600"
 				"scanlines" "0"
 				"antialias" "1"
 				"custom"	"1"
@@ -792,9 +792,9 @@ Scheme
 		{
 			"1"
 			{
-				"name"		"HalfLife2"
+				"name"		"Verdana"
 				"tall"		"16"
-				"weight"	"1000"
+				"weight"	"600"
 				"blur"		"4"
 				"scanlines" "0"
 				"antialias" "1"
@@ -805,9 +805,9 @@ Scheme
 		{
 			"1"
 			{
-				"name"		"SMODGUI"
-				"tall"		"25"
-				"weight"	"0"
+				"name"		"Verdana"
+				"tall"		"16"
+				"weight"	"600"
 				"scanlines" "0"
 				"antialias" "1"
 				"custom"	"1"
@@ -817,22 +817,10 @@ Scheme
 		{
 			"1"
 			{
-				"name"		"SMODGUI"
-				"tall"		"25"
-				"weight"	"0"
-				"blur"		"4"
-				"scanlines" "0"
-				"antialias" "1"
-				"custom"	"1"
-			}
-		}
-		HudNumbersSmallTimer
-		{
-			"1"
-			{
-				"name"		"SMODGUI"
+				"name"		"Verdana"
 				"tall"		"16"
-				"weight"	"1000"
+				"weight"	"600"
+				"blur"		"4"
 				"scanlines" "0"
 				"antialias" "1"
 				"custom"	"1"
