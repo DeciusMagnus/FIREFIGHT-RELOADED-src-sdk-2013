@@ -6,168 +6,162 @@
 {
 	"1"
 	{
-		"health"		"999"
-		"incrementhealth"	"0"
-		"kash"		"9999"
-	}
-	"2"
-	{
-		"randomizermode" "1"
+		"randomizermode"	"1"
 		"weapon"	"weapon_smg1"
 		"ammotype"	"SMG1"
 		"ammonum"	"999"
 		"ammo2type"	"SMG1_Grenade"
 		"ammo2num"	"999"
 	}
-	"3"
+	"2"
 	{
-		"randomizermode" "1"
+		"randomizermode"	"1"
 		"weapon"	"weapon_frag"
 		"ammotype"	"grenade"
 		"ammonum"	"999"
 	}
-	"4"
+	"3"
 	{
 		"weapon"	"weapon_crowbar"
 	}
-	"5"
+	"4"
 	{
-		"randomizermode" "1"
+		"randomizermode"	"1"
 		"weapon"	"weapon_pistol"
 		"ammotype"	"Pistol"
 		"ammonum"	"999"
 	}
-	"6"
+	"5"
 	{
-		"randomizermode" "1"
+		"randomizermode"	"1"
 		"weapon"	"weapon_ar2"
 		"ammotype"	"AR2"
 		"ammonum"	"999"
 		"ammo2type"	"AR2AltFire"
 		"ammo2num"	"999"
 	}
-	"7"
+	"6"
 	{
-		"randomizermode" "1"
+		"randomizermode"	"1"
 		"weapon"	"weapon_shotgun"
 		"ammotype"	"Buckshot"
 		"ammonum"	"999"
 	}
-	"8"
+	"7"
 	{
 		"weapon"	"weapon_physcannon"
 	}
-	"9"
+	"8"
 	{
-		"randomizermode" "1"
+		"randomizermode"	"1"
 		"weapon"	"weapon_bugbait"
 	}
-	"10"
+	"9"
 	{
-		"randomizermode" "1"
+		"randomizermode"	"1"
 		"weapon"	"weapon_rpg"
 		"ammotype"	"rpg_round"
 		"ammonum"	"999"
 	}
-	"11"
+	"10"
 	{
-		"randomizermode" "1"
+		"randomizermode"	"1"
 		"weapon"	"weapon_357"
 		"ammotype"	"357"
 		"ammonum"	"999"
 	}
-	"12"
+	"11"
 	{
-		"randomizermode" "1"
+		"randomizermode"	"1"
 		"weapon"	"weapon_crossbow"
 		"ammotype"	"XBowBolt"
 		"ammonum"	"999"
 	}
-	"13"
+	"12"
 	{
-		"randomizermode" "1"
+		"randomizermode"	"1"
 		"weapon"	"weapon_sniper_rifle"
 		"ammotype"	"Sniper"
 		"ammonum"	"999"
 	}
-	"14"
+	"13"
 	{
-		"randomizermode" "1"
+		"randomizermode"	"1"
 		"weapon"	"weapon_m249para"
 		"ammotype"	"M249"
 		"ammonum"	"999"
 	}
-	"15"
+	"14"
 	{
-		"randomizermode" "1"
+		"randomizermode"	"1"
 		"weapon"	"weapon_slam"
 		"ammotype"	"slam"
 		"ammonum"	"999"
 	}
-	"16"
+	"15"
 	{
-		"randomizermode" "1"
+		"randomizermode"	"1"
 		"weapon"	"weapon_knife"
 	}
-	"17"
+	"16"
 	{
-		"randomizermode" "1"
+		"randomizermode"	"1"
 		"weapon"	"weapon_gauss"
 		"ammotype"	"GaussEnergy"
 		"ammonum"	"999"
 	}
-	"18"
+	"17"
 	{
-		"randomizermode" "1"
+		"randomizermode"	"1"
 		"weapon"	"weapon_mp5"
 		"ammotype"	"MP5Ammo"
 		"ammonum"	"999"
 	}
-	"19"
+	"18"
 	{
 		"weapon"	"weapon_grapple"
 	}
-	"20"
+	"19"
 	{
-		"randomizermode" "1"
+		"randomizermode"	"1"
 		"weapon"	"weapon_katana"
 	}
-	"21"
+	"20"
 	{
-		"randomizermode" "1"
+		"randomizermode"	"1"
 		"weapon"	"weapon_railgun"
 		"ammotype"	"Railgun"
 		"ammonum"	"400"
 	}
-	"22"
+	"21"
 	{
-		"randomizermode" "1"
+		"randomizermode"	"1"
 		"weapon"	"weapon_oicw"
 		"ammotype"	"556Round"
 		"ammonum"	"999"
 	}
-	"23"
+	"22"
 	{
-		"randomizermode" "1"
+		"randomizermode"	"1"
 		"weapon"	"weapon_alyxgun"
 		"ammotype"	"Alyxgun"
 		"ammonum"	"999"
 	}
-	"24"
+	"23"
 	{
-		"randomizermode" "1"
+		"randomizermode"	"1"
 		"weapon"	"weapon_gatling"
 		"ammotype"	"gatling"
 		"ammonum"	"999"
 	}
-	"25"
+	"24"
 	{
-		"randomizermode" "1"
+		"randomizermode"	"1"
 		"weapon"	"weapon_turret"
 	}
-	"26"
+	"25"
 	{
-		"randomizermode" "1"
+		"randomizermode"	"1"
 		"weapon"	"weapon_manhackthrower"
 		"ammotype"	"manhack"
 		"ammonum"	"999"

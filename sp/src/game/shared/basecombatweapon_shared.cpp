@@ -1632,26 +1632,29 @@ bool CBaseCombatWeapon::UsesSecondaryAmmo( void )
 // Purpose: Show/hide weapon and corresponding view model if any
 // Input  : visible - 
 //-----------------------------------------------------------------------------
-void CBaseCombatWeapon::SetWeaponVisible( bool visible )
+void CBaseCombatWeapon::SetWeaponVisible(bool visible)
 {
-	CBaseViewModel *vm = NULL;
+	CBaseViewModel* vm = NULL;
 
-	CBasePlayer *pOwner = ToBasePlayer( GetOwner() );
-	if ( pOwner )
+	CBasePlayer* pOwner = ToBasePlayer(GetOwner());
+	if (pOwner)
 	{
-		vm = pOwner->GetViewModel( m_nViewModelIndex );
+		vm = pOwner->GetViewModel(m_nViewModelIndex);
 	}
 
 	//only hide the VM if we're in a vehicle. vehicle handles the VM
 	//server ownly because it crashes on the client for whatever reason....
 #if !defined( CLIENT_DLL )
-	if (pOwner->IsInAVehicle())
+	if (pOwner)
 	{
-		if (vm)
+		if (pOwner->IsInAVehicle())
 		{
-			vm->AddEffects(EF_NODRAW);
+			if (vm)
+			{
+				vm->AddEffects(EF_NODRAW);
+			}
+			return;
 		}
-		return;
 	}
 #endif
 
