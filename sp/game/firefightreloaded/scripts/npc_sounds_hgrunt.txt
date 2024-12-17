@@ -64,6 +64,24 @@
 	}
 }
 
+
+"HGrunt.Pain_Robot"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_80db"
+	"pitch"		"PITCH_NORM"
+	"rndwave"
+	{
+		"wave"		"npc/hgrunt_robot/gr_pain1.wav"
+		"wave"		"npc/hgrunt_robot/gr_pain2.wav"
+		"wave"		"npc/hgrunt_robot/gr_pain3.wav"
+		"wave"		"npc/hgrunt_robot/gr_pain4.wav"
+		"wave"		"npc/hgrunt_robot/gr_pain5.wav"
+
+	}
+}
+
 "HGrunt.Die"
 {
 	"channel"	"CHAN_VOICE"
@@ -75,6 +93,21 @@
 		"wave"		"npc/hgrunt/gr_die1.wav"
 		"wave"		"npc/hgrunt/gr_die2.wav"
 		"wave"		"npc/hgrunt/gr_die3.wav"
+
+	}
+}
+
+"HGrunt.Die_Robot"
+{
+	"channel"	"CHAN_VOICE"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_80db"
+	"pitch"		"PITCH_NORM"
+	"rndwave"
+	{
+		"wave"		"npc/hgrunt_robot/gr_die1.wav"
+		"wave"		"npc/hgrunt_robot/gr_die2.wav"
+		"wave"		"npc/hgrunt_robot/gr_die3.wav"
 
 	}
 }

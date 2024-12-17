@@ -1,5 +1,6 @@
 "npc_assassin_preset1"
 {
+	"new_model"		"models/combine_assassin_survivor.mdl"
 	"health_multiplier"	"3"
 	"speed_multiplier"	"2.5"
 	"is_rare"		"1"

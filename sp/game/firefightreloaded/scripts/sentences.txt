@@ -1604,6 +1604,125 @@ HG_DRAG6A npc/hgrunt/c2a3_hg_laugh {Len 2.94}
 HG_SUCKS npc/hgrunt/hg_sucks {Len 6.35}
 HG_CIVVIES npc/hgrunt/hg_civvies {Len 6.73}
 
+//ROBO GRUNTS
+
+//HECU
+
+// HUMAN GRUNTS
+RG_GREN0 npc/hgrunt_robot/clik(p120) grenade! clik {Len 1.17}
+RG_GREN1 npc/hgrunt_robot/(t30) clik take!(e75) cover!(s5) clik {Len 0.95}
+RG_GREN2 npc/hgrunt_robot/(p110 t40) clik(p120) get!(e78) down!(t30) clik {Len 0.78}
+RG_GREN3 npc/hgrunt_robot/clik move! clik(p120) {Len 1.04}
+
+// Player Alert
+RG_ALERT0 npc/hgrunt_robot/(t30) squad!, we!(e80) got!(e80) freeman!(t20 p105), clik(p110) {Len 2.14}
+RG_ALERT1 npc/hgrunt_robot/clik(p110) target! clik {Len 1.13}
+RG_ALERT2 npc/hgrunt_robot/clik movement! clik {Len 1.18}
+RG_ALERT3 npc/hgrunt_robot/(t40) we! got! hostiles!(p120 t0) clik {Len 2.07}
+RG_ALERT4 npc/hgrunt_robot/(t20) clik squad!, neutralize!(e90) freeman! clik {Len 2.67}
+RG_ALERT5 npc/hgrunt_robot/(t30) clik clik move!(e75) in! clik(p120) {Len 1.06}
+
+// Monster Alert
+RG_MONST0 npc/hgrunt_robot/clik(p110) (t50) bogies!(t0), my! sector!(t0) clik {Len 2.28}
+RG_MONST1 npc/hgrunt_robot/clik(p110) (t40) clik(p120) we!(e75) got! bogies! clik {Len 1.30}
+RG_MONST2 npc/hgrunt_robot/clik clik (t30) alien!(e85) alert! clik {Len 1.46}
+RG_MONST3 npc/hgrunt_robot/clik clik (t30) alien!(e85) movement!(t0) clik(p120) {Len 1.72}
+
+// Take cover
+RG_COVER0 npc/hgrunt_robot/clik (t30) take! cover!(t0) clik {Len 1.38}
+RG_COVER1 npc/hgrunt_robot/clik(p120) (t40) two!(e75) hot!(e80) here! clik {Len 1.14}
+RG_COVER2 npc/hgrunt_robot/clik(p110) (t30) fall!(e80) out! clik clik {Len 1.17}
+RG_COVER3 npc/hgrunt_robot/clik(p120) (t20) clear! this! area! clik {Len 1.69}
+RG_COVER4 npc/hgrunt_robot/clik (t40) cover!(e75) fire! clik {Len 0.95}
+
+// Throw grenade
+RG_THROW0 npc/hgrunt_robot/clik(p120) (t40) fire!(e90) in!(e90) the!(e60) hole!(e100) clik {Len 1.37}
+RG_THROW1 npc/hgrunt_robot/clik(p120) grenade! clik {Len 1.17}
+RG_THROW2 npc/hgrunt_robot/clik (t35) fire in the(e50) hole clik(p120) {Len 1.66}
+RG_THROW3 npc/hgrunt_robot/clik(p110) (t35 e80) squad, stay down clik {Len 1.51}
+ 
+// Taunt
+RG_TAUNT0 npc/hgrunt_robot/clik (t30 e75) heavy! fire! {Len 1.17}
+RG_TAUNT1 npc/hgrunt_robot/clik(p120) (t40) roger, hold position clik {Len 1.82}
+RG_TAUNT3 npc/hgrunt_robot/clik(p110) (t40) request! backup! clik(p120) clik {Len 1.32}
+
+// Easter Egg Taunts
+RG_TAUNT_EASTEREGG1 npc/hgrunt_robot/clik (t30) my ass is(e90 p110) heavy clik(p120) clik {Len 2.28}
+RG_TAUNT_EASTEREGG2 npc/hgrunt_robot/clik my!(e95) ass!(e95) is!(p90) heavy! clik(p120) clik {Len 2.28}
+
+// Charge
+RG_CHARGE0 npc/hgrunt_robot/clik (t40) go! recon! clik(p120) {Len 1.21}
+RG_CHARGE1 npc/hgrunt_robot/clik(p110) (t40) move!(e75) in! clik {Len 0.84}
+RG_CHARGE2 npc/hgrunt_robot/clik go! clik(p120) {Len 0.91}
+RG_CHARGE3 npc/hgrunt_robot/clik lets! go! clik(p120) {Len 1.37}
+
+// Idle
+RG_IDLE0 npc/hgrunt_robot/gr_idle1 {Len 2.97}
+RG_IDLE1 npc/hgrunt_robot/gr_idle2 {Len 2.50}
+RG_IDLE2 npc/hgrunt_robot/gr_idle3 {Len 2.50}
+
+RG_QUEST0 npc/hgrunt_robot/clik (t25) stay(e80) alert clik(p120) {Len 1.83}
+RG_QUEST1 npc/hgrunt_robot/clik (t30) radio(e75) check, over clik(p120) {Len 1.65}
+RG_QUEST2 npc/hgrunt_robot/clik (t20) maintain lookout clik(p120) {Len 1.56}
+RG_QUEST3 npc/hgrunt_robot/clik(p110) (t30) squad, quiet(e75) down clik(p120) {Len 1.92}
+RG_QUEST4 npc/hgrunt_robot/clik(p120) (t30) hold position, clik {Len 1.58}
+RG_QUEST5 npc/hgrunt_robot/clik(p120) (t30) sweep(e80) that sector, clik(p120) clik(p120) {Len 1.85}
+RG_QUEST6 npc/hgrunt_robot/clik(p120) (t30) go tango sweep formation clik(p120) clik(p120) {Len 3.12}
+RG_QUEST7 npc/hgrunt_robot/clik(p120) (t30) echo(e75) mission is go clik(p120) clik(p120) {Len 2.05}
+RG_QUEST8 npc/hgrunt_robot/clik(p110) (t30) fire(e75) team, weapons(e75) check ok clik(p120) clik {Len 2.72}
+RG_QUEST9 npc/hgrunt_robot/clik(p110) (t30) fire(e75) team, objective foxtrot niner clik(p120) {Len 3.20}
+RG_QUEST10 npc/hgrunt_robot/clik (t30) ok(e75) mission, zero(e75) niner clik {Len 2.33}
+RG_QUEST11 npc/hgrunt_robot/clik (t30) squad, stay(e80) alert(e80), over clik {Len 3.53}
+
+RG_ANSWER0 npc/hgrunt_robot/clik(p110) (t20) roger(e75) that, clik(p120) clik {Len 1.87}
+RG_ANSWER1 npc/hgrunt_robot/clik(p120) (t10) yessir clik {Len 1.06}
+RG_ANSWER2 npc/hgrunt_robot/clik(p120) (t30) affirmative, sir clik {Len 1.57}
+RG_ANSWER3 npc/hgrunt_robot/clik (t30) negative clik(p120) clik {Len 0.94}
+RG_ANSWER4 npc/hgrunt_robot/clik(p105) (t30) roger clik {Len 0.84}
+RG_ANSWER5 npc/hgrunt_robot/clik(p105) (t30) ok control clik {Len 1.46}
+RG_ANSWER6 npc/hgrunt_robot/clik(p105) (t30) that(e75) is, affirmative clik {Len 2.31}
+
+RG_CLEAR0 npc/hgrunt_robot/clik(p130) (t30) all(e75) clear sir, clik {Len 1.65}
+RG_CLEAR1 npc/hgrunt_robot/clik (t30) bravo(e75) post, clear clik(p120) {Len 1.70}
+RG_CLEAR2 npc/hgrunt_robot/clik(p110) (t30) delta(e75) team, clear clik(p120) {Len 1.62}
+RG_CLEAR3 npc/hgrunt_robot/clik(p110) (t40) no sign hostiles sir, over clik(p120) {Len 2.62}
+RG_CLEAR4 npc/hgrunt_robot/clik (t30) no(e80) sign objective sir, over clik(p120) {Len 2.77}
+RG_CLEAR5 npc/hgrunt_robot/clik (t30) no(e75) movement this level clik(p120) {Len 1.91}
+RG_CLEAR6 npc/hgrunt_robot/clik(p120) (t28) sir, sector secure, over clik(p120) clik(p120) {Len 2.76}
+RG_CLEAR7 npc/hgrunt_robot/clik(p120) (t30) command(e75) post, team in position, over clik {Len 3.13}
+RG_CLEAR8 npc/hgrunt_robot/clik (t30) recon, in(e75) position, all quiet clik(p120) {Len 2.88}
+RG_CLEAR9 npc/hgrunt_robot/clik(p110) (t30) lookout(e90) post, all quiet, over clik(p110) {Len 2.70}
+RG_CLEAR10 npc/hgrunt_robot/clik (t40) sir, I(e80) here(e75) something clik {Len 1.72}
+RG_CLEAR11 npc/hgrunt_robot/clik(p120) (t30) sir, zero movement, over clik {Len 3.20}
+RG_CLEAR12 npc/hgrunt_robot/clik (t30) area secure sir, over clik(p120) {Len 2.30}
+
+RG_CHECK0 npc/hgrunt_robot/clik (t30) ok, check(e75) in clik {Len 1.63}
+RG_CHECK1 npc/hgrunt_robot/clik(p110) (t30) squad, are(e80) hostiles clear clik(p120) {Len 2.72}
+RG_CHECK2 npc/hgrunt_robot/clik (t30) check(e80) in clik {Len 1.40}
+RG_CHECK3 npc/hgrunt_robot/clik (t30) lookout, check(e75) in clik(p110) {Len 1.53}
+RG_CHECK4 npc/hgrunt_robot/clik (t30) recon(e90) team, check(e80) in clik {Len 2.09}
+RG_CHECK5 npc/hgrunt_robot/clik(p130) (t30) movement check, over clik {Len 1.80}
+RG_CHECK6 npc/hgrunt_robot/clik (t30) check your zone, over, clik {Len 2.43}
+RG_CHECK7 npc/hgrunt_robot/clik (t30) everything(e85) ok(e75) there, clik(p130) {Len 1.66}
+
+//narrative
+
+RG_SNOOP1A npc/hgrunt_robot/c2a2_RG_chat1a {Len 2.65}
+RG_SNOOP2A npc/hgrunt_robot/c2a2_RG_chat2a {Len 1.95}
+RG_SNOOP3A npc/hgrunt_robot/c2a2_RG_chat3a {Len 5.04}
+RG_SNOOP4A npc/hgrunt_robot/c2a2_RG_chat4a {Len 4.69}
+RG_SNOOP5A npc/hgrunt_robot/c2a2_RG_chat5a {Len 4.59}
+
+RG_DRAG1A npc/hgrunt_robot/c2a3_RG_1drag {Len 2.17}
+RG_DRAG2A npc/hgrunt_robot/c2a3_RG_2drag {Len 1.84}
+RG_DRAG3A npc/hgrunt_robot/c2a3_RG_3drag {Len 3.48}
+RG_DRAG4A npc/hgrunt_robot/c2a3_RG_4drag {Len 2.64}
+RG_DRAG5A npc/hgrunt_robot/c2a3_RG_5drag {Len 2.19}
+RG_DRAG6A npc/hgrunt_robot/c2a3_RG_laugh {Len 2.94}
+
+RG_SUCKS npc/hgrunt_robot/RG_sucks {Len 6.35}
+RG_CIVVIES npc/hgrunt_robot/RG_civvies {Len 6.73}
+
 //END CHARACTER SECTION
 
 // HEV Suit

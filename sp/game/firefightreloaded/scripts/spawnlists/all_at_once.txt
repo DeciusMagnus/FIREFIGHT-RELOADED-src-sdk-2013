@@ -6,269 +6,488 @@
 {
 	"settings"
 	{
-		"spawntime"		"6"
+		"spawntime"	"6"
 		"spawntime_steamdeck"	"10"
 	}
 	"1"
 	{
-		"classname"		"npc_metropolice"
+		"classname"	"npc_metropolice"
+		"exp"	"15"
 	}
 	"2"
 	{
-		"classname"		"npc_headcrab"
+		"classname"	"npc_headcrab"
+		"exp"	"15"
+		"rare"	"1"
 	}
 	"3"
 	{
-		"classname"		"npc_zombie"
+		"classname"	"npc_zombie"
+		"exp"	"20"
 	}
 	"4"
 	{
-		"classname"		"npc_zombie_torso"
+		"classname"	"npc_zombie_torso"
+		"exp"	"20"
 	}
 	"5"
 	{
-		"classname"		"npc_headcrab_fast"
+		"classname"	"npc_headcrab_fast"
+		"exp"	"15"
+		"rare"	"1"
 	}
 	"6"
 	{
-		//ace metrocops
-		"classname"		"npc_metropolice"
-		"preset"		"1"
-		"equipment"	
-		{
-			"weapon_stunstick" "3"
-			"weapon_pistol" "5"
-			"weapon_smg1" "5"
-			"weapon_shotgun" "3"
-			"weapon_mp5" "5"
-			"weapon_357" "5"
-			"weapon_oicw" "5"
-		}
+		"classname"	"npc_combine_s"
+		"exp"	"25"
 	}
 	"7"
 	{
-		"classname"		"npc_combine_s"
+		"classname"	"npc_zombie_armored"
+		"exp"	"40"
+		"rare"	"1"
 	}
 	"8"
 	{
-		"classname"		"npc_houndeye"
+		"classname"	"npc_headcrab_armored"
+		"rare"	"1"
+		"exp"	"35"
 	}
 	"9"
 	{
-		"classname"		"npc_combine_p"
+		"classname"	"npc_combine_p"
+		"exp"	"25"
 	}
 	"10"
 	{
-		"classname"		"npc_headcrab_poison"
+		"classname"	"npc_houndeye"
+		"rare"	"1"
+		"exp"	"35"
 	}
 	"11"
 	{
-		"classname"		"npc_bullsquid"
+		"classname"	"npc_metropolice"
+		"preset"	"1"
+		"rare"	"1"
+		"equipment"
+		{
+			"weapon_stunstick"	"3"
+			"weapon_pistol"	"5"
+			"weapon_smg1"	"5"
+			"weapon_shotgun"	"3"
+			"weapon_mp5"	"5"
+			"weapon_357"	"5"
+			"weapon_oicw"	"5"
+		}
+		"exp"	"45"
 	}
 	"12"
 	{
-		"classname"		"npc_fastzombie"
+		"classname"	"npc_headcrab_poison"
+		"exp"	"20"
+		"rare"	"1"
 	}
 	"13"
 	{
-		"classname"		"npc_fastzombie_torso"
+		"classname"	"npc_hgrunt"
+		"equipment"
+		{
+			"weapon_9mmar"	"7"
+			"weapon_9mmar_gl"	"4"
+			"weapon_shotgun"	"3"
+		}
+		"exp"	"30"
 	}
 	"14"
 	{
-		"classname"		"npc_combine_shot"
+		"classname"	"npc_bullsquid"
+		"rare"	"1"
+		"exp"	"40"
 	}
 	"15"
 	{
-		"classname"		"npc_strider"
+		"classname"	"npc_fastzombie"
+		"exp"	"35"
 	}
 	"16"
 	{
-		"classname"		"npc_antlion"
+		"classname"	"npc_fastzombie_torso"
+		"exp"	"30"
 	}
 	"17"
 	{
-		"classname"		"npc_playerbot"
-		"rare"			"1"
+		"classname"	"npc_combine_shot"
+		"exp"	"35"
 	}
 	"18"
 	{
-		"classname"		"npc_combine_e"
-		"equipment"	
+		"classname"	"npc_hgrunt_robot"
+		"equipment"
 		{
-			"weapon_ar2" "5"
-			"weapon_smg1" "3"
-			"weapon_shotgun" "2"
-			"weapon_m249para" "3"
-			"weapon_sniper_rifle" "3"
-            "weapon_mp5" "3"
-			"weapon_oicw" "5"
-            "weapon_gatling" "1"
+			"weapon_9mmar"	"7"
+			"weapon_9mmar_gl"	"4"
+			"weapon_shotgun"	"3"
+			"weapon_shotgun_gl"	"2"
 		}
+		"exp"	"45"
 	}
 	"19"
 	{
-		"classname"		"npc_poisonzombie"
+		"classname"	"npc_strider"
+		"rare"	"1"
+		"exp"	"250"
 	}
 	"20"
 	{
-		"classname"		"npc_agrunt"
+		"classname"	"npc_antlion"
+		"exp"	"35"
 	}
 	"21"
 	{
-		"classname"		"npc_acontroller"
+		"classname"	"npc_playerbot"
+		"rare"	"1"
 	}
 	"22"
 	{
-		"classname"		"npc_hunter"
+		"classname"	"npc_combine_e"
+		"rare"	"1"
+		"exp"	"45"
+		"equipment"
+		{
+			"weapon_ar2"	"5"
+			"weapon_smg1"	"3"
+			"weapon_shotgun"	"2"
+			"weapon_m249para"	"3"
+			"weapon_sniper_rifle"	"3"
+			"weapon_mp5"	"3"
+			"weapon_oicw"	"5"
+			"weapon_gatling"	"1"
+		}
 	}
 	"23"
 	{
-		"classname"		"npc_zombine"
+		"classname"	"npc_poisonzombie"
+		"rare"	"1"
+		"exp"	"45"
 	}
 	"24"
 	{
-		"classname"		"npc_antlionworker"
+		"classname"	"npc_agrunt"
+		"exp"	"45"
 	}
 	"25"
 	{
-		"classname"		"npc_antlionguard"
+		"classname"	"npc_combine_s_friendly"
+		"wildcard"	"1"
+		"preset"	"2"
+		"rare"	"1"
+		"equipment"
+		{
+			"weapon_smg1"	"3"
+			"weapon_ar2"	"5"
+			"weapon_mp5"	"3"
+			"weapon_oicw"	"5"
+			"weapon_shotgun"	"4"
+		}
 	}
 	"26"
 	{
-		"classname"		"npc_vortigaunt"
+		"classname"	"npc_acontroller"
+		"exp"	"45"
 	}
 	"27"
 	{
-		"classname"		"npc_assassin"
+		"classname"	"npc_hunter"
+		"rare"	"1"
+		"exp"	"45"
 	}
 	"28"
 	{
-		//ministrider
-		"classname"		"npc_hunter"
-		"preset"		"4"
+		"classname"	"npc_zombine"
+		"rare"	"1"
+		"exp"	"45"
 	}
 	"29"
 	{
-		"classname"		"npc_antlionguardian"
+		"classname"	"npc_zombine_armored"
+		"rare"	"1"
+		"exp"	"50"
 	}
 	"30"
 	{
-		"classname"		"npc_stalker"
+		"classname"	"npc_antlionworker"
+		"rare"	"1"
+		"exp"	"45"
 	}
 	"31"
 	{
-		//boomsquids
-		"classname"		"npc_bullsquid"
-		"preset"		"1"
+		"classname"	"npc_antlionguard"
+		"rare"	"1"
+		"exp"	"55"
 	}
 	"32"
 	{
-		"classname"		"npc_combine_ace"
-		"equipment"	
+		"classname"	"npc_combine_e_friendly"
+		"wildcard"	"1"
+		"preset"	"2"
+		"rare"	"1"
+		"equipment"
 		{
-			"weapon_ar2" "5"
-			"weapon_smg1" "3"
-			"weapon_shotgun" "4"
-			"weapon_railgun" "3"
-			"weapon_m249para" "4"
-			"weapon_sniper_rifle" "3"
-            "weapon_mp5" "3"
-			"weapon_oicw" "5"
-            "weapon_gatling" "3"
+			"weapon_ar2"	"5"
+			"weapon_smg1"	"3"
+			"weapon_shotgun"	"2"
+			"weapon_m249para"	"3"
+			"weapon_sniper_rifle"	"3"
+			"weapon_mp5"	"3"
+			"weapon_oicw"	"5"
 		}
 	}
 	"33"
 	{
-		"classname"		"npc_rollermine"
+		"classname"	"npc_vortigaunt"
+		"rare"	"1"
 	}
 	"34"
 	{
-		"classname"		"npc_cscanner"
+		"classname"	"npc_assassin"
+		"exp"	"35"
 	}
 	"35"
 	{
-		//Elite Hunter
-		"classname"		"npc_hunter"
-		"preset"		"3"
+		"classname"	"npc_hunter_friendly"
+		"preset"	"1"
 	}
 	"36"
 	{
-		//kamikaze headcrab
-		"classname"		"npc_headcrab_fast"
-		"preset"		"1"
+		"classname"	"npc_hunter"
+		"preset"	"4"
+		"rare"	"1"
+		"exp"	"50"
 	}
 	"37"
 	{
-		//Demolitions Hunter
-		"classname"		"npc_hunter"
-		"preset"		"2"
+		"classname"	"npc_vortigaunt_hl2_enemy"
+		"rare"	"1"
+		"exp"	"75"
 	}
 	"38"
 	{
-		//Anti-Aircraft Hunter
-		"classname"		"npc_hunter"
-		"preset"		"1"
+		"classname"	"npc_antlionguardian"
+		"rare"	"1"
+		"exp"	"65"
 	}
 	"39"
 	{
-		//super ace
-		"classname"		"npc_combine_ace"
-		"preset"		"1"
-		"equipment"	
-		{
-			"weapon_ar2" "5"
-			"weapon_smg1" "3"
-			"weapon_shotgun" "4"
-			"weapon_railgun" "3"
-			"weapon_m249para" "4"
-			"weapon_sniper_rifle" "3"
-            "weapon_mp5" "3"
-			"weapon_oicw" "5"
-            "weapon_gatling" "3"
-		}
+		"classname"	"npc_stalker"
+		"rare"	"1"
+		"exp"	"60"
 	}
-	//advisor drones of various combine units.
 	"40"
 	{
-		"classname"		"npc_combine_s"
-		"wildcard"		"1"
-		"preset"		"1"
+		"classname"	"npc_bullsquid"
+		"preset"	"1"
+		"rare"	"1"
+		"exp"	"50"
 	}
 	"41"
 	{
-		"classname"		"npc_metropolice"
-		"wildcard"		"1"
-		"preset"		"1"
+		"classname"	"npc_combine_ace"
+		"rare"	"1"
+		"exp"	"60"
+		"equipment"
+		{
+			"weapon_ar2"	"5"
+			"weapon_smg1"	"3"
+			"weapon_shotgun"	"4"
+			"weapon_railgun"	"3"
+			"weapon_m249para"	"4"
+			"weapon_sniper_rifle"	"3"
+			"weapon_mp5"	"3"
+			"weapon_oicw"	"5"
+			"weapon_gatling"	"3"
+		}
 	}
 	"42"
 	{
-		"classname"		"npc_hunter"
-		"wildcard"		"1"
-		"preset"		"1"
+		"classname"	"npc_assassin"
+		"preset"	"1"
+		"rare"	"1"
+		"exp"	"50"
+		"equipment"
+		{
+			"weapon_smg1"	"2"
+			"weapon_pistol"	"5"
+		}
 	}
 	"43"
 	{
-		"classname"		"npc_combine_ace"
-		"wildcard"		"1"
-		"preset"		"1"
-		"rare"			"1"
-		"equipment"	
-		{
-			"weapon_ar2" "5"
-			"weapon_smg1" "3"
-			"weapon_shotgun" "4"
-			"weapon_railgun" "3"
-			"weapon_m249para" "4"
-			"weapon_sniper_rifle" "3"
-            "weapon_mp5" "3"
-			"weapon_oicw" "5"
-		}
+		"classname"	"npc_rollermine"
+		"exp"	"65"
 	}
 	"44"
 	{
-		//railgun hunters
-		"classname"		"npc_hunter"
-		"preset"		"5"
-		"rare"			"1"
+		"classname"	"npc_cscanner"
+		"exp"	"25"
+	}
+	"45"
+	{
+		"classname"	"npc_hunter"
+		"preset"	"3"
+		"rare"	"1"
+		"exp"	"55"
+	}
+	"46"
+	{
+		"classname"	"npc_headcrab_fast"
+		"preset"	"1"
+		"rare"	"1"
+		"exp"	"45"
+	}
+	"47"
+	{
+		"classname"	"npc_fastzombie"
+		"preset"	"1"
+		"rare"	"1"
+		"exp"	"50"
+	}
+	"48"
+	{
+		"classname"	"npc_hunter"
+		"preset"	"2"
+		"rare"	"1"
+		"exp"	"65"
+	}
+	"49"
+	{
+		"classname"	"npc_hunter"
+		"preset"	"1"
+		"rare"	"1"
+		"exp"	"70"
+	}
+	"50"
+	{
+		"classname"	"npc_combine_ace"
+		"preset"	"1"
+		"rare"	"1"
+		"exp"	"100"
+		"equipment"
+		{
+			"weapon_ar2"	"5"
+			"weapon_smg1"	"3"
+			"weapon_shotgun"	"4"
+			"weapon_railgun"	"3"
+			"weapon_m249para"	"4"
+			"weapon_sniper_rifle"	"3"
+			"weapon_mp5"	"3"
+			"weapon_oicw"	"5"
+			"weapon_gatling"	"3"
+		}
+	}
+	"51"
+	{
+		"classname"	"npc_combine_ace_friendly"
+		"wildcard"	"1"
+		"preset"	"2"
+		"rare"	"1"
+		"equipment"
+		{
+			"weapon_ar2"	"5"
+			"weapon_smg1"	"3"
+			"weapon_shotgun"	"4"
+			"weapon_railgun"	"3"
+			"weapon_m249para"	"4"
+			"weapon_sniper_rifle"	"3"
+			"weapon_mp5"	"3"
+			"weapon_oicw"	"5"
+		}
+	}
+	"52"
+	{
+		"classname"	"npc_combine_s"
+		"wildcard"	"1"
+		"preset"	"1"
+		"rare"	"1"
+		"exp"	"60"
+	}
+	"53"
+	{
+		"classname"	"npc_metropolice"
+		"wildcard"	"1"
+		"preset"	"1"
+		"rare"	"1"
+		"exp"	"60"
+	}
+	"54"
+	{
+		"classname"	"npc_hunter"
+		"wildcard"	"1"
+		"preset"	"1"
+		"rare"	"1"
+		"exp"	"75"
+	}
+	"55"
+	{
+		"classname"	"npc_combine_ace"
+		"wildcard"	"1"
+		"preset"	"1"
+		"rare"	"1"
+		"exp"	"100"
+		"equipment"
+		{
+			"weapon_ar2"	"5"
+			"weapon_smg1"	"3"
+			"weapon_shotgun"	"4"
+			"weapon_railgun"	"3"
+			"weapon_m249para"	"4"
+			"weapon_sniper_rifle"	"3"
+			"weapon_mp5"	"3"
+			"weapon_oicw"	"5"
+		}
+	}
+	"56"
+	{
+		"classname"	"npc_hunter"
+		"preset"	"5"
+		"rare"	"1"
+		"exp"	"75"
+	}
+	"57"
+	{
+		"classname"	"npc_combine_s"
+		"wildcard"	"1"
+		"preset"	"1"
+		"exp"	"60"
+	}
+	"58"
+	{
+		"classname"	"npc_metropolice"
+		"wildcard"	"1"
+		"preset"	"1"
+		"exp"	"60"
+	}
+	"59"
+	{
+		"classname"	"npc_hunter"
+		"wildcard"	"1"
+		"preset"	"1"
+		"exp"	"75"
+	}
+	"60"
+	{
+		"classname"	"npc_combine_ace"
+		"wildcard"	"1"
+		"preset"	"1"
+		"exp"	"100"
+		"equipment"
+		{
+			"weapon_ar2"	"5"
+			"weapon_smg1"	"3"
+			"weapon_shotgun"	"4"
+			"weapon_railgun"	"3"
+			"weapon_m249para"	"4"
+			"weapon_sniper_rifle"	"3"
+			"weapon_mp5"	"3"
+			"weapon_oicw"	"5"
+		}
 	}
 }
