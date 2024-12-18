@@ -29,7 +29,8 @@ class CHudEXP : public CHudElement, public vgui::Panel
 public:
 	CHudEXP( const char *pElementName );
 	virtual void ApplySchemeSettings( vgui::IScheme *pScheme );
-	int GetXpMultiplier();
+	//i am shocked i am able to compile this mod with this not having any function body.
+	//int GetXpMultiplier();
 	bool ShouldDraw();
 
 protected:
