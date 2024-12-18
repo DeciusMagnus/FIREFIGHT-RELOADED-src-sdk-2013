@@ -130,7 +130,7 @@ public:
 	bool				DecrementAmmo( CBaseCombatCharacter *pOwner );
 
 private:
-	CTurretHologram		*pHologram;
+	CHandle<CTurretHologram>	pHologram;
 	bool				m_bSetToRemoveAmmo;
 	bool				m_bStopMovingHologram;
 };
@@ -167,6 +167,7 @@ CWeaponTurret::CWeaponTurret()
 	m_fMaxRange1 = TURRET_MAX_PLACEMENT_RANGE;
 	m_bSetToRemoveAmmo = false;
 	m_bStopMovingHologram = false;
+	pHologram = NULL;
 }
 
 void CWeaponTurret::Spawn( )
@@ -356,6 +357,13 @@ void CWeaponTurret::StartHologram(void)
 
 void CWeaponTurret::MoveHologram(void)
 {
+	if (pHologram == nullptr || pHologram == NULL)
+	{
+		//StartHologram will move back to us.
+		StartHologram();
+		return;
+	}
+
 	CBasePlayer* pOwner = ToBasePlayer(GetOwner());
 	if (!pOwner)
 		return;
@@ -422,6 +430,9 @@ void CWeaponTurret::MoveHologram(void)
 
 void CWeaponTurret::StopHologram(void)
 {
+	if (pHologram == nullptr || pHologram == NULL)
+		return;
+
 	if (pHologram)
 	{
 		pHologram->SUB_Remove();

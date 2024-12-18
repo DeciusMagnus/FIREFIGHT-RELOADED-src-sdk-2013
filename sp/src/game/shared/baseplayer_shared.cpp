@@ -172,19 +172,9 @@ int CBasePlayer::GetLevel()
 
 bool CBasePlayer::IsAtMaxLevel()
 {
-	if (!g_fr_classic.GetBool())
+	if (GetLevel() == GetMaxLevel())
 	{
-		if (GetLevel() == GetMaxLevel())
-		{
-			return true;
-		}
-	}
-	else
-	{
-		if (FragCount() >= GetMaxLevel())
-		{
-			return true;
-		}
+		return true;
 	}
 
 	return false;

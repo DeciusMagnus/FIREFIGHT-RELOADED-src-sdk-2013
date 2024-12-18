@@ -127,8 +127,10 @@ ConVar sk_savepurchasedweapons("sk_savepurchasedweapons", "0", FCVAR_ARCHIVE);
 ConVar sk_savedroppedweapons("sk_savedroppedweapons", "0", FCVAR_ARCHIVE);
 
 ConVar player_defaulthealth("player_defaulthealth", "200", FCVAR_ARCHIVE, "");
-ConVar player_defaultarmor("player_defaultarmor", "200", FCVAR_REPLICATED);
-ConVar player_maxarmor("player_maxarmor", "500", FCVAR_REPLICATED);
+ConVar player_defaultarmor("player_defaultarmor", "200", FCVAR_REPLICATED | FCVAR_ARCHIVE, "");
+ConVar player_maxarmor("player_maxarmor", "500", FCVAR_REPLICATED | FCVAR_ARCHIVE, "");
+
+ConVar sv_autosave_levelup("sv_autosave_levelup", "1", FCVAR_ARCHIVE);
 
 extern ConVar sv_maxunlag;
 extern ConVar sv_turbophysics;
@@ -1101,7 +1103,7 @@ void CBasePlayer::CheckLevel()
 		}
 	}
 
-	if (IsAtMaxLevel())
+	if (IsAtMaxLevel() && !g_fr_classic.GetBool())
 	{
 		IGameEvent* event = gameeventmanager->CreateEvent("player_maxlevel");
 		if (event)
@@ -1175,6 +1177,16 @@ void CBasePlayer::LevelUp()
 		}
 
 		DetermineReward();
+
+		if (sv_autosave_levelup.GetBool() && !m_bHardcore)
+		{
+			CBaseEntity* pAutosave = CBaseEntity::Create("logic_autosave", vec3_origin, vec3_angle, NULL);
+			if (pAutosave)
+			{
+				g_EventQueue.AddEvent(pAutosave, "Save", 0.5, NULL, NULL);
+				g_EventQueue.AddEvent(pAutosave, "Kill", 0.6, NULL, NULL);
+			}
+		}
 
 		IGameEvent* event = gameeventmanager->CreateEvent("player_levelup");
 		if (event)

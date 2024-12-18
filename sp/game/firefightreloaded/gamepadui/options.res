@@ -1452,6 +1452,20 @@
 				}
 			}
             
+            "AutosaveLevelUp"
+			{
+				"text"			"#GameUI_AutosaveLevelUp"
+				"type"			"wheelywheel"
+				"convar"		"sv_autosave_levelup"
+				"advanced"		"1"
+
+				"options"
+				{
+					"0"		"#gameui_disabled"
+					"1"		"#gameui_enabled"
+				}
+			}
+            
             "Headshots"
 			{
 				"text"			"#GameUI_Headshots"

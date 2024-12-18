@@ -24,6 +24,7 @@
 #include "player_resource.h"
 #include "engine/IEngineSound.h"
 #include "filesystem.h"
+#include "eventqueue.h"
 
 #include "tier0/vprof.h"
 #include "globalstate.h"
@@ -151,6 +152,7 @@ void ClientGamePrecache( void )
 	CBaseEntity::PrecacheScriptSound( "Geiger.BeepLow" );
 }
 
+extern ConVar sv_autosave_levelup;
 
 // called by ClientKill and DeadThink
 void respawn( CBaseEntity *pEdict, bool fCopyCorpse )
@@ -191,6 +193,19 @@ void respawn( CBaseEntity *pEdict, bool fCopyCorpse )
 		else
 		{
 			pPlayer->Spawn();
+		}
+
+		if (GlobalEntity_GetState("player_inbossbattle") == GLOBAL_ON)
+		{
+			if (sv_autosave_levelup.GetBool() && !pPlayer->m_bHardcore)
+			{
+				CBaseEntity* pAutosave = CBaseEntity::Create("logic_autosave", vec3_origin, vec3_angle, NULL);
+				if (pAutosave)
+				{
+					g_EventQueue.AddEvent(pAutosave, "Save", 0.5, NULL, NULL);
+					g_EventQueue.AddEvent(pAutosave, "Kill", 0.6, NULL, NULL);
+				}
+			}
 		}
 	}
 }

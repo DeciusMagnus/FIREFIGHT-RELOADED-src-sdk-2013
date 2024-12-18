@@ -632,6 +632,7 @@
             "GameUI_BossGoTo_OnDeath": "When applicable, teleport to the boss battle on death.",
             "GameUI_BossGoTo_Level": "The level Advisor Drones will teleport the player at.",
             "GameUI_BossGoTo_ClassicKillCount": "(Classic) The kill count Advisor Drones will teleport the player at.",
+            "GameUI_AutosaveLevelUp": "Autosave upon leveling up.",
             "GameUI_Turbophysics": "Turbophysics Mode",
             "Tutorial_Menu": "PLAY TUTORIAL",
             "Tutorial_Menu_Alt": "Tutorial",
