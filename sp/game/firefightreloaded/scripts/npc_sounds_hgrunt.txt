@@ -83,6 +83,14 @@
 		"wave"		"npc/hgrunt_robot/hell!.wav"
 		"wave"		"npc/hgrunt_robot/hold.wav"
 		"wave"		"npc/hgrunt_robot/hold!.wav"
+		"wave"		"npc/hgrunt_robot/ok.wav"
+		"wave"		"npc/hgrunt_robot/ok!.wav"
+		"wave"		"npc/hgrunt_robot/silence.wav"
+		"wave"		"npc/hgrunt_robot/silence!.wav"
+		"wave"		"npc/hgrunt_robot/eliminate.wav"
+		"wave"		"npc/hgrunt_robot/clik.wav"
+		"wave"		"npc/hgrunt_robot/_period.wav"
+		"wave"		"npc/hgrunt_robot/_comma.wav"
 		"wave"		"npc/hgrunt_robot/gr_pain4.wav"
 	}
 }
@@ -113,6 +121,8 @@
 		"wave"		"npc/hgrunt_robot/gr_die1.wav"
 		"wave"		"npc/hgrunt_robot/gr_die2.wav"
 		"wave"		"npc/hgrunt_robot/gr_die3.wav"
-
+		"wave"		"npc/hgrunt_robot/rg_die4_squad.wav"
+		"wave"		"npc/hgrunt_robot/rg_die5_no.wav"
+		"wave"		"npc/hgrunt_robot/rg_die6_he.wav"
 	}
 }
