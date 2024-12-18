@@ -856,13 +856,12 @@ void CPropJeepEpisodic::UpdateRadar( bool forceUpdate )
 	// Count the targets on radar. If any more targets come on the radar, we beep.
 	int m_iNumOldRadarContacts = m_iNumRadarContacts;
 
-	m_flNextRadarUpdateTime = gpGlobals->curtime + RADAR_UPDATE_FREQUENCY;
+	m_flNextRadarUpdateTime = gpGlobals->curtime + RADAR_UPDATE_FREQUENCY_FAST;
 	m_iNumRadarContacts = 0;
 
 	CBaseEntity *pEnt = gEntList.FirstEnt();
 	string_t iszRadarTarget = FindPooledString( "info_radar_target" );
 	string_t iszStriderName = FindPooledString( "npc_strider" );
-	string_t iszHunterName = FindPooledString( "npc_hunter" );
 
 	string_t iszTestName = FindPooledString( jalopy_radar_test_ent.GetString() );
 
@@ -907,10 +906,16 @@ void CPropJeepEpisodic::UpdateRadar( bool forceUpdate )
 					type = RADAR_CONTACT_LARGE_ENEMY;
 				}
 			}
-
-			if ( pEnt->m_iClassname == iszHunterName )
+			else
 			{
-				type = RADAR_CONTACT_ENEMY;
+				if (pEnt->m_isRareEntity)
+				{
+					type = RADAR_CONTACT_LARGE_ENEMY;
+				}
+				else
+				{
+					type = RADAR_CONTACT_ENEMY;
+				}
 			}
 		}
 
@@ -944,12 +949,6 @@ void CPropJeepEpisodic::UpdateRadar( bool forceUpdate )
 		{
 			pAlyx->SpeakIfAllowed( TLK_PASSENGER_NEW_RADAR_CONTACT );
 		}
-	}
-
-	if( bDetectedDog )
-	{
-		// Update the radar much more frequently when dog is around.
-		m_flNextRadarUpdateTime = gpGlobals->curtime + RADAR_UPDATE_FREQUENCY_FAST;
 	}
 
 	//Msg("Server detected %d objects\n", m_iNumRadarContacts );
