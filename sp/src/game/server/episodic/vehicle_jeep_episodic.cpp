@@ -859,6 +859,7 @@ void CPropJeepEpisodic::UpdateRadar( bool forceUpdate )
 	m_flNextRadarUpdateTime = gpGlobals->curtime + RADAR_UPDATE_FREQUENCY_FAST;
 	m_iNumRadarContacts = 0;
 
+	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 	CBaseEntity *pEnt = gEntList.FirstEnt();
 	string_t iszRadarTarget = FindPooledString( "info_radar_target" );
 	string_t iszStriderName = FindPooledString( "npc_strider" );
@@ -871,21 +872,21 @@ void CPropJeepEpisodic::UpdateRadar( bool forceUpdate )
 	{
 		int type = RADAR_CONTACT_NONE;
 
-		if( pEnt->m_iClassname == iszRadarTarget )
+		if (pEnt->m_iClassname == iszRadarTarget)
 		{
-			CRadarTarget *pTarget = dynamic_cast<CRadarTarget*>(pEnt);
+			CRadarTarget* pTarget = dynamic_cast<CRadarTarget*>(pEnt);
 
-			if( pTarget != NULL && !pTarget->IsDisabled() )
+			if (pTarget != NULL && !pTarget->IsDisabled())
 			{
-				if( pTarget->m_flRadius < 0 || vecJalopyOrigin.DistToSqr(pTarget->GetAbsOrigin()) <= Square(pTarget->m_flRadius) )
+				if (pTarget->m_flRadius < 0 || vecJalopyOrigin.DistToSqr(pTarget->GetAbsOrigin()) <= Square(pTarget->m_flRadius))
 				{
 					// This item has been detected.
 					type = pTarget->GetType();
 
-					if( type == RADAR_CONTACT_DOG )
+					if (type == RADAR_CONTACT_DOG)
 						bDetectedDog = true;// used to prevent Alyx talking about the radar (see below)
 
-					if( pTarget->GetMode() == RADAR_MODE_STICKY )
+					if (pTarget->GetMode() == RADAR_MODE_STICKY)
 					{
 						// This beacon was just detected. Now change the radius to infinite
 						// so that it will never go off the radar due to distance.
@@ -894,13 +895,13 @@ void CPropJeepEpisodic::UpdateRadar( bool forceUpdate )
 				}
 			}
 		}
-		else if ( m_bRadarDetectsEnemies )
+		else if (m_bRadarDetectsEnemies)
 		{
-			if ( pEnt->m_iClassname == iszStriderName )
+			if (pEnt->m_iClassname == iszStriderName)
 			{
-				CNPC_Strider *pStrider = dynamic_cast<CNPC_Strider*>(pEnt);
+				CNPC_Strider* pStrider = dynamic_cast<CNPC_Strider*>(pEnt);
 
-				if( !pStrider || !pStrider->CarriedByDropship() )
+				if (!pStrider || !pStrider->CarriedByDropship())
 				{
 					// Ignore striders which are carried by dropships.
 					type = RADAR_CONTACT_LARGE_ENEMY;
@@ -908,13 +909,16 @@ void CPropJeepEpisodic::UpdateRadar( bool forceUpdate )
 			}
 			else
 			{
-				if (pEnt->m_isRareEntity)
+				if (pPlayer)
 				{
-					type = RADAR_CONTACT_LARGE_ENEMY;
-				}
-				else
-				{
-					type = RADAR_CONTACT_ENEMY;
+					if (pEnt->MyNPCPointer())
+					{
+						Disposition_t disp = pPlayer->IRelationType(pEnt);
+						if (disp == D_HT)
+						{
+							type = RADAR_CONTACT_ENEMY;
+						}
+					}
 				}
 			}
 		}
@@ -953,7 +957,7 @@ void CPropJeepEpisodic::UpdateRadar( bool forceUpdate )
 
 	//Msg("Server detected %d objects\n", m_iNumRadarContacts );
 
-	CBasePlayer *pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+	
 	CSingleUserRecipientFilter filter(pPlayer);
 	UserMessageBegin( filter, "UpdateJalopyRadar" );
 	WRITE_BYTE( 0 ); // end marker

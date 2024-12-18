@@ -1466,14 +1466,10 @@ void CNPC_Manhack::Slice( CBaseEntity *pHitEntity, float flInterval, trace_t &tr
 	}
 	
 	// Held manhacks do more damage
-	if ( IsHeldByPhyscannon() )
+	if ( IsHeldByPhyscannon() || IsWeaponHack())
 	{
 		// Deal 100 damage/sec
 		flDamage = 100.0f * flInterval;
-	}
-	else if (IsWeaponHack())
-	{
-		flDamage = 60.0f * flInterval;
 	}
 	else if ( pHitEntity->IsNPC() && HasPhysicsAttacker( MANHACK_SMASH_TIME ) )
 	{

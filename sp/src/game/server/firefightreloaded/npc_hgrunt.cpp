@@ -1285,7 +1285,7 @@ Activity CHGrunt::NPC_TranslateActivity( Activity NewActivity )
 		}
 		break;
 	case ACT_RUN:
-		if ( m_iHealth <= sk_hgrunt_limp_health.GetInt())
+		if ( m_iHealth <= sk_hgrunt_limp_health.GetInt() && !HasSpawnFlags(SF_GRUNT_ROBOT))
 		{
 			// limp!
 			return ACT_RUN_HURT;
@@ -1296,7 +1296,7 @@ Activity CHGrunt::NPC_TranslateActivity( Activity NewActivity )
 		}
 		break;
 	case ACT_WALK:
-		if ( m_iHealth <= sk_hgrunt_limp_health.GetInt())
+		if ( m_iHealth <= sk_hgrunt_limp_health.GetInt() && !HasSpawnFlags(SF_GRUNT_ROBOT))
 		{
 			// limp!
 			return ACT_WALK_HURT;
@@ -1492,7 +1492,9 @@ int CHGrunt::SelectSchedule( void )
 				// 10% chance of flinch.
 				int iPercent = random->RandomInt(0,99);
 
-				if ( iPercent <= 90 && GetEnemy() != NULL )
+				int percentage = (HasSpawnFlags(SF_GRUNT_ROBOT) ? 50 : 90);
+
+				if ( iPercent <= percentage && GetEnemy() != NULL )
 				{
 					// only try to take cover if we actually have an enemy!
 
