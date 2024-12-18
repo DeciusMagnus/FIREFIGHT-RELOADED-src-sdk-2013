@@ -687,7 +687,7 @@
 		"enabled" "1"
 		"PaintBackgroundType" "2"
 		"digit_xpos" "1"
-		"digit_ypos" "1"
+		"digit_ypos" "2"
 	}
     
     HudLocator
