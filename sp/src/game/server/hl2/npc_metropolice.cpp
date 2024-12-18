@@ -2766,6 +2766,9 @@ void CNPC_MetroPolice::PainSound( const CTakeDamageInfo &info )
 	if ( gpGlobals->curtime < m_flNextPainSoundTime )
 		return;
 
+	if (m_bNoDeathSound)
+		return;
+
 	// Don't make pain sounds if I'm on fire. The looping sound will take care of that for us.
 	if ( IsOnFire() )
 		return;

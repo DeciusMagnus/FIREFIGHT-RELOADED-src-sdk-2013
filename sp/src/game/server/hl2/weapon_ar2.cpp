@@ -46,6 +46,7 @@ BEGIN_DATADESC( CWeaponAR2 )
 	//DEFINE_FIELD( m_nVentPose, FIELD_INTEGER ),
     DEFINE_FIELD( m_bZoomed,	FIELD_BOOLEAN ),
     DEFINE_FIELD( m_iFireMode, FIELD_INTEGER ),
+	DEFINE_FIELD(m_bFiredFirstBullet, FIELD_BOOLEAN ),
 
 END_DATADESC()
 
@@ -129,6 +130,7 @@ CWeaponAR2::CWeaponAR2( )
 	m_nVentPose		= -1;
 
 	m_bAltFiresUnderwater = false;
+	m_bFiredFirstBullet = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -199,9 +201,14 @@ void CWeaponAR2::PrimaryAttack(void)
 	info.m_flDistance = MAX_TRACE_LENGTH;
 	info.m_iAmmoType = m_iPrimaryAmmoType;
 	info.m_flDamage = info.m_iPlayerDamage = (m_bZoomed ? (def->PlrDamage(m_iPrimaryAmmoType) * 2.5) : def->PlrDamage(m_iPrimaryAmmoType));
-	info.m_nDamageFlags = (m_bZoomed ? (def->DamageType(info.m_iAmmoType) | DMG_SNIPER) : def->DamageType(info.m_iAmmoType));
+	info.m_nDamageFlags = ((m_bZoomed && !m_bFiredFirstBullet) ? (def->DamageType(info.m_iAmmoType) | DMG_SNIPER) : def->DamageType(info.m_iAmmoType));
 	info.m_iTracerFreq = 2;
 	FireBullets(info);
+
+	if (!m_bFiredFirstBullet)
+	{
+		m_bFiredFirstBullet = true;
+	}
 
 	//Factor in the view kick
 	AddViewKick();
@@ -552,6 +559,11 @@ bool CWeaponAR2::Reload( void )
 
 	if ( m_bShotDelayed )
 		return false;
+
+	if (m_bFiredFirstBullet)
+	{
+		m_bFiredFirstBullet = false;
+	}
 
 	return BaseClass::Reload();
 }

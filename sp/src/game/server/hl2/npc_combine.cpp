@@ -3224,6 +3224,9 @@ void CNPC_Combine::PainSound (const CTakeDamageInfo& info)
 	if (IsOnFire())
 		return;
 
+	if (m_bNoDeathSound)
+		return;
+
 	// NOTE: The response system deals with this at the moment
 	if ( GetFlags() & FL_DISSOLVING )
 		return;
