@@ -73,12 +73,17 @@
 	"pitch"		"PITCH_NORM"
 	"rndwave"
 	{
-		"wave"		"npc/hgrunt_robot/gr_pain1.wav"
-		"wave"		"npc/hgrunt_robot/gr_pain2.wav"
-		"wave"		"npc/hgrunt_robot/gr_pain3.wav"
+		"wave"		"npc/hgrunt_robot/damn.wav"
+		"wave"		"npc/hgrunt_robot/damn!.wav"
+		"wave"		"npc/hgrunt_robot/shit.wav"
+		"wave"		"npc/hgrunt_robot/shit!.wav"
+		"wave"		"npc/hgrunt_robot/no.wav"
+		"wave"		"npc/hgrunt_robot/no!.wav"
+		"wave"		"npc/hgrunt_robot/hell.wav"
+		"wave"		"npc/hgrunt_robot/hell!.wav"
+		"wave"		"npc/hgrunt_robot/hold.wav"
+		"wave"		"npc/hgrunt_robot/hold!.wav"
 		"wave"		"npc/hgrunt_robot/gr_pain4.wav"
-		"wave"		"npc/hgrunt_robot/gr_pain5.wav"
-
 	}
 }
 
