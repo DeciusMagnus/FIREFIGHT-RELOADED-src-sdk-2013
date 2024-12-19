@@ -1136,6 +1136,13 @@ bool CBaseServerVehicle::HandlePassengerExit( CBaseCombatCharacter *pPassenger )
 		// whether we're blocked or not. We're getting out, one way or another.
 		GetDrivableVehicle()->PreExitVehicle( pPlayer, nRole );
 
+		CBaseViewModel* vm = pPlayer->GetViewModel();
+		vm->RemoveEffects(EF_NODRAW);
+
+		CBaseViewModel* vm2 = pPlayer->GetViewModel(1);
+		vm2->SetSequence(vm2->SelectWeightedSequence(ACT_VM_IDLE));
+		vm2->RemoveEffects(EF_NODRAW);
+
 		if ( iSequence > ACTIVITY_NOT_AVAILABLE )
 		{
 			CBaseAnimating *pAnimating = dynamic_cast<CBaseAnimating *>(m_pVehicle);
@@ -1150,13 +1157,6 @@ bool CBaseServerVehicle::HandlePassengerExit( CBaseCombatCharacter *pPassenger )
 				// Re-deploy our weapon
 				if ( pPlayer && pPlayer->IsAlive() )
 				{
-					CBaseViewModel* vm = pPlayer->GetViewModel();
-					vm->RemoveEffects(EF_NODRAW);
-
-					CBaseViewModel* vm2 = pPlayer->GetViewModel(1);
-					vm2->SetSequence(vm2->SelectWeightedSequence(ACT_VM_IDLE));
-					vm2->RemoveEffects(EF_NODRAW);
-
 					if ( pPlayer->GetActiveWeapon() )
 					{
 						pPlayer->GetActiveWeapon()->Deploy();
