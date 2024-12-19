@@ -1077,6 +1077,10 @@ void CBaseServerVehicle::HandlePassengerEntry( CBaseCombatCharacter *pPassenger,
 
 					CBaseViewModel* vm = pPlayer->GetViewModel();
 					vm->AddEffects(EF_NODRAW);
+
+					CBaseViewModel* vm2 = pPlayer->GetViewModel(1);
+					vm2->SetSequence(vm2->SelectWeightedSequence(ACT_VM_IDLE));
+					vm2->AddEffects(EF_NODRAW);
 				}
 
 				pPlayer->GetInVehicle( this, VEHICLE_ROLE_DRIVER );
@@ -1148,6 +1152,10 @@ bool CBaseServerVehicle::HandlePassengerExit( CBaseCombatCharacter *pPassenger )
 				{
 					CBaseViewModel* vm = pPlayer->GetViewModel();
 					vm->RemoveEffects(EF_NODRAW);
+
+					CBaseViewModel* vm2 = pPlayer->GetViewModel(1);
+					vm2->SetSequence(vm2->SelectWeightedSequence(ACT_VM_IDLE));
+					vm2->RemoveEffects(EF_NODRAW);
 
 					if ( pPlayer->GetActiveWeapon() )
 					{

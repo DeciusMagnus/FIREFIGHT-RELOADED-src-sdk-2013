@@ -79,6 +79,7 @@
 #define	MANHACK_CHARGE_MIN_DIST	200
 
 ConVar	sk_manhack_health( "sk_manhack_health","0");
+ConVar	sk_manhackweapon_health("sk_manhackweapon_health", "0");
 ConVar	sk_manhack_melee_dmg( "sk_manhack_melee_dmg","0");
 ConVar	sk_manhack_v2( "sk_manhack_v2","1");
 
@@ -582,7 +583,10 @@ void CNPC_Manhack::VPhysicsCollision( int index, gamevcollisionevent_t *pEvent )
 			TakeDamageFromPhysicsImpact( index, pEvent );
 		}
 
-		StopBurst( true );
+		if (!IsWeaponHack())
+		{
+			StopBurst(true);
+		}
 	}
 }
 
@@ -680,7 +684,10 @@ int	CNPC_Manhack::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		// reduce damage to nothing
 		tdInfo.SetDamage( 1.0 );
 
-		StopBurst( true );
+		if (!IsWeaponHack())
+		{
+			StopBurst(true);
+		}
 	}
 	else if ( info.GetDamageType() & DMG_AIRBOAT )
 	{
@@ -761,7 +768,10 @@ int	CNPC_Manhack::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		// tdInfo.SetDamage( 1.0 );
 
 		m_flEngineStallTime = gpGlobals->curtime + 0.5f;
-		StopBurst( true );
+		if (!IsWeaponHack())
+		{
+			StopBurst(true);
+		}
 	}
 	else
 	{
@@ -1466,7 +1476,7 @@ void CNPC_Manhack::Slice( CBaseEntity *pHitEntity, float flInterval, trace_t &tr
 	}
 	
 	// Held manhacks do more damage
-	if ( IsHeldByPhyscannon() || IsWeaponHack())
+	if ( IsHeldByPhyscannon())
 	{
 		// Deal 100 damage/sec
 		flDamage = 100.0f * flInterval;
@@ -1483,9 +1493,10 @@ void CNPC_Manhack::Slice( CBaseEntity *pHitEntity, float flInterval, trace_t &tr
 		// If we hit a prop, we want it to break immediately
 		flDamage = pHitEntity->GetHealth();
 	}
-	else if ( pHitEntity->IsNPC() && IRelationType( pHitEntity ) == D_HT  && FClassnameIs( pHitEntity, "npc_combine_s" ) ) 
+
+	if (pHitEntity->IsNPC() && IRelationType(pHitEntity) == D_HT && IsWeaponHack())
 	{
-		flDamage *= 6.0f;
+		flDamage *= 10.0f;
 	}
 
 	if (flDamage < 1.0f)
@@ -1502,6 +1513,18 @@ void CNPC_Manhack::Slice( CBaseEntity *pHitEntity, float flInterval, trace_t &tr
 	if (pPlayer)
 	{
 		info.SetAttacker( pPlayer );
+	}
+	else
+	{
+		if (IsWeaponHack())
+		{
+			pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+
+			if (pPlayer)
+			{
+				info.SetAttacker(pPlayer);
+			}
+		}
 	}
 
 	Vector dir = (tr.endpos - tr.startpos);
@@ -1543,9 +1566,9 @@ void CNPC_Manhack::Slice( CBaseEntity *pHitEntity, float flInterval, trace_t &tr
 	// Save off when we last hit something
 	m_flLastDamageTime = gpGlobals->curtime;
 
+	// Reset our state and give the player time to react
 	if (!IsWeaponHack())
 	{
-		// Reset our state and give the player time to react
 		StopBurst(true);
 	}
 }
@@ -2441,7 +2464,15 @@ void CNPC_Manhack::Spawn(void)
 		SetMoveType( MOVETYPE_VPHYSICS );
 	}
 
-	m_iHealth			= sk_manhack_health.GetFloat();
+	if (IsWeaponHack())
+	{
+		m_iHealth = sk_manhackweapon_health.GetFloat();
+	}
+	else
+	{
+		m_iHealth = sk_manhack_health.GetFloat();
+	}
+
 	SetViewOffset( Vector(0, 0, 10) );		// Position of the eyes relative to NPC's origin.
 	m_flFieldOfView		= VIEW_FIELD_FULL;
 	m_NPCState			= NPC_STATE_NONE;
