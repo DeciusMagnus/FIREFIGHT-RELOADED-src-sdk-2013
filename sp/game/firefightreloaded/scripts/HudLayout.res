@@ -102,9 +102,9 @@
 		"wide"	"102"
 		"tall"	"26"
 		
-		"AuxPowerColor"	"84 84 255 255"
-		"AuxPowerLowColor" "255 84 255 255"
-		"AuxPowerHighColor" "255 220 0 220"
+		"AuxPowerColor"	"0 126 255 255"
+		"AuxPowerLowColor" "255 48 0 255"
+		"AuxPowerHighColor" "30 126 255 255"
 		"AuxPowerDisabledAlpha" "70"
 
 		"BarInsetX" "8"

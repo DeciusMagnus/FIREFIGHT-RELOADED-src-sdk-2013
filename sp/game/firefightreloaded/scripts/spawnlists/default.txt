@@ -103,62 +103,62 @@
 		"min_level"	"5"
 		"equipment"
 		{
-			"weapon_9mmar"	"7"
-			"weapon_9mmar_gl"	"4"
-			"weapon_shotgun"	"3"
+			"weapon_9mmar"	"8"
+			"weapon_9mmar_gl"	"5"
+			"weapon_shotgun"	"2"
 		}
 		"exp"	"30"
 	}
 	"14"
+	{
+		"classname"	"npc_antlion"
+		"min_level"	"5"
+		"exp"	"35"
+	}
+	"15"
 	{
 		"classname"	"npc_bullsquid"
 		"min_level"	"6"
 		"rare"	"1"
 		"exp"	"40"
 	}
-	"15"
+	"16"
 	{
 		"classname"	"npc_fastzombie"
 		"min_level"	"6"
 		"exp"	"35"
 	}
-	"16"
+	"17"
 	{
 		"classname"	"npc_fastzombie_torso"
 		"min_level"	"6"
 		"exp"	"30"
 	}
-	"17"
+	"18"
 	{
 		"classname"	"npc_combine_shot"
 		"min_level"	"6"
 		"exp"	"35"
 	}
-	"18"
+	"19"
 	{
 		"classname"	"npc_hgrunt_robot"
 		"min_level"	"7"
 		"equipment"
 		{
-			"weapon_9mmar"	"7"
-			"weapon_9mmar_gl"	"4"
-			"weapon_shotgun"	"3"
+			"weapon_9mmar"	"8"
+			"weapon_9mmar_gl"	"5"
+			"weapon_shotgun"	"2"
 			"weapon_shotgun_gl"	"2"
 		}
 		"exp"	"45"
 	}
-	"19"
+	"20"
 	{
 		"classname"	"npc_strider"
 		"min_level"	"7"
 		"rare"	"1"
 		"exp"	"250"
-	}
-	"20"
-	{
-		"classname"	"npc_antlion"
-		"min_level"	"7"
-		"exp"	"35"
 	}
 	"21"
 	{

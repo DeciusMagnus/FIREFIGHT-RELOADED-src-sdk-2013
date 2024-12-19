@@ -24,7 +24,10 @@ Scheme
 		"SMODNormalDim"			"64 64 255 120"
 		"SMODBright"			"128 128 255 255"
 		"SMODCaution"			"255 84 255 255"
-        "FRNormal"              "0 113 229 255"
+        "FRBlueish"			"30 120 255 255"
+        "FRNormal"          "0 120 255 255"
+        "FRNormalDim"       "0 120 255 120"
+        "FRBright"          "48 133 219 255"
 		
 		// base colors
 		"Orange"			"255 176 0 255"
@@ -40,6 +43,9 @@ Scheme
 		"ForTesting"		"255 0 0 32"
 		"ForTesting_Magenta"	"255 0 255 255"
 		"ForTesting_MagentaDim"	"255 0 255 120"
+        
+        "HL2_HUD_BG"    "0 0 0 120"
+        "FR_HUD_BG"    "16 16 6 175"
 	}
 	
 	///////////////////// BASE SETTINGS ////////////////////////
@@ -48,32 +54,32 @@ Scheme
 	// controls use these to determine their settings
 	BaseSettings
 	{
-		"FgColor"			"SMODBlueish"
-		"BgColor"			"0 0 0 120"
+		"FgColor"			"FRBlueish"
+		"BgColor"			"FR_HUD_BG"
 
-		"Panel.FgColor"			"SMODBlueish"
-		"Panel.BgColor"			"0 0 0 120"
+		"Panel.FgColor"			"FRBlueish"
+		"Panel.BgColor"			"FR_HUD_BG"
 		
-		"BrightFg"		"SMODBright"
-		"BrightBg"		"SMODBright"
+		"BrightFg"		"FRBright"
+		"BrightBg"		"FR_HUD_BG"
 
 		"DamagedBg"			"180 0 0 200"
 		"DamagedFg"			"180 0 0 230"
 		"BrightDamagedFg"		"255 0 0 255"
 
 		// weapon selection colors
-		"SelectionNumberFg"		"SMODBlueish"
-		"SelectionTextFg"		"SMODBlueish"
-		"SelectionEmptyBoxBg" 	"0 0 0 120"
-		"SelectionBoxBg" 		"0 0 0 120"
-		"SelectionSelectedBoxBg" "0 0 0 120"
+		"SelectionNumberFg"		"FRBlueish"
+		"SelectionTextFg"		"FRBlueish"
+		"SelectionEmptyBoxBg" 	"FR_HUD_BG"
+		"SelectionBoxBg" 		"FR_HUD_BG"
+		"SelectionSelectedBoxBg" "FR_HUD_BG"
 		
-		"ZoomReticleColor"	"SMODBlueish"
+		"ZoomReticleColor"	"FRBlueish"
 
 		// HL1-style HUD colors
-		"Yellowish"			"SMODBlueish"
-		"Normal"			"SMODNormal"
-		"Caution"			"SMODCaution"
+		"Yellowish"			"FRBlueish"
+		"Normal"			"FRNormal"
+		"Caution"			"HL2Caution"
 
 		// Top-left corner of the "Half-Life 2" on the main screen
 		"Main.Title1.X"				"76"
@@ -97,26 +103,26 @@ Scheme
 		
 		///HERE
 				// vgui_controls color specifications
-		Border.Bright					"SMODBlueish"		// the lit side of a control
-		Border.Dark						"SMODBlueish"		// the dark/unlit side of a control
+		Border.Bright					"FRBlueish"		// the lit side of a control
+		Border.Dark						"FRBlueish"		// the dark/unlit side of a control
 		Border.Selection				"Blank"				// the additional border color for displaying the default/selected button
 
-		Button.TextColor				"SMODNormal"
+		Button.TextColor				"FRNormal"
 		Button.BgColor					"TransparentBlack"
-		Button.ArmedTextColor			"SMODNormal"
-		Button.ArmedBgColor				"SMODBlueish"
-		Button.DepressedTextColor		"SMODNormal"
-		Button.DepressedBgColor			"SMODBlueish"
+		Button.ArmedTextColor			"FRNormal"
+		Button.ArmedBgColor				"FRBlueish"
+		Button.DepressedTextColor		"FRNormal"
+		Button.DepressedBgColor			"FRBlueish"
 
-		CheckButton.TextColor			"SMODNormal"
-		CheckButton.SelectedTextColor	"SMODNormal"
+		CheckButton.TextColor			"FRNormal"
+		CheckButton.SelectedTextColor	"FRNormal"
 		CheckButton.BgColor				"TransparentBlack"
 		CheckButton.Border1  			"Border.Dark" 		// the left checkbutton border
 		CheckButton.Border2  			"Border.Bright"		// the right checkbutton border
-		CheckButton.Check				"SMODNormal"				// color of the check itself
+		CheckButton.Check				"FRNormal"				// color of the check itself
 
-		ComboBoxButton.ArrowColor		"SMODNormal"
-		ComboBoxButton.ArmedArrowColor	"SMODNormal"
+		ComboBoxButton.ArrowColor		"FRNormal"
+		ComboBoxButton.ArmedArrowColor	"FRNormal"
 		ComboBoxButton.BgColor			"TransparentBlack"
 		ComboBoxButton.DisabledBgColor	"Blank"
 
@@ -135,107 +141,107 @@ Scheme
 		FrameSystemButton.BgColor		"Blank"
 		FrameSystemButton.Icon			""
 		FrameSystemButton.DisabledIcon	""
-		FrameTitleBar.TextColor			"SMODNormal"
+		FrameTitleBar.TextColor			"FRNormal"
 		FrameTitleBar.BgColor			"Blank"
-		FrameTitleBar.DisabledTextColor	"SMODNormal"
+		FrameTitleBar.DisabledTextColor	"FRNormal"
 		FrameTitleBar.DisabledBgColor	"Blank"
 
-		GraphPanel.FgColor				"SMODNormal"
+		GraphPanel.FgColor				"FRNormal"
 		GraphPanel.BgColor				"TransparentBlack"
 
-		Label.TextDullColor				"SMODNormal"
-		Label.TextColor					"SMODNormal"
-		Label.TextBrightColor			"SMODNormal"
-		Label.SelectedTextColor			"SMODNormal"
+		Label.TextDullColor				"FRNormal"
+		Label.TextColor					"FRNormal"
+		Label.TextBrightColor			"FRNormal"
+		Label.SelectedTextColor			"FRNormal"
 		Label.BgColor					"Blank"
 		Label.DisabledFgColor1			"Blank"
-		Label.DisabledFgColor2			"SMODBlueish"
+		Label.DisabledFgColor2			"FRBlueish"
 
-		ListPanel.TextColor					"SMODNormal"
+		ListPanel.TextColor					"FRNormal"
 		ListPanel.BgColor					"TransparentBlack"
 		ListPanel.SelectedTextColor			"Black"
-		ListPanel.SelectedBgColor			"SMODBlueish"
-		ListPanel.SelectedOutOfFocusBgColor	"SMODBlueish"
-		ListPanel.EmptyListInfoTextColor	"SMODNormal"
+		ListPanel.SelectedBgColor			"FRBlueish"
+		ListPanel.SelectedOutOfFocusBgColor	"FRBlueish"
+		ListPanel.EmptyListInfoTextColor	"FRNormal"
 
-		Menu.TextColor					"SMODNormal"
+		Menu.TextColor					"FRNormal"
 		Menu.BgColor					"TransparentBlack"
-		Menu.ArmedTextColor				"SMODNormal"
-		Menu.ArmedBgColor				"SMODBlueish"
+		Menu.ArmedTextColor				"FRNormal"
+		Menu.ArmedBgColor				"FRBlueish"
 		Menu.TextInset					"6"
 
-		Chat.TypingText					"SMODNormal"
+		Chat.TypingText					"FRNormal"
 
-		Panel.FgColor					"SMODNormalDim"
+		Panel.FgColor					"FRNormalDim"
 		Panel.BgColor					"blank"
 
-		ProgressBar.FgColor				"SMODNormal"
+		ProgressBar.FgColor				"FRNormal"
 		ProgressBar.BgColor				"TransparentBlack"
 
-		PropertySheet.TextColor			"SMODNormal"
-		PropertySheet.SelectedTextColor	"SMODNormal"
+		PropertySheet.TextColor			"FRNormal"
+		PropertySheet.SelectedTextColor	"FRNormal"
 		PropertySheet.TransitionEffectTime	"0.25"	// time to change from one tab to another
 
-		RadioButton.TextColor			"SMODNormal"
-		RadioButton.SelectedTextColor	"SMODNormal"
+		RadioButton.TextColor			"FRNormal"
+		RadioButton.SelectedTextColor	"FRNormal"
 
-		RichText.TextColor				"SMODNormal"
+		RichText.TextColor				"FRNormal"
 		RichText.BgColor				"Blank"
-		RichText.SelectedTextColor		"SMODNormal"
+		RichText.SelectedTextColor		"FRNormal"
 		RichText.SelectedBgColor		"Blank"
 
-		ScrollBarButton.FgColor				"SMODNormal"
+		ScrollBarButton.FgColor				"FRNormal"
 		ScrollBarButton.BgColor				"Blank"
-		ScrollBarButton.ArmedFgColor		"SMODNormal"
+		ScrollBarButton.ArmedFgColor		"FRNormal"
 		ScrollBarButton.ArmedBgColor		"Blank"
-		ScrollBarButton.DepressedFgColor	"SMODNormal"
+		ScrollBarButton.DepressedFgColor	"FRNormal"
 		ScrollBarButton.DepressedBgColor	"Blank"
 
-		ScrollBarSlider.FgColor				"SMODNormal"		// nob color
+		ScrollBarSlider.FgColor				"FRNormal"		// nob color
 		ScrollBarSlider.BgColor				"Blank"		// slider background color
 
-		SectionedListPanel.HeaderTextColor	"SMODNormal"
+		SectionedListPanel.HeaderTextColor	"FRNormal"
 		SectionedListPanel.HeaderBgColor	"Blank"
 		SectionedListPanel.DividerColor		"Black"
-		SectionedListPanel.TextColor		"SMODNormal"
-		SectionedListPanel.BrightTextColor	"SMODNormal"
+		SectionedListPanel.TextColor		"FRNormal"
+		SectionedListPanel.BrightTextColor	"FRNormal"
 		SectionedListPanel.BgColor			"TransparentLightBlack"
-		SectionedListPanel.SelectedTextColor			"SMODNormal"
-		SectionedListPanel.SelectedBgColor				"SMODBlueish"
-		SectionedListPanel.OutOfFocusSelectedTextColor	"SMODNormal"
+		SectionedListPanel.SelectedTextColor			"FRNormal"
+		SectionedListPanel.SelectedBgColor				"FRBlueish"
+		SectionedListPanel.OutOfFocusSelectedTextColor	"FRNormal"
 		SectionedListPanel.OutOfFocusSelectedBgColor	"255 255 255 32"
 
-		Slider.NobColor				"SMODNormal"
-		Slider.TextColor			"SMODNormal"
-		Slider.TrackColor			"SMODNormal"
-		Slider.DisabledTextColor1	"SMODBlueish"
-		Slider.DisabledTextColor2	"SMODBlueish"
+		Slider.NobColor				"FRNormal"
+		Slider.TextColor			"FRNormal"
+		Slider.TrackColor			"FRNormal"
+		Slider.DisabledTextColor1	"FRBlueish"
+		Slider.DisabledTextColor2	"FRBlueish"
 
-		TextEntry.TextColor			"SMODNormal"
+		TextEntry.TextColor			"FRNormal"
 		TextEntry.BgColor			"TransparentBlack"
-		TextEntry.CursorColor		"SMODNormal"
-		TextEntry.DisabledTextColor	"SMODNormal"
+		TextEntry.CursorColor		"FRNormal"
+		TextEntry.DisabledTextColor	"FRNormal"
 		TextEntry.DisabledBgColor	"Blank"
 		TextEntry.SelectedTextColor	"Black"
-		TextEntry.SelectedBgColor	"SMODBlueish"
-		TextEntry.OutOfFocusSelectedBgColor	"SMODBlueish"
+		TextEntry.SelectedBgColor	"FRBlueish"
+		TextEntry.OutOfFocusSelectedBgColor	"FRBlueish"
 		TextEntry.FocusEdgeColor	"TransparentBlack"
 
-		ToggleButton.SelectedTextColor	"SMODNormal"
+		ToggleButton.SelectedTextColor	"FRNormal"
 
 		Tooltip.TextColor			"TransparentBlack"
-		Tooltip.BgColor				"SMODBlueish"
+		Tooltip.BgColor				"FRBlueish"
 
 		TreeView.BgColor			"TransparentBlack"
 
 		WizardSubPanel.BgColor		"Blank"
 		
-		"FgColor"		"SMODNormal"
+		"FgColor"		"FRNormal"
 		"BgColor"		"TransparentBlack"
         
         "SteamDeckLoadingBar"			"FRNormal"
 		"SteamDeckSpinner"				"FRNormal"
-		"SteamDeckLoadingText"			"181 179 175 255"
+		"SteamDeckLoadingText"			"175 178 181 255"
 	}
 
 	//////////////////////// BITMAP FONT FILES /////////////////////////////

@@ -2,7 +2,7 @@
 //WARNING: DO NOT REMOVE THESE TOP COMMENTS.
 //FABRICATOR REQUIRES THE FIRST COMMENT TO LOAD THIS FILE.
 
-"default"
+"quicker_progression"
 {
 	"settings"
 	{
@@ -103,61 +103,61 @@
 		"min_level"	"5"
 		"equipment"
 		{
-			"weapon_9mmar"	"7"
-			"weapon_9mmar_gl"	"4"
-			"weapon_shotgun"	"3"
+			"weapon_9mmar"	"8"
+			"weapon_9mmar_gl"	"5"
+			"weapon_shotgun"	"2"
 		}
 		"exp"	"75"
 	}
 	"14"
+	{
+		"classname"	"npc_antlion"
+		"min_level"	"5"
+		"exp"	"75"
+	}
+	"15"
 	{
 		"classname"	"npc_bullsquid"
 		"min_level"	"6"
 		"rare"	"1"
 		"exp"	"75"
 	}
-	"15"
+	"16"
 	{
 		"classname"	"npc_fastzombie"
 		"min_level"	"6"
 		"exp"	"75"
 	}
-	"16"
+	"17"
 	{
 		"classname"	"npc_fastzombie_torso"
 		"min_level"	"6"
 		"exp"	"75"
 	}
-	"17"
+	"18"
 	{
 		"classname"	"npc_combine_shot"
 		"min_level"	"6"
 		"exp"	"75"
 	}
-	"18"
+	"19"
 	{
 		"classname"	"npc_hgrunt_robot"
 		"min_level"	"7"
 		"equipment"
 		{
-			"weapon_9mmar"	"7"
-			"weapon_9mmar_gl"	"4"
-			"weapon_shotgun"	"3"
+			"weapon_9mmar"	"8"
+			"weapon_9mmar_gl"	"5"
+			"weapon_shotgun"	"2"
 			"weapon_shotgun_gl"	"2"
 		}
 		"exp"	"75"
 	}
-	"19"
+	"20"
 	{
 		"classname"	"npc_strider"
 		"min_level"	"7"
 		"rare"	"1"
-		"exp"	"75"
-	}
-	"20"
-	{
-		"classname"	"npc_antlion"
-		"min_level"	"7"
 		"exp"	"75"
 	}
 	"21"
