@@ -4,6 +4,7 @@ del voice_ban.dt
 del serverconfig.vdf
 del stats.txt
 del firefightreloaded_pak.vpk.sound.cache
+del firefightreloaded_sound.vpk.sound.cache
 del modelsounds.cache
 del hl2mp_shared.vpk.sound.cache
 del demoheader.tmp
@@ -38,6 +39,7 @@ del sound\sound.cache
 rmdir /S /Q materials\vgui\logos\ui\
 rmdir /S /Q materials\
 rmdir /S /Q models\
+rmdir /S /Q sound\
 rmdir /S /Q download\user_custom\
 rmdir /S /Q download\sound\
 rmdir /S /Q download\materials\

@@ -7,14 +7,12 @@ echo Destination set to %dest%
 
 SET debug=0
 SET basedir=%CD%\github
-SET gamesounddir=%basedir%\sound
 SET gamescriptdir=%basedir%\scripts
 SET gamecfgdir=%basedir%\cfg
 SET gamemapdir=%basedir%\maps
 SET gamemapgraphdir=%gamemapdir%\graphs
 SET gamesresourcedir=%basedir%\resource
 SET gamepaduidir=%basedir%\gamepadui
-if not exist "%gamesounddir%" mkdir "%gamesounddir%"
 if not exist "%gamescriptdir%" mkdir "%gamescriptdir%"
 if not exist "%gamecfgdir%" mkdir "%gamecfgdir%"
 if not exist "%gamemapdir%" mkdir "%gamemapdir%"
@@ -25,7 +23,6 @@ if %debug%==1 pause
 
 echo.
 echo Copying game data...
-XCOPY /E "%CD%\sound" "%gamesounddir%" /sy
 XCOPY /E "%CD%\resource" "%gamesresourcedir%" /sy
 XCOPY /E "%CD%\scripts" "%gamescriptdir%" /sy
 XCOPY /E "%CD%\cfg" "%gamecfgdir%" /sy

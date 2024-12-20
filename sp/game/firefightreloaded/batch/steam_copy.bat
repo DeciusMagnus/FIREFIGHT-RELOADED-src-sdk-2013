@@ -17,8 +17,6 @@ SET gamepaduidir=%basedir%\gamepadui
 SET gamebindir=%basedir%\bin
 SET gamebinlinuxdir=%basedir%\bin_linux
 SET gamescriptdir=%basedir%\scripts
-SET gamesounddir=%basedir%\sound
-if not exist "%gamesounddir%" mkdir "%gamesounddir%"
 if not exist "%gamescriptdir%" mkdir "%gamescriptdir%"
 if not exist "%gamecfgdir%" mkdir "%gamecfgdir%"
 if not exist "%gamesresourcedir%" mkdir "%gamesresourcedir%"
@@ -32,7 +30,6 @@ echo.
 echo Copying game data...
 XCOPY /E "%CD%\resource" "%gamesresourcedir%" /sy
 XCOPY /E "%CD%\scripts" "%gamescriptdir%" /sy
-XCOPY /E "%CD%\sound" "%gamesounddir%" /sy
 XCOPY /E "%CD%\cfg" "%gamecfgdir%" /sy
 XCOPY /E "%CD%\maps" "%gamemapdir%" /sy
 XCOPY /E "%CD%\gamepadui" "%gamepaduidir%" /sy
@@ -48,6 +45,9 @@ XCOPY "%CD%\firefightreloaded_pak_002.vpk" "%basedir%" /y
 XCOPY "%CD%\firefightreloaded_pak_003.vpk" "%basedir%" /y
 XCOPY "%CD%\firefightreloaded_pak_004.vpk" "%basedir%" /y
 XCOPY "%CD%\firefightreloaded_pak_dir.vpk" "%basedir%" /y
+XCOPY "%CD%\firefightreloaded_sound_000.vpk" "%basedir%" /y
+XCOPY "%CD%\firefightreloaded_sound_001.vpk" "%basedir%" /y
+XCOPY "%CD%\firefightreloaded_sound_dir.vpk" "%basedir%" /y
 if %debug%==1 pause
 
 echo.
