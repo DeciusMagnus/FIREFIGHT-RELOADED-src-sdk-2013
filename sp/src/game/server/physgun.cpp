@@ -46,7 +46,8 @@ public:
 	~CGravityPellet();
 	void Precache()
 	{
-		SetModelName( MAKE_STRING( "models/weapons/glueblob.mdl" ) );
+		//SetModelName( MAKE_STRING( "models/weapons/glueblob.mdl" ) );
+		SetModelName(MAKE_STRING("models/weapons/pgib_p3.mdl"));
 		PrecacheModel( STRING( GetModelName() ) );
 		BaseClass::Precache();
 	}
@@ -462,6 +463,7 @@ struct pelletlist_t
 class CWeaponGravityGun : public CBaseCombatWeapon
 {
 	DECLARE_DATADESC();
+	DECLARE_ACTTABLE();
 
 public:
 	DECLARE_CLASS( CWeaponGravityGun, CBaseCombatWeapon );
@@ -581,6 +583,20 @@ IMPLEMENT_SERVERCLASS_ST( CWeaponGravityGun, DT_WeaponGravityGun )
 	SendPropModelIndex( SENDINFO(m_viewModelIndex) ),
 END_SEND_TABLE()
 
+acttable_t CWeaponGravityGun::m_acttable[] =
+{
+	{ ACT_HL2MP_IDLE, ACT_HL2MP_IDLE_PHYSGUN, false },
+	{ ACT_HL2MP_RUN, ACT_HL2MP_RUN_PHYSGUN, false },
+	{ ACT_HL2MP_IDLE_CROUCH, ACT_HL2MP_IDLE_CROUCH_PHYSGUN, false },
+	{ ACT_HL2MP_WALK_CROUCH, ACT_HL2MP_WALK_CROUCH_PHYSGUN, false },
+	{ ACT_HL2MP_GESTURE_RANGE_ATTACK, ACT_HL2MP_GESTURE_RANGE_ATTACK_PHYSGUN, false },
+	{ ACT_HL2MP_GESTURE_RELOAD, ACT_HL2MP_GESTURE_RELOAD_PHYSGUN, false },
+	{ ACT_HL2MP_JUMP, ACT_HL2MP_JUMP_PHYSGUN, false },
+	{ ACT_RANGE_ATTACK1, ACT_RANGE_ATTACK_SLAM, false },
+};
+
+IMPLEMENT_ACTTABLE(CWeaponGravityGun);
+
 LINK_ENTITY_TO_CLASS( weapon_physgun, CWeaponGravityGun );
 PRECACHE_WEAPON_REGISTER(weapon_physgun);
 
@@ -641,6 +657,8 @@ void CWeaponGravityGun::Spawn( )
 {
 	BaseClass::Spawn();
 //	SetModel( GetWorldModel() );
+
+	m_nSkin = 1; //MEGACANNON_SKIN;
 
 	FallInit();
 }

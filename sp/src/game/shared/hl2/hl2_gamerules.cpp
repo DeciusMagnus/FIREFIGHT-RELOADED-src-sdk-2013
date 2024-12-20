@@ -246,6 +246,8 @@ ConVar    sk_npc_dmg_assassinsmg("sk_npc_dmg_assassinsmg", "0", FCVAR_REPLICATED
 ConVar	sk_npc_dmg_gunship			( "sk_npc_dmg_gunship", "0", FCVAR_REPLICATED);
 ConVar	sk_npc_dmg_gunship_to_plr	( "sk_npc_dmg_gunship_to_plr", "0", FCVAR_REPLICATED);
 
+ConVar	sk_max_gravity ("sk_max_gravity", "0", FCVAR_REPLICATED);
+
 extern ConVar mp_chattime;
 extern ConVar mp_mapcycle_empty_timeout_seconds;
 extern ConVar mp_timelimit;
@@ -1809,7 +1811,7 @@ CAmmoDef *GetAmmoDef()
 		def.AddAmmoType("SniperPenetratedRound", DMG_BULLET | DMG_SNIPER, TRACER_NONE,			"sk_dmg_sniper_penetrate_plr", "sk_dmg_sniper_penetrate_npc", "sk_max_sniper_round", BULLET_IMPULSE(150, 6000), 0, 'r' );
 //		def.AddAmmoType("Grenade",			DMG_BURN | DMG_ALWAYSGIB, TRACER_NONE, "sk_plr_dmg_grenade", "sk_npc_dmg_grenade", "sk_max_grenade", 0, 0, 'v');
 		def.AddAmmoType("Thumper",			DMG_SONIC,					TRACER_NONE,			10, 10, 2, 0, 0 );
-		def.AddAmmoType("Gravity",			DMG_CLUB,					TRACER_NONE,			0,	0, 8, 0, 0 );
+		def.AddAmmoType("Gravity",			DMG_CLUB,					TRACER_NONE,			0,	0, "sk_max_gravity", 0, 0 );
 //		def.AddAmmoType("Extinguisher",		DMG_BURN,					TRACER_NONE,			0,	0, 100, 0, 0 );
 		def.AddAmmoType("Battery",			DMG_CLUB,					TRACER_NONE,			NULL, NULL, NULL, 0, 0 );
 		def.AddAmmoType("GaussEnergy",		DMG_SHOCK | DMG_ALWAYSGIB, TRACER_NONE, "sk_plr_dmg_gauss", "sk_plr_dmg_gauss", "sk_max_gauss_round", BULLET_IMPULSE(650, 8000), 0, 'r'); // hit like a 10kg weight at 400 in/s

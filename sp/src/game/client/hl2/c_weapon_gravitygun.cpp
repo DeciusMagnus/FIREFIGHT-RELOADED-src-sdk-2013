@@ -28,6 +28,7 @@ public:
 	// IClientRenderable
 	virtual const Vector&			GetRenderOrigin( void ) { return m_worldPosition; }
 	virtual const QAngle&			GetRenderAngles( void ) { return vec3_angle; }
+	virtual const matrix3x4_t&		RenderableToWorldTransform();
 	virtual bool					ShouldDraw( void ) { return true; }
 	virtual bool					IsTransparent( void ) { return true; }
 	virtual bool					ShouldReceiveProjectedTextures( int flags ) { return false; }
@@ -127,6 +128,13 @@ void C_BeamQuadratic::Update( C_BaseEntity *pOwner )
 	}
 }
 
+const matrix3x4_t& C_BeamQuadratic::RenderableToWorldTransform()
+{
+	static matrix3x4_t mat;
+	SetIdentityMatrix(mat);
+	PositionMatrix(GetRenderOrigin(), mat);
+	return mat;
+}
 
 int	C_BeamQuadratic::DrawModel( int )
 {
@@ -147,6 +155,7 @@ int	C_BeamQuadratic::DrawModel( int )
 	//points[1].z += 4*sin( gpGlobals->curtime*11 ) + 5*cos( gpGlobals->curtime*13 );
 	points[2] = m_worldPosition;
 
+	CMatRenderContextPtr pRenderContext(materials);
 	IMaterial *pMat = materials->FindMaterial( "sprites/physbeam", TEXTURE_GROUP_CLIENT_EFFECTS );
 	Vector color;
 	if ( m_glueTouching )
@@ -159,7 +168,7 @@ int	C_BeamQuadratic::DrawModel( int )
 	}
 
 	float scrollOffset = gpGlobals->curtime - (int)gpGlobals->curtime;
-	materials->Bind( pMat );
+	pRenderContext->Bind( pMat );
 	DrawBeamQuadratic( points[0], points[1], points[2], 13, color, scrollOffset );
 	return 1;
 }

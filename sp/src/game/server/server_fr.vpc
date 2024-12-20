@@ -432,6 +432,7 @@ $Project "Server (FR)"
                 $File	"episodic\grenade_hopwire.h"
                 $File	"firefightreloaded\npc_vortigaunt_hl2.cpp"
                 $File	"firefightreloaded\npc_vortigaunt_hl2.h"
+                $File   "physgun.cpp"
 			}
 			
 			$Folder	"HL1 Imported"
