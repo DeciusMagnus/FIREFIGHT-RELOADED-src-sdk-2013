@@ -39,6 +39,9 @@
 ConVar sk_grapple_delay("sk_grapple_delay", "0.5");
 ConVar sk_grapple_batterydrain("sk_grapple_batterydrain", "1", FCVAR_ARCHIVE);
 ConVar sk_grapple_rangerestriction("sk_grapple_rangerestriction", "1", FCVAR_ARCHIVE);
+ConVar sk_grapple_batterydrain_time("sk_grapple_batterydrain_time", "0.2", FCVAR_ARCHIVE);
+ConVar sk_grapple_batterydrain_amount("sk_grapple_batterydrain_amount", "7", FCVAR_ARCHIVE);
+ConVar sk_grapple_rangerestriction_max("sk_grapple_rangerestriction_max", "1500", FCVAR_ARCHIVE);
 
 static const char* ppszIgnoredClasses[] =
 {
@@ -144,6 +147,19 @@ void CGrappleHook::Precache( void )
 	PrecacheModel( HOOK_MODEL );
 }
 
+void CGrappleHook::HandleBattery(void)
+{
+	if (sk_grapple_batterydrain.GetBool())
+	{
+		if (m_hPlayer->ArmorValue() > 0)
+		{
+			m_hPlayer->RemoveArmor(sk_grapple_batterydrain_amount.GetInt());
+		}
+
+		m_flNextBatteryDrain = gpGlobals->curtime + sk_grapple_batterydrain_time.GetFloat();
+	}
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : *pOther - 
@@ -217,15 +233,7 @@ void CGrappleHook::HookTouch( CBaseEntity *pOther )
 
 	m_bPlayerWasStanding = ((m_hPlayer->GetFlags() & FL_DUCKING) == 0);
 
-	if (sk_grapple_batterydrain.GetBool())
-	{
-		if (m_hPlayer->ArmorValue() > 0)
-		{
-			m_hPlayer->RemoveArmor(BOLT_BATTERY_POWER_DRAW);
-		}
-
-		m_flNextBatteryDrain = gpGlobals->curtime + BOLT_BATTERY_POWER_DRAW_TIME;
-	}
+	HandleBattery();
 
 	SetThink(&CGrappleHook::HookedThink);
 	SetNextThink(gpGlobals->curtime);
@@ -258,18 +266,7 @@ void CGrappleHook::HookedThink( void )
 	m_hPlayer->m_Local.m_flSlideTime = 0.0f;
 	m_hPlayer->StopPowerSlideSound();
 
-	if (sk_grapple_batterydrain.GetBool())
-	{
-		if (m_flNextBatteryDrain < gpGlobals->curtime)
-		{
-			if (m_hPlayer->ArmorValue() > 0)
-			{
-				m_hPlayer->RemoveArmor(BOLT_BATTERY_POWER_DRAW);
-			}
-
-			m_flNextBatteryDrain = gpGlobals->curtime + BOLT_BATTERY_POWER_DRAW_TIME;
-		}
-	}
+	HandleBattery();
 
 	float flDistance = (m_hPlayer->GetAbsOrigin() - GetAbsOrigin()).Length();
 
@@ -368,7 +365,7 @@ IMPLEMENT_ACTTABLE(CWeaponGrapple);
 CWeaponGrapple::CWeaponGrapple( void )
 {
 	m_fMinRange1 = 0;// No minimum range. 
-	m_fMaxRange1 = 1500;
+	m_fMaxRange1 = sk_grapple_rangerestriction_max.GetFloat();
 
 	m_bReloadsSingly	= true;
 	m_bFiresUnderwater	= true;
