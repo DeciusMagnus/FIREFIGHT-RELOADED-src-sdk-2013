@@ -44,7 +44,7 @@
             "HL2_GATLING": "D-CLASS PORTABLE ROTARY MACHINE GUN\n(GATLING GUN)",
             "HL2_Turret": "B-CLASS DEPLOYABLE COMBINE SENTRY GUN\n(TURRET)",
             "HL2_Manhack": "B-CLASS DEPLOYABLE COMBINE VISCERATOR\n(MANHACK)",
-            "HL2_Physgun": "ZERO-POINT PHYSICS MANIPULATOR\n(PHYSICS GUN)",
+            "HL2_Physgun": "DUAL-POINT PHYSICS MANIPULATOR\n(PHYSICS GUN)",
             "HL2_Saved": "Saved...",
             "HL2_Enable_Commentary": "Enable commentary track",
             "Valve_Hint_Crouch": "%+duck% CROUCH",
