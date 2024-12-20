@@ -362,10 +362,11 @@
 				"font"		"WeaponIconsKillFeed3"
 				"character"	"x"
 		}
-        "weapon_physgun"
+        		"weapon_physgun"
 		{
 				"font"		"WeaponIconsKillFeed2"
-				"character"	"!"
+				"character"	"m"
+				"weaponicon"	"1"
 		}
 		"headshot"
 		{

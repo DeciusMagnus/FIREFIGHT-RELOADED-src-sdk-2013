@@ -150,4 +150,16 @@
 		"ammotype"	"manhack"
 		"ammonum"	"999"
 	}
+	"27"
+	{
+		"weapon"	"weapon_physgun"
+	}
+	"28"
+	{
+		"weapon"	"weapon_positiongrabber"
+	}
+	"29"
+	{
+		"weapon"	"weapon_cubemap"
+	}
 }

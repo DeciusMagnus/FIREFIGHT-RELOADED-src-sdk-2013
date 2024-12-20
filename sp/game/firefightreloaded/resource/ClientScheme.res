@@ -45,7 +45,7 @@ Scheme
 		"ForTesting_MagentaDim"	"255 0 255 120"
         
         "HL2_HUD_BG"    "0 0 0 120"
-        "FR_HUD_BG"    "16 16 6 175"
+        "FR_HUD_BG"    "16 16 16 185"
 	}
 	
 	///////////////////// BASE SETTINGS ////////////////////////

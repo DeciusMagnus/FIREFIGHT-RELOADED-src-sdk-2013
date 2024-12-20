@@ -170,4 +170,19 @@
 		"ammotype"	"manhack"
 		"ammonum"	"999"
 	}
+	"27"
+	{
+		"randomizermode"	"1"
+		"weapon"	"weapon_physgun"
+	}
+	"28"
+	{
+		"randomizermode"	"1"
+		"weapon"	"weapon_positiongrabber"
+	}
+	"29"
+	{
+		"randomizermode"	"1"
+		"weapon"	"weapon_cubemap"
+	}
 }

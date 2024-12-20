@@ -12,6 +12,14 @@
 	}
 	"2"
 	{
+		"weapon"	"weapon_physcannon"
+	}
+	"3"
+	{
 		"weapon"	"weapon_positiongrabber"
+	}
+	"4"
+	{
+		"weapon"	"weapon_physgun"
 	}
 }

@@ -620,28 +620,28 @@
 "Weapon_Physgun.On"
 {
 	"channel"		"CHAN_WEAPON"
-	"volume"		"0.22"
+	"volume"		"1"
 	"soundlevel"	"SNDLVL_NORM"
 
-	"wave"		"weapons/physgun_on.wav"
+	"wave"		"weapons/physgun/buffed_on.wav"
 }
 
 "Weapon_Physgun.Off"
 {
 	"channel"		"CHAN_ITEM"
-	"volume"		"0.22"
+	"volume"		"1"
 	"soundlevel"	"SNDLVL_NORM"
 
-	"wave"		"weapons/physgun_off.wav"
+	"wave"		"weapons/physgun/buffed_off.wav"
 }
 
 "Weapon_Physgun.Special1"
 {
 	"channel"		"CHAN_WEAPON"
-	"volume"		"0.42"
+	"volume"		"1"
 	"soundlevel"	"SNDLVL_GUNFIRE"
 
-	"wave"		"weapons/flaregun/impact.wav"
+	"wave"		"weapons/physgun/widow_maker_dry_fire.wav"
 }
 
 
@@ -652,7 +652,7 @@
 	"soundlevel"	"SNDLVL_NORM"
 	"pitch"			"90"
 
-	"wave"		"weapons/physgun_loop1.wav"
+	"wave"		"weapons/physgun/bumper_car_go_loop.wav"
 }
 
 "Weapon_Physgun.Scanning"
@@ -661,7 +661,7 @@
 	"volume"		"0.5"
 	"soundlevel"	"SNDLVL_NORM"
 
-	"wave"		"weapons/physgun_loop2.wav"
+	"wave"		"weapons/physgun/bumper_car_go_loop.wav"
 }
 
 "Weapon_Physgun.LightObject"
@@ -670,7 +670,7 @@
 	"volume"		"0.1"
 	"soundlevel"	"SNDLVL_NORM"
 
-	"wave"		"weapons/physgun_loop3.wav"
+	"wave"		"weapons/physgun/bumper_car_go_loop.wav"
 }
 
 "Weapon_Physgun.HeavyObject"
@@ -679,7 +679,7 @@
 	"volume"		"0.1"
 	"soundlevel"	"SNDLVL_NORM"
 
-	"wave"		"weapons/physgun_loop4.wav"
+	"wave"		"weapons/physgun/bumper_car_go_loop.wav"
 }
 
 // weapon_pistol.txt

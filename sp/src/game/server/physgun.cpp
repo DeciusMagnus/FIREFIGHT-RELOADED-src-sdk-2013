@@ -20,6 +20,7 @@
 #include "physics_saverestore.h"
 #include "player_pickup.h"
 #include "SoundEmitterSystem/isoundemittersystembase.h"
+#include "basehlcombatweapon.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -29,6 +30,8 @@ ConVar phys_gunvel("phys_gunvel", "400");
 ConVar phys_gunforce("phys_gunforce", "5e5" );
 ConVar phys_guntorque("phys_guntorque", "100" );
 ConVar phys_gunglueradius("phys_gunglueradius", "128" );
+ConVar phys_movespeed("phys_movespeed", "100");
+ConVar phys_mousewheelspeed("phys_mousewheelspeed", "0.3");
 
 static int g_physgunBeam;
 #define PHYSGUN_BEAM_SPRITE		"sprites/physbeam.vmt"
@@ -47,10 +50,11 @@ public:
 	void Precache()
 	{
 		//SetModelName( MAKE_STRING( "models/weapons/glueblob.mdl" ) );
-		SetModelName(MAKE_STRING("models/weapons/pgib_p3.mdl"));
+		SetModelName(MAKE_STRING("models/weapons/w_bugbait.mdl"));
 		PrecacheModel( STRING( GetModelName() ) );
 		BaseClass::Precache();
 	}
+
 	void Spawn()
 	{
 		Precache();
@@ -58,8 +62,7 @@ public:
 		SetSolid( SOLID_NONE );
 		SetMoveType( MOVETYPE_NONE );
 		AddEffects( EF_NOSHADOW );
-		SetRenderColor( 255, 0, 0 );
-		m_isInert = false;
+		MakeUnInert();
 	}
 
 	bool IsInert()
@@ -95,6 +98,12 @@ public:
 	{
 		SetRenderColor( 64, 64, 128 );
 		m_isInert = true;
+	}
+
+	void MakeUnInert()
+	{
+		SetRenderColor(255, 0, 0);
+		m_isInert = false;
 	}
 
 	void InputOnBreak( inputdata_t &inputdata )
@@ -370,7 +379,7 @@ IMotionEvent::simresult_e CGravControllerPoint::Simulate( IPhysicsMotionControll
 				float angleDiff = angleDest - angleSrc;
 				angleDiff = RAD2DEG(angleDiff);
 				axis += m_targetAlignNormal * angleDiff;
-				//world = m_targetPosition;// + rotDest * (1-ratio);
+				world = m_targetPosition;// + rotDest * (1-ratio);
 //				NDebugOverlay::Line( worldRotCenter, worldRotCenter-m_targetAlignNormal*50, 255, 0, 0, false, 0.1 );
 //				NDebugOverlay::Line( worldRotCenter, worldRotCenter+tangent*50, 0, 255, 0, false, 0.1 );
 //				NDebugOverlay::Line( worldRotCenter, worldRotCenter+binormal*50, 0, 0, 255, false, 0.1 );
@@ -460,13 +469,13 @@ struct pelletlist_t
 	EHANDLE						parent;
 };
 
-class CWeaponGravityGun : public CBaseCombatWeapon
+class CWeaponGravityGun : public CBaseHLCombatWeapon
 {
 	DECLARE_DATADESC();
 	DECLARE_ACTTABLE();
 
 public:
-	DECLARE_CLASS( CWeaponGravityGun, CBaseCombatWeapon );
+	DECLARE_CLASS( CWeaponGravityGun, CBaseHLCombatWeapon);
 
 	CWeaponGravityGun();
 	void Spawn( void );
@@ -480,7 +489,7 @@ public:
 	virtual bool Holster( CBaseCombatWeapon *pSwitchingTo )
 	{
 		EffectDestroy();
-		return BaseClass::Holster();
+		return BaseClass::Holster(pSwitchingTo);
 	}
 
 	bool Reload( void );
@@ -645,6 +654,8 @@ enum physgun_soundIndex { SI_LOCKEDON = 0, SI_SCANNING = 1, SI_LIGHTOBJECT = 2, 
 
 CWeaponGravityGun::CWeaponGravityGun()
 {
+	m_fMinRange1 = 40;
+	m_fMaxRange1 = 4096;
 	m_active = false;
 	m_bFiresUnderwater = true;
 	m_pelletAttract = -1;
@@ -770,24 +781,25 @@ void CWeaponGravityGun::EffectUpdate( void )
 
 		if ( m_useDown )
 		{
-			pOwner->SetPhysicsFlag( PFLAG_DIROVERRIDE, true );
+			pOwner->SetPhysicsFlag(PFLAG_DIROVERRIDE, true);
+
 			if ( pOwner->m_nButtons & IN_FORWARD )
 			{
-				m_distance = UTIL_Approach( 1024, m_distance, gpGlobals->frametime * 100 );
+				m_distance = UTIL_Approach(m_fMaxRange1, m_distance, gpGlobals->frametime * phys_movespeed.GetFloat());
 			}
 			if ( pOwner->m_nButtons & IN_BACK )
 			{
-				m_distance = UTIL_Approach( 40, m_distance, gpGlobals->frametime * 100 );
+				m_distance = UTIL_Approach(m_fMinRange1, m_distance, gpGlobals->frametime * phys_movespeed.GetFloat());
 			}
 		}
 
 		if ( pOwner->m_nButtons & IN_WEAPON1 )
 		{
-			m_distance = UTIL_Approach( 1024, m_distance, m_distance * 0.1 );
+			m_distance = UTIL_Approach(m_fMaxRange1, m_distance, m_distance * phys_mousewheelspeed.GetFloat());
 		}
 		if ( pOwner->m_nButtons & IN_WEAPON2 )
 		{
-			m_distance = UTIL_Approach( 40, m_distance, m_distance * 0.1 );
+			m_distance = UTIL_Approach(m_fMinRange1, m_distance, m_distance * phys_mousewheelspeed.GetFloat());
 		}
 
 		// Send the object a physics damage message (0 damage). Some objects interpret this 
@@ -859,6 +871,8 @@ void CWeaponGravityGun::EffectUpdate( void )
 	{
 		m_gravCallback.ClearAutoAlign();
 	}
+
+	NetworkStateChanged();
 }
 
 void CWeaponGravityGun::SoundCreate( void )
@@ -988,24 +1002,27 @@ void CWeaponGravityGun::SoundUpdate( void )
 			// blend the "mass" sounds between 50 and 500 kg
 			IPhysicsObject *pPhys = m_hObject->VPhysicsGetObject();
 			
-			float fade = UTIL_LineFraction( pPhys->GetMass(), 50, 500, 1.0 );
-
-			if ( GetParametersForSound( "Weapon_Physgun.LightObject", params, NULL ) )
+			if (pPhys)
 			{
-				EmitSound_t ep( params );
-				ep.m_nFlags = SND_CHANGE_VOL;
-				ep.m_flVolume = fade * distance;
+				float fade = UTIL_LineFraction(pPhys->GetMass(), 50, 500, 1.0);
 
-				EmitSound( filter, GetOwner()->entindex(), ep );
-			}
+				if (GetParametersForSound("Weapon_Physgun.LightObject", params, NULL))
+				{
+					EmitSound_t ep(params);
+					ep.m_nFlags = SND_CHANGE_VOL;
+					ep.m_flVolume = fade * distance;
 
-			if ( GetParametersForSound( "Weapon_Physgun.HeavyObject", params, NULL ) )
-			{
-				EmitSound_t ep( params );
-				ep.m_nFlags = SND_CHANGE_VOL;
-				ep.m_flVolume = (1.0 - fade) * distance;
+					EmitSound(filter, GetOwner()->entindex(), ep);
+				}
 
-				EmitSound( filter, GetOwner()->entindex(), ep );
+				if (GetParametersForSound("Weapon_Physgun.HeavyObject", params, NULL))
+				{
+					EmitSound_t ep(params);
+					ep.m_nFlags = SND_CHANGE_VOL;
+					ep.m_flVolume = (1.0 - fade) * distance;
+
+					EmitSound(filter, GetOwner()->entindex(), ep);
+				}
 			}
 		}
 		break;
@@ -1231,7 +1248,6 @@ void CWeaponGravityGun::DetachObject( void )
 void CWeaponGravityGun::AttachObject( CBaseEntity *pObject, const Vector& start, const Vector &end, float distance )
 {
 	m_hObject = pObject;
-	m_useDown = false;
 	IPhysicsObject *pPhysics = pObject ? (pObject->VPhysicsGetObject()) : NULL;
 	if ( pPhysics && pObject->GetMoveType() == MOVETYPE_VPHYSICS )
 	{
@@ -1361,27 +1377,27 @@ void CWeaponGravityGun::SecondaryAttack( void )
 
 void CWeaponGravityGun::WeaponIdle( void )
 {
-	if ( HasWeaponIdleTimeElapsed() )
+	if (HasWeaponIdleTimeElapsed())
 	{
-		SendWeaponAnim( ACT_VM_IDLE );
-		if ( m_active )
+		SendWeaponAnim(ACT_VM_IDLE);
+		if (m_active)
 		{
-			CBaseEntity *pObject = m_hObject;
+			CBaseEntity* pObject = m_hObject;
 			// pellet is touching object, so glue it
-			if ( pObject && m_glueTouching )
+			if (pObject && m_glueTouching)
 			{
-				CGravityPellet *pPellet = m_activePellets[m_pelletAttract].pellet;
-				if ( pPellet->MakeConstraint( pObject ) )
+				CGravityPellet* pPellet = m_activePellets[m_pelletAttract].pellet;
+				if (pPellet->MakeConstraint(pObject))
 				{
-					WeaponSound( SPECIAL1 );
+					WeaponSound(SPECIAL1);
 					m_flNextPrimaryAttack = gpGlobals->curtime + 0.75;
 					m_activePellets[m_pelletHeld].pellet->MakeInert();
 				}
 			}
-
-			EffectDestroy();
-			SoundDestroy();
 		}
+
+		EffectDestroy();
+		SoundDestroy();
 	}
 }
 
@@ -1408,8 +1424,8 @@ void CWeaponGravityGun::ItemPostFrame( void )
 	// -----------------------
 	else 
 	{
-		WeaponIdle( );
-		return;
+		WeaponIdle();
+		//no reason to return because its at the bottom of the function
 	}
 }
 
@@ -1439,103 +1455,3 @@ bool CWeaponGravityGun::Reload( void )
 
 	return false;
 }
-
-#define NUM_COLLISION_TESTS 2500
-void CC_CollisionTest( const CCommand &args )
-{
-	if ( !physenv )
-		return;
-
-	Msg( "Testing collision system\n" );
-	int i;
-	CBaseEntity *pSpot = gEntList.FindEntityByClassname( NULL, "info_player_start");
-	Vector start = pSpot->GetAbsOrigin();
-	static Vector *targets = NULL;
-	static bool first = true;
-	static float test[2] = {1,1};
-	if ( first )
-	{
-		targets = new Vector[NUM_COLLISION_TESTS];
-		float radius = 0;
-		float theta = 0;
-		float phi = 0;
-		for ( i = 0; i < NUM_COLLISION_TESTS; i++ )
-		{
-			radius += NUM_COLLISION_TESTS * 123.123;
-			radius = fabs(fmod(radius, 128));
-			theta += NUM_COLLISION_TESTS * 76.76;
-			theta = fabs(fmod(theta, DEG2RAD(360)));
-			phi += NUM_COLLISION_TESTS * 1997.99;
-			phi = fabs(fmod(phi, DEG2RAD(180)));
-			
-			float st, ct, sp, cp;
-			SinCos( theta, &st, &ct );
-			SinCos( phi, &sp, &cp );
-
-			targets[i].x = radius * ct * sp;
-			targets[i].y = radius * st * sp;
-			targets[i].z = radius * cp;
-			
-			// make the trace 1024 units long
-			Vector dir = targets[i] - start;
-			VectorNormalize(dir);
-			targets[i] = start + dir * 1024;
-		}
-		first = false;
-	}
-
-	//Vector results[NUM_COLLISION_TESTS];
-
-	int testType = 0;
-	if ( args.ArgC() >= 2 )
-	{
-		testType = atoi( args[1] );
-	}
-	float duration = 0;
-	Vector size[2];
-	size[0].Init(0,0,0);
-	size[1].Init(16,16,16);
-	unsigned int dots = 0;
-
-	for ( int j = 0; j < 2; j++ )
-	{
-		float startTime = engine->Time();
-		if ( testType == 1 )
-		{
-			const CPhysCollide *pCollide = g_PhysWorldObject->GetCollide();
-			trace_t tr;
-
-			for ( i = 0; i < NUM_COLLISION_TESTS; i++ )
-			{
-				physcollision->TraceBox( start, targets[i], -size[j], size[j], pCollide, vec3_origin, vec3_angle, &tr );
-				dots += physcollision->ReadStat(0);
-				//results[i] = tr.endpos;
-			}
-		}
-		else
-		{
-			testType = 0;
-			CBaseEntity *pWorld = GetContainingEntity( INDEXENT(0) );
-			trace_t tr;
-
-			for ( i = 0; i < NUM_COLLISION_TESTS; i++ )
-			{
-				UTIL_TraceModel( start, targets[i], -size[j], size[j], pWorld, COLLISION_GROUP_NONE, &tr );
-				//results[i] = tr.endpos;
-			}
-		}
-
-		duration += engine->Time() - startTime;
-	}
-	test[testType] = duration;
-	Msg("%d collisions in %.2f ms (%u dots)\n", NUM_COLLISION_TESTS, duration*1000, dots );
-	Msg("Current speed ratio: %.2fX BSP:JGJK\n", test[1] / test[0] );
-#if 0
-	int red = 255, green = 0, blue = 0;
-	for ( i = 0; i < NUM_COLLISION_TESTS; i++ )
-	{
-		NDebugOverlay::Line( start, results[i], red, green, blue, false, 2 );
-	}
-#endif
-}
-static ConCommand collision_test("collision_test", CC_CollisionTest, "Tests collision system", FCVAR_CHEAT );
