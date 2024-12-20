@@ -267,6 +267,48 @@
 					"1"		"#gameui_enabled"
 				}
 			}
+            
+            "GrappleBatteryDrainTime"
+			{
+				"text"			"#GameUI_GrappleBatteryDrainTime"
+				"type"			"slideyslide"
+				"convar"		"sk_grapple_batterydrain_time"
+				"advanced"		"1"
+
+				"min"			"0"
+				"max"			"1"
+				"step"			"0.01"
+
+				"textprecision" "2"
+			}
+            
+            "GrappleBatteryDrainAmount"
+			{
+				"text"			"#GameUI_GrappleBatteryDrainAmount"
+				"type"			"slideyslide"
+				"convar"		"sk_grapple_batterydrain_amount"
+				"advanced"		"1"
+
+				"min"			"0"
+				"max"			"100"
+				"step"			"1"
+
+				"textprecision" "2"
+			}
+            
+            "GrappleMaxRange"
+			{
+				"text"			"#GameUI_GrappleMaxRange"
+				"type"			"slideyslide"
+				"convar"		"sk_grapple_rangerestriction_max"
+				"advanced"		"1"
+
+				"min"			"1"
+				"max"			"100000"
+				"step"			"1"
+
+				"textprecision" "2"
+			}
 
 			"RocketJumping"
 			{
@@ -2391,6 +2433,20 @@
 				"step"			"0.5"
 
 				"textprecision" "2"
+			}
+            
+            "ClassicBlood"
+			{
+				"text"			"#GameUI_ClassicBlood"
+				"type"			"wheelywheel"
+				"advanced"		"1"
+				"convar"		"r_classic_blood"
+
+				"options"
+				{
+					"0"		"#gameui_disabled"
+					"1"		"#gameui_enabled"
+				}
 			}
 
 			"DrawHUD"
