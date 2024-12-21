@@ -401,24 +401,14 @@ void CGrenadeFrag::Detonate(void)
 
 			Vector vecStart, vecEnd;
 
-			vecStart = GetAbsOrigin() + (tr.plane.normal * 64);
-			vecEnd = vecStart + vecTraceDir * 2048;
+			vecStart = GetAbsOrigin() + (tr.plane.normal * 128);
+			vecEnd = vecStart + vecTraceDir * 512;
 
 			UTIL_TraceLine(vecStart, vecEnd, MASK_SOLID_BRUSHONLY, this, COLLISION_GROUP_NONE, &firetrace);
 
-			Vector	ofsDir = (firetrace.endpos - GetAbsOrigin());
-			float	offset = VectorNormalize(ofsDir);
-
-			if (offset > 256)
-				offset = 256;
-
-			//Get our scale based on distance
-			float scale = 0.1f + (0.75f * (1.0f - (offset / 256.0f)));
-			float growth = 0.1f + (0.75f * (offset / 256.0f));
-
 			if (firetrace.fraction != 1.0)
 			{
-				FireSystem_StartFire(firetrace.endpos, scale, growth, 30.0f, (SF_FIRE_START_ON | SF_FIRE_BURN_ENTITIES), (CBaseEntity*)this, FIRE_NATURAL);
+				FireSystem_StartFire(firetrace.endpos, 128, 0, 30.0f, (SF_FIRE_START_ON | SF_FIRE_SMOKELESS | SF_FIRE_NO_GLOW), (CBaseEntity*)this, FIRE_NATURAL);
 			}
 		}
 		// End Start some fires

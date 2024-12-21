@@ -41,6 +41,7 @@ ConVar _gamepadui_displaymode( "_gamepadui_displaymode", "0", FCVAR_NONE, "", On
 ConVar _gamepadui_resolution( "_gamepadui_resolution", "0" );
 ConVar _gamepadui_sound_quality( "_gamepadui_sound_quality", "0" );
 ConVar _gamepadui_closecaptions( "_gamepadui_closecaptions", "0" );
+ConVar _gamepadui_classicfire("_gamepadui_classicfire", "0");
 #ifdef HL2_RETAIL
 ConVar _gamepadui_hudaspect( "_gamepadui_hudaspect", "0" );
 #endif
@@ -1002,6 +1003,13 @@ int GetCurrentCloseCaptions()
     return 0;
 }
 
+int GetCurrentFire()
+{
+    ConVarRef r_classic_fire("r_classic_fire");
+
+    return r_classic_fire.GetBool();
+}
+
 #ifdef HL2_RETAIL
 int GetCurrentHudAspectRatio()
 {
@@ -1146,36 +1154,58 @@ void FlushPendingSoundQuality()
     }
 }
 
+void FlushPendingFire()
+{
+    if (GamepadUI::GetInstance().IsInLevel() || GamepadUI::GetInstance().IsInBackgroundLevel())
+    {
+        return;
+    }
+
+    ConVarRef r_classic_fire( "r_classic_fire" );
+
+    int nFire = _gamepadui_classicfire.GetInt();
+    switch (nFire)
+    {
+    default:
+    case 1:
+        r_classic_fire.SetValue(true);
+        break;
+    case 0:
+        r_classic_fire.SetValue(false);
+        break;
+    }
+}
+
 void FlushPendingCloseCaptions()
 {
-    ConVarRef closecaption( "closecaption" );
-    ConVarRef cc_subtitles( "cc_subtitles" );
+    ConVarRef closecaption("closecaption");
+    ConVarRef cc_subtitles("cc_subtitles");
 
     int nCloseCaptions = _gamepadui_closecaptions.GetInt();
     bool bCloseCaptionConvarValue = false;
-    switch ( nCloseCaptions )
+    switch (nCloseCaptions)
     {
-        default:
-        case 2:
-            cc_subtitles.SetValue( false );
-            bCloseCaptionConvarValue = true;
-            break;
-        case 1:
-            cc_subtitles.SetValue(true);
-            bCloseCaptionConvarValue = true;
-            break;
-        case 0:
-            cc_subtitles.SetValue(false);
-            bCloseCaptionConvarValue = false;
-            break;
+    default:
+    case 2:
+        cc_subtitles.SetValue(false);
+        bCloseCaptionConvarValue = true;
+        break;
+    case 1:
+        cc_subtitles.SetValue(true);
+        bCloseCaptionConvarValue = true;
+        break;
+    case 0:
+        cc_subtitles.SetValue(false);
+        bCloseCaptionConvarValue = false;
+        break;
     }
 
-	// Stuff the close caption change to the console so that it can be
-	// sent to the server (FCVAR_USERINFO) so that you don't have to restart
-	// the level for the change to take effect.
-	char szCmd[ 64 ];
-	Q_snprintf( szCmd, sizeof( szCmd ), "closecaption %i\n", bCloseCaptionConvarValue ? 1 : 0 );
-	GamepadUI::GetInstance().GetEngineClient()->ClientCmd_Unrestricted( szCmd );
+    // Stuff the close caption change to the console so that it can be
+    // sent to the server (FCVAR_USERINFO) so that you don't have to restart
+    // the level for the change to take effect.
+    char szCmd[64];
+    Q_snprintf(szCmd, sizeof(szCmd), "closecaption %i\n", bCloseCaptionConvarValue ? 1 : 0);
+    GamepadUI::GetInstance().GetEngineClient()->ClientCmd_Unrestricted(szCmd);
 }
 
 #ifdef HL2_RETAIL
@@ -1220,6 +1250,7 @@ void UpdateHelperConvars()
     _gamepadui_displaymode.SetValue( GetCurrentDisplayMode() );
     _gamepadui_sound_quality.SetValue( GetCurrentSoundQuality() );
     _gamepadui_closecaptions.SetValue( GetCurrentCloseCaptions() );
+    _gamepadui_classicfire.SetValue(GetCurrentFire());
 #ifdef HL2_RETAIL
     _gamepadui_hudaspect.SetValue( GetCurrentHudAspectRatio() );
 #endif
@@ -1234,6 +1265,7 @@ void FlushHelperConVars()
     FlushPendingResolution();
     FlushPendingSoundQuality();
     FlushPendingCloseCaptions();
+    FlushPendingFire();
 #ifdef HL2_RETAIL
     FlushPendingHudAspectRatio();
 #endif

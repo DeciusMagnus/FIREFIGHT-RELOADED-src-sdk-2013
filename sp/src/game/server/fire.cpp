@@ -748,7 +748,15 @@ void CFire::Spawn( void )
 int CFire::UpdateTransmitState()
 {
 	// Don't want to be FL_EDICT_DONTSEND because our fire entity may make us transmit.
-	return SetTransmitState( FL_EDICT_ALWAYS );
+	static ConVarRef r_classic_fire("r_classic_fire");
+	if (r_classic_fire.GetBool())
+	{
+		return SetTransmitState(FL_EDICT_PVSCHECK);
+	}
+	else
+	{
+		return SetTransmitState(FL_EDICT_ALWAYS);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -809,7 +817,11 @@ void CFire::SpawnEffect( fireType_e type, float scale )
 	UTIL_SetOrigin( pEffect, GetAbsOrigin() );
 	pEffect->Spawn();
 	pEffect->SetParent( this );
-	pEffect->Scale( m_flFireSize, m_flFireSize, 0 );
+	static ConVarRef r_classic_fire("r_classic_fire");
+	if (!r_classic_fire.GetBool())
+	{
+		pEffect->Scale(m_flFireSize, m_flFireSize, 0);
+	}
 	//Start it going
 	pEffect->Enable( ( m_spawnflags & SF_FIRE_START_ON ) );
 	m_hEffect = pEffect;

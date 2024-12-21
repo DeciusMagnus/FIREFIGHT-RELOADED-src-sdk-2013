@@ -45,11 +45,11 @@ CBaseFire::~CBaseFire( void )
 // Input  : size - destination size
 //			time - time to scale across
 //-----------------------------------------------------------------------------
-void CBaseFire::Scale( float size, float time )
+void CBaseFire::Scale( float size, float scaletime)
 {
 	//Send to the client
 	m_flScale		= size;
-	m_flScaleTime	= time;
+	m_flScaleTime	= scaletime;
 }
 
 //-----------------------------------------------------------------------------
@@ -58,12 +58,12 @@ void CBaseFire::Scale( float size, float time )
 //			size - destination size
 //			time - time to scale across
 //-----------------------------------------------------------------------------
-void CBaseFire::Scale( float start, float size, float time )
+void CBaseFire::Scale( float start, float size, float scaletime)
 {
 	//Send to the client
 	m_flStartScale	= start;
 	m_flScale		= size;
-	m_flScaleTime	= time;
+	m_flScaleTime	= scaletime;
 }
 
 //-----------------------------------------------------------------------------
@@ -139,6 +139,11 @@ CFireSmoke::~CFireSmoke( void )
 void CFireSmoke::Precache()
 {
 	BaseClass::Precache();
+	m_nFlameModelIndex	= PrecacheModel( "sprites/fire1.vmt" );
+	
+	// This asset doesn't appear to exist anymore. What's going on? 
+	// Commenting this out so that level designers don't get a red error about missing material. (sjb)
+	//m_nFlameFromAboveModelIndex	= PrecacheModel( "sprites/flamefromabove.vmt" );
 }
 
 void CFireSmoke::Spawn()

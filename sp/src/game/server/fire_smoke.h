@@ -28,8 +28,8 @@ public:
 	CBaseFire( void );
 	virtual	~CBaseFire( void );
 
-	virtual void	Scale( float size, float time );
-	virtual void	Scale( float start, float size, float time );
+	virtual void	Scale( float size, float scaletime);
+	virtual void	Scale( float start, float size, float scaletime );
 	virtual void	Enable( int state = true );
 
 	//Client-side
