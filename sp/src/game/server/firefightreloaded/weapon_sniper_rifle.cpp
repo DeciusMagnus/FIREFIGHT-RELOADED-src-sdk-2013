@@ -19,9 +19,12 @@
 #include "engine/IEngineSound.h"
 #include "te_effect_dispatch.h"
 #include "gamestats.h"
+#include "hl2_shareddefs.h"
+#include "ammodef.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
+
 
 enum ZoomType
 {
@@ -57,13 +60,15 @@ public:
 	bool	Reload(void);
 	void	Drop(const Vector &vecVelocity);
 	bool	Holster(CBaseCombatWeapon *pSwitchingTo = NULL);
+
+	virtual bool	IsWeaponZoomed() { return (m_iZoomMode > ZOOM_NONE); }		// Is this weapon in its 'zoomed in' mode?
 	
 	virtual const Vector& GetBulletSpread( void )
 	{
 		static const Vector cone = VECTOR_CONE_4DEGREES;
 		static const Vector npccone = VECTOR_CONE_1DEGREES;
 		static const Vector zoomcone = VECTOR_CONE_1DEGREES;
-		if (m_iZoomMode > 0)
+		if (IsWeaponZoomed())
 		{
 			return zoomcone;
 		}
@@ -280,9 +285,20 @@ void CWeaponSniperRifle::PrimaryAttack( void )
 	m_iClip1--;
 
 	Vector vecSrc		= pPlayer->Weapon_ShootPosition();
-	Vector vecAiming	= pPlayer->GetAutoaimVector( AUTOAIM_SCALE_DEFAULT );	
+	Vector vecAiming	= pPlayer->GetAutoaimVector( AUTOAIM_SCALE_DEFAULT );
 
-	pPlayer->FireBullets( 1, vecSrc, vecAiming, vec3_origin, MAX_TRACE_LENGTH, m_iPrimaryAmmoType, 0 );
+	CAmmoDef* def = GetAmmoDef();
+
+	FireBulletsInfo_t info;
+	info.m_iShots = 1;
+	info.m_vecSrc = vecSrc;
+	info.m_vecDirShooting = vecAiming;
+	info.m_vecSpread = GetBulletSpread();
+	info.m_flDistance = MAX_TRACE_LENGTH;
+	info.m_iAmmoType = m_iPrimaryAmmoType;
+	info.m_nDamageFlags = (IsWeaponZoomed() ? (def->DamageType(info.m_iAmmoType) | DMG_SNIPER) : def->DamageType(info.m_iAmmoType));
+	info.m_iTracerFreq = 2;
+	pPlayer->FireBullets(info);
 
 	pPlayer->SetMuzzleFlashTime( gpGlobals->curtime + 0.5 );
 

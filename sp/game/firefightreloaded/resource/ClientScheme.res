@@ -108,7 +108,7 @@ Scheme
 		Border.Selection				"Blank"				// the additional border color for displaying the default/selected button
 
 		Button.TextColor				"FRNormal"
-		Button.BgColor					"TransparentBlack"
+		Button.BgColor					"FR_HUD_BG"
 		Button.ArmedTextColor			"FRNormal"
 		Button.ArmedBgColor				"FRBlueish"
 		Button.DepressedTextColor		"FRNormal"
@@ -116,18 +116,18 @@ Scheme
 
 		CheckButton.TextColor			"FRNormal"
 		CheckButton.SelectedTextColor	"FRNormal"
-		CheckButton.BgColor				"TransparentBlack"
+		CheckButton.BgColor				"FR_HUD_BG"
 		CheckButton.Border1  			"Border.Dark" 		// the left checkbutton border
 		CheckButton.Border2  			"Border.Bright"		// the right checkbutton border
 		CheckButton.Check				"FRNormal"				// color of the check itself
 
 		ComboBoxButton.ArrowColor		"FRNormal"
 		ComboBoxButton.ArmedArrowColor	"FRNormal"
-		ComboBoxButton.BgColor			"TransparentBlack"
+		ComboBoxButton.BgColor			"FR_HUD_BG"
 		ComboBoxButton.DisabledBgColor	"Blank"
 
-		Frame.BgColor					"TransparentBlack"
-		Frame.OutOfFocusBgColor			"TransparentBlack"
+		Frame.BgColor					"FR_HUD_BG"
+		Frame.OutOfFocusBgColor			"FR_HUD_BG"
 		Frame.FocusTransitionEffectTime	"0.0"	// time it takes for a window to fade in/out on focus/out of focus
 		Frame.TransitionEffectTime		"0.0"	// time it takes for a window to fade in/out on open/close
 		Frame.AutoSnapRange				"0"
@@ -147,7 +147,7 @@ Scheme
 		FrameTitleBar.DisabledBgColor	"Blank"
 
 		GraphPanel.FgColor				"FRNormal"
-		GraphPanel.BgColor				"TransparentBlack"
+		GraphPanel.BgColor				"FR_HUD_BG"
 
 		Label.TextDullColor				"FRNormal"
 		Label.TextColor					"FRNormal"
@@ -158,14 +158,14 @@ Scheme
 		Label.DisabledFgColor2			"FRBlueish"
 
 		ListPanel.TextColor					"FRNormal"
-		ListPanel.BgColor					"TransparentBlack"
+		ListPanel.BgColor					"FR_HUD_BG"
 		ListPanel.SelectedTextColor			"Black"
 		ListPanel.SelectedBgColor			"FRBlueish"
 		ListPanel.SelectedOutOfFocusBgColor	"FRBlueish"
 		ListPanel.EmptyListInfoTextColor	"FRNormal"
 
 		Menu.TextColor					"FRNormal"
-		Menu.BgColor					"TransparentBlack"
+		Menu.BgColor					"FR_HUD_BG"
 		Menu.ArmedTextColor				"FRNormal"
 		Menu.ArmedBgColor				"FRBlueish"
 		Menu.TextInset					"6"
@@ -176,7 +176,7 @@ Scheme
 		Panel.BgColor					"blank"
 
 		ProgressBar.FgColor				"FRNormal"
-		ProgressBar.BgColor				"TransparentBlack"
+		ProgressBar.BgColor				"FR_HUD_BG"
 
 		PropertySheet.TextColor			"FRNormal"
 		PropertySheet.SelectedTextColor	"FRNormal"
@@ -205,7 +205,7 @@ Scheme
 		SectionedListPanel.DividerColor		"Black"
 		SectionedListPanel.TextColor		"FRNormal"
 		SectionedListPanel.BrightTextColor	"FRNormal"
-		SectionedListPanel.BgColor			"TransparentLightBlack"
+		SectionedListPanel.BgColor			"FR_HUD_BG"
 		SectionedListPanel.SelectedTextColor			"FRNormal"
 		SectionedListPanel.SelectedBgColor				"FRBlueish"
 		SectionedListPanel.OutOfFocusSelectedTextColor	"FRNormal"
@@ -218,7 +218,7 @@ Scheme
 		Slider.DisabledTextColor2	"FRBlueish"
 
 		TextEntry.TextColor			"FRNormal"
-		TextEntry.BgColor			"TransparentBlack"
+		TextEntry.BgColor			"FR_HUD_BG"
 		TextEntry.CursorColor		"FRNormal"
 		TextEntry.DisabledTextColor	"FRNormal"
 		TextEntry.DisabledBgColor	"Blank"
@@ -229,15 +229,15 @@ Scheme
 
 		ToggleButton.SelectedTextColor	"FRNormal"
 
-		Tooltip.TextColor			"TransparentBlack"
-		Tooltip.BgColor				"FRBlueish"
+		Tooltip.TextColor			"White"
+		Tooltip.BgColor				"TransparentBlack"
 
-		TreeView.BgColor			"TransparentBlack"
+		TreeView.BgColor			"FR_HUD_BG"
 
 		WizardSubPanel.BgColor		"Blank"
 		
 		"FgColor"		"FRNormal"
-		"BgColor"		"TransparentBlack"
+		"BgColor"		"FR_HUD_BG"
         
         "SteamDeckLoadingBar"			"FRNormal"
 		"SteamDeckSpinner"				"FRNormal"

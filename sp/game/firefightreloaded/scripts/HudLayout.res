@@ -686,7 +686,7 @@
 		"visible" "1"
 		"enabled" "1"
 		"PaintBackgroundType" "2"
-		"digit_xpos" "1"
+		"digit_xpos" "2"
 		"digit_ypos" "2"
 	}
     

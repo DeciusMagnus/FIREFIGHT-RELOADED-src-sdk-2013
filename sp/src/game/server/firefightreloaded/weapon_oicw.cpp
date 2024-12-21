@@ -33,6 +33,7 @@ public:
 	void	ItemPostFrame(void);
 	int		GetMinBurst() { return 6; }
 	int		GetMaxBurst() { return 9; }
+	virtual bool	IsWeaponZoomed() { return m_bZoomed; }
 	void	Precache(void);
 	int		CapabilitiesGet(void) { return bits_CAP_WEAPON_RANGE_ATTACK1; }
 	void	FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, Vector& vecShootOrigin, Vector& vecShootDir);

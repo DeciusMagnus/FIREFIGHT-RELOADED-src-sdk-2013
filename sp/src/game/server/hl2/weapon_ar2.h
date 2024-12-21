@@ -34,6 +34,8 @@ public:
 
 	const char *GetTracerType( void ) { return "AR2Tracer"; }
 
+	virtual bool	IsWeaponZoomed() { return m_bZoomed; }
+
 	void	AddViewKick( void );
 
 	void	FireNPCPrimaryAttack( CBaseCombatCharacter *pOperator, bool bUseWeaponAngles );

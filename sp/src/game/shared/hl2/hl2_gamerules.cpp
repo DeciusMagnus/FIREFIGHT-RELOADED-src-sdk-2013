@@ -1866,7 +1866,7 @@ CAmmoDef *GetAmmoDef()
 		def.AddAmmoType("HelicopterGun",	DMG_BULLET,					TRACER_LINE_AND_WHIZ,	"sk_npc_dmg_helicopter_to_plr", "sk_npc_dmg_helicopter",	"sk_max_smg1",	BULLET_IMPULSE(400, 1225), AMMO_FORCE_DROP_IF_CARRIED | AMMO_INTERPRET_PLRDAMAGE_AS_DAMAGE_TO_PLAYER );
 		def.AddAmmoType("AR2AltFire",		DMG_DISSOLVE,				TRACER_NONE,			0, 0, "sk_max_ar2_altfire", 0, 0 , 'z');
 		def.AddAmmoType("Grenade",			DMG_BURN | DMG_ALWAYSGIB | DMG_BLAST, TRACER_NONE, "sk_plr_dmg_grenade", "sk_npc_dmg_grenade", "sk_max_grenade", 0, 0, 'v');
-		def.AddAmmoType("Sniper",			DMG_BULLET | DMG_SNIPER, TRACER_LINE_AND_WHIZ, "sk_plr_dmg_sniper", "sk_npc_dmg_sniper", "sk_max_sniper", BULLET_IMPULSE(800, 5000), 0, 'r');
+		def.AddAmmoType("Sniper",			DMG_BULLET, TRACER_LINE_AND_WHIZ, "sk_plr_dmg_sniper", "sk_npc_dmg_sniper", "sk_max_sniper", BULLET_IMPULSE(800, 5000), 0, 'r');
 		def.AddAmmoType("M249",				DMG_BULLET, TRACER_LINE_AND_WHIZ, "sk_plr_dmg_m249para", "sk_npc_dmg_m249para", "sk_max_m249para", BULLET_IMPULSE(200, 1225), 0, 'r');
 		def.AddAmmoType("slam",				DMG_BURN | DMG_ALWAYSGIB, TRACER_NONE, "sk_plr_dmg_slam", "sk_npc_dmg_slam", "sk_max_slam", 0, 0, 'o');
 		def.AddAmmoType("MP5Ammo", DMG_BULLET, TRACER_LINE_AND_WHIZ, "sk_plr_dmg_mp5", "sk_npc_dmg_mp5", "sk_max_mp5", BULLET_IMPULSE(200, 1225), 0, 'p');

@@ -92,6 +92,7 @@ public:
 	Activity	GetPrimaryAttackActivity( void );
 	Activity	GetLeftGunActivity(void);
 	Activity	GetRightGunActivity(void);
+	virtual bool	IsWeaponZoomed() { return m_bInZoom; }
 
 	virtual const Vector& GetBulletSpreadPrimary( void )
 	{
