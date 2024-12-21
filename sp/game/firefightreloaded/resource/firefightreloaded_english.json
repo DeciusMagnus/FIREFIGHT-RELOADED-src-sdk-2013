@@ -421,6 +421,7 @@
             "GameUI_SpawnerMaxDistance": "Distance to disable spawners at",
             "GameUI_SpawnerMaxDistanceOverrideFactor": "Spawner Distance Override Adjustment Factor",
             "GameUI_ClassicBlood": "Classic 2004 Blood",
+            "GameUI_ClassicFire": "Classic 2004 Fire (Can only be set in main menu)",
             "GameUI_PumpSecondaryFire": "Force Shotgun pump on double shot",
             "GameUI_RewardSystem": "Reward System Settings",
             "GameUI_RewardSystem_1": "Give weapons, items, Kash Bonuses, and Perks when you level up.",

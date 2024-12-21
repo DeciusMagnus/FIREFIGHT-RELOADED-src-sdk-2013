@@ -283,6 +283,15 @@ $eyeposition 0 0 64
 
 $mostlyopaque
 
+$texturegroup skinfamilies
+{
+	{ "combinesoldiersheet_zombie"  }
+	{ "combinesoldiersheet_zombie_prison" }
+    { "combinesoldiersheet_zombie_shotgunner" }
+    { "combinesoldiersheet_zombie_elite" }
+    { "combinesoldiersheet_zombie_ace" }
+}
+
 $cdmaterials "models\zombie_classic\"
 $cdmaterials "models\headcrab_classic\"
 $cdmaterials "models\combine_soldier\"

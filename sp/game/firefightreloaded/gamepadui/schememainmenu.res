@@ -8,7 +8,7 @@
 	
 		"Buttons.OffsetX"						"85"
 		"Buttons.OffsetY.MainMenu"				"100"
-		"Buttons.OffsetY.InGame"				"50"
+		"Buttons.OffsetY.InGame"				"25"
 		"Buttons.Space"							"7"
 	
 		"Button.Width.Out"						"260"

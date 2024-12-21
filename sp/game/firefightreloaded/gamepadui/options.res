@@ -2448,6 +2448,20 @@
 					"1"		"#gameui_enabled"
 				}
 			}
+            
+            "ClassicFire"
+			{
+				"text"			"#GameUI_ClassicFire"
+				"type"			"wheelywheel"
+				"advanced"		"1"
+				"convar"		"_gamepadui_classicfire"
+
+				"options"
+				{
+					"0"		"#gameui_disabled"
+					"1"		"#gameui_enabled"
+				}
+			}
 
 			"DrawHUD"
 			{

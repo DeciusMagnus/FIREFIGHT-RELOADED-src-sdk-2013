@@ -59,6 +59,9 @@ enum
 
 #define ZOMBINE_MAX_GRENADES 1
 
+#define ZOMBINE_MIN_SKIN 0
+#define ZOMBINE_MAX_SKIN 2
+
 int ACT_ZOMBINE_GRENADE_PULL;
 int ACT_ZOMBINE_GRENADE_WALK;
 int ACT_ZOMBINE_GRENADE_RUN;
@@ -235,6 +238,8 @@ void CNPC_Zombine::Spawn( void )
 	SetMaxHealth( m_iHealth );
 
 	m_flFieldOfView		= 0.2;
+
+	m_nSkin = random->RandomInt(ZOMBINE_MIN_SKIN, ZOMBINE_MAX_SKIN);
 
 	CapabilitiesClear();
 

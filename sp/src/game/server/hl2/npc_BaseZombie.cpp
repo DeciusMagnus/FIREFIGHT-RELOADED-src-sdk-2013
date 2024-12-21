@@ -1157,15 +1157,17 @@ void CNPC_BaseZombie::DieChopped( const CTakeDamageInfo &info)
 		vecLegsForce.z *= -10;
 	}
 
-	CBaseEntity *pLegGib = CreateRagGib(this, GetLegsModel(), GetAbsOrigin(), GetAbsAngles(), vecLegsForce, flFadeTime, ShouldIgniteZombieGib() );
+	CBaseAnimating *pLegGib = (CBaseAnimating *)CreateRagGib(this, GetLegsModel(), GetAbsOrigin(), GetAbsAngles(), vecLegsForce, flFadeTime, ShouldIgniteZombieGib() );
 	if ( pLegGib )
 	{
 		CopyRenderColorTo( pLegGib );
+		pLegGib->m_nSkin = m_nSkin;
 
 		if (m_pAttributes != NULL)
 		{
 			m_pAttributes->SwitchEntityModel(pLegGib, "leg_gib_model", STRING(pLegGib->GetModelName()));
 			m_pAttributes->SwitchEntityColor(pLegGib, "new_color");
+			m_pAttributes->SwitchEntitySkin(pLegGib, "new_skin");
 		}
 	}
 
@@ -1182,15 +1184,17 @@ void CNPC_BaseZombie::DieChopped( const CTakeDamageInfo &info)
 	QAngle TorsoAngles;
 	TorsoAngles = GetAbsAngles();
 	TorsoAngles.x -= 90.0f;
-	CBaseEntity *pTorsoGib = CreateRagGib(this, GetTorsoModel(), GetAbsOrigin() + Vector(0, 0, 64), TorsoAngles, forceVector, flFadeTime, ShouldIgniteZombieGib());
+	CBaseAnimating *pTorsoGib = (CBaseAnimating*)CreateRagGib(this, GetTorsoModel(), GetAbsOrigin() + Vector(0, 0, 64), TorsoAngles, forceVector, flFadeTime, ShouldIgniteZombieGib());
 	if ( pTorsoGib )
 	{
 		CopyRenderColorTo(pTorsoGib);
+		pTorsoGib->m_nSkin = m_nSkin;
 
 		if (m_pAttributes != NULL)
 		{
 			m_pAttributes->SwitchEntityModel(pTorsoGib, "torso_gib_model", STRING(pTorsoGib->GetModelName()));
 			m_pAttributes->SwitchEntityColor(pTorsoGib, "new_color");
+			m_pAttributes->SwitchEntitySkin(pTorsoGib, "new_skin");
 		}
 
 		CBaseAnimating *pAnimating = dynamic_cast<CBaseAnimating*>(pTorsoGib);
@@ -2339,15 +2343,24 @@ void CNPC_BaseZombie::BecomeTorso( const Vector &vecTorsoForce, const Vector &ve
 	if ( m_fIsTorso == true )
 	{
 		// -40 on Z to make up for the +40 on Z that we did above. This stops legs spawning above the head.
-		CBaseEntity *pGib = CreateRagGib(this, GetLegsModel(), GetAbsOrigin() - Vector(0, 0, 40), GetAbsAngles(), vecLegsForce, flFadeTime);
+		CBaseAnimating* pGib = (CBaseAnimating*)CreateRagGib(this, GetLegsModel(), GetAbsOrigin() - Vector(0, 0, 40), GetAbsAngles(), vecLegsForce, flFadeTime);
 
 		// don't collide with this thing ever
 		if ( pGib )
 		{
 			pGib->SetOwnerEntity( this );
+
+			CopyRenderColorTo(pGib);
+			pGib->m_nSkin = m_nSkin;
+
+			if (m_pAttributes != NULL)
+			{
+				m_pAttributes->SwitchEntityModel(pGib, "leg_gib_model", STRING(pGib->GetModelName()));
+				m_pAttributes->SwitchEntityColor(pGib, "new_color");
+				m_pAttributes->SwitchEntitySkin(pGib, "new_skin");
+			}
 		}
 	}
-
 
 	SetZombieModel();
 }

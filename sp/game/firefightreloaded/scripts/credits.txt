@@ -100,6 +100,8 @@
 	" "	"CreditsOutroText"
 	"Running with Scissors for the kick sound effects."	"CreditsOutroText"	
 	" "	"CreditsOutroText"
+	"Devteam53 and ChalkyMalky for the Zombine Texture base."	"CreditsOutroText"
+	" "	"CreditsOutroText"
 	"Code Credits:"	"CreditsOutroText"
 	" "	"CreditsOutroText"
 	"Sirmasters from BSNOOCH, for making the Mapadd, Kick,"	"CreditsOutroText"
