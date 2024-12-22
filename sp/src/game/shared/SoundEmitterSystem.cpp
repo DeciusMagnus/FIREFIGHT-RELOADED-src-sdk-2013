@@ -42,6 +42,9 @@ static ConVar sv_soundemitter_trace( "sv_soundemitter_trace", "0", FCVAR_REPLICA
 static ConVar sv_snd_filter( "sv_snd_filter", "", FCVAR_REPLICATED, "Filters out all sounds not containing the specified string before being emitted\n" );
 #endif // STAGING_ONLY
 
+static ConVar snd_timescale_pitchcontrol("snd_timescale_pitchcontrol", "1", FCVAR_REPLICATED | FCVAR_ARCHIVE, "");
+static ConVar snd_timescale_pitchcontrol_pitchoverride("snd_timescale_pitchcontrol_pitchoverride", "0.40", FCVAR_REPLICATED | FCVAR_ARCHIVE, "");
+
 extern ISoundEmitterSystemBase *soundemitterbase;
 static ConVar *g_pClosecaption = NULL;
 
@@ -128,6 +131,32 @@ void Hack_FixEscapeChars( char *str )
 	}
 	*o = 0;
 	Q_strncpy( str, osave, len );
+}
+
+static float GetTimescale()
+{
+	ConVarRef sv_cheats("sv_cheats");
+	ConVarRef host_timescale("host_timescale");
+
+	if (snd_timescale_pitchcontrol.GetBool())
+	{
+		if (sv_cheats.GetBool())
+		{
+			if ((host_timescale.GetFloat() > 1.0f || host_timescale.GetFloat() < 1.0f))
+			{
+				if (snd_timescale_pitchcontrol_pitchoverride.GetFloat() > 0)
+				{
+					return snd_timescale_pitchcontrol_pitchoverride.GetFloat();
+				}
+				else
+				{
+					return host_timescale.GetFloat();
+				}
+			}
+		}
+	}
+
+	return 1.0f;
 }
 
 //-----------------------------------------------------------------------------
@@ -552,7 +581,7 @@ public:
 			params.volume,
 			(soundlevel_t)params.soundlevel,
 			ep.m_nFlags,
-			params.pitch,
+			params.pitch * GetTimescale(),
 			ep.m_nSpecialDSP,
 			ep.m_pOrigin,
 			NULL,
@@ -623,15 +652,15 @@ public:
 				Msg( "Sound %s was not precached\n", ep.m_pSoundName );
 			}
 #endif
-			enginesound->EmitSound( 
-				filter, 
-				entindex, 
-				ep.m_nChannel, 
-				ep.m_pSoundName, 
-				ep.m_flVolume, 
-				ep.m_SoundLevel, 
-				ep.m_nFlags, 
-				ep.m_nPitch, 
+			enginesound->EmitSound(
+				filter,
+				entindex,
+				ep.m_nChannel,
+				ep.m_pSoundName,
+				ep.m_flVolume,
+				ep.m_SoundLevel,
+				ep.m_nFlags,
+				ep.m_nPitch * GetTimescale(),
 				ep.m_nSpecialDSP,
 				ep.m_pOrigin,
 				NULL, 
@@ -853,6 +882,8 @@ public:
 			params.volume = flVolume;
 		}
 
+		params.pitch *= GetTimescale();
+
 #if defined( CLIENT_DLL )
 		enginesound->EmitAmbientSound( params.soundname, params.volume, params.pitch, iFlags, soundtime );
 #else
@@ -981,6 +1012,8 @@ public:
 
 		if ( pSample && ( Q_stristr( pSample, ".wav" ) || Q_stristr( pSample, ".mp3" )) )
 		{
+			pitch *= GetTimescale();
+
 #if defined( CLIENT_DLL )
 			enginesound->EmitAmbientSound( pSample, volume, pitch, flags, soundtime );
 #else

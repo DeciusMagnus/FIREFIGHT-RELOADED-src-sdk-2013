@@ -452,6 +452,11 @@ BEGIN_DATADESC( CHL2_Player )
 
 	DEFINE_FIELD( m_flTimeNextLadderHint, FIELD_TIME ),
 
+	DEFINE_FIELD(m_flBullettimeOffSoundQueueTime, FIELD_TIME),
+
+	DEFINE_FIELD(m_bBullettimeOffSound, FIELD_BOOLEAN),
+	DEFINE_FIELD(m_bWasEverInBullettime, FIELD_BOOLEAN),
+
 	//DEFINE_FIELD( m_hPlayerProxy, FIELD_EHANDLE ), //Shut up class check!
 
 END_DATADESC()
@@ -475,6 +480,10 @@ CHL2_Player::CHL2_Player()
 
 	m_flArmorReductionTime = 0.0f;
 	m_iArmorReductionFrom = 0;
+
+	m_flBullettimeOffSoundQueueTime = 0.0f;
+	m_bBullettimeOffSound = false;
+	m_bWasEverInBullettime = false;
 }
 
 //
@@ -494,7 +503,7 @@ CHL2_Player::CHL2_Player()
 	CSuitPowerDevice SuitDeviceFlashlight( bits_SUIT_DEVICE_FLASHLIGHT, 2.222 );	// 100 units in 45 second
 #endif
 CSuitPowerDevice SuitDeviceBreather( bits_SUIT_DEVICE_BREATHER, 6.7f );		// 100 units in 15 seconds (plus three padded seconds)
-CSuitPowerDevice SuitDeviceBulletTime(bits_SUIT_DEVICE_BULLETTIME, 6.7f);
+CSuitPowerDevice SuitDeviceBulletTime(bits_SUIT_DEVICE_BULLETTIME, 10.0f);
 
 
 IMPLEMENT_SERVERCLASS_ST(CHL2_Player, DT_HL2_Player)
@@ -955,6 +964,15 @@ void CHL2_Player::PreThink(void)
 	VPROF_SCOPE_BEGIN("CHL2_Player::PreThink-CheckHoldIronsights");
 	CheckIronsights();
 	VPROF_SCOPE_END();
+
+	if (!IsInBullettime() && m_bWasEverInBullettime && (gpGlobals->curtime > m_flBullettimeOffSoundQueueTime))
+	{
+		if (m_bBullettimeOffSound == false)
+		{
+			EmitSound("HL2Player.bullettimeoff");
+			m_bBullettimeOffSound = true;
+		}
+	}
 
 	if (m_lifeState >= LIFE_DYING)
 	{
@@ -2074,6 +2092,9 @@ void CHL2_Player::StartBullettime(bool bInShop)
 		UTIL_ScreenFade(this, white, 0.2f, 0, FFADE_IN);
 	}
 
+	m_bBullettimeOffSound = false;
+	m_bWasEverInBullettime = true;
+
 	char szCommand[2048];
 
 	float bullettimeTimescale = sv_player_bullettime_timescale.GetFloat() / 100;
@@ -2101,6 +2122,7 @@ void CHL2_Player::StartBullettime(bool bInShop)
 
 	EmitSound("HL2Player.bullettimeon");
 	EmitSound("HL2Player.heartbeat");
+
 	m_HL2Local.m_fIsInBullettime = true;
 	g_pGameRules->isInBullettime = true;
 }
@@ -2125,7 +2147,7 @@ void CHL2_Player::StopBullettime(bool bPlaySound, bool bFlashScreen, bool bInSho
 	engine->ServerCommand("host_timescale 1.0\n");
 	if (bPlaySound)
 	{
-		EmitSound("HL2Player.bullettimeoff");
+		m_flBullettimeOffSoundQueueTime = gpGlobals->curtime + 0.3f;
 	}
 	StopSound("HL2Player.heartbeat");
 	
@@ -2828,7 +2850,7 @@ bool CHL2_Player::SuitPower_RemoveDevice( const CSuitPowerDevice &device )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-#define SUITPOWER_BEGIN_RECHARGE_DELAY	0.5f
+#define SUITPOWER_BEGIN_RECHARGE_DELAY	1.5f
 bool CHL2_Player::SuitPower_ShouldRecharge( void )
 {
 	// Make sure all devices are off.

@@ -52,6 +52,34 @@ ConVar hl1_ref_db_distance( "hl1_ref_db_distance", "18.0" );
 #define REFERENCE_dB_DISTANCE	36.0
 #endif//HL1_DLL
 
+static float GetHostTimescale()
+{
+	ConVarRef sv_cheats("sv_cheats");
+	ConVarRef host_timescale("host_timescale");
+	ConVarRef snd_timescale_pitchcontrol("snd_timescale_pitchcontrol");
+	ConVarRef snd_timescale_pitchcontrol_pitchoverride("snd_timescale_pitchcontrol_pitchoverride");
+
+	if (snd_timescale_pitchcontrol.GetBool())
+	{
+		if (sv_cheats.GetBool())
+		{
+			if ((host_timescale.GetFloat() > 1.0f || host_timescale.GetFloat() < 1.0f))
+			{
+				if (snd_timescale_pitchcontrol_pitchoverride.GetFloat() > 0)
+				{
+					return snd_timescale_pitchcontrol_pitchoverride.GetFloat();
+				}
+				else
+				{
+					return host_timescale.GetFloat();
+				}
+			}
+		}
+	}
+
+	return 1.0f;
+}
+
 static soundlevel_t ComputeSoundlevel( float radius, bool playEverywhere )
 {
 	soundlevel_t soundlevel = SNDLVL_NONE;
@@ -757,7 +785,7 @@ void CAmbientGeneric::RampThink( void )
 		if (pSoundSource)
 		{
 			UTIL_EmitAmbientSound(pSoundSource->GetSoundSourceIndex(), pSoundSource->GetAbsOrigin(), 
-				STRING( m_iszSound ), (vol * 0.01), m_iSoundLevel, flags, pitch);
+				STRING( m_iszSound ), (vol * 0.01), m_iSoundLevel, flags, pitch * GetHostTimescale());
 		}
 	}
 
@@ -890,7 +918,7 @@ void CAmbientGeneric::SendSound( SoundFlags_t flags)
 		else
 		{
 			UTIL_EmitAmbientSound(pSoundSource->GetSoundSourceIndex(), pSoundSource->GetAbsOrigin(), szSoundFile, 
-				(m_dpv.vol * 0.01), m_iSoundLevel, flags, m_dpv.pitch);
+				(m_dpv.vol * 0.01), m_iSoundLevel, flags, m_dpv.pitch * GetHostTimescale());
 			// Only mark active if this is a looping sound.
 			// If not looping, each trigger will cause the sound to play.
 			// If the sound is still playing from a previous trigger press, 
@@ -1199,7 +1227,7 @@ int SENTENCEG_PlayRndI(edict_t *entity, int isentenceg,
 	{
 		int sentenceIndex = SENTENCEG_Lookup( name );
 		CPASAttenuationFilter filter( GetContainingEntity( entity ), soundlevel );
-		CBaseEntity::EmitSentenceByIndex( filter, ENTINDEX(entity), CHAN_VOICE, sentenceIndex, volume, soundlevel, flags, pitch );
+		CBaseEntity::EmitSentenceByIndex( filter, ENTINDEX(entity), CHAN_VOICE, sentenceIndex, volume, soundlevel, flags, pitch * GetHostTimescale());
 		return sentenceIndex;
 	}
 
@@ -1244,7 +1272,7 @@ void SENTENCEG_PlaySentenceIndex( edict_t *entity, int iSentenceIndex, float vol
 	if ( iSentenceIndex >= 0 )
 	{
 		CPASAttenuationFilter filter( GetContainingEntity( entity ), soundlevel );
-		CBaseEntity::EmitSentenceByIndex( filter, ENTINDEX(entity), CHAN_VOICE, iSentenceIndex, volume, soundlevel, flags, pitch );
+		CBaseEntity::EmitSentenceByIndex( filter, ENTINDEX(entity), CHAN_VOICE, iSentenceIndex, volume, soundlevel, flags, pitch * GetHostTimescale());
 	}
 }
 
@@ -1273,7 +1301,7 @@ int SENTENCEG_PlayRndSz(edict_t *entity, const char *szgroupname,
 	{
 		int sentenceIndex = SENTENCEG_Lookup( name );
 		CPASAttenuationFilter filter( GetContainingEntity( entity ), soundlevel );
-		CBaseEntity::EmitSentenceByIndex( filter, ENTINDEX(entity), CHAN_VOICE, sentenceIndex, volume, soundlevel, flags, pitch );
+		CBaseEntity::EmitSentenceByIndex( filter, ENTINDEX(entity), CHAN_VOICE, sentenceIndex, volume, soundlevel, flags, pitch * GetHostTimescale());
 		return sentenceIndex;
 	}
 
@@ -1303,7 +1331,7 @@ int SENTENCEG_PlaySequentialSz(edict_t *entity, const char *szgroupname,
 	{
 		int sentenceIndex = SENTENCEG_Lookup( name );
 		CPASAttenuationFilter filter( GetContainingEntity( entity ), soundlevel );
-		CBaseEntity::EmitSentenceByIndex( filter, ENTINDEX(entity), CHAN_VOICE, sentenceIndex, volume, soundlevel, flags, pitch );
+		CBaseEntity::EmitSentenceByIndex( filter, ENTINDEX(entity), CHAN_VOICE, sentenceIndex, volume, soundlevel, flags, pitch * GetHostTimescale());
 		return sentenceIndex;
 	}
 	
@@ -1401,7 +1429,7 @@ void UTIL_EmitSoundSuit(edict_t *entity, const char *sample)
 		ep.m_pSoundName = sample;
 		ep.m_flVolume = fvol;
 		ep.m_SoundLevel = SNDLVL_NORM;
-		ep.m_nPitch = pitch;
+		ep.m_nPitch = pitch * GetHostTimescale();
 
 		CBaseEntity::EmitSound( filter, ENTINDEX(entity), ep );
 	}
@@ -1426,7 +1454,7 @@ int UTIL_EmitGroupIDSuit(edict_t *entity, int isentenceg)
 	}
 
 	if (fvol > 0.05)
-		sentenceIndex = SENTENCEG_PlayRndI(entity, isentenceg, fvol, SNDLVL_NORM, 0, pitch);
+		sentenceIndex = SENTENCEG_PlayRndI(entity, isentenceg, fvol, SNDLVL_NORM, 0, pitch * GetHostTimescale());
 
 	return sentenceIndex;
 }
@@ -1450,7 +1478,7 @@ int UTIL_EmitGroupnameSuit(edict_t *entity, const char *groupname)
 	}
 
 	if (fvol > 0.05)
-		sentenceIndex = SENTENCEG_PlayRndSz(entity, groupname, fvol, SNDLVL_NORM, 0, pitch);
+		sentenceIndex = SENTENCEG_PlayRndSz(entity, groupname, fvol, SNDLVL_NORM, 0, pitch * GetHostTimescale());
 
 	return sentenceIndex;
 }

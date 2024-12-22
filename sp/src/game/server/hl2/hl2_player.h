@@ -184,6 +184,7 @@ public:
 	void StopBullettime(bool bPlaySound = true, bool bFlashScreen = true, bool bInShop = false);
 	void InitBullettime(void);
 	bool IsInBullettime(void) { return m_HL2Local.m_fIsInBullettime && g_pGameRules->isInBullettime; }
+	bool WasEverInBullettime(void) { return m_bWasEverInBullettime; }
 	void CheckBullettime(void);
 	void ToggleBullettime(void);
 
@@ -392,6 +393,10 @@ private:
 	
 	float				m_flArmorReductionTime;
 	int					m_iArmorReductionFrom;
+
+	float				m_flBullettimeOffSoundQueueTime;
+	bool				m_bBullettimeOffSound;
+	bool				m_bWasEverInBullettime;
 
 	float				m_flTimeUseSuspended;
 

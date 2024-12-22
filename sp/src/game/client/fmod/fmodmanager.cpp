@@ -507,6 +507,34 @@ void CFMODMusicSystem::LevelShutdownPreEntity()
 	Kill();
 }
 
+static float GetScale()
+{
+	ConVarRef sv_cheats("sv_cheats");
+	ConVarRef host_timescale("host_timescale");
+	ConVarRef snd_timescale_pitchcontrol("snd_timescale_pitchcontrol");
+	ConVarRef snd_timescale_pitchcontrol_pitchoverride("snd_timescale_pitchcontrol_pitchoverride");
+
+	if (snd_timescale_pitchcontrol.GetBool())
+	{
+		if (sv_cheats.GetBool())
+		{
+			if ((host_timescale.GetFloat() > 1.0f || host_timescale.GetFloat() < 1.0f))
+			{
+				if (snd_timescale_pitchcontrol_pitchoverride.GetFloat() > 0)
+				{
+					return snd_timescale_pitchcontrol_pitchoverride.GetFloat();
+				}
+				else
+				{
+					return host_timescale.GetFloat();
+				}
+			}
+		}
+	}
+
+	return 1.0f;
+}
+
 void CFMODMusicSystem::Update(float frametime)
 {
 	if (!m_bStart)
@@ -602,10 +630,8 @@ void CFMODMusicSystem::Update(float frametime)
 				else
 				{ 
 					//since we change host_timescale a lot, dynamically adjust the tracktime based on the timescale.
-					ConVarRef host_timescale("host_timescale");
-
 					//don't do anything if we're normal timescale.
-					float songProgressAdjusted = songProgress / host_timescale.GetFloat();
+					float songProgressAdjusted = songProgress / GetScale();
 					float tracktimeNew = gpGlobals->curtime + songProgressAdjusted;
 
 					if (tracktimeNew != tracktime)
@@ -624,6 +650,10 @@ void CFMODMusicSystem::Update(float frametime)
 
 						m_bTimeNeedsUpdate = false;
 					}
+
+					//adjust the speed
+					m_pChannel->setPitch(1.0f * GetScale());
+					m_pSong->setMusicSpeed(1.0f * GetScale());
 				}
 			}
 		}
