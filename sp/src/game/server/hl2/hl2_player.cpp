@@ -1744,7 +1744,10 @@ void CHL2_Player::Spawn(void)
 		 StartWalking();
 
 	SuitPower_Initialize();
-	//SuitPower_SetCharge( 100 );
+	if (sv_infinite_aux_power.GetBool() || m_iPerkInfiniteAuxPower == 1)
+	{
+		SuitPower_SetCharge( 100 );
+	}
 
 	if (sv_hud_hidechat.GetBool())
 	{
@@ -2771,8 +2774,14 @@ void CHL2_Player::SuitPower_Update( void )
 void CHL2_Player::SuitPower_Initialize( void )
 {
 	m_HL2Local.m_bitsActiveDevices = 0x00000000;
-	//m_HL2Local.m_flSuitPower = 100.0;
-	m_HL2Local.m_flSuitPower = 0.0;
+	if (sv_infinite_aux_power.GetBool() || m_iPerkInfiniteAuxPower == 1)
+	{
+		m_HL2Local.m_flSuitPower = 100.0;
+	}
+	else
+	{
+		m_HL2Local.m_flSuitPower = 0.0;
+	}
 	m_flSuitPowerLoad = 0.0;
 }
 
