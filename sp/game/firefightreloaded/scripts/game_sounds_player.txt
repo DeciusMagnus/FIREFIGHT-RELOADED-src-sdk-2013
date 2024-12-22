@@ -97,7 +97,7 @@
 
 "HL2Player.bullettimeon"
 {
-	"channel"	"CHAN_ITEM"
+	"channel"	"CHAN_VOICE2"
 	"volume"	"1.0"
 	"soundlevel"  "SNDLVL_75dB"
 
@@ -106,7 +106,7 @@
 
 "HL2Player.bullettimeoff"
 {
-	"channel"	"CHAN_ITEM"
+	"channel"	"CHAN_VOICE2"
 	"volume"	"1.0"
 	"soundlevel"  "SNDLVL_75dB"
 

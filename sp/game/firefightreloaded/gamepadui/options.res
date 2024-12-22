@@ -2099,6 +2099,33 @@
 					"1"		"#gameui_enabled"
 				}
 			}
+            
+            "BullettimePitchControl"
+			{
+				"text"			"#GameUI_BullettimePitchControl"
+				"type"			"wheelywheel"
+				"convar"		"snd_timescale_pitchcontrol"
+
+				"options"
+				{
+					"0"		"#gameui_disabled"
+					"1"		"#gameui_enabled"
+				}
+			}
+            
+            "BullettimePitchControlOverride"
+			{
+                "text"			"#GameUI_BullettimePitchControlOverride"
+				"type"			"slideyslide"
+				"convar"		"snd_timescale_pitchcontrol_pitchoverride"
+				"advanced"		"1"
+
+				"min"			"0"
+				"max"			"1"
+				"step"			"0.1"
+
+				"textprecision" "2"
+			}
 			
 			"ExplosionRinging"
 			{
