@@ -41,6 +41,34 @@ C_AmbientFMOD::C_AmbientFMOD()
 	m_flOldMusicSpeed = m_flMusicSpeed;
 }
 
+static float GetSoundScale()
+{
+	ConVarRef sv_cheats("sv_cheats");
+	ConVarRef host_timescale("host_timescale");
+	ConVarRef snd_timescale_pitchcontrol("snd_timescale_pitchcontrol");
+	ConVarRef snd_timescale_pitchcontrol_pitchoverride("snd_timescale_pitchcontrol_pitchoverride");
+
+	if (snd_timescale_pitchcontrol.GetBool())
+	{
+		if (sv_cheats.GetBool())
+		{
+			if ((host_timescale.GetFloat() > 1.0f || host_timescale.GetFloat() < 1.0f))
+			{
+				if (snd_timescale_pitchcontrol_pitchoverride.GetFloat() > 0)
+				{
+					return snd_timescale_pitchcontrol_pitchoverride.GetFloat();
+				}
+				else
+				{
+					return host_timescale.GetFloat();
+				}
+			}
+		}
+	}
+
+	return 1.0f;
+}
+
 void C_AmbientFMOD::Spawn( void )
 {
 	SetThink( &C_AmbientFMOD::ClientThink );
@@ -116,6 +144,14 @@ void C_AmbientFMOD::ClientThink( void )
 
 		FMOD_VECTOR sourcePos = { entPos.x, entPos.z, entPos.y };
 		m_pChannel->set3DAttributes( &sourcePos, nullptr );
+
+		if (m_pSound != nullptr)
+		{
+			//adjust the speed
+			m_pChannel->setPitch(m_flMusicSpeed * GetSoundScale());
+			float flNewPitch = RemapVal(m_flPitch, 0.0f, 100.0f, 0.0f, 1.0f);
+			m_pSound->setMusicSpeed(flNewPitch * GetSoundScale());
+		}
 	}
 }
 
@@ -150,7 +186,7 @@ void C_AmbientFMOD::SetVolume()
 void C_AmbientFMOD::SetMusicSpeed()
 {
 	if ( m_pSound != nullptr )
-		CFMODManager::CheckError( m_pSound->setMusicSpeed( m_flMusicSpeed ) );
+		CFMODManager::CheckError( m_pSound->setMusicSpeed( m_flMusicSpeed * GetSoundScale()) );
 }
 
 void C_AmbientFMOD::SetPitch()
@@ -158,7 +194,7 @@ void C_AmbientFMOD::SetPitch()
 	if ( m_pChannel != nullptr )
 	{
 		float flNewPitch = RemapVal( m_flPitch, 0.0f, 100.0f, 0.0f, 1.0f );
-		CFMODManager::CheckError( m_pChannel->setPitch( flNewPitch ) );
+		CFMODManager::CheckError( m_pChannel->setPitch( flNewPitch * GetSoundScale()) );
 	}
 }
 

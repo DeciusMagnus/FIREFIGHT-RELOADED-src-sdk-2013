@@ -39,8 +39,8 @@
 ConVar sk_grapple_delay("sk_grapple_delay", "0.5");
 ConVar sk_grapple_batterydrain("sk_grapple_batterydrain", "1", FCVAR_ARCHIVE);
 ConVar sk_grapple_rangerestriction("sk_grapple_rangerestriction", "1", FCVAR_ARCHIVE);
-ConVar sk_grapple_batterydrain_time("sk_grapple_batterydrain_time", "0.2", FCVAR_ARCHIVE);
-ConVar sk_grapple_batterydrain_amount("sk_grapple_batterydrain_amount", "7", FCVAR_ARCHIVE);
+ConVar sk_grapple_batterydrain_time("sk_grapple_batterydrain_time", "0.35", FCVAR_ARCHIVE);
+ConVar sk_grapple_batterydrain_amount("sk_grapple_batterydrain_amount", "4", FCVAR_ARCHIVE);
 ConVar sk_grapple_rangerestriction_max("sk_grapple_rangerestriction_max", "1500", FCVAR_ARCHIVE);
 
 static const char* ppszIgnoredClasses[] =
@@ -151,12 +151,15 @@ void CGrappleHook::HandleBattery(void)
 {
 	if (sk_grapple_batterydrain.GetBool())
 	{
-		if (m_hPlayer->ArmorValue() > 0)
+		if (m_flNextBatteryDrain < gpGlobals->curtime)
 		{
-			m_hPlayer->RemoveArmor(sk_grapple_batterydrain_amount.GetInt());
-		}
+			if (m_hPlayer->ArmorValue() > 0)
+			{
+				m_hPlayer->RemoveArmor(sk_grapple_batterydrain_amount.GetInt());
+			}
 
-		m_flNextBatteryDrain = gpGlobals->curtime + sk_grapple_batterydrain_time.GetFloat();
+			m_flNextBatteryDrain = gpGlobals->curtime + sk_grapple_batterydrain_time.GetFloat();
+		}
 	}
 }
 
