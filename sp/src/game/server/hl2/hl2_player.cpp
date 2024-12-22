@@ -457,6 +457,7 @@ BEGIN_DATADESC( CHL2_Player )
 	DEFINE_FIELD(m_bBullettimeOffSound, FIELD_BOOLEAN),
 	DEFINE_FIELD(m_bWasEverInBullettime, FIELD_BOOLEAN),
 
+	DEFINE_FIELD(m_bJustSpawned, FIELD_BOOLEAN),
 	//DEFINE_FIELD( m_hPlayerProxy, FIELD_EHANDLE ), //Shut up class check!
 
 END_DATADESC()
@@ -484,12 +485,14 @@ CHL2_Player::CHL2_Player()
 	m_flBullettimeOffSoundQueueTime = 0.0f;
 	m_bBullettimeOffSound = false;
 	m_bWasEverInBullettime = false;
+	m_bJustSpawned = false;
 }
 
 //
 // SUIT POWER DEVICES
 //
 #define SUITPOWER_CHARGE_RATE	12.5											// 100 units in 8 seconds
+#define SUITPOWER_SPAWN_CHARGE_RATE	31.25f											// 100 units in 8 seconds
 
 #ifdef HL2MP
 	CSuitPowerDevice SuitDeviceSprint( bits_SUIT_DEVICE_SPRINT, 25.0f );				// 100 units in 4 seconds
@@ -807,8 +810,9 @@ void CHL2_Player::PreThink(void)
 	if ( IsInAVehicle() )	
 	{
 		VPROF( "CHL2_Player::PreThink-Vehicle" );
+
 		// make sure we update the client, check for timed damage and update suit even if we are in a vehicle
-		UpdateClientData();		
+		UpdateClientData();
 		CheckTimeBasedDamage();
 
 		// Allow the suit to recharge when in the vehicle.
@@ -817,6 +821,15 @@ void CHL2_Player::PreThink(void)
 		CheckSuitZoom();
 		CheckBullettime();
 		CheckIronsights();
+
+		if (!IsInBullettime() && m_bWasEverInBullettime && (gpGlobals->curtime > m_flBullettimeOffSoundQueueTime))
+		{
+			if (m_bBullettimeOffSound == false)
+			{
+				EmitSound("HL2Player.bullettimeoff");
+				m_bBullettimeOffSound = true;
+			}
+		}
 
 		WaterMove();	
 		return;
@@ -1719,6 +1732,7 @@ void CHL2_Player::Spawn(void)
 #endif
 
 	BaseClass::Spawn();
+	m_bJustSpawned = true;
 
 	//
 	// Our player movement speed is set once here. This will override the cl_xxxx
@@ -1730,7 +1744,7 @@ void CHL2_Player::Spawn(void)
 		 StartWalking();
 
 	SuitPower_Initialize();
-	SuitPower_SetCharge( 100 );
+	//SuitPower_SetCharge( 100 );
 
 	if (sv_hud_hidechat.GetBool())
 	{
@@ -2668,7 +2682,14 @@ void CHL2_Player::SuitPower_Update( void )
 {
 	if( SuitPower_ShouldRecharge() )
 	{
-		SuitPower_Charge( SUITPOWER_CHARGE_RATE * gpGlobals->frametime );
+		if (m_bJustSpawned)
+		{
+			SuitPower_Charge(SUITPOWER_SPAWN_CHARGE_RATE * gpGlobals->frametime);
+		}
+		else
+		{
+			SuitPower_Charge(SUITPOWER_CHARGE_RATE * gpGlobals->frametime);
+		}
 	}
 	else if( m_HL2Local.m_bitsActiveDevices )
 	{
@@ -2699,11 +2720,11 @@ void CHL2_Player::SuitPower_Update( void )
 
 		if (SuitPower_IsDeviceActive(SuitDeviceBulletTime))
 		{
-			float factor;
-
-			factor = 1.0f / m_flFlashlightPowerDrainScale;
-
-			flPowerLoad -= (SuitDeviceBulletTime.GetDeviceDrainRate() * (1.0f - factor));
+			if (IsInAVehicle())
+			{
+				//add a penalty for bullettime when in a vehicle.
+				flPowerLoad -= 5.0f;
+			}
 		}
 
 		if( !SuitPower_Drain( flPowerLoad * gpGlobals->frametime ) )
@@ -2750,7 +2771,8 @@ void CHL2_Player::SuitPower_Update( void )
 void CHL2_Player::SuitPower_Initialize( void )
 {
 	m_HL2Local.m_bitsActiveDevices = 0x00000000;
-	m_HL2Local.m_flSuitPower = 100.0;
+	//m_HL2Local.m_flSuitPower = 100.0;
+	m_HL2Local.m_flSuitPower = 0.0;
 	m_flSuitPowerLoad = 0.0;
 }
 
@@ -2766,7 +2788,15 @@ bool CHL2_Player::SuitPower_Drain( float flPower )
 	if (sv_infinite_aux_power.GetBool() || m_iPerkInfiniteAuxPower == 1)
 		return true;
 
-	m_HL2Local.m_flSuitPower -= flPower;
+	if (flPower <= 0)
+	{
+		//negative values...
+		m_HL2Local.m_flSuitPower += flPower;
+	}
+	else
+	{
+		m_HL2Local.m_flSuitPower -= flPower;
+	}
 
 	if( m_HL2Local.m_flSuitPower < 0.0 )
 	{
@@ -2792,6 +2822,12 @@ void CHL2_Player::SuitPower_Charge( float flPower )
 		// Full charge, clamp.
 		m_HL2Local.m_flSuitPower = 100.0;
 	}
+
+	//make it so the fast charge stops here.
+	if (m_bJustSpawned && m_HL2Local.m_flSuitPower >= 100.0)
+	{
+		m_bJustSpawned = false;
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -2812,6 +2848,7 @@ bool CHL2_Player::SuitPower_AddDevice( const CSuitPowerDevice &device )
 	if( !IsSuitEquipped() )
 		return false;
 
+	m_bJustSpawned = false;
 	m_HL2Local.m_bitsActiveDevices |= device.GetDeviceID();
 	m_flSuitPowerLoad += device.GetDeviceDrainRate();
 	return true;
@@ -2835,6 +2872,7 @@ bool CHL2_Player::SuitPower_RemoveDevice( const CSuitPowerDevice &device )
 	// against exploits where the player could rapidly tap sprint and never run out of power.
 	SuitPower_Drain( device.GetDeviceDrainRate() * 0.1f );
 
+	m_bJustSpawned = false;
 	m_HL2Local.m_bitsActiveDevices &= ~device.GetDeviceID();
 	m_flSuitPowerLoad -= device.GetDeviceDrainRate();
 

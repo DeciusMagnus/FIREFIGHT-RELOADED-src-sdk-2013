@@ -739,8 +739,8 @@ event SquadMemberAdded
 	StopEvent	SquadMemberLeft		0.0
 
 	// add in the squad member, brighter then normal color
-	Animate HudSquadStatus LastMemberColor	"84 84 255 255" Linear 0.0 0.3
-	Animate HudSquadStatus LastMemberColor	"84 84 255 160" Linear 0.3 0.3
+	Animate HudSquadStatus LastMemberColor	"BrightFg" Linear 0.0 0.3
+	Animate HudSquadStatus LastMemberColor	"FgColor" Linear 0.3 0.3
 }
 
 event SquadMemberLeft
@@ -749,7 +749,7 @@ event SquadMemberLeft
 	StopEvent	SquadMemberAdded	0.0
 
 	// fade out the icon
-	Animate HudSquadStatus LastMemberColor	"84 84 255 0"	Linear 0.0 0.5
+	Animate HudSquadStatus LastMemberColor	"FgColor"	Linear 0.0 0.5
 }
 
 event SquadMemberDied
@@ -765,17 +765,17 @@ event SquadMemberDied
 event SquadMembersFollowing
 {
 	StopEvent	SquadMembersStationed	0.0
-	Animate		HudSquadStatus	SquadTextColor	"84 84 255 255"		Linear 0.0 0.2
-	Animate		HudSquadStatus	SquadTextColor	"84 84 255 160"		Linear 0.2 0.4
-	Animate		HudSquadStatus	SquadTextColor	"84 84 255 255"		Linear 0.4 0.6
+	Animate		HudSquadStatus	SquadTextColor	"BrightFg"		Linear 0.0 0.2
+	Animate		HudSquadStatus	SquadTextColor	"FgColor"		Linear 0.2 0.4
+	Animate		HudSquadStatus	SquadTextColor	"BrightFg"		Linear 0.4 0.6
 }
 
 event SquadMembersStationed
 {
 	StopEvent	SquadMembersFollowing	0.0
-	Animate		HudSquadStatus	SquadTextColor	"84 84 255 255"		Linear 0.0 0.2
-	Animate		HudSquadStatus	SquadTextColor	"84 84 255 160"		Linear 0.2 0.4
-	Animate		HudSquadStatus	SquadTextColor	"84 84 255 255"		Linear 0.4 0.6
+	Animate		HudSquadStatus	SquadTextColor	"BrightFg"		Linear 0.0 0.2
+	Animate		HudSquadStatus	SquadTextColor	"FgColor"		Linear 0.2 0.4
+	Animate		HudSquadStatus	SquadTextColor	"BrightFg"		Linear 0.4 0.6
 }
 
 event PoisonDamageTaken

@@ -398,6 +398,8 @@ private:
 	bool				m_bBullettimeOffSound;
 	bool				m_bWasEverInBullettime;
 
+	bool				m_bJustSpawned;
+
 	float				m_flTimeUseSuspended;
 
 	CSimpleSimTimer		m_LowerWeaponTimer;
