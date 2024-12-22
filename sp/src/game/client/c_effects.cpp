@@ -563,8 +563,8 @@ void CClient_Precipitation::Render()
 		return;
 
 	// Don't render in monitors or in reflections or refractions.
-	if ( CurrentViewID() == VIEW_MONITOR )
-		return;
+	//if ( CurrentViewID() == VIEW_MONITOR )
+		//return;
 
 	if ( view->GetDrawFlags() & (DF_RENDER_REFLECTION | DF_RENDER_REFRACTION) )
 		return;

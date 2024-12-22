@@ -3548,6 +3548,17 @@ void CHL2_Player::Event_Killed( const CTakeDamageInfo &info )
 			m_hRagdoll->GetBaseAnimating()->Dissolve(NULL, gpGlobals->curtime, false, ENTITY_DISSOLVE_NORMAL);
 		}
 	}
+	else if (info.GetDamageType() & (DMG_BLAST | DMG_BURN))
+	{
+		if (m_hRagdoll)
+		{
+			CBaseAnimating* pRagdoll = (CBaseAnimating*)CBaseEntity::Instance(m_hRagdoll);
+			if (info.GetDamageType() & (DMG_BURN | DMG_BLAST))
+			{
+				pRagdoll->Ignite(45, false, 10);
+			}
+		}
+	}
 
 	m_lifeState = LIFE_DEAD;
 
