@@ -155,7 +155,7 @@ public:
 	virtual bool			IsPassengerEntering( void ) { Assert( 0 ); return false; }
 	virtual bool			IsPassengerExiting( void ) { Assert( 0 ); return false; }
 	
-	virtual void			HandlePassengerEntry( CBaseCombatCharacter *pPassenger, bool bAllowEntryOutsideZone = false );
+	virtual void			HandlePassengerEntry( CBaseCombatCharacter *pPassenger, bool bAllowEntryOutsideZone = false, bool bDisableEntryAnimations = false);
 	virtual bool			HandlePassengerExit( CBaseCombatCharacter *pPassenger );
 
 	virtual void			GetPassengerSeatPoint( int nRole, Vector *pPoint, QAngle *pAngles );

@@ -31,6 +31,9 @@
 
 ConVar crosshair( "crosshair", "1", FCVAR_ARCHIVE );
 ConVar cl_observercrosshair( "cl_observercrosshair", "1", FCVAR_ARCHIVE );
+ConVar cl_crosshair_red("cl_crosshair_red", "255", FCVAR_ARCHIVE);
+ConVar cl_crosshair_green("cl_crosshair_green", "255", FCVAR_ARCHIVE);
+ConVar cl_crosshair_blue("cl_crosshair_blue", "255", FCVAR_ARCHIVE);
 
 using namespace vgui;
 
@@ -263,6 +266,7 @@ void CHudCrosshair::Paint( void )
 	Color clr( cl_crosshair_red.GetInt(), cl_crosshair_green.GetInt(), cl_crosshair_blue.GetInt(), 255 );
 	flPlayerScale = cl_crosshair_scale.GetFloat() / 32.0f;  // the player can change the scale in the options/multiplayer tab
 #else
+	//FR does color differently...
 	Color clr = m_clrCrosshair;
 #endif
 	float flWidth = flWeaponScale * flPlayerScale * (float)iTextureW;
@@ -302,5 +306,5 @@ void CHudCrosshair::SetCrosshair( CHudTexture *texture, const Color& clr )
 //-----------------------------------------------------------------------------
 void CHudCrosshair::ResetCrosshair()
 {
-	SetCrosshair( m_pDefaultCrosshair, Color(255, 255, 255, 255) );
+	SetCrosshair( m_pDefaultCrosshair, Color(cl_crosshair_red.GetInt(), cl_crosshair_green.GetInt(), cl_crosshair_blue.GetInt(), 255) );
 }

@@ -235,6 +235,10 @@ void C_BaseCombatWeapon::Redraw()
 	// ammo drawing has been moved into hud_ammo.cpp
 }
 
+extern ConVar cl_crosshair_red;
+extern ConVar cl_crosshair_green;
+extern ConVar cl_crosshair_blue;
+
 //-----------------------------------------------------------------------------
 // Purpose: Draw the weapon's crosshair
 //-----------------------------------------------------------------------------
@@ -286,7 +290,6 @@ void C_BaseCombatWeapon::DrawCrosshair()
 		if ( bOnTarget && GetWpnData().iconAutoaim )
 		{
 			clr[3] = 255;
-
 			crosshair->SetCrosshair( GetWpnData().iconAutoaim, clr );
 		}
 		else if ( GetWpnData().iconCrosshair )
@@ -301,7 +304,7 @@ void C_BaseCombatWeapon::DrawCrosshair()
 	}
 	else
 	{ 
-		Color white( 255, 255, 255, 255 );
+		Color white(cl_crosshair_red.GetInt(), cl_crosshair_green.GetInt(), cl_crosshair_blue.GetInt(), 255);
 
 		// zoomed crosshairs
 		if (bOnTarget && GetWpnData().iconZoomedAutoaim)

@@ -1026,7 +1026,7 @@ void CBaseServerVehicle::ParseEntryExitAnims( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CBaseServerVehicle::HandlePassengerEntry( CBaseCombatCharacter *pPassenger, bool bAllowEntryOutsideZone )
+void CBaseServerVehicle::HandlePassengerEntry( CBaseCombatCharacter *pPassenger, bool bAllowEntryOutsideZone, bool bDisableEntryAnimations)
 {
 	CBasePlayer *pPlayer = ToBasePlayer( pPassenger );
 	if ( pPlayer != NULL )
@@ -1058,13 +1058,16 @@ void CBaseServerVehicle::HandlePassengerEntry( CBaseCombatCharacter *pPassenger,
 			// Make sure the passenger can get in as well
 			if ( pPlayer->CanEnterVehicle( this, VEHICLE_ROLE_DRIVER ) )
 			{
-				// Setup the "enter" vehicle sequence and skip the animation if it isn't present.
-				pAnimating->SetCycle( 0 );
-				pAnimating->m_flAnimTime = gpGlobals->curtime;
-				pAnimating->ResetSequence( iEntryAnim );
-				pAnimating->ResetClientsideFrame();
-				pAnimating->InvalidateBoneCache();	// This is necessary because we need to query attachment points this frame for blending!
-				GetDrivableVehicle()->SetVehicleEntryAnim( true );
+				if (!bDisableEntryAnimations)
+				{
+					// Setup the "enter" vehicle sequence and skip the animation if it isn't present.
+					pAnimating->SetCycle(0);
+					pAnimating->m_flAnimTime = gpGlobals->curtime;
+					pAnimating->ResetSequence(iEntryAnim);
+					pAnimating->ResetClientsideFrame();
+					pAnimating->InvalidateBoneCache();	// This is necessary because we need to query attachment points this frame for blending!
+					GetDrivableVehicle()->SetVehicleEntryAnim(true);
+				}
 
 				// Re-deploy our weapon
 				if (pPlayer && pPlayer->IsAlive())
@@ -1081,9 +1084,21 @@ void CBaseServerVehicle::HandlePassengerEntry( CBaseCombatCharacter *pPassenger,
 					CBaseViewModel* vm2 = pPlayer->GetViewModel(1);
 					vm2->SetSequence(vm2->SelectWeightedSequence(ACT_VM_IDLE));
 					vm2->AddEffects(EF_NODRAW);
-				}
 
-				pPlayer->GetInVehicle( this, VEHICLE_ROLE_DRIVER );
+					pPlayer->GetInVehicle(this, VEHICLE_ROLE_DRIVER);
+
+					if (bDisableEntryAnimations)
+					{
+						QAngle angle = pPlayer->GetLocalAngles();
+
+						if (FClassnameIs(m_pVehicle, "prop_vehicle_airboat"))
+						{
+							angle.y = angle.y + 90.0f;
+						}
+
+						pPlayer->SnapEyeAngles(angle);
+					}
+				}
 			}
 		}
 	}

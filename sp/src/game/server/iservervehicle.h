@@ -49,7 +49,7 @@ public:
 	// Get a position in *world space* inside the vehicle for the player to start at
 	virtual void			GetPassengerSeatPoint( int nRole, Vector *pPoint, QAngle *pAngles ) = 0;
 
-	virtual void			HandlePassengerEntry( CBaseCombatCharacter *pPassenger, bool bAllowEntryOutsideZone = false ) = 0;
+	virtual void			HandlePassengerEntry( CBaseCombatCharacter *pPassenger, bool bAllowEntryOutsideZone = false, bool bDisableEntryAnimations = false ) = 0;
 	virtual bool			HandlePassengerExit( CBaseCombatCharacter *pPassenger ) = 0;
 
 	// Get a point in *world space* to leave the vehicle from (may be in solid)

@@ -2427,6 +2427,68 @@
                     "2"		"#GameUI_DeathcamMode_FP"
 				}
 			}
+            
+            			"Crosshair"
+			{
+				"text"			"#GameUI_Crosshair"
+				"type"			"wheelywheel"
+				"convar"		"crosshair"
+
+				"options"
+				{
+					"0"		"#GameUI_CrosshairOff"
+					"1"		"#GameUI_CrosshairOn"
+				}
+			}
+            
+            "CrosshairAppearanceHeader"
+			{
+				"text"			"#GameUI_CrosshairDescription"
+				"type"			"headeryheader"
+				"advanced"		"1"
+			}
+            
+            "CrosshairRed"
+			{
+				"text"			"#GameUI_CrosshairRed"
+				"type"			"slideyslide"
+				"advanced"		"1"
+				"convar"		"cl_crosshair_red"
+
+				"min"			"0"
+				"max"			"255"
+				"step"			"5"
+
+				"textprecision" "2"
+			}
+            
+            "CrosshairGreen"
+			{
+				"text"			"#GameUI_CrosshairGreen"
+				"type"			"slideyslide"
+				"advanced"		"1"
+				"convar"		"cl_crosshair_green"
+
+				"min"			"0"
+				"max"			"255"
+				"step"			"5"
+
+				"textprecision" "2"
+			}
+            
+            "CrosshairRedBlue"
+			{
+				"text"			"#GameUI_CrosshairBlue"
+				"type"			"slideyslide"
+				"advanced"		"1"
+				"convar"		"cl_crosshair_blue"
+
+				"min"			"0"
+				"max"			"255"
+				"step"			"5"
+
+				"textprecision" "2"
+			}
 
 			"AdvancedHeader"
 			{
@@ -2543,19 +2605,6 @@
 				{
 					"0"		"#gameui_disabled"
 					"1"		"#gameui_enabled"
-				}
-			}
-
-			"Crosshair"
-			{
-				"text"			"#GameUI_Crosshair"
-				"type"			"wheelywheel"
-				"convar"		"crosshair"
-
-				"options"
-				{
-					"0"		"#GameUI_CrosshairOff"
-					"1"		"#GameUI_CrosshairOn"
 				}
 			}
 
