@@ -283,25 +283,17 @@ void CGrappleHook::HookedThink( void )
 
 		//if we grappled onto a vehicle, get into the vehicle.
 		//!! this is assuming we are NOT in a vehicle.
-		if (m_hGrappledEntity.Get())
+		if (m_hGrappledEntity.Get() != NULL)
 		{
 			CPropVehicleDriveable* pVehicle = (CPropVehicleDriveable*)m_hGrappledEntity.Get();
 
-			if (pVehicle)
+			if (pVehicle != NULL || pVehicle != nullptr)
 			{
-				if (pVehicle->CanEnterVehicle(m_hPlayer))
+				IServerVehicle *pServerVehicle = pVehicle->GetServerVehicle();
+				if (pServerVehicle != NULL || pServerVehicle != nullptr)
 				{
 					pVehicle->ResetUseKey(m_hPlayer);
-					pVehicle->GetServerVehicle()->HandlePassengerEntry(m_hPlayer, true, true);
-
-					/*QAngle angle = m_hPlayer->GetLocalAngles();
-
-					if (FClassnameIs(pVehicle, "prop_vehicle_airboat"))
-					{
-						angle.y = angle.y + 90.0f;
-					}
-
-					m_hPlayer->SnapEyeAngles(angle);*/
+					pServerVehicle->HandlePassengerEntry(m_hPlayer, true, true);
 				}
 			}
 		}
