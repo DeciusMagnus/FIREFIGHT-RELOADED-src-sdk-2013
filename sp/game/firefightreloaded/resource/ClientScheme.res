@@ -688,9 +688,8 @@ Scheme
 		{
 			"1"
 			{
-				"name"		"HalfLife2"
-				"tall"		"40" [!$OSX]
-				"tall"		"41" [$OSX]
+				"name"		"FRCrosshair"
+				"tall"		"40"
 				"weight"	"0"
 				"scanlines" "0"
 				"antialias" "0"
@@ -1362,5 +1361,6 @@ Scheme
 		"5"		"resource/hl2mp.ttf"
 		"6"		"resource/cs.ttf"
 		"7"		"resource/csd.ttf"
+		"8"		"resource/FRCrosshair.ttf"
 	}
 }
