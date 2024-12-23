@@ -483,5 +483,13 @@
 				"character"	"m"
 				"weaponicon"	"1"
 		}
+        "npc_hornet"
+		{
+                "file"		"sprites/640hud1_hl"
+                "x"			"192"
+                "y"			"144"
+                "width"		"48"
+                "height"	"16"
+		}
 	}	
 }
