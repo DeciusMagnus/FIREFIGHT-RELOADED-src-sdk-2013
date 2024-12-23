@@ -428,6 +428,26 @@
 				"font"		"WeaponIconsKillFeed"
 				"character"	"9"
 		}
+		"npc_antlion"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"9"
+		}
+		"npc_antlionworker"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"9"
+		}
+		"npc_antlionguard"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"9"
+		}
+		"npc_antlionguardian"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"9"
+		}
 		"env_flare"
 		{
 				"font"		"WeaponIconsKillFeed"
