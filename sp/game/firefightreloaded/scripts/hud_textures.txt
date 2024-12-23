@@ -398,6 +398,36 @@
 				"font"		"WeaponIconsKillFeed"
 				"character"	"9"
 		}
+		"npc_headcrab"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"9"
+		}
+		"npc_headcrab_fast"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"9"
+		}
+		"npc_headcrab_poison"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"9"
+		}
+		"npc_headcrab_poison"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"9"
+		}
+		"npc_headcrab_black"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"9"
+		}
+		"npc_headcrab_armored"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"9"
+		}
 		"env_flare"
 		{
 				"font"		"WeaponIconsKillFeed"
