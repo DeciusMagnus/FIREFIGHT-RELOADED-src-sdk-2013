@@ -43,7 +43,7 @@ static ConVar sv_snd_filter( "sv_snd_filter", "", FCVAR_REPLICATED, "Filters out
 #endif // STAGING_ONLY
 
 static ConVar snd_timescale_pitchcontrol("snd_timescale_pitchcontrol", "1", FCVAR_REPLICATED | FCVAR_ARCHIVE, "");
-static ConVar snd_timescale_pitchcontrol_pitchoverride("snd_timescale_pitchcontrol_pitchoverride", "0.40", FCVAR_REPLICATED | FCVAR_ARCHIVE, "");
+static ConVar snd_timescale_pitchcontrol_pitchoverride("snd_timescale_pitchcontrol_pitchoverride", "0.60", FCVAR_REPLICATED | FCVAR_ARCHIVE, "");
 
 extern ISoundEmitterSystemBase *soundemitterbase;
 static ConVar *g_pClosecaption = NULL;
