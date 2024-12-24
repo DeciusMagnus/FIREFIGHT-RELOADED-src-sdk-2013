@@ -16,6 +16,7 @@ $Configuration
 	{
 		$AdditionalIncludeDirectories	"$BASE;$SRCDIR\game\shared\hl2;$SRCDIR\game\shared\episodic;$SRCDIR\game\shared\firefightreloaded;.\hl2;.\episodic;.\firefightreloaded;.\swarm;$SRCDIR\game\shared\firefightreloaded;$SRCDIR\game\shared\swarm"
 		$PreprocessorDefinitions		"$BASE;HL2_DLL;HL2_EPISODIC;USES_SAVERESTORE;SOURCE_2013;FR_SERVER;FR_DLL;GLOWS_ENABLE"
+        $PreprocessorDefinitions		"$BASE;MOD_VER" [$MOD_VER]
 	}
 }
 
