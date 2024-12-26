@@ -67,6 +67,8 @@ ConVar player_limit_jump_speed( "player_limit_jump_speed", "1", FCVAR_REPLICATED
 //Used for bunnyhopping
 ConVar fr_enable_bunnyhop("fr_enable_bunnyhop", "1", FCVAR_ARCHIVE);
 
+ConVar fr_floatymove("fr_floatymove", "0", FCVAR_ARCHIVE);
+
 // option_duck_method is a carrier convar. Its sole purpose is to serve an easy-to-flip
 // convar which is ONLY set by the X360 controller menu to tell us which way to bind the
 // duck controls. Its value is meaningless anytime we don't have the options window open.
@@ -2230,9 +2232,12 @@ void CGameMovement::FullWalkMove( )
 		// movement is allowed (clamped in WallRunMove())
 		if (player->m_nWallRunState != WALLRUN_RUNNING)
 		{
-			if (!CheckWater())
+			if (!fr_floatymove.GetBool())
 			{
-				FinishGravity();
+				if (!CheckWater())
+				{
+					FinishGravity();
+				}
 			}
 
 			// If we are on ground, no downward velocity.
