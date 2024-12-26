@@ -40,6 +40,10 @@
         "Slider.FillMouseEdit.Out"						"0 113 229 255"
 		"Slider.FillMouseEdit.Over"						"0 113 229 255"
 		"Slider.FillMouseEdit.Pressed"					"0 0 0 255"
+        
+        "Slider.BackingMouseEdit.Out"					"0 0 0 255"
+		"Slider.BackingMouseEdit.Over"					"0 0 0 255"
+		"Slider.BackingMouseEdit.Pressed"				"0 0 0 255"
 	}
 
 	"Fonts"
