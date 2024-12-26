@@ -2230,6 +2230,11 @@ void CGameMovement::FullWalkMove( )
 		// movement is allowed (clamped in WallRunMove())
 		if (player->m_nWallRunState != WALLRUN_RUNNING)
 		{
+			if (!CheckWater())
+			{
+				FinishGravity();
+			}
+
 			// If we are on ground, no downward velocity.
 			if ( player->GetGroundEntity() != NULL )
 			{
@@ -2562,17 +2567,12 @@ bool CGameMovement::CheckJumpButton( void )
 	float flMul;
 	if ( g_bMovementOptimizations )
 	{
-#if defined (FR_DLL)
-		Assert(GetCurrentGravity() == 1100.0f);
-		flMul = 214.941852602f;
-#else
 #if defined(HL2_DLL) || defined(HL2_CLIENT_DLL)
 		Assert( GetCurrentGravity() == 600.0f );
 		flMul = 160.0f;	// approx. 21 units.
 #else
 		Assert( GetCurrentGravity() == 800.0f );
 		flMul = 268.3281572999747f;
-#endif
 #endif
 
 	}
