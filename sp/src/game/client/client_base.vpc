@@ -70,6 +70,13 @@ $Configuration
 		$IgnoreImportLibrary			"TRUE"
 		$AdditionalDependencies			"$BASE winmm.lib"	[$WIN32]
 		$AdditionalDependencies			"$BASE wsock32.lib Ws2_32.lib" [$BUILD_REPLAY]
+		
+		
+		// FIXME: VS2022
+		//        particles.lib defines _hypot, and in VS2022, so does libucrt!
+		//        Ideally, we'd just fix particles.lib, but I'm not sure how yet
+		//		  This isn't a good practice but i'm putting this hear because kim not sure if the fixed file impacts linux compatibility - Bitl
+		$ForceFileOutput					"Multiply Defined Symbol Only (/FORCE:MULTIPLE)" [$VS2022]
 	}
 }
 

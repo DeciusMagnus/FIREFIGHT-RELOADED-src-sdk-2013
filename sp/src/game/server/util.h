@@ -152,7 +152,7 @@ public:
 };
 
 #define LINK_ENTITY_TO_CLASS(mapClassName,DLLClassName) \
-	static CEntityFactory<DLLClassName> mapClassName( #mapClassName );
+	static CEntityFactory<DLLClassName> s_##mapClassName( #mapClassName );
 
 
 //
