@@ -2524,6 +2524,7 @@ bool CGameMovement::CheckJumpButton( void )
 		else if (!coyote_jump)
 		{
 			mv->m_nOldButtons |= IN_JUMP;
+			//return false;		// in air, so no effect
 		}
 	}
 
