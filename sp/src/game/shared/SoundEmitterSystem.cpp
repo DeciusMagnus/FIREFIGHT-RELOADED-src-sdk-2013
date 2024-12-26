@@ -135,12 +135,12 @@ void Hack_FixEscapeChars( char *str )
 
 static float GetTimescale()
 {
-	ConVarRef sv_cheats("sv_cheats");
+	ConVarRef cheats("sv_cheats");
 	ConVarRef host_timescale("host_timescale");
 
 	if (snd_timescale_pitchcontrol.GetBool())
 	{
-		if (sv_cheats.GetBool())
+		if (cheats.GetBool())
 		{
 			if ((host_timescale.GetFloat() > 1.0f || host_timescale.GetFloat() < 1.0f))
 			{

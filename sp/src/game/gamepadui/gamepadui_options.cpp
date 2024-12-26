@@ -102,6 +102,10 @@ public:
         return m_pResolutionButton;
     }
 
+public:
+
+    bool childDisabledScrolling = false;
+
 private:
 
     GAMEPADUI_PANEL_PROPERTY( float, m_flTabsOffsetX, "Tabs.OffsetX", "0", SchemeValueTypes::ProportionalFloat );
@@ -599,6 +603,53 @@ public:
         }
     }
 
+    void OnMouseWheeled(int delta) OVERRIDE
+    {
+        if (editingWithMouse)
+        {
+            m_flValue = Clamp(m_flValue + (m_flStep * (delta)), m_flMin, m_flMax);
+        }
+    }
+
+    void ToggleEditMouseMode()
+    {
+        if (!editingWithMouse)
+        {
+            editingWithMouse = true;
+
+            GamepadUIOptionsPanel* pParent = (GamepadUIOptionsPanel*)GetParent();
+            if (pParent)
+            {
+                if (!pParent->childDisabledScrolling)
+                {
+                    pParent->childDisabledScrolling = true;
+                }
+            }
+        }
+        else
+        {
+            editingWithMouse = false;
+
+            GamepadUIOptionsPanel* pParent = (GamepadUIOptionsPanel*)GetParent();
+            if (pParent)
+            {
+                if (pParent->childDisabledScrolling)
+                {
+                    pParent->childDisabledScrolling = false;
+                }
+            }
+
+            if (m_bInstantApply)
+                UpdateConVar();
+        }
+    }
+
+    void FireActionSignal()
+    {
+        BaseClass::FireActionSignal();
+        ToggleEditMouseMode();
+    }
+
     void UpdateConVar() OVERRIDE
     {
         if ( IsDirty() )
@@ -635,7 +686,14 @@ public:
 
         float flFill = m_flSliderWidth * ( 1.0f - GetMultiplier() );
 
-        vgui::surface()->DrawSetColor( m_colSliderFill );
+        if (editingWithMouse)
+        {
+            vgui::surface()->DrawSetColor(m_colSliderFillMouseEdit);
+        }
+        else
+        {
+            vgui::surface()->DrawSetColor(m_colSliderFill);
+        }
         vgui::surface()->DrawFilledRect( m_flWidth - m_flTextOffsetX - m_flSliderWidth, m_flHeight / 2 - m_flSliderHeight / 2, m_flWidth - m_flTextOffsetX - flFill, m_flHeight / 2 + m_flSliderHeight / 2 );
     }
 
@@ -643,6 +701,32 @@ public:
     {
         if ( m_cvar.IsValid() )
             m_flValue = m_cvar.GetFloat();
+
+        if (editingWithMouse)
+        {
+            ToggleEditMouseMode();
+        }
+    }
+
+    void NavigateTo() OVERRIDE
+    {
+        BaseClass::NavigateTo();
+
+        if (editingWithMouse)
+        {
+            ToggleEditMouseMode();
+        }
+    }
+
+
+    void NavigateFrom() OVERRIDE
+    {
+        BaseClass::NavigateFrom();
+
+        if (editingWithMouse)
+        {
+            ToggleEditMouseMode();
+        }
     }
 
     void RunAnimations( ButtonState state ) OVERRIDE
@@ -663,8 +747,11 @@ private:
 
     int nTextPrecision = -1;
 
+    bool editingWithMouse = false;
+
     GAMEPADUI_BUTTON_ANIMATED_PROPERTY( Color, m_colSliderBacking, "Slider.Backing", "255 255 255 22", SchemeValueTypes::Color );
     GAMEPADUI_BUTTON_ANIMATED_PROPERTY( Color, m_colSliderFill, "Slider.Fill", "255 255 255 255", SchemeValueTypes::Color );
+    GAMEPADUI_BUTTON_ANIMATED_PROPERTY(Color, m_colSliderFillMouseEdit, "Slider.FillMouseEdit", "255 255 255 255", SchemeValueTypes::Color);
 
     GAMEPADUI_PANEL_PROPERTY( float, m_flSliderWidth, "Slider.Width", "160", SchemeValueTypes::ProportionalFloat );
     GAMEPADUI_PANEL_PROPERTY( float, m_flSliderHeight, "Slider.Height", "11", SchemeValueTypes::ProportionalFloat );
@@ -1437,8 +1524,8 @@ void GamepadUIOptionsPanel::LayoutCurrentTab()
 
                 if ( !bFound )
                 {
-                    ConVarRef cvar(pszDependentCVar);
-                    bHasDependencies = cvar.GetBool();
+                    ConVarRef rCvar(pszDependentCVar);
+                    bHasDependencies = rCvar.GetBool();
                 }
             }
         }
@@ -1477,7 +1564,10 @@ void GamepadUIOptionsPanel::LayoutCurrentTab()
 
 void GamepadUIOptionsPanel::OnMouseWheeled( int delta )
 {
-    m_Tabs[ GetActiveTab() ].ScrollState.OnMouseWheeled( delta * 100.0f, GamepadUI::GetInstance().GetTime() );
+    if (!childDisabledScrolling)
+    {
+        m_Tabs[GetActiveTab()].ScrollState.OnMouseWheeled(delta * 100.0f, GamepadUI::GetInstance().GetTime());
+    }
 }
 
 CON_COMMAND( _gamepadui_resetkeys, "" )

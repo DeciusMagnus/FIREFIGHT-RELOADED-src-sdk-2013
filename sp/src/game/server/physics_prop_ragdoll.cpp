@@ -525,11 +525,11 @@ void CRagdollProp::VPhysicsCollision( int index, gamevcollisionevent_t *pEvent )
 				damage *= 10;
 			}
 
-			CBaseEntity *pHitEntity = pEvent->pEntities[!index];
-			if ( !pHitEntity )
+			CBaseEntity *pHitEntity_ = pEvent->pEntities[!index];
+			if ( !pHitEntity_)
 			{
 				// hit world
-				pHitEntity = GetContainingEntity( INDEXENT(0) );
+				pHitEntity_ = GetContainingEntity( INDEXENT(0) );
 			}
 			Vector damagePos;
 			pEvent->pInternalData->GetContactPoint( damagePos );
@@ -542,7 +542,7 @@ void CRagdollProp::VPhysicsCollision( int index, gamevcollisionevent_t *pEvent )
 			}
 
 			// FIXME: this doesn't pass in who is responsible if some other entity "caused" this collision
-			PhysCallbackDamage( this, CTakeDamageInfo( pHitEntity, pHitEntity, damageForce, damagePos, damage, damageType ), *pEvent, index );
+			PhysCallbackDamage( this, CTakeDamageInfo( pHitEntity_, pHitEntity_, damageForce, damagePos, damage, damageType ), *pEvent, index );
 		}
 	}
 
@@ -613,7 +613,6 @@ void CRagdollProp::HandleFirstCollisionInteractions( int index, gamevcollisionev
 
 	if( HasPhysgunInteraction( "onfirstimpact", "paintsplat" ) )
 	{
-		IPhysicsObject *pObj = VPhysicsGetObject();
  
 		Vector vecPos;
 		pObj->GetPosition( &vecPos, NULL );
@@ -640,8 +639,6 @@ void CRagdollProp::HandleFirstCollisionInteractions( int index, gamevcollisionev
 	bool bAlienBloodSplat = HasPhysgunInteraction( "onfirstimpact", "alienbloodsplat" );
 	if( bAlienBloodSplat || HasPhysgunInteraction( "onfirstimpact", "bloodsplat" ) )
 	{
-		IPhysicsObject *pObj = VPhysicsGetObject();
- 
 		Vector vecPos;
 		pObj->GetPosition( &vecPos, NULL );
  

@@ -1191,8 +1191,8 @@ int CMP3Player::FindSong( char const *relative )
 	int c = m_Files.Count();
 	for ( int i = 0 ; i < c ; ++i )
 	{
-		const MP3File_t& mp3 = m_Files[ i ];
-		if ( mp3.filename == handle )
+		const MP3File_t& cMP3 = m_Files[ i ];
+		if (cMP3.filename == handle )
 		{
 			return i;
 		}
@@ -1211,19 +1211,19 @@ int CMP3Player::AddSong( char const *relative, int dirnum )
 			return -1;
 #endif
 
-		MP3File_t mp3;
+		MP3File_t cMP3;
 
 		Assert( !Q_stristr( relative, "/" ) );
 
-		mp3.filename = g_pFullFileSystem->FindOrAddFileName( relative );
+		cMP3.filename = g_pFullFileSystem->FindOrAddFileName( relative );
 
 		char shortname[ 256 ];
 		Q_FileBase( relative, shortname, sizeof( shortname ) );
 		Q_SetExtension( shortname, ".mp3", sizeof( shortname ) );
-		mp3.shortname = shortname;
-		mp3.flags = ( dirnum == 0 ) ? MP3File_t::FLAG_FROMGAME : MP3File_t::FLAG_FROMFS;
-		mp3.dirnum = dirnum;
-		songIndex = m_Files.AddToTail( mp3 );
+		cMP3.shortname = shortname;
+		cMP3.flags = ( dirnum == 0 ) ? MP3File_t::FLAG_FROMGAME : MP3File_t::FLAG_FROMFS;
+		cMP3.dirnum = dirnum;
+		songIndex = m_Files.AddToTail(cMP3);
 
 		m_bDirty = true;
 	}
@@ -1321,16 +1321,16 @@ void CMP3Player::PopulateTree()
 	};
 #endif
 
-void CMP3Player::GetLocalCopyOfSong( const MP3File_t &mp3, char *outsong, size_t outlen )
+void CMP3Player::GetLocalCopyOfSong( const MP3File_t &cmp3, char *outsong, size_t outlen )
 {
 	outsong[ 0 ] = 0;
 	char fn[ 512 ];
-	if ( !g_pFullFileSystem->String( mp3.filename, fn, sizeof( fn ) ) )
+	if ( !g_pFullFileSystem->String(cmp3.filename, fn, sizeof( fn ) ) )
 	{
 		return;
 	}
 
-	if ( mp3.flags == MP3File_t::FLAG_FROMGAME )
+	if (cmp3.flags == MP3File_t::FLAG_FROMGAME )
 	{
 		Q_FixSlashes( fn );
 		Q_strncpy( outsong, fn, outlen );
@@ -1368,8 +1368,8 @@ void CMP3Player::GetLocalCopyOfSong( const MP3File_t &mp3, char *outsong, size_t
 
 		char sourcepath[ 512 ];
 
-		Assert( mp3.dirnum >= 0 && mp3.dirnum < m_SoundDirectories.Count() );
-		SoundDirectory_t *sdir = m_SoundDirectories[ mp3.dirnum ];
+		Assert(cmp3.dirnum >= 0 && cmp3.dirnum < m_SoundDirectories.Count() );
+		SoundDirectory_t *sdir = m_SoundDirectories[cmp3.dirnum ];
 		Q_snprintf( sourcepath, sizeof( sourcepath ), "%s/%s", sdir->m_Root.String(), fn );
 		Q_FixSlashes( sourcepath );
 
@@ -1702,8 +1702,8 @@ void CMP3Player::RemoveFSSongs()
 	int c = m_Files.Count();
 	for ( int i = c - 1; i >= 0; --i )
 	{
-		MP3File_t& mp3 = m_Files[ i ];
-		if ( mp3.flags == MP3File_t::FLAG_FROMGAME )
+		MP3File_t& mp3f = m_Files[ i ];
+		if ( mp3f.flags == MP3File_t::FLAG_FROMGAME )
 			continue;
 
 		m_Files.Remove( i );

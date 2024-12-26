@@ -325,12 +325,12 @@ void CWeapon_SLAM::TripmineAttach( void )
 		if (pEntity && !(pEntity->GetFlags() & FL_CONVEYOR))
 		{
 
-			QAngle angles;
-			VectorAngles(tr.plane.normal, angles);
+			QAngle qAngles;
+			VectorAngles(tr.plane.normal, qAngles);
 
-			angles.x += 90;
+			qAngles.x += 90;
 
-			CBaseEntity *pEnt = CBaseEntity::Create( "npc_tripmine", tr.endpos + tr.plane.normal * 3, angles, NULL );
+			CBaseEntity *pEnt = CBaseEntity::Create( "npc_tripmine", tr.endpos + tr.plane.normal * 3, qAngles, NULL );
 
 			CTripmineGrenade *pMine = (CTripmineGrenade *)pEnt;
 			pMine->m_hOwner = GetOwner();

@@ -7882,7 +7882,7 @@ void CBasePlayer::CheatImpulseCommands( int iImpulse )
 
 	case 107:
 		{
-			trace_t tr;
+			trace_t tr_;
 
 			edict_t		*pWorld = engine->PEntityOfEntIndex( 0 );
 
@@ -7890,11 +7890,11 @@ void CBasePlayer::CheatImpulseCommands( int iImpulse )
 			Vector forward;
 			EyeVectors( &forward );
 			Vector end = start + forward * 1024;
-			UTIL_TraceLine( start, end, MASK_SOLID_BRUSHONLY, this, COLLISION_GROUP_NONE, &tr );
-			if ( tr.m_pEnt )
-				pWorld = tr.m_pEnt->edict();
+			UTIL_TraceLine( start, end, MASK_SOLID_BRUSHONLY, this, COLLISION_GROUP_NONE, &tr_ );
+			if ( tr_.m_pEnt )
+				pWorld = tr_.m_pEnt->edict();
 
-			const char *pTextureName = tr.surface.name;
+			const char *pTextureName = tr_.surface.name;
 
 			if ( pTextureName )
 				Msg( "Texture: %s\n", pTextureName );
@@ -8024,14 +8024,10 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 		if ( GetTeamNumber() == TEAM_SPECTATOR )
 			return true;
 
-		ConVarRef mp_allowspectators( "mp_allowspectators" );
-		if ( mp_allowspectators.IsValid() )
+		if ( ( mp_allowspectators.GetBool() == false ) && !IsHLTV() && !IsReplay() )
 		{
-			if ( ( mp_allowspectators.GetBool() == false ) && !IsHLTV() && !IsReplay() )
-			{
-				ClientPrint( this, HUD_PRINTCENTER, "#Cannot_Be_Spectator" );
-				return true;
-			}
+			ClientPrint( this, HUD_PRINTCENTER, "#Cannot_Be_Spectator" );
+			return true;
 		}
 
 		if ( !IsDead() )
@@ -8202,10 +8198,10 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 			nRecords = MAX( Q_atoi( args.Arg( 2 ) ), 1 );
 		}
 
-		CBasePlayer *pl = UTIL_PlayerByIndex( nRecip );
-		if ( pl )
+		CBasePlayer *pRecipPlayer = UTIL_PlayerByIndex( nRecip );
+		if ( pRecipPlayer )
 		{
-			pl->DumpPerfToRecipient( this, nRecords );
+			pRecipPlayer->DumpPerfToRecipient( this, nRecords );
 		}
 		return true;
 	}
@@ -9605,22 +9601,22 @@ void CStripWeapons::StripWeapons(inputdata_t &data, bool stripSuit)
 	if ( data.pActivator && data.pActivator->IsPlayer() )
 	{
 		pPlayer = (CBasePlayer *)data.pActivator;
+
+		if (pPlayer)
+		{
+			pPlayer->RemoveAllItems(stripSuit);
+		}
 	}
 	else if ( !g_pGameRules->IsDeathmatch() )
 	{
 		for (int i = 1; i <= gpGlobals->maxClients; i++)
 		{
-			CBasePlayer *pPlayer = UTIL_PlayerByIndex(i);
+			pPlayer = UTIL_PlayerByIndex(i);
 			if (pPlayer)
 			{
 				pPlayer->RemoveAllItems(stripSuit);
 			}
 		}
-	}
-
-	if ( pPlayer )
-	{
-		pPlayer->RemoveAllItems( stripSuit );
 	}
 }
 

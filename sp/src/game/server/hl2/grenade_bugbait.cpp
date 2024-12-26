@@ -236,20 +236,20 @@ void CGrenadeBugBait::BugBaitTouch( CBaseEntity *pOther )
 							}
 
 
-							CAI_BaseNPC* pNpc = (CAI_BaseNPC*)pOther;
-							if (pNpc)
+							CAI_BaseNPC* pNpcOther = (CAI_BaseNPC*)pOther;
+							if (pNpcOther)
 							{
 								CBasePlayer* pPlayer = ToBasePlayer(GetThrower());
 								if (pPlayer)
 								{
-									Relationship_t* npcrelationship = pPlayer->FindEntityRelationship(pNpc);
+									Relationship_t* npcrelationship = pPlayer->FindEntityRelationship(pNpcOther);
 
 									if (npcrelationship->disposition == D_HT)
 									{
 										//KILL THEM ALL in the future.
-										pAntlion->AddClassRelationship(pNpc->Classify(), D_HT, 0);
-										pNpc->AddEntityRelationship(pAntlion, D_HT, 0);
-										pAntlion->SetFightTarget(pNpc);
+										pAntlion->AddClassRelationship(pNpcOther->Classify(), D_HT, 0);
+										pNpcOther->AddEntityRelationship(pAntlion, D_HT, 0);
+										pAntlion->SetFightTarget(pNpcOther);
 										pAntlion->SetMoveState(ANTLION_MOVE_FIGHT_TO_GOAL);
 									}
 								}

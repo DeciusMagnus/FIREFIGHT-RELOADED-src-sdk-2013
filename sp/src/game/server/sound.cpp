@@ -54,14 +54,14 @@ ConVar hl1_ref_db_distance( "hl1_ref_db_distance", "18.0" );
 
 static float GetHostTimescale()
 {
-	ConVarRef sv_cheats("sv_cheats");
+	ConVarRef cheats("sv_cheats");
 	ConVarRef host_timescale("host_timescale");
 	ConVarRef snd_timescale_pitchcontrol("snd_timescale_pitchcontrol");
 	ConVarRef snd_timescale_pitchcontrol_pitchoverride("snd_timescale_pitchcontrol_pitchoverride");
 
 	if (snd_timescale_pitchcontrol.GetBool())
 	{
-		if (sv_cheats.GetBool())
+		if (cheats.GetBool())
 		{
 			if ((host_timescale.GetFloat() > 1.0f || host_timescale.GetFloat() < 1.0f))
 			{
@@ -344,8 +344,8 @@ void CAmbientGeneric::ComputeMaxAudibleDistance( )
 	while ( true )
 	{
 		// First, find a min + max range surrounding the desired distance gain
-		float flGain = enginesound->GetDistGainFromSoundLevel( m_iSoundLevel, flMaxRadius );
-		if ( flGain <= MIN_AUDIBLE_VOLUME )
+		float flGain_ = enginesound->GetDistGainFromSoundLevel( m_iSoundLevel, flMaxRadius );
+		if ( flGain_ <= MIN_AUDIBLE_VOLUME )
 			break;
 
 		// Always audible.
@@ -364,8 +364,8 @@ void CAmbientGeneric::ComputeMaxAudibleDistance( )
 	while ( --nInterations >= 0 )
 	{
 		float flTestRadius = (flMinRadius + flMaxRadius) * 0.5f;
-		float flGain = enginesound->GetDistGainFromSoundLevel( m_iSoundLevel, flTestRadius );
-		if ( flGain <= MIN_AUDIBLE_VOLUME )
+		float flGain_ = enginesound->GetDistGainFromSoundLevel( m_iSoundLevel, flTestRadius );
+		if ( flGain_ <= MIN_AUDIBLE_VOLUME )
 		{
 			flMaxRadius = flTestRadius;
 		}

@@ -163,11 +163,11 @@ void CHudEXP::Paint()
 
 			if (!g_fr_classic.GetBool())
 			{
-				wchar_t* tempString = g_pVGuiLocalize->Find("#Valve_Hud_EXPERIENCE_MaxLevel");
+				wchar_t* temp = g_pVGuiLocalize->Find("#Valve_Hud_EXPERIENCE_MaxLevel");
 
-				if (tempString)
+				if (temp)
 				{
-					surface()->DrawPrintText(tempString, wcslen(tempString));
+					surface()->DrawPrintText(temp, wcslen(temp));
 				}
 				else
 				{
@@ -176,11 +176,11 @@ void CHudEXP::Paint()
 			}
 			else
 			{
-				wchar_t* tempString = g_pVGuiLocalize->Find("#Valve_Hud_EXPERIENCE_ClassicMode");
+				wchar_t* temp2 = g_pVGuiLocalize->Find("#Valve_Hud_EXPERIENCE_ClassicMode");
 
-				if (tempString)
+				if (temp2)
 				{
-					surface()->DrawPrintText(tempString, wcslen(tempString));
+					surface()->DrawPrintText(temp2, wcslen(temp2));
 				}
 				else
 				{

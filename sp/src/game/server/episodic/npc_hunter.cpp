@@ -5060,9 +5060,9 @@ int CNPC_Hunter::MeleeAttack1Conditions ( float flDot, float flDist )
 
 				if ( pObject )
 				{
-					float flDist = pObject->WorldSpaceCenter().DistTo( WorldSpaceCenter() );
+					float flDist_ = pObject->WorldSpaceCenter().DistTo( WorldSpaceCenter() );
 
-					if ( flDist <= HUNTER_MELEE_REACH )
+					if ( flDist_ <= HUNTER_MELEE_REACH )
 					{
 						return COND_CAN_MELEE_ATTACK1;
 					}
@@ -5888,7 +5888,6 @@ int CNPC_Hunter::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		}
 		else
 		{
-			CBaseEntity *pInflictor = info.GetInflictor();
 			if ( ( info.GetDamageType() & DMG_VEHICLE ) || 
 				 ( pInflictor && pInflictor->GetServerVehicle() && 
 				   ( ( bHitByUnoccupiedCar = ( dynamic_cast<CPropVehicleDriveable *>(pInflictor) && static_cast<CPropVehicleDriveable *>(pInflictor)->GetDriver() == NULL ) )  == false ) ) )
@@ -6320,8 +6319,8 @@ void CNPC_Hunter::GetShootDir( Vector &vecDir, const Vector &vecSrc, CBaseEntity
 		// If we can't see them, shoot where we last saw them.
 		else if ( !HasCondition( COND_SEE_ENEMY ) )
 		{
-			Vector vecDelta = vecTarget - pTargetEntity->GetAbsOrigin();
-			vecTarget = m_vecEnemyLastSeen + vecDelta;
+			Vector vecTargetDelta = vecTarget - pTargetEntity->GetAbsOrigin();
+			vecTarget = m_vecEnemyLastSeen + vecTargetDelta;
 		}
 	}
 	else
@@ -6390,7 +6389,9 @@ bool CNPC_Hunter::ShouldSeekTarget( CBaseEntity *pTargetEntity, bool bStriderBus
 
 	if ( bStriderBuster )
 	{
-		bool bSeek = false;
+		// Ozxy: This previously was a separate variable, which would cause the later code to never fire.
+		//       This may have gameplay changes, but it should be fine...
+		bSeek = false;
 
 		if ( pTargetEntity->VPhysicsGetObject() && ( pTargetEntity->VPhysicsGetObject()->GetGameFlags() & FVPHYSICS_PLAYER_HELD ) )
 		{
