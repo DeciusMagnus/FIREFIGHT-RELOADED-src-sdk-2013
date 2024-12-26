@@ -1641,6 +1641,49 @@
 				"advanced"		"1"
 			}
             
+            "ToggleFloatyMove"
+			{
+				"text"			"#GameUI_ToggleFloatyMove"
+				"type"			"wheelywheel"
+				"advanced"		"1"
+				"convar"		"fr_floatymove"
+
+				"options"
+				{
+					"0"		"#gameui_disabled"
+					"1"		"#gameui_enabled"
+				}
+			}
+            
+            "GravityAdjust"
+			{
+				"text"			"#GameUI_GravityAdjust"
+				"type"			"wheelywheel"
+				"advanced"		"1"
+				"convar"		"fr_floatymove"
+
+				"options"
+				{
+					"600"		"#GameUI_GravityAdjust_HL2"
+					"800"		"#GameUI_GravityAdjust_TF2"
+                    "1100"		"#GameUI_GravityAdjust_ENDGAME"
+				}
+			}
+            
+            "JumpHeight"
+			{
+				"text"			"#GameUI_JumpHeight"
+				"type"			"slideyslide"
+				"convar"		"sv_jump_height"
+				"advanced"		"1"
+
+				"min"			"1.0"
+				"max"			"99.0"
+				"step"			"0.5"
+
+				"textprecision" "2"
+			}
+            
             "ToggleBunnyhop"
 			{
 				"text"			"#GameUI_ToggleBunnyhop"

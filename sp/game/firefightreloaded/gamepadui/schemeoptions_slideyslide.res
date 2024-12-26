@@ -7,9 +7,9 @@
 		"Button.Width.Over"						"648"
 		"Button.Width.Pressed"					"648"
 
-		"Button.Height.Out"						"28"
-		"Button.Height.Over"					"28"
-		"Button.Height.Pressed"					"28"
+		"Button.Height.Out"						"32"
+		"Button.Height.Over"					"32"
+		"Button.Height.Pressed"					"32"
 
 		"Button.Description.Hide.Out"				"0"
 		"Button.Description.Hide.Over"				"0"
@@ -36,6 +36,10 @@
 		"Slider.Fill.Out"						"255 255 255 255"
 		"Slider.Fill.Over"						"255 255 255 255"
 		"Slider.Fill.Pressed"					"0 0 0 255"
+        
+        "Slider.FillMouseEdit.Out"						"0 113 229 255"
+		"Slider.FillMouseEdit.Over"						"0 113 229 255"
+		"Slider.FillMouseEdit.Pressed"					"0 0 0 255"
 	}
 
 	"Fonts"
