@@ -561,11 +561,12 @@ class GamepadUISlideySlide : public GamepadUIConvarButton
 public:
     DECLARE_CLASS_SIMPLE( GamepadUISlideySlide, GamepadUIConvarButton );
 
-    GamepadUISlideySlide( const char *pszCvar, const char* pszCvarDepends, bool bInstantApply, float flMin, float flMax, float flStep, int nTextPrecision, vgui::Panel* pParent, vgui::Panel* pActionSignalTarget, const char *pSchemeFile, const char* pCommand, const char *pText, const char *pDescription )
+    GamepadUISlideySlide( const char *pszCvar, const char* pszCvarDepends, bool bInstantApply, float flMin, float flMax, float flStep, float flStepAdjustment, int nTextPrecision, vgui::Panel* pParent, vgui::Panel* pActionSignalTarget, const char *pSchemeFile, const char* pCommand, const char *pText, const char *pDescription )
         : BaseClass( pszCvar, pszCvarDepends, bInstantApply, pParent, pActionSignalTarget, pSchemeFile, pCommand, pText, pDescription )
         , m_flMin( flMin )
         , m_flMax( flMax )
         , m_flStep( flStep )
+        , m_flStepAdjustment( flStepAdjustment )
         , nTextPrecision( nTextPrecision )
     {
         vgui::TextTooltip* tooltip = new vgui::TextTooltip(this, NULL);
@@ -613,14 +614,18 @@ public:
         {
             float adjuster = 0;
 
-            if (m_flMax > 999)
+            if (m_flStepAdjustment > 0.0f)
             {
-                adjuster = (m_flStep * 10);
+                adjuster = (m_flStep * m_flStepAdjustment);
             }
 
             float step = (adjuster > 0 ? adjuster : m_flStep);
 
             m_flValue = Clamp(m_flValue + (step * (delta)), m_flMin, m_flMax);
+        }
+        else
+        {
+            BaseClass::OnMouseWheeled(delta);
         }
     }
 
@@ -766,6 +771,7 @@ private:
     float m_flMin = 0.0f;
     float m_flMax = 1.0f;
     float m_flStep = 0.1f;
+    float m_flStepAdjustment = 0.0f;
 
     int nTextPrecision = -1;
 
@@ -2209,9 +2215,10 @@ void GamepadUIOptionsPanel::LoadOptionTabs( const char *pszOptionsFile )
                         float flMin = pItemData->GetFloat( "min", 0.0f );
                         float flMax = pItemData->GetFloat( "max", 1.0f );
                         float flStep = pItemData->GetFloat( "step", 0.1f );
+                        float flStepAdjustment = pItemData->GetFloat("step_adjustment", 0.0f);
                         int nTextPrecision = pItemData->GetInt( "textprecision", -1 );
                         auto button = new GamepadUISlideySlide(
-                            pszCvar, pszCvarDepends, bInstantApply, flMin, flMax, flStep, nTextPrecision,
+                            pszCvar, pszCvarDepends, bInstantApply, flMin, flMax, flStep, flStepAdjustment, nTextPrecision,
                             this, this,
                             GAMEPADUI_RESOURCE_FOLDER "schemeoptions_slideyslide.res",
                             "button_pressed",

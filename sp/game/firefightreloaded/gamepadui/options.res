@@ -145,6 +145,7 @@
 				"min"			"1"
 				"max"			"9999"
 				"step"			"5"
+                "step_adjustment"   "10"
 
 				"textprecision" "2"
 			}
@@ -186,6 +187,7 @@
 				"min"			"0"
 				"max"			"9999"
 				"step"			"5"
+                "step_adjustment"   "10"
 
 				"textprecision" "2"
 			}
@@ -291,7 +293,7 @@
 
 				"min"			"0"
 				"max"			"100"
-				"step"			"1"
+				"step"			"5"
 
 				"textprecision" "2"
 			}
@@ -305,7 +307,8 @@
 
 				"min"			"1"
 				"max"			"100000"
-				"step"			"1"
+				"step"			"5"
+                "step_adjustment"   "20"
 
 				"textprecision" "2"
 			}
