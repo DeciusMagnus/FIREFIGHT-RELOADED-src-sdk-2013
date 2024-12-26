@@ -13,6 +13,8 @@
 
 #include "vgui_controls/ComboBox.h"
 
+#include "vgui_controls/Tooltip.h"
+
 #include "KeyValues.h"
 #include "filesystem.h"
 #include "utlbuffer.h"
@@ -566,6 +568,8 @@ public:
         , m_flStep( flStep )
         , nTextPrecision( nTextPrecision )
     {
+        vgui::TextTooltip* tooltip = new vgui::TextTooltip(this, NULL);
+        SetTooltip(tooltip, "#GameUI_GamepadUI_SliderTooltip");
     }
 
     void OnKeyCodePressed( vgui::KeyCode code )
