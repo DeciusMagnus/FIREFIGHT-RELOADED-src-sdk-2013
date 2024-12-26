@@ -611,7 +611,16 @@ public:
     {
         if (editingWithMouse)
         {
-            m_flValue = Clamp(m_flValue + (m_flStep * (delta)), m_flMin, m_flMax);
+            float adjuster = 0;
+
+            if (m_flMax > 999)
+            {
+                adjuster = (m_flStep * 10);
+            }
+
+            float step = (adjuster > 0 ? adjuster : m_flStep);
+
+            m_flValue = Clamp(m_flValue + (step * (delta)), m_flMin, m_flMax);
         }
     }
 
@@ -685,7 +694,14 @@ public:
             vgui::surface()->DrawPrintText( szValue, V_wcslen( szValue ) );
         }
 
-        vgui::surface()->DrawSetColor( m_colSliderBacking );
+        if (editingWithMouse)
+        {
+            vgui::surface()->DrawSetColor(m_colSliderBackingMouseEdit);
+        }
+        else
+        {
+            vgui::surface()->DrawSetColor(m_colSliderBacking);
+        }
         vgui::surface()->DrawFilledRect( m_flWidth - m_flTextOffsetX - m_flSliderWidth, m_flHeight / 2 - m_flSliderHeight / 2, m_flWidth - m_flTextOffsetX, m_flHeight / 2 + m_flSliderHeight / 2 );
 
         float flFill = m_flSliderWidth * ( 1.0f - GetMultiplier() );
@@ -739,6 +755,8 @@ public:
 
         GAMEPADUI_RUN_ANIMATION_COMMAND( m_colSliderBacking, vgui::AnimationController::INTERPOLATOR_LINEAR );
         GAMEPADUI_RUN_ANIMATION_COMMAND( m_colSliderFill, vgui::AnimationController::INTERPOLATOR_LINEAR );
+        GAMEPADUI_RUN_ANIMATION_COMMAND( m_colSliderBackingMouseEdit, vgui::AnimationController::INTERPOLATOR_LINEAR );
+        GAMEPADUI_RUN_ANIMATION_COMMAND( m_colSliderFillMouseEdit, vgui::AnimationController::INTERPOLATOR_LINEAR );
     }
 
 private:
@@ -754,6 +772,7 @@ private:
     bool editingWithMouse = false;
 
     GAMEPADUI_BUTTON_ANIMATED_PROPERTY( Color, m_colSliderBacking, "Slider.Backing", "255 255 255 22", SchemeValueTypes::Color );
+    GAMEPADUI_BUTTON_ANIMATED_PROPERTY(Color, m_colSliderBackingMouseEdit, "Slider.BackingMouseEdit", "255 255 255 22", SchemeValueTypes::Color);
     GAMEPADUI_BUTTON_ANIMATED_PROPERTY( Color, m_colSliderFill, "Slider.Fill", "255 255 255 255", SchemeValueTypes::Color );
     GAMEPADUI_BUTTON_ANIMATED_PROPERTY(Color, m_colSliderFillMouseEdit, "Slider.FillMouseEdit", "255 255 255 255", SchemeValueTypes::Color);
 
