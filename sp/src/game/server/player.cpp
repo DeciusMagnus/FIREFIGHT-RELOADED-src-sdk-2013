@@ -9601,22 +9601,22 @@ void CStripWeapons::StripWeapons(inputdata_t &data, bool stripSuit)
 	if ( data.pActivator && data.pActivator->IsPlayer() )
 	{
 		pPlayer = (CBasePlayer *)data.pActivator;
+
+		if (pPlayer)
+		{
+			pPlayer->RemoveAllItems(stripSuit);
+		}
 	}
 	else if ( !g_pGameRules->IsDeathmatch() )
 	{
 		for (int i = 1; i <= gpGlobals->maxClients; i++)
 		{
-			CBasePlayer *pPlayer = UTIL_PlayerByIndex(i);
+			pPlayer = UTIL_PlayerByIndex(i);
 			if (pPlayer)
 			{
 				pPlayer->RemoveAllItems(stripSuit);
 			}
 		}
-	}
-
-	if ( pPlayer )
-	{
-		pPlayer->RemoveAllItems( stripSuit );
 	}
 }
 

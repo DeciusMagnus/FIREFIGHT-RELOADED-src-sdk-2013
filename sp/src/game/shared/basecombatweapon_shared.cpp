@@ -78,8 +78,8 @@ ConVar weapon_quickswitch("weapon_quickswitch", "1", FCVAR_REPLICATED);
 
 void vm_adjust_enable_callback(IConVar *pConVar, char const *pOldString, float flOldValue)
 {
-	ConVarRef sv_cheats("sv_cheats");
-	if (!sv_cheats.IsValid() || sv_cheats.GetBool())
+	ConVarRef cheats("sv_cheats");
+	if (!cheats.IsValid() || cheats.GetBool())
 		return;
 
 	ConVarRef var(pConVar);

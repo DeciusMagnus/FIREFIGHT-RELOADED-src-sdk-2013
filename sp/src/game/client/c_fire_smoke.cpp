@@ -382,13 +382,13 @@ void C_FireSmoke::Start( void )
 
 		if (m_nFlags & bitsFIRESMOKE_VISIBLE_FROM_ABOVE)
 		{
-			for (int i = 0; i < NUM_CHILD_FLAMES; i++)
+			for (int ii = 0; i < NUM_CHILD_FLAMES; ii++)
 			{
 				if (bTools)
 				{
-					ClientEntityList().AddNonNetworkableEntity(&m_entFlamesFromAbove[i]);
+					ClientEntityList().AddNonNetworkableEntity(&m_entFlamesFromAbove[ii]);
 				}
-				m_entFlamesFromAbove[i].AddToLeafSystem(RENDER_GROUP_TRANSLUCENT_ENTITY);
+				m_entFlamesFromAbove[ii].AddToLeafSystem(RENDER_GROUP_TRANSLUCENT_ENTITY);
 			}
 		}
 
@@ -425,7 +425,7 @@ void C_FireSmoke::Start( void )
 			m_entFlames[i].SetBrightness(255);
 			m_entFlames[i].AddEffects(EF_NORECEIVESHADOW | EF_NOSHADOW);
 
-			m_entFlames[i].index = -1;
+			m_entFlames[i].m_nIndex = -1;
 
 			if (i == 0)
 			{
@@ -440,33 +440,33 @@ void C_FireSmoke::Start( void )
 
 		if (m_nFlags & bitsFIRESMOKE_VISIBLE_FROM_ABOVE)
 		{
-			for (int i = 0; i < NUM_CHILD_FLAMES; i++)
+			for (int ii = 0; ii < NUM_CHILD_FLAMES; ii++)
 			{
 				pModel = (model_t*)modelinfo->GetModel(m_nFlameFromAboveModelIndex);
 				maxFrames = modelinfo->GetModelFrameCount(pModel);
 
 				//Setup all the information for the client entity
-				m_entFlamesFromAbove[i].SetModelByIndex(m_nFlameFromAboveModelIndex);
-				m_entFlamesFromAbove[i].SetLocalOrigin(GetLocalOrigin());
-				m_entFlamesFromAbove[i].m_flFrame = Helper_RandomInt(0.0f, maxFrames - 1);
-				m_entFlamesFromAbove[i].m_flSpriteFramerate = Helper_RandomInt(15, 30);
-				m_entFlamesFromAbove[i].SetScale(m_flStartScale);
-				m_entFlamesFromAbove[i].SetRenderMode(kRenderTransAddFrameBlend);
-				m_entFlamesFromAbove[i].m_nRenderFX = kRenderFxNone;
-				m_entFlamesFromAbove[i].SetRenderColor(255, 255, 255, 255);
-				m_entFlamesFromAbove[i].SetBrightness(255);
-				m_entFlamesFromAbove[i].AddEffects(EF_NORECEIVESHADOW | EF_NOSHADOW);
+				m_entFlamesFromAbove[ii].SetModelByIndex(m_nFlameFromAboveModelIndex);
+				m_entFlamesFromAbove[ii].SetLocalOrigin(GetLocalOrigin());
+				m_entFlamesFromAbove[ii].m_flFrame = Helper_RandomInt(0.0f, maxFrames - 1);
+				m_entFlamesFromAbove[ii].m_flSpriteFramerate = Helper_RandomInt(15, 30);
+				m_entFlamesFromAbove[ii].SetScale(m_flStartScale);
+				m_entFlamesFromAbove[ii].SetRenderMode(kRenderTransAddFrameBlend);
+				m_entFlamesFromAbove[ii].m_nRenderFX = kRenderFxNone;
+				m_entFlamesFromAbove[ii].SetRenderColor(255, 255, 255, 255);
+				m_entFlamesFromAbove[ii].SetBrightness(255);
+				m_entFlamesFromAbove[ii].AddEffects(EF_NORECEIVESHADOW | EF_NOSHADOW);
 
-				m_entFlamesFromAbove[i].index = -1;
+				m_entFlamesFromAbove[ii].m_nIndex = -1;
 
-				if (i == 0)
+				if (ii == 0)
 				{
-					m_entFlameScales[i] = 1.0f;
+					m_entFlameScales[ii] = 1.0f;
 				}
 				else
 				{
 					//Keep a scale offset
-					m_entFlameScales[i] = random->RandomFloat(0.5f, 1.0f);
+					m_entFlameScales[ii] = random->RandomFloat(0.5f, 1.0f);
 				}
 			}
 		}
@@ -1200,7 +1200,7 @@ void C_EntityFlame::Simulate( void )
 
 		if (IsEffectActive(EF_BRIGHTLIGHT) || IsEffectActive(EF_DIMLIGHT))
 		{
-			dlight_t* dl = effects->CL_AllocDlight(index);
+			dlight_t* dl = effects->CL_AllocDlight(m_nIndex);
 			dl->origin = GetAbsOrigin();
 			dl->origin[2] += 16;
 			dl->color.r = 254;

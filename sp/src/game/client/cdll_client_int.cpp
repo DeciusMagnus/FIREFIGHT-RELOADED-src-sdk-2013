@@ -1856,9 +1856,9 @@ void CHLClient::LevelInitPreEntity( char const* pMapName )
 
 				delete[] GameInfo;
 			}
-			char buffer[256];
-			sprintf(buffer, "%s | Hi!", verString);
-			discordPresence.largeImageText = buffer;
+			char cBuffer[256];
+			sprintf(cBuffer, "%s | Hi!", verString);
+			discordPresence.largeImageText = cBuffer;
 		}
 		else
 		{

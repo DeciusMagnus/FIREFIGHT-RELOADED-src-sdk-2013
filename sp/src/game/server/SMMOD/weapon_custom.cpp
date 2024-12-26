@@ -2144,7 +2144,7 @@ bool CWeaponCustom::Reload( void )
 	{
 		CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
 
-		color32 zoomColor = { this->GetWpnData().m_sZoomColorRed, this->GetWpnData().m_sZoomColorGreen, this->GetWpnData().m_sZoomColorBlue, this->GetWpnData().m_sZoomColorAlpha };
+		color32 zoomColor = { (byte)this->GetWpnData().m_sZoomColorRed, (byte)this->GetWpnData().m_sZoomColorGreen, (byte)this->GetWpnData().m_sZoomColorBlue, (byte)this->GetWpnData().m_sZoomColorAlpha };
 
 		if (m_bInZoom)
 		{
@@ -2186,7 +2186,7 @@ bool CWeaponCustom::Holster(CBaseCombatWeapon *pSwitchingTo)
 	{
 		CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
 
-		color32 zoomColor = { this->GetWpnData().m_sZoomColorRed, this->GetWpnData().m_sZoomColorGreen, this->GetWpnData().m_sZoomColorBlue, this->GetWpnData().m_sZoomColorAlpha };
+		color32 zoomColor = { (byte)this->GetWpnData().m_sZoomColorRed, (byte)this->GetWpnData().m_sZoomColorGreen, (byte)this->GetWpnData().m_sZoomColorBlue, (byte)this->GetWpnData().m_sZoomColorAlpha };
 
 		if (m_bInZoom)
 		{
@@ -2214,7 +2214,7 @@ void CWeaponCustom::Drop(const Vector &vecVelocity)
 	{
 		CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
 
-		color32 zoomColor = { this->GetWpnData().m_sZoomColorRed, this->GetWpnData().m_sZoomColorGreen, this->GetWpnData().m_sZoomColorBlue, this->GetWpnData().m_sZoomColorAlpha };
+		color32 zoomColor = { (byte)this->GetWpnData().m_sZoomColorRed, (byte)this->GetWpnData().m_sZoomColorGreen, (byte)this->GetWpnData().m_sZoomColorBlue, (byte)this->GetWpnData().m_sZoomColorAlpha };
 
 		if (m_bInZoom)
 		{
@@ -2245,7 +2245,7 @@ void CWeaponCustom::ToggleZoom(void)
 		if (pPlayer == NULL)
 			return;
 
-		color32 zoomColor = { this->GetWpnData().m_sZoomColorRed, this->GetWpnData().m_sZoomColorGreen, this->GetWpnData().m_sZoomColorBlue, this->GetWpnData().m_sZoomColorAlpha };
+		color32 zoomColor = { (byte)this->GetWpnData().m_sZoomColorRed, (byte)this->GetWpnData().m_sZoomColorGreen, (byte)this->GetWpnData().m_sZoomColorBlue, (byte)this->GetWpnData().m_sZoomColorAlpha };
 
 		if (m_bInZoom)
 		{

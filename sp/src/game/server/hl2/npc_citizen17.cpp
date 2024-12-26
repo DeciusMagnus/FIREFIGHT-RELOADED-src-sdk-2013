@@ -1236,9 +1236,9 @@ CBaseCombatWeapon* CNPC_Citizen::GetNextBestWeaponBot(CBaseCombatWeapon* pCurren
 
 				if (weaponRange == SKILL_SHORT_RANGE)
 				{
-					for (const char* i : g_charPlayerbotShortRangeWeapons)
+					for (const char* ip : g_charPlayerbotShortRangeWeapons)
 					{
-						if (FClassnameIs(pCheck, i))
+						if (FClassnameIs(pCheck, ip))
 						{
 							DevMsg("PLAYER: SETTING %s AS BEST SHORT RANGE.\n", pCheck->GetClassname());
 							// if this weapon is useable, flag it as the best
@@ -1249,9 +1249,9 @@ CBaseCombatWeapon* CNPC_Citizen::GetNextBestWeaponBot(CBaseCombatWeapon* pCurren
 				}
 				else if (weaponRange == SKILL_MID_RANGE)
 				{
-					for (const char* i : g_charPlayerbotMidRangeWeapons)
+					for (const char* ic : g_charPlayerbotMidRangeWeapons)
 					{
-						if (FClassnameIs(pCheck, i))
+						if (FClassnameIs(pCheck, ic))
 						{
 							DevMsg("PLAYER: SETTING %s AS BEST MID RANGE.\n", pCheck->GetClassname());
 							// if this weapon is useable, flag it as the best
@@ -4062,6 +4062,9 @@ bool CNPC_Citizen::ShouldHealTarget( CBaseEntity *pTarget, bool bActiveUse )
 //-----------------------------------------------------------------------------
 bool CNPC_Citizen::ShouldHealTossTarget( CBaseEntity *pTarget, bool bActiveUse )
 {
+	if (pTarget == NULL || pTarget == nullptr)
+		return false;
+
 	Disposition_t disposition;
 
 	Assert( IsMedic() );

@@ -3157,7 +3157,7 @@ void CTriggerCamera::Disable( void )
 			((CBasePlayer*)m_hPlayer.Get())->GetActiveWeapon()->RemoveEffects( EF_NODRAW );
 		}
 
-		CBasePlayer *m_hPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+		m_hPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 		//return the player to previous takedamage state
 		m_hPlayer->m_takedamage = m_nOldTakeDamage;
 	}
@@ -4093,20 +4093,20 @@ void CTriggerImpact::StartTouch(CBaseEntity *pOther)
 	//If the entity is valid and has physics, hit it
 	if ( ( pOther != NULL  ) && ( pOther->VPhysicsGetObject() != NULL ) )
 	{
-		Vector vDir;
-		AngleVectors( GetLocalAngles(),&vDir );
-		vDir += RandomVector(-m_flNoise,m_flNoise);
-		pOther->VPhysicsGetObject()->ApplyForceCenter( m_flMagnitude * vDir );
-	}
+		Vector vDirection;
+		AngleVectors( GetLocalAngles(),&vDirection);
+		vDirection += RandomVector(-m_flNoise,m_flNoise);
+		pOther->VPhysicsGetObject()->ApplyForceCenter( m_flMagnitude * vDirection);
 
-	// If the player, so a view kick
-	if (pOther->IsPlayer() && fabs(m_flMagnitude)>0 )
-	{
-		Vector vDir;
-		AngleVectors( GetLocalAngles(),&vDir );
+		// If the player, so a view kick
+		if (pOther->IsPlayer() && fabs(m_flMagnitude) > 0)
+		{
+			Vector vDir2;
+			AngleVectors(GetLocalAngles(), &vDir2);
 
-		float flPunch = -m_flViewkick*m_flMagnitude*TRIGGERIMPACT_VIEWKICK_SCALE;
-		pOther->ViewPunch( QAngle( vDir.y * flPunch, 0, vDir.x * flPunch ) );
+			float flPunch = -m_flViewkick * m_flMagnitude * TRIGGERIMPACT_VIEWKICK_SCALE;
+			pOther->ViewPunch(QAngle(vDir2.y * flPunch, 0, vDir2.x * flPunch));
+		}
 	}
 }
 

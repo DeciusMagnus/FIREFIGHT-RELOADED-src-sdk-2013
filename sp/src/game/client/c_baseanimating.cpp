@@ -3353,7 +3353,7 @@ void C_BaseAnimating::ProcessMuzzleFlashEvent()
 				AngleVectors(angles, &vAng);
 				vAttachment += vAng * 2;
 
-				dlight_t *dl = effects->CL_AllocDlight(index);
+				dlight_t *dl = effects->CL_AllocDlight(m_nIndex);
 				dl->origin = vAttachment;
 				dl->color.r = 231;
 				dl->color.g = 219;
@@ -3374,7 +3374,7 @@ void C_BaseAnimating::ProcessMuzzleFlashEvent()
 				AngleVectors(angles, &vAng);
 				vAttachment += vAng * 2;
 
-				dlight_t *dl = effects->CL_AllocDlight(index);
+				dlight_t *dl = effects->CL_AllocDlight(m_nIndex);
 				dl->origin = vAttachment;
 				dl->color.r = 252;
 				dl->color.g = 238;
@@ -3395,7 +3395,7 @@ void C_BaseAnimating::ProcessMuzzleFlashEvent()
 				AngleVectors(angles, &vAng);
 				vAttachment += vAng * 2;
 
-				dlight_t *dl = effects->CL_AllocDlight(index);
+				dlight_t *dl = effects->CL_AllocDlight(m_nIndex);
 				dl->origin = vAttachment;
 				dl->color.r = 255;
 				dl->color.g = 192;

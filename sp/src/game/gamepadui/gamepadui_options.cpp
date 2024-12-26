@@ -1437,8 +1437,8 @@ void GamepadUIOptionsPanel::LayoutCurrentTab()
 
                 if ( !bFound )
                 {
-                    ConVarRef cvar(pszDependentCVar);
-                    bHasDependencies = cvar.GetBool();
+                    ConVarRef rCvar(pszDependentCVar);
+                    bHasDependencies = rCvar.GetBool();
                 }
             }
         }

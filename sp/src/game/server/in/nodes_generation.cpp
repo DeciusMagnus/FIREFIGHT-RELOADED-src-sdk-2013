@@ -151,9 +151,9 @@ void CNodesGeneration::GenerateWalkableNodes()
 				continue;
 
 			// Revisamos todos los nodos que hemos generado
-			FOR_EACH_VEC(m_WalkLocations, it)
+			FOR_EACH_VEC(m_WalkLocations, iv)
 			{
-				Vector vecTmp = m_WalkLocations[it];
+				Vector vecTmp = m_WalkLocations[iv];
 
 				if (!vecTmp.IsValid())
 					continue;

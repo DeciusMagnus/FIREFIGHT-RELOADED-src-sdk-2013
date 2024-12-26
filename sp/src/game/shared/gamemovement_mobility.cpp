@@ -573,9 +573,9 @@ void CGameMovement::WallRunMove( void )
 	{   // Trying to move outward from wall
 
 		// Check for another wall to transfer to
-		Vector dest = mv->GetAbsOrigin() + wishdir * player->GetStepSize();
+		Vector vDest = mv->GetAbsOrigin() + wishdir * player->GetStepSize();
 		trace_t pm;
-		TracePlayerBBox(mv->GetAbsOrigin(), dest,
+		TracePlayerBBox(mv->GetAbsOrigin(), vDest,
 			PlayerSolidMask(), COLLISION_GROUP_PLAYER_MOVEMENT,
 			pm );
 
@@ -893,10 +893,10 @@ void CGameMovement::WallRunAnticipateBump( void )
 		gpGlobals->curtime - player->m_flAutoViewTime > 0.300)  // haven't moved the mouse in more than 300 ms
 	{
 		QAngle look = player->EyeAngles();
-		QAngle move;
-		VectorAngles( mv->m_vecVelocity, move );
+		QAngle qMove;
+		VectorAngles( mv->m_vecVelocity, qMove);
 
-		float delta = AngleDiff( move[YAW], look[YAW] );
+		float delta = AngleDiff(qMove[YAW], look[YAW] );
 
 		if ( fabs(delta) < 75 )
 		{

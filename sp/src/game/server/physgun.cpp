@@ -817,9 +817,9 @@ void CWeaponGravityGun::EffectUpdate( void )
 		{
 			UTIL_TraceLine( awayfromPlayer, newPosition, MASK_SOLID, pObject, COLLISION_GROUP_NONE, &tr );
 			Vector dir = tr.endpos - newPosition;
-			float distance = VectorNormalize(dir);
+			float fDistance = VectorNormalize(dir);
 			float maxDist = m_gravCallback.m_maxVel * gpGlobals->frametime;
-			if ( distance >  maxDist )
+			if (fDistance >  maxDist )
 			{
 				newPosition += dir * maxDist;
 		}
