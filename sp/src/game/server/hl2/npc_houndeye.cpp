@@ -314,12 +314,14 @@ void CNPC_Houndeye::HandleAnimEvent( animevent_t *pEvent )
 		case HOUND_AE_ANGERSOUND1:
 			{
 				EmitSound( "NPC_Houndeye.Anger1" );
+				CSoundEnt::InsertSound(SOUND_DANGER, GetAbsOrigin(), 300, 1.0f, this);
 			}
 			break;
 
 		case HOUND_AE_ANGERSOUND2:
 			{
-			EmitSound( "NPC_Houndeye.Anger2" );
+				EmitSound( "NPC_Houndeye.Anger2" );
+				CSoundEnt::InsertSound(SOUND_DANGER, GetAbsOrigin(), 300, 1.0f, this);
 			}
 			break;
 
@@ -776,6 +778,8 @@ void CNPC_Houndeye::SonicAttack ( void )
 
 	CBroadcastRecipientFilter filter3;
 	te->BeamRingPoint(filter3, 0.0, GetAbsOrigin(), 16, HOUNDEYE_MAX_ATTACK_RADIUS / 2, m_iSpriteTexture, 0, 0, 0, 0.2, 24, 16, 0, 188, 220, 255, 192, 0);
+
+	CSoundEnt::InsertSound(SOUND_DANGER, GetAbsOrigin(), 300, 1.0f, this);
 
 	CBaseEntity *pEntity = NULL;
 	// iterate on all entities in the vicinity.
