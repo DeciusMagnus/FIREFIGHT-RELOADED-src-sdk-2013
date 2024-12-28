@@ -31,7 +31,7 @@ WeaponData
 	IronSight
 	{
 		"right"		"-5.900000"
-		"up"		"3.050000"
+		"up"		"3.100000"
 		"forward"		"-6.150000"
 		"roll"		"1.550000"
 		"pitch"		"-0.450000"
