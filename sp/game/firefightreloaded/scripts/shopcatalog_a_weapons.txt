@@ -70,7 +70,7 @@
 	"10"
 	{
 		"name"	"XM1014"
-		"price"	"3500"
+		"price"	"4000"
 		"limit"	"1"
 		"command"	"item weapon_xm1014 0"
 	}

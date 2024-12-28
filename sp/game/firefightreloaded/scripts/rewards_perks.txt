@@ -60,14 +60,14 @@
 	{
 		"name"		"#GameUI_Store_Buy_KashBoost"
 		"item_type"	"9"
-		"min_level"	"3"
+		"min_level"	"1"
 		"unlocks_in_iron_kick" "1"
 	}
 	"6"
 	{
 		"name"		"#GameUI_Store_Buy_EXPBoost"
 		"item_type"	"12"
-		"min_level"	"10"
+		"min_level"	"1"
 		"unlocks_in_iron_kick" "1"
 	}
 }

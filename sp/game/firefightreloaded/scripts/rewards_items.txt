@@ -84,7 +84,7 @@
 	{
 		"name"	"#GameUI_Store_Buy_ShotgunAmmo"
 		"item_type"	"7"
-		"min_level"	"5"
+		"min_level"	"6"
 		"weapon_classname"	"weapon_xm1014"
 		"ammo_num"	"21"
 	}
@@ -92,7 +92,7 @@
 	{
 		"name"	"#GameUI_Store_Buy_SMGGrenade"
 		"item_type"	"7"
-		"min_level"	"3"
+		"min_level"	"5"
 		"weapon_classname"	"weapon_smg1"
 		"ammo_isprimary"	"0"
 	}
