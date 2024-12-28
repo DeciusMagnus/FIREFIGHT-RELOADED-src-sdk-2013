@@ -1,0 +1,84 @@
+WeaponData
+{
+	// Weapon data is loaded by both the Game and Client DLLs.
+	"printname"			"#HL2_XM1014"
+	"viewmodel"			"models/weapons/v_shot_xm1014.mdl"
+	"playermodel"			"models/weapons/w_shot_xm1014.mdl"
+	"anim_prefix"			"shotgun"
+	"weapon_type"			"shotgun"
+	"bucket"				"3"
+	"bucket_position"			"5"
+
+	"clip_size"			"7"
+	"default_clip"			"21"
+	"primary_ammo"			"Buckshot"
+	"secondary_ammo"			"None"
+
+	"weight"				"4"
+	"rumble"			"5"
+	"item_flags"			"0"
+	
+	"BuiltRightHanded" 		"1" 
+	"AllowFlipping" 		"1"
+	
+	"UseMuzzleSmoke"		"1"
+	"useironsights"			"1"
+	"LowerWeapon"			"1"
+	"useironsightcrosshair" 	"0"
+	
+	IronSight
+	{
+		"right"		"-7.000000"
+		"up"		"2.650000"
+		"forward"		"-4.350000"
+		"yaw"		"-0.750000"
+		"fov"		"-7"
+	}
+	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
+	SoundData
+	{
+		"single_shot"		"Weapon_XM1014.Single"
+		"empty"			"Weapon_Shotgun.Empty"
+		// NPC WEAPON SOUNDS
+		"reload_npc"		"Weapon_XM1014.InsertShell"
+		"single_shot_npc"		"Weapon_XM1014.Single"
+	}
+
+	// Weapon Sprite data is loaded by the Client DLL.
+	TextureData
+	{
+		"weapon"
+		{
+				"font"		"WeaponIconsCS"
+				"character"	"B"
+		}
+		"weapon_s"
+		{	
+				"font"		"WeaponIconsSelectedCS"
+				"character"	"B"
+		}
+		"weapon_small"
+		{
+				"font"		"WeaponIconsSmallCS"
+				"character"	"B"
+		}
+		"ammo"
+		{
+				"font"		"WeaponIconsSmall"
+				"character"	"s"
+		}
+		"crosshair"
+		{
+				"font"		"Crosshairs"
+				"character"	"Q"
+		}
+		"autoaim"
+		{
+				"file"		"sprites/crosshairs"
+				"x"			"0"
+				"y"			"48"
+				"width"		"24"
+				"height"	"24"
+		}
+	}
+}

@@ -14,6 +14,7 @@
 //FR_KASHBONUS = 9
 //FR_SERVERCMD = 10
 //FR_CLIENTCMD = 11
+//FR_EXPBONUS = 12
 
 //Perk IDs
 //FIREFIGHT_PERK_INFINITEAUXPOWER = 1
@@ -57,10 +58,16 @@
 	}
 	"5"
 	{
-		"name"		"#GameUI_KashBonus"
+		"name"		"#GameUI_Store_Buy_KashBoost"
 		"item_type"	"9"
-		"min_level"	"1"
-		"perk_id"	"3"
+		"min_level"	"3"
+		"unlocks_in_iron_kick" "1"
+	}
+	"6"
+	{
+		"name"		"#GameUI_Store_Buy_EXPBoost"
+		"item_type"	"12"
+		"min_level"	"10"
 		"unlocks_in_iron_kick" "1"
 	}
 }

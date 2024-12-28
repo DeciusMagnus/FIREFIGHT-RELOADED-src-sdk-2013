@@ -39,7 +39,8 @@ enum FR_ItemTypes_t
 	FR_PERK,
 	FR_KASHBONUS,
 	FR_SERVERCMD,
-	FR_CLIENTCMD
+	FR_CLIENTCMD,
+	FR_EXPBONUS
 };
 
 enum FR_PerkIDs_t
@@ -991,6 +992,7 @@ public:
 	int m_iExpBoostMult;
 	int m_iKashBoostMult;
 	int m_iHealthRegenBoostMult;
+	int	m_rgMaxUpgrades[FIREFIGHT_UPGRADE_MAX];
 
 	// Used by gamemovement to check if the entity is stuck.
 	int m_StuckLast;
@@ -1248,8 +1250,6 @@ private:
 
 	// player locking
 	int						m_iPlayerLocked;
-
-	int						m_rgMaxUpgrades[FIREFIGHT_UPGRADE_MAX];
 		
 protected:
 	// the player's personal view model

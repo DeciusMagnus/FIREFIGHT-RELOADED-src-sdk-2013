@@ -1407,13 +1407,24 @@ bool GiveKashBonus(CBasePlayer* pPlayer)
 
 	if (g_fr_economy.GetBool())
 	{
-		int KashReward = (pPlayer->GetLevel() * 10) * pPlayer->m_iKashBoostMult;
-		pPlayer->AddMoney(KashReward);
-		Msg("Kash Bonus: %d\n", KashReward);
+		pPlayer->m_iKashBoostMult++;
 		givenKashBonus = true;
 	}
 
 	return givenKashBonus;
+}
+
+bool GiveEXPBonus(CBasePlayer* pPlayer)
+{
+	bool givenXPBonus = false;
+
+	if (g_fr_economy.GetBool())
+	{
+		pPlayer->m_iExpBoostMult++;
+		givenXPBonus = true;
+	}
+
+	return givenXPBonus;
 }
 
 //-----------------------------------------------------------------------------
@@ -1478,6 +1489,9 @@ bool CBasePlayer::GiveItemOfType(int itemType,
 			break;
 		case FR_CLIENTCMD:
 			engine->ClientCommand(edict(), pCMD);
+			break;
+		case FR_EXPBONUS:
+			unlocked = GiveEXPBonus(this);
 			break;
 		default:
 		case FR_HEALTHKIT:
@@ -1737,10 +1751,10 @@ void CBasePlayer::Market_SetUpgrade(int upgradeID, int limit)
 			DevMsg("SET MAX HEALTH TO %i\n", GetMaxHealthValue());
 			break;
 		case FIREFIGHT_UPGRADE_EXPBOOST:
-			m_iExpBoostMult++;
+			GiveEXPBonus(this);
 			break;
 		case FIREFIGHT_UPGRADE_KASHBOOST:
-			m_iKashBoostMult++;
+			GiveKashBonus(this);
 			break;
 		case FIREFIGHT_UPGRADE_HEALTHREGENERATION_RANGE:
 			m_iHealthRegenBoostMult++;

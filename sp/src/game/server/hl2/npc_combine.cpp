@@ -59,6 +59,7 @@ int g_fCombineQuestion;				// true if an idle grunt asked a question. Cleared wh
 // This is the index to the name of the shotgun's classname in the string pool
 // so that we can get away with an integer compare rather than a string compare.
 string_t	s_iszShotgunClassname;
+string_t	s_iszShotgunM1014Classname;
 string_t	s_iszPistolClassname;
 
 //-----------------------------------------------------------------------------
@@ -291,6 +292,7 @@ void CNPC_Combine::Activate()
 {
 	s_iszShotgunClassname = FindPooledString( "weapon_shotgun" );
 	s_iszPistolClassname = FindPooledString("weapon_pistol");
+	s_iszShotgunM1014Classname = FindPooledString("weapon_xm1014");
 	BaseClass::Activate();
 }
 
@@ -3854,7 +3856,7 @@ WeaponProficiency_t CNPC_Combine::CalcWeaponProficiency( CBaseCombatWeapon *pWea
 			return WEAPON_PROFICIENCY_GOOD;
 		}
 	}
-	else if( FClassnameIs( pWeapon, "weapon_shotgun" )	)
+	else if( FClassnameIs( pWeapon, "weapon_shotgun" ) || FClassnameIs(pWeapon, "weapon_xm1014"))
 	{
 		if (!Q_stricmp(STRING(GetModelName()), "models/combine_soldier.mdl") || !Q_stricmp(STRING(GetModelName()), "models/combine_soldier_prisonguard.mdl"))
 		{
@@ -3904,7 +3906,7 @@ WeaponProficiency_t CNPC_Combine::CalcWeaponProficiency( CBaseCombatWeapon *pWea
 //-----------------------------------------------------------------------------
 bool CNPC_Combine::HasShotgun()
 {
-	if( GetActiveWeapon() && GetActiveWeapon()->m_iClassname == s_iszShotgunClassname )
+	if( GetActiveWeapon() && (GetActiveWeapon()->m_iClassname == s_iszShotgunClassname || GetActiveWeapon()->m_iClassname == s_iszShotgunM1014Classname))
 	{
 		return true;
 	}

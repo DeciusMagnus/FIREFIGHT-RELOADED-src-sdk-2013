@@ -337,6 +337,9 @@ void CWeaponAR2::ItemPostFrame( void )
 //-----------------------------------------------------------------------------
 Activity CWeaponAR2::GetPrimaryAttackActivity( void )
 {
+	if (IsIronsighted())
+		return ACT_VM_PRIMARYATTACK;
+
 	if ( m_nShotsFired < 2 )
 		return ACT_VM_PRIMARYATTACK;
 

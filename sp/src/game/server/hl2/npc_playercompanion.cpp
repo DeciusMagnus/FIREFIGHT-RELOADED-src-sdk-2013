@@ -141,6 +141,7 @@ string_t CNPC_PlayerCompanion::gm_iszMortarClassname;
 string_t CNPC_PlayerCompanion::gm_iszFloorTurretClassname;
 string_t CNPC_PlayerCompanion::gm_iszGroundTurretClassname;
 string_t CNPC_PlayerCompanion::gm_iszShotgunClassname;
+string_t CNPC_PlayerCompanion::gm_iszShotgunM1014Classname;
 string_t CNPC_PlayerCompanion::gm_iszRollerMineClassname;
 
 //-----------------------------------------------------------------------------
@@ -179,6 +180,7 @@ void CNPC_PlayerCompanion::Precache()
 	gm_iszFloorTurretClassname = AllocPooledString( "npc_turret_floor" );
 	gm_iszGroundTurretClassname = AllocPooledString( "npc_turret_ground" );
 	gm_iszShotgunClassname = AllocPooledString( "weapon_shotgun" );
+	gm_iszShotgunM1014Classname = FindPooledString("weapon_xm1014");
 	gm_iszRollerMineClassname = AllocPooledString( "npc_rollermine" );
 
 	PrecacheModel( STRING( GetModelName() ) );
@@ -296,6 +298,12 @@ Disposition_t CNPC_PlayerCompanion::IRelationType( CBaseEntity *pTarget )
 
 	Disposition_t baseRelationship = BaseClass::IRelationType( pTarget );
 
+	bool shotgunnerTarget = (((CAI_BaseNPC*)pTarget)->GetActiveWeapon() && 
+		(((CAI_BaseNPC*)pTarget)->GetActiveWeapon()->ClassMatches(gm_iszShotgunClassname) &&
+		(!GetActiveWeapon() || !GetActiveWeapon()->ClassMatches(gm_iszShotgunClassname))) ||
+		(((CAI_BaseNPC*)pTarget)->GetActiveWeapon()->ClassMatches(gm_iszShotgunM1014Classname) &&
+		(!GetActiveWeapon() || !GetActiveWeapon()->ClassMatches(gm_iszShotgunM1014Classname))));
+
 	if ( baseRelationship != D_LI )
 	{
 		if ( IsTurret( pTarget ) )
@@ -313,10 +321,7 @@ Disposition_t CNPC_PlayerCompanion::IRelationType( CBaseEntity *pTarget )
 			}
 		}
 		else if ( baseRelationship == D_HT && 
-				  pTarget->IsNPC() && 
-				  ((CAI_BaseNPC *)pTarget)->GetActiveWeapon() && 
-				  ((CAI_BaseNPC *)pTarget)->GetActiveWeapon()->ClassMatches( gm_iszShotgunClassname ) &&
-				  ( !GetActiveWeapon() || !GetActiveWeapon()->ClassMatches( gm_iszShotgunClassname ) ) )
+				  pTarget->IsNPC() && shotgunnerTarget)
 		{
 			if ( (pTarget->GetAbsOrigin() - GetAbsOrigin()).LengthSqr() < Square( 25 * 12 ) )
 			{
@@ -2358,7 +2363,7 @@ bool CNPC_PlayerCompanion::Weapon_CanUse( CBaseCombatWeapon *pWeapon )
 		// a shotgun if a squadmate already has one.
 		if( pWeapon->ClassMatches( gm_iszShotgunClassname ) )
 		{
-			return (NumWeaponsInSquad("weapon_shotgun") < 1 );
+			return ((NumWeaponsInSquad("weapon_shotgun") < 1 ) || (NumWeaponsInSquad("weapon_xm1014") < 1));
 		}
 		else
 		{

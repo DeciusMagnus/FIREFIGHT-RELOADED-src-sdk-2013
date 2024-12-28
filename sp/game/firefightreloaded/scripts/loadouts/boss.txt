@@ -135,4 +135,10 @@
 		"ammotype"	"Alyxgun"
 		"ammonum"	"180"
 	}
+	"23"
+	{
+		"weapon"	"weapon_xm1014"
+		"ammotype"	"Buckshot"
+		"ammonum"	"50"
+	}
 }

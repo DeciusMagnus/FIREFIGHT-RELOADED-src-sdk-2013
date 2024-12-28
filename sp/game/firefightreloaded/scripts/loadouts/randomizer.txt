@@ -181,4 +181,11 @@
 		"randomizermode"	"1"
 		"weapon"	"weapon_cubemap"
 	}
+	"29"
+	{
+		"randomizermode"	"1"
+		"weapon"	"weapon_xm1014"
+		"ammotype"	"Buckshot"
+		"ammonum"	"999"
+	}
 }

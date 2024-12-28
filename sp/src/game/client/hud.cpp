@@ -125,9 +125,13 @@ void LoadHudTextures( CUtlDict< CHudTexture *, int >& list, const char *szFilena
 					}
 				}
 
-				tex->bIsNormalHL2WeaponIcon = pTemp->GetBool("weaponicon");
-				tex->bIsNormalHL2AmmoIcon = pTemp->GetBool("ammoicon");
-				tex->bIsTexHL2WeaponIcon = pTemp->GetBool("weapontexicon");
+				tex->bHasSeperateXY = pTemp->GetBool("customxyoffset");
+
+				if (tex->bHasSeperateXY)
+				{
+					tex->xOffset = pTemp->GetInt("x_offset", 0);
+					tex->yOffset = pTemp->GetInt("y_offset", 0);
+				}
 
 				list.Insert(tex->szShortName, tex);
 
@@ -181,9 +185,9 @@ CHudTexture::CHudTexture()
 	Q_memset( &rc, 0, sizeof( rc ) );
 	textureId = -1;
 	bRenderUsingFont = false;
-	bIsNormalHL2WeaponIcon = false;
-	bIsNormalHL2AmmoIcon = false;
-	bIsTexHL2WeaponIcon = false;
+	bHasSeperateXY = false;
+	xOffset = 0;
+	yOffset = 0;
 	bPrecached = false;
 	cCharacterInFont = 0;
 	hFont = ( vgui::HFont )NULL;
@@ -212,9 +216,14 @@ CHudTexture& CHudTexture::operator =( const CHudTexture& src )
 
 	rc = src.rc;
 	bRenderUsingFont = src.bRenderUsingFont;
-	bIsNormalHL2WeaponIcon = src.bIsNormalHL2WeaponIcon;
-	bIsNormalHL2AmmoIcon = src.bIsNormalHL2AmmoIcon;
-	bIsTexHL2WeaponIcon = src.bIsTexHL2WeaponIcon;
+	bHasSeperateXY = src.bHasSeperateXY;
+
+	if (bHasSeperateXY)
+	{
+		xOffset = src.xOffset;
+		yOffset = src.yOffset;
+	}
+
 	cCharacterInFont = src.cCharacterInFont;
 	hFont = src.hFont;
 

@@ -26,13 +26,16 @@ WeaponData
 	"UseMuzzleSmoke"		"1"
 	"useironsights"		"1"
 	"LowerWeapon"			"1"
-	"useironsightcrosshair" "1"
+	"useironsightcrosshair" "0"
 	
 	IronSight
 	{
-		"right"		"-5.5"
-		"up"		"3.1"
-		"forward"	"-10"
+		"right"		"-5.900000"
+		"up"		"3.050000"
+		"forward"		"-6.150000"
+		"roll"		"1.550000"
+		"pitch"		"-0.450000"
+		"yaw"		"-1.200000"
 		"fov"		"-5"
 	}
 

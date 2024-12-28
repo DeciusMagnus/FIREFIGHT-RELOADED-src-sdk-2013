@@ -2000,3 +2000,33 @@
 	"wave"		"^weapons/smg1/smg1_fire1.wav"
 
 }
+
+//XM1014
+"Weapon_XM1014.Single"
+{
+	"channel"		"CHAN_WEAPON"
+	"volume"		"1.0"
+	"CompatibilityAttenuation"	"0.52"
+	"pitch"		"PITCH_NORM"
+
+	"wave"			")weapons/xm1014/xm1014-1.wav"
+}
+
+"Weapon_XM1014.InsertShell"
+{
+	"channel"		"CHAN_ITEM"
+	"volume"		"1.0"
+	"CompatibilityAttenuation"	"1.0"
+	"pitch"		"PITCH_NORM"
+
+	"wave"			"weapons/xm1014/xm1014_insertshell.wav"
+}
+"Weapon_DEagle.Deploy"
+{
+	"channel"		"CHAN_ITEM"
+	"volume"		"1.0"
+	"CompatibilityAttenuation"	"1.0"
+	"pitch"		"PITCH_NORM"
+
+	"wave"			"weapons/DEagle/de_deploy.wav"
+}

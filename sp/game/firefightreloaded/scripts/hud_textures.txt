@@ -169,7 +169,8 @@
 		{
 				"font"		"AmmoIconsKillFeed"
 				"character"	"x"
-				"ammoicon"	"1"
+                "customxyoffset"	"1"
+				"y_offset"		"-13"
 		}
 		"npc_grenade_frag"
 		{
@@ -238,7 +239,8 @@
 				"y"			"0"
 				"width"		"32"
 				"height"	"32"
-				"weaponicon"	"1"
+				"customxyoffset"	"1"
+				"y_offset"		"-13"
 		}
         "npc_manhack_weapon"
 		{
@@ -247,7 +249,8 @@
 				"y"			"0"
 				"width"		"32"
 				"height"	"32"
-				"weaponicon"	"1"
+				"customxyoffset"	"1"
+				"y_offset"		"-13"
 		}
         "npc_manhack_friendly"
 		{
@@ -256,7 +259,8 @@
 				"y"			"0"
 				"width"		"32"
 				"height"	"32"
-				"weaponicon"	"1"
+				"customxyoffset"	"1"
+				"y_offset"		"-13"
 		}
 		"kick"
 		{
@@ -302,7 +306,8 @@
 		{
 				"font"		"WeaponIconsKillFeed2"
 				"character"	"h"
-				"weaponicon"	"1"
+				"customxyoffset"	"1"
+				"y_offset"		"-13"
 		}
 		"weapon_sniper_rifle"
 		{
@@ -324,7 +329,8 @@
 				"y"		"0"
 				"width"		"64"
 				"height"	"32"
-				"weaponicon"	"1"
+				"customxyoffset"	"1"
+				"y_offset"		"-13"
 		}
 		"knife_bolt"
 		{
@@ -333,7 +339,8 @@
 				"y"		"0"
 				"width"		"64"
 				"height"	"32"
-				"weaponicon"	"1"
+				"customxyoffset"	"1"
+				"y_offset"		"-13"
 		}
 		"weapon_katana"
 		{
@@ -342,7 +349,8 @@
 				"y"		"0"
 				"width"		"128"
 				"height"	"32"
-				"weaponicon"	"1"
+				"customxyoffset"	"1"
+				"y_offset"		"-13"
 		}
 		"weapon_railgun"
 		{
@@ -362,11 +370,12 @@
 				"font"		"WeaponIconsKillFeed3"
 				"character"	"x"
 		}
-        		"weapon_physgun"
+        "weapon_physgun"
 		{
 				"font"		"WeaponIconsKillFeed2"
 				"character"	"m"
-				"weaponicon"	"1"
+				"customxyoffset"	"1"
+				"y_offset"		"-13"
 		}
 		"headshot"
 		{
@@ -457,7 +466,8 @@
 		{
 				"font"		"WeaponIconsKillFeed2"
 				"character"	"f"
-				"weaponicon"	"1"
+				"customxyoffset"	"1"
+				"y_offset"		"-13"
 		}
 		"weapon_alyxgun"
 		{
@@ -466,7 +476,8 @@
 				"y"		"160"
 				"width"		"64"
 				"height"	"32"
-				"weaponicon"	"1"
+				"customxyoffset"	"1"
+				"y_offset"		"-13"
 		}
 		"weapon_gatling"
 		{
@@ -475,21 +486,35 @@
 				"y"			"0"
 				"width"		"64"
 				"height"	"32"
-				"weaponicon"	"1"
+				"customxyoffset"	"1"
+				"y_offset"		"-13"
 		}
 		"weapon_physcannon"
 		{
 				"font"		"WeaponIconsKillFeed2"
 				"character"	"m"
-				"weaponicon"	"1"
+				"customxyoffset"	"1"
+				"y_offset"		"-13"
 		}
-        "npc_hornet"
+		"npc_hornet"
 		{
-                "file"		"sprites/640hud1_hl"
-                "x"			"192"
-                "y"			"144"
-                "width"		"48"
-                "height"	"16"
+				"file"		"sprites/640hud1_hl"
+				"x"			"192"
+				"y"			"144"
+				"width"		"48"
+				"height"	"16"
+		}
+		"weapon_stunstick"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"!"
+		}
+		"weapon_xm1014"
+		{
+				"font"		"WeaponIconsKillFeed3"
+				"character"	"B"
+				"customxyoffset"	"1"
+				"y_offset"		"5"
 		}
 	}	
 }

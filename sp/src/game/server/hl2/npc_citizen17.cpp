@@ -395,7 +395,8 @@ const char* g_charPlayerbotShortRangeWeapons[] =
 	"weapon_shotgun",
 	"weapon_pistol",
 	"weapon_crowbar",
-	"weapon_357"
+	"weapon_357",
+	"weapon_xm1014"
 };
 
 const char* g_charAvailablePlayerbotModels[] =
@@ -2787,6 +2788,36 @@ bool CNPC_Citizen::ShouldLookForBetterWeapon()
 					// shotgunners do not discard their weapons when they suddenly realize
 					// the squad has too many.
 					if( random->RandomInt( 0, 1 ) == 0 )
+					{
+						m_flNextWeaponSearchTime = gpGlobals->curtime + SHOTGUN_DEFER_SEARCH_TIME;
+					}
+					else
+					{
+						m_flNextWeaponSearchTime = gpGlobals->curtime + SHOTGUN_DEFER_SEARCH_TIME + 10.0f;
+					}
+
+					bDefer = true;
+				}
+			}
+			else if (FClassnameIs(pWeapon, "weapon_xm1014"))
+			{
+				// Shotgunners do not defer their weapon search indefinitely.
+				// If more than one citizen in the squad has a shotgun, we force
+				// some of them to trade for another weapon.
+				if (NumWeaponsInSquad("weapon_xm1014") > 1)
+				{
+					// Check for another weapon now. If I don't find one, this code will
+					// retry in 2 seconds or so.
+					bDefer = false;
+				}
+				else
+				{
+					// I'm the only shotgunner in the group right now, so I'll check
+					// again in 3 0seconds or so. This code attempts to distribute
+					// the desire to reduce shotguns amongst squadmates so that all 
+					// shotgunners do not discard their weapons when they suddenly realize
+					// the squad has too many.
+					if (random->RandomInt(0, 1) == 0)
 					{
 						m_flNextWeaponSearchTime = gpGlobals->curtime + SHOTGUN_DEFER_SEARCH_TIME;
 					}

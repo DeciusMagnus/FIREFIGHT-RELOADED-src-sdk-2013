@@ -84,8 +84,26 @@ void vm_adjust_enable_callback(IConVar *pConVar, char const *pOldString, float f
 
 	ConVarRef var(pConVar);
 
+	//if (var.GetBool())
+		//var.SetValue("0");
+
+	CBasePlayer* pPlayer =
+#ifdef GAME_DLL
+		UTIL_GetCommandClient();
+#else
+		C_BasePlayer::GetLocalPlayer();
+#endif
+	if (!pPlayer)
+		return;
+
 	if (var.GetBool())
-		var.SetValue("0");
+	{
+		pPlayer->m_Local.m_iHideHUD |= HIDEHUD_CROSSHAIR;
+	}
+	else
+	{
+		pPlayer->m_Local.m_iHideHUD &= ~HIDEHUD_CROSSHAIR;
+	}
 }
 
 void vm_adjust_fov_callback(IConVar *pConVar, char const *pOldString, float flOldValue)
@@ -484,14 +502,32 @@ bool CBaseCombatWeapon::UsesClipsForAmmo2( void ) const
 Vector CBaseCombatWeapon::GetIronsightPositionOffset(void) const
 {
 	if (viewmodel_adjust_enabled.GetBool())
-		return Vector(viewmodel_adjust_forward.GetFloat(), viewmodel_adjust_right.GetFloat(), viewmodel_adjust_up.GetFloat());
+	{
+		Vector VMAdjust;
+
+		VMAdjust.x = viewmodel_adjust_forward.GetFloat();
+		VMAdjust.y = viewmodel_adjust_right.GetFloat();
+		VMAdjust.z = viewmodel_adjust_up.GetFloat();
+
+		return VMAdjust;
+	}
+
 	return GetWpnData().vecIronsightPosOffset;
 }
 
 QAngle CBaseCombatWeapon::GetIronsightAngleOffset(void) const
 {
 	if (viewmodel_adjust_enabled.GetBool())
-		return QAngle(viewmodel_adjust_pitch.GetFloat(), viewmodel_adjust_yaw.GetFloat(), viewmodel_adjust_roll.GetFloat());
+	{
+		QAngle VMAngle;
+
+		VMAngle[PITCH] = viewmodel_adjust_pitch.GetFloat();
+		VMAngle[YAW] = viewmodel_adjust_yaw.GetFloat();
+		VMAngle[ROLL] = viewmodel_adjust_roll.GetFloat();
+
+		return VMAngle;
+	}
+
 	return GetWpnData().angIronsightAngOffset;
 }
 
@@ -504,15 +540,11 @@ float CBaseCombatWeapon::GetIronsightFOVOffset(void) const
 
 Vector CBaseCombatWeapon::GetAdjustPositionOffset(void) const
 {
-	if (viewmodel_adjust_enabled.GetBool())
-		return Vector(viewmodel_adjust_forward.GetFloat(), viewmodel_adjust_right.GetFloat(), viewmodel_adjust_up.GetFloat());
 	return GetWpnData().vecAdjustPosOffset;
 }
 
 QAngle CBaseCombatWeapon::GetAdjustAngleOffset(void) const
 {
-	if (viewmodel_adjust_enabled.GetBool())
-		return QAngle(viewmodel_adjust_pitch.GetFloat(), viewmodel_adjust_yaw.GetFloat(), viewmodel_adjust_roll.GetFloat());
 	return GetWpnData().angAdjustAngOffset;
 }
 
@@ -906,17 +938,20 @@ bool CBaseCombatWeapon::HasIronsights()
 }
 
 bool CBaseCombatWeapon::CanIronsightUseCrosshair()
-{
+{;
 	return GetWpnData().m_bUseIronsightCrosshair;
 }
 
 bool CBaseCombatWeapon::IsIronsighted()
 {
+	if (viewmodel_adjust_enabled.GetBool())
+		return true;
+
 	//if we don't have ironsights we can't be ironsighted.
 	if (!HasIronsights())
 		return false;
 
-	return m_bIsIronsighted || viewmodel_adjust_enabled.GetBool();
+	return m_bIsIronsighted;
 }
 
 void CBaseCombatWeapon::ToggleIronsights()

@@ -139,6 +139,11 @@
 		"classname"	"npc_combine_shot"
 		"min_level"	"6"
 		"exp"	"75"
+        "equipment"
+		{
+			"weapon_shotgun"	"8"
+			"weapon_xm1014"     "3"
+		}
 	}
 	"19"
 	{
@@ -344,6 +349,7 @@
 			"weapon_mp5"	"3"
 			"weapon_oicw"	"5"
 			"weapon_gatling"	"3"
+            "weapon_xm1014" "4"
 		}
 	}
 	"42"
@@ -429,6 +435,7 @@
 			"weapon_mp5"	"3"
 			"weapon_oicw"	"5"
 			"weapon_gatling"	"3"
+            "weapon_xm1014" "4"
 		}
 	}
 	"51"
@@ -448,6 +455,8 @@
 			"weapon_sniper_rifle"	"3"
 			"weapon_mp5"	"3"
 			"weapon_oicw"	"5"
+			"weapon_gatling"	"3"
+            "weapon_xm1014" "4"
 		}
 	}
 	"52"
@@ -495,6 +504,8 @@
 			"weapon_sniper_rifle"	"3"
 			"weapon_mp5"	"3"
 			"weapon_oicw"	"5"
+			"weapon_gatling"	"3"
+            "weapon_xm1014" "4"
 		}
 	}
 	"56"
@@ -546,6 +557,8 @@
 			"weapon_sniper_rifle"	"3"
 			"weapon_mp5"	"3"
 			"weapon_oicw"	"5"
+			"weapon_gatling"	"3"
+            "weapon_xm1014" "4"
 		}
 	}
 }

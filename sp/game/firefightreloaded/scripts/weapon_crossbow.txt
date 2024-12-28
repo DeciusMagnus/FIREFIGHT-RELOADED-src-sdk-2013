@@ -31,7 +31,7 @@ WeaponData
 	{
 		"right"		"-7"
 		"up"		"3"
-		"forward"	"-13"
+		"forward"		"-12.5"
 		"fov"		"-10"
 	}
 

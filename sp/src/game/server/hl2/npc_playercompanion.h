@@ -410,6 +410,7 @@ protected:
 	static string_t gm_iszFloorTurretClassname;
 	static string_t gm_iszGroundTurretClassname;
 	static string_t gm_iszShotgunClassname;
+	static string_t gm_iszShotgunM1014Classname;
 	static string_t	gm_iszRollerMineClassname;
 
 	//-----------------------------------------------------

@@ -162,4 +162,10 @@
 	{
 		"weapon"	"weapon_cubemap"
 	}
+	"30"
+	{
+		"weapon"	"weapon_xm1014"
+		"ammotype"	"Buckshot"
+		"ammonum"	"999"
+	}
 }

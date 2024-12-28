@@ -210,9 +210,6 @@
 		"MaxDeathNotices" "4"
 		"LineHeight"	  "28"
 		"RightJustify"	  "1"	// If 1, draw notices from the right
-		"IconOffsetWepY"  "-13"
-		"IconOffsetAmmoY"  "-13"
-		"IconOffsetTexWepY"	"-2"
 
 		"TextFont"				"DefaultKillFeed"
 		
