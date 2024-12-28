@@ -20,7 +20,7 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"	
 
-#define MP5_MAX_CYCLE_RATE 0.4f
+#define MP5_MAX_CYCLE_RATE 0.3f
 
 class CWeaponMP5 : public CHLMachineGun
 {
@@ -50,7 +50,12 @@ public:
 
 	virtual const Vector& GetBulletSpread(void)
 	{
-		static Vector cone = VECTOR_CONE_3DEGREES;
+		static Vector cone = VECTOR_CONE_5DEGREES;
+		static const Vector ironsightCone = VECTOR_CONE_3DEGREES;
+		if (IsIronsighted())
+		{
+			return ironsightCone;
+		}
 
 		return cone;
 	}
