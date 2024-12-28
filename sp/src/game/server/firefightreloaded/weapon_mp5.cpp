@@ -20,7 +20,7 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"	
 
-#define MP5_MAX_CYCLE_RATE 0.5f
+#define MP5_MAX_CYCLE_RATE 0.4f
 
 class CWeaponMP5 : public CHLMachineGun
 {
@@ -40,7 +40,7 @@ public:
 	void	FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, Vector& vecShootOrigin, Vector& vecShootDir);
 	void	Operator_HandleAnimEvent(animevent_t *pEvent, CBaseCombatCharacter *pOperator);
 	void	Operator_ForceNPCFire(CBaseCombatCharacter* pOperator, bool bSecondary);
-	float	GetFireRate(void) { return 0.065f; }
+	float	GetFireRate(void) { return 0.055f; }
 	virtual void	FireModeLogic(int burstsize, float firerate, int firemode);
 	void AddViewKick(void);
 	void DoMachineGunKick(CBasePlayer *pPlayer, float dampEasy, float maxVerticleKickAngle, float fireDurationTime, float slideLimitTime);
