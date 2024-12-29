@@ -225,6 +225,11 @@ void CWeaponOICW::FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, Vector& 
 	pOperator->FireBullets(1, vecShootOrigin, vecShootDir, VECTOR_CONE_PRECALCULATED,
 		MAX_TRACE_LENGTH, m_iPrimaryAmmoType, 2, entindex(), 0);
 
+	if (GetWpnData().m_bUseMuzzleSmoke)
+	{
+		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+	}
+
 	pOperator->DoMuzzleFlash();
 	m_iClip1 = m_iClip1 - 1;
 }

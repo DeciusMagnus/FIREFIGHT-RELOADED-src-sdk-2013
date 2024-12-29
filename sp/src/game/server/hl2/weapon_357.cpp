@@ -158,6 +158,10 @@ void CWeapon357::FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, Vector& v
 	CSoundEnt::InsertSound(SOUND_COMBAT | SOUND_CONTEXT_GUNFIRE, pOperator->GetAbsOrigin(), SOUNDENT_VOLUME_PISTOL, 0.2, pOperator, SOUNDENT_CHANNEL_WEAPON, pOperator->GetEnemy());
 	WeaponSound(SINGLE_NPC);
 	pOperator->FireBullets(1, vecShootOrigin, vecShootDir, VECTOR_CONE_PRECALCULATED, MAX_TRACE_LENGTH, m_iPrimaryAmmoType, 2);
+	if (GetWpnData().m_bUseMuzzleSmoke)
+	{
+		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+	}
 	pOperator->DoMuzzleFlash();
 	m_iClip1 = m_iClip1 - 1;
 }

@@ -126,6 +126,11 @@ void CWeaponAnnabelle::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseComba
 
 			vecShootDir = npc->GetActualShootTrajectory( vecShootOrigin );
 			pOperator->FireBullets( 1, vecShootOrigin, vecShootDir, VECTOR_CONE_PRECALCULATED, MAX_TRACE_LENGTH, m_iPrimaryAmmoType, 0 );
+
+			if (GetWpnData().m_bUseMuzzleSmoke)
+			{
+				DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+			}
 		}
 		break;
 

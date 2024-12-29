@@ -377,6 +377,7 @@ $Project "Server (FR)"
 				}
 				$File	"firefightreloaded\npc_combineace.cpp"
 				$File	"firefightreloaded\npc_combineace.h"
+                $File	"firefightreloaded\npc_killerscanner.cpp"
 			}
 
 			$Folder	"Spawning"

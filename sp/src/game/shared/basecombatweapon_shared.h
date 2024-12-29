@@ -118,6 +118,64 @@ namespace vgui2
 #define VECTOR_CONE_15DEGREES		Vector( 0.13053, 0.13053, 0.13053 )
 #define VECTOR_CONE_20DEGREES		Vector( 0.17365, 0.17365, 0.17365 )
 
+inline Vector UTIL_IntToCone(int val)
+{
+	Vector cone = vec3_origin;
+
+	switch (val)
+	{
+	case 0:
+	case 1:
+		cone = VECTOR_CONE_1DEGREES;
+		break;
+	case 2:
+		cone = VECTOR_CONE_2DEGREES;
+		break;
+	case 3:
+		cone = VECTOR_CONE_3DEGREES;
+		break;
+	case 4:
+		cone = VECTOR_CONE_4DEGREES;
+		break;
+	case 5:
+		cone = VECTOR_CONE_5DEGREES;
+		break;
+	case 6:
+		cone = VECTOR_CONE_6DEGREES;
+		break;
+	case 7:
+		cone = VECTOR_CONE_7DEGREES;
+		break;
+	case 8:
+		cone = VECTOR_CONE_8DEGREES;
+		break;
+	case 9:
+		cone = VECTOR_CONE_9DEGREES;
+		break;
+	case 10:
+	case 11:
+	case 12:
+	case 13:
+	case 14:
+		cone = VECTOR_CONE_10DEGREES;
+		break;
+	case 15:
+	case 16:
+	case 17:
+	case 18:
+	case 19:
+		cone = VECTOR_CONE_15DEGREES;
+		break;
+	case 20:
+		cone = VECTOR_CONE_20DEGREES;
+		break;
+	default:
+		break;
+	}
+
+	return cone;
+}
+
 // The minimum time a hud hint for a weapon should be on screen. If we switch away before
 // this, then teh hud hint counter will be deremented so the hint will be shown again, as
 // if it had never been seen. The total display time for a hud hint is specified in client

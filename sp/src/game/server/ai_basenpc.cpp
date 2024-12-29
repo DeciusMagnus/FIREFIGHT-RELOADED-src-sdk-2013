@@ -9744,7 +9744,9 @@ void CAI_BaseNPC::ReportAIState( void )
 
 	if ( GetEnemy() != NULL )
 	{
+#ifdef DEBUG
 		g_pEffects->Sparks( GetEnemy()->GetAbsOrigin() + Vector( 0, 0, 64 ) );
+#endif // DEBUG
 		DevMsg( "\nEnemy is %s", GetEnemy()->GetClassname() );
 	}
 	else

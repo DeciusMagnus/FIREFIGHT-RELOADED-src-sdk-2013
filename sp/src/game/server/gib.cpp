@@ -284,7 +284,8 @@ void CGib::SpawnSpecificGibs(CBaseEntity*	pVictim,
 	float			vMinVelocity,
 	float			vMaxVelocity,
 	const char*		cModelName,
-	float			flLifetime)
+	float			flLifetime,
+	bool			copyRenderColor)
 {
 	if ( gEntList.NumberOfEntities() >= (gpGlobals->maxEntities - ENTITY_INTOLERANCE) )
 	{
@@ -302,6 +303,11 @@ void CGib::SpawnSpecificGibs(CBaseEntity*	pVictim,
 
 		if (pVictim != NULL)
 		{
+			if (copyRenderColor)
+			{
+				pGib->SetRenderColor(pVictim->GetRenderColor().r, pVictim->GetRenderColor().g, pVictim->GetRenderColor().b, pVictim->GetRenderColor().a);
+			}
+
 			pGib->SetOwnerEntity(pVictim);
 		}
 	}

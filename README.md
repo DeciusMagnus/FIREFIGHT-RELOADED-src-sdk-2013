@@ -4,9 +4,8 @@
 
 FIREFIGHT RELOADED is an open-source Source SDK 2013 modification with the goal to combine gameplay elements from Half-Life 2, SMOD, old-school first-person shooters like Quake and Unreal Tournament, and the RPG-styled horde-mode gameplay that ties this mod together. 
 
-- ModDB Page: http://www.moddb.com/mods/firefight-reloaded
-- BSNOOCH Board: http://bsnooch.com/forums/index.php?board=68.0
 - Steam Store page: http://store.steampowered.com/app/397680
+- ModDB Page: http://www.moddb.com/mods/firefight-reloaded
 
 **NOTE: PLEASE NOTE THAT THIS REPOSITORY WILL HAVE UNFINISHED OR BUGGY CODE FROM A NEWER RELEASE OF FIREFIGHT RELOADED. KEEP THIS IN MIND BEFORE COMPILING OR FORKING.**
 
@@ -18,17 +17,12 @@ Code used in FIREFIGHT RELOADED may be used for your Source Engine game/mod, how
 
 ### WINDOWS:
 
-To be able to build FIREFIGHT RELOADED you will need to download:
-* Visual Studio 2013 or later
-* C++ Build Tools for Visual Studio 2013 (Not required if you already have Visual Studio 2013)
-* Multibyte MFC Library for Visual Studio 2013
+To be able to build FIREFIGHT RELOADED you will need to download Visual Studio 2022 or later and the following tools via the Visual Studio installer:
 
-Read this for more details: https://developer.valvesoftware.com/wiki/Source_SDK_2013#Source_SDK_2013_on_Windows
-
-You must also run this command in your CMD with administrator privileges in order to get VPC to build a project:
-* REG ADD "HKLM\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\10.0\Projects\{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}" /v DefaultProjectExtension /t REG_SZ /d vcproj /f
-
-Note that the Microsoft Speech API is only required for certain SDK tools.
+* MSVC v143 - VS 2022 C++ x64/x86 build tools
+* C++ MFC Library for latest v143 build tools (x86 and x64)
+* Latest Windows 10 or Windows 11 SDK.
+* Microsoft Speech API (Optional)
 
 Creating a solution is as simple as running sp/src/creategameprojects.bat, then opening up the solution in Visual Studio.
 

@@ -600,6 +600,11 @@ void CWeaponAR2::FireNPCPrimaryAttack( CBaseCombatCharacter *pOperator, bool bUs
 
 	pOperator->FireBullets( 1, vecShootOrigin, vecShootDir, VECTOR_CONE_PRECALCULATED, MAX_TRACE_LENGTH, m_iPrimaryAmmoType, 2 );
 
+	if (GetWpnData().m_bUseMuzzleSmoke)
+	{
+		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+	}
+
 	// NOTENOTE: This is overriden on the client-side
 	// pOperator->DoMuzzleFlash();
 

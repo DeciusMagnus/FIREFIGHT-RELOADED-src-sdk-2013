@@ -1,0 +1,13 @@
+"npc_killerscanner_preset2"
+{
+	"additional_health"	"30"
+	"new_color"	"199 94 12 255"
+	"has_outlines"	"1"
+	"outline_color"	"156 80 20"
+	"is_rare"		"1"
+	"new_projectile"	"2"
+	"fire_rate"		"0.15"
+	"mag_size"	"5"
+	"cycle_time"	"1.5"
+	"persist"		"0"
+}

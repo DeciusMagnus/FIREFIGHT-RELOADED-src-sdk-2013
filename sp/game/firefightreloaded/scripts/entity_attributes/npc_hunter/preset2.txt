@@ -12,6 +12,6 @@
 	"spread_cone_random_max"	"6"
 	"volley_normal_delay"	"0.15"
 	"volley_size"		"5"
-	"outline_color"		"255 134 36"
+	"outline_color"		"156 80 20"
 	"persist"		"0"
 }

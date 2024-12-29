@@ -53,6 +53,7 @@
 #include    "grenade_frag.h"
 #include    "grenade_ar2.h"
 #include	"hl2_gamerules.h"
+#include	"te_effect_dispatch.h"
 
 ConVar	sk_hgrunt_health( "sk_hgrunt_health","0");
 ConVar	sk_hgrunt_robot_health("sk_hgrunt_robot_health", "0");
@@ -763,7 +764,24 @@ void CHGrunt::Shoot (int bulletnum, Vector cone)
 	AngleVectors( GetAbsAngles(), &forward, &right, &up );
 
 	FireBullets(bulletnum, vecShootOrigin, vecShootDir, cone, 2048, m_iAmmoType);
-	
+
+	CEffectData data;
+	data.m_nEntIndex = entindex();
+	data.m_nAttachmentIndex = LookupAttachment("0");
+	data.m_flScale = 1.0f;
+	if (FBitSet(m_iWeapons, HGRUNT_SHOTGUN))
+	{
+		data.m_fFlags = MUZZLEFLASH_SHOTGUN;
+	}
+	else
+	{
+		data.m_fFlags = MUZZLEFLASH_SMG1;
+	}
+	DispatchEffect("MuzzleFlash", data);
+
+	DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, LookupAttachment("0"));
+
+	//redundant?
 	DoMuzzleFlash();
 	
 	m_cAmmoLoaded--;// take away a bullet!

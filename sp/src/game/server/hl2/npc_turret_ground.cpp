@@ -543,6 +543,8 @@ void CNPC_GroundTurret::Shoot()
 		info.m_iAmmoType = m_iAmmoType;
 
 		FireBullets( info );
+
+		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, LookupAttachment("eyes"));
 	}
 
 	// Do the AR2 muzzle flash

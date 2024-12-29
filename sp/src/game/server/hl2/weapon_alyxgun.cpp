@@ -254,6 +254,11 @@ void CWeaponAlyxGun::FireNPCPrimaryAttack( CBaseCombatCharacter *pOperator, bool
 		pOperator->FireBullets( 1, vecShootOrigin, vecShootDir, VECTOR_CONE_PRECALCULATED, MAX_TRACE_LENGTH, m_iPrimaryAmmoType, 2 );
 	}
 
+	if (GetWpnData().m_bUseMuzzleSmoke)
+	{
+		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+	}
+
 	pOperator->DoMuzzleFlash();
 
 	if( hl2_episodic.GetBool() )

@@ -87,7 +87,6 @@ ConVar sk_hunter_health( "sk_hunter_health", "210" );
 // Melee attacks
 ConVar sk_hunter_dmg_one_slash( "sk_hunter_dmg_one_slash", "20" );
 ConVar sk_hunter_dmg_charge( "sk_hunter_dmg_charge", "20" );
-ConVar sk_ministrider_dmg_ar2round("sk_ministrider_dmg_ar2round", "5.0");
 
 // Flechette volley attack
 ConVar hunter_flechette_max_range( "hunter_flechette_max_range", "1200" );
@@ -1749,6 +1748,8 @@ void CNPC_Hunter::Precache()
 	PrecacheScriptSound( "NPC_Hunter.FoundEnemyAck" );
 	PrecacheScriptSound( "NPC_Hunter.DefendStrider" );
 	PrecacheScriptSound( "NPC_Hunter.HitByVehicle" );
+
+	PrecacheScriptSound("Weapon_Railgun.Single");
 
 	PrecacheParticleSystem( "hunter_muzzle_flash" );
 	PrecacheParticleSystem( "blood_impact_synth_01" );
@@ -5431,9 +5432,18 @@ void CNPC_Hunter::MakeTracer( const Vector &vecTracerSrc, const trace_t &tr, int
 
 	flTracerDist = VectorNormalize( vecDir );
 
-	int nAttachment = LookupAttachment( "MiniGun" );
+	int iAttachment = -1;
 
-	UTIL_Tracer( vecTracerSrc, tr.endpos, nAttachment, TRACER_FLAG_USEATTACHMENT, 5000, true, "HunterTracer" );
+	if (m_bTopMuzzle)
+	{
+		iAttachment = gm_nTopGunAttachment;
+	}
+	else
+	{
+		iAttachment = gm_nBottomGunAttachment;
+	}
+
+	UTIL_Tracer( vecTracerSrc, tr.endpos, iAttachment, TRACER_FLAG_USEATTACHMENT, 5000, true, "HunterTracer" );
 }
 
 
@@ -6628,85 +6638,12 @@ void CNPC_Hunter::CreateRPGRocketProjectile(const Vector& vecSrc, Vector& vecSho
 
 void CNPC_Hunter::CreateAR2Round(const Vector& vecSrc, const Vector& vecDir)
 {
-	trace_t tr;
-	// Trace the initial shot from the weapon
-	UTIL_TraceLine(vecSrc, vecSrc + vecDir * MAX_COORD_INTEGER, MASK_SHOT, this, COLLISION_GROUP_NONE, &tr);
+	CSoundEnt::InsertSound(SOUND_COMBAT | SOUND_CONTEXT_GUNFIRE, GetAbsOrigin(), SOUNDENT_VOLUME_MACHINEGUN, 0.2, this, SOUNDENT_CHANNEL_WEAPON, GetEnemy());
 
-	CEffectData data;
-	data.m_vOrigin = tr.endpos + (tr.plane.normal * 1.0f);
-	data.m_vNormal = tr.plane.normal;
-	DispatchEffect("AR2Impact", data);
-	BaseClass::DoImpactEffect(tr, DMG_DISSOLVE);
-
-	UTIL_Tracer(vecSrc, tr.endpos, 0, TRACER_DONT_USE_ATTACHMENT, 5000, true, "AR2Tracer");
-
-	CTakeDamageInfo damageInfo(this, this, sk_ministrider_dmg_ar2round.GetFloat(), DMG_GENERIC | DMG_DISSOLVE); //tr.m_pEnt->GetHealth()
-	Vector force(0, 0, 1.0f);
-	damageInfo.SetDamageForce(force);
-	damageInfo.SetDamagePosition(tr.endpos);
-	if (tr.m_pEnt)
-	{
-		tr.m_pEnt->TakeDamage(damageInfo);
-	}
+	FireBullets(1, vecSrc, vecDir, VECTOR_CONE_5DEGREES, MAX_COORD_RANGE, GetAmmoDef()->Index("AR2"), 1);
 }
 
-Vector IntToCone(int val)
-{
-	Vector cone;
 
-	switch (val)
-	{
-	case 0:
-	case 1:
-		cone = VECTOR_CONE_1DEGREES;
-		break;
-	case 2:
-		cone = VECTOR_CONE_2DEGREES;
-		break;
-	case 3:
-		cone = VECTOR_CONE_3DEGREES;
-		break;
-	case 4:
-		cone = VECTOR_CONE_4DEGREES;
-		break;
-	case 5:
-		cone = VECTOR_CONE_5DEGREES;
-		break;
-	case 6:
-		cone = VECTOR_CONE_6DEGREES;
-		break;
-	case 7:
-		cone = VECTOR_CONE_7DEGREES;
-		break;
-	case 8:
-		cone = VECTOR_CONE_8DEGREES;
-		break;
-	case 9:
-		cone = VECTOR_CONE_9DEGREES;
-		break;
-	case 10:
-	case 11:
-	case 12:
-	case 13:
-	case 14:
-		cone = VECTOR_CONE_10DEGREES;
-		break;
-	case 15:
-	case 16:
-	case 17:
-	case 18:
-	case 19:
-		cone = VECTOR_CONE_15DEGREES;
-		break;
-	case 20:
-		cone = VECTOR_CONE_20DEGREES;
-		break;
-	default:
-		break;
-	}
-
-	return cone;
-}
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -6726,16 +6663,19 @@ bool CNPC_Hunter::ShootFlechette( CBaseEntity *pTargetEntity, bool bSingleShot )
 	Vector vecSrc;
 	QAngle angMuzzle;
 
+	int iAttachment = -1;
+
 	if ( m_bTopMuzzle )
 	{
-		GetAttachment( gm_nTopGunAttachment, vecSrc, angMuzzle );
-		DoMuzzleFlash( gm_nTopGunAttachment );
+		iAttachment = gm_nTopGunAttachment;
 	}
 	else
 	{
-		GetAttachment( gm_nBottomGunAttachment, vecSrc, angMuzzle );
-		DoMuzzleFlash( gm_nBottomGunAttachment );
+		iAttachment = gm_nBottomGunAttachment;
 	}
+
+	GetAttachment(iAttachment, vecSrc, angMuzzle);
+	DoMuzzleFlash(iAttachment);
 
 	m_bTopMuzzle = !m_bTopMuzzle;
 
@@ -6794,12 +6734,12 @@ bool CNPC_Hunter::ShootFlechette( CBaseEntity *pTargetEntity, bool bSingleShot )
 					bOvercharge = m_pAttributes->GetBool("railgun_overcharge_perfect_shots");
 				}
 
-				cone = IntToCone(conespread);
+				cone = UTIL_IntToCone(conespread);
 				spreadbias = m_pAttributes->GetFloat("spread_bias", 1.0f);
 			}
 			else
 			{
-				cone = IntToCone(conespread);
+				cone = UTIL_IntToCone(conespread);
 			}
 
 			vecShoot = manipulator.ApplySpread(cone, spreadbias);
@@ -6848,6 +6788,7 @@ bool CNPC_Hunter::ShootFlechette( CBaseEntity *pTargetEntity, bool bSingleShot )
 				break;
 			case PROJ_AR2_ROUND:
 				CreateAR2Round(vecSrc, vecDir);
+				DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, iAttachment);
 				break;
 			case PROJ_RAILGUN:
 				CreateRailgunProjectile(vecSrc, vecShoot, bOvercharge);
@@ -6858,12 +6799,14 @@ bool CNPC_Hunter::ShootFlechette( CBaseEntity *pTargetEntity, bool bSingleShot )
 			case PROJ_FLECHETTE:
 			default:
 				CreateDefaultProjectile(pTargetEntity, vecSrc, vecShoot, angShoot);
+				DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, iAttachment);
 				break;
 		}
 	}
 	else
 	{
 		CreateDefaultProjectile(pTargetEntity, vecSrc, vecShoot, angShoot);
+		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, iAttachment);
 	}
 
 	if (bOvercharge)

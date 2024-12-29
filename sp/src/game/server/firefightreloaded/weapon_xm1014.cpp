@@ -193,6 +193,11 @@ void CWeaponXM1014::FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, bool b
 		vecShootDir = npc->GetActualShootTrajectory(vecShootOrigin);
 	}
 
+	if (GetWpnData().m_bUseMuzzleSmoke)
+	{
+		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+	}
+
 	pOperator->FireBullets(6, vecShootOrigin, vecShootDir, GetBulletSpread(), MAX_TRACE_LENGTH, m_iPrimaryAmmoType, 0);
 }
 

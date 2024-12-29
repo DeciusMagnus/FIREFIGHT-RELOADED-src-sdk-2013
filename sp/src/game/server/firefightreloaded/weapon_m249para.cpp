@@ -31,6 +31,7 @@ public:
 	void	Precache(void);
 	int		GetMinBurst() { return 10; }
 	int		GetMaxBurst() { return 20; }
+	void	FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, Vector& vecShootOrigin, Vector& vecShootDir);
 	void	Operator_HandleAnimEvent(animevent_t *pEvent, CBaseCombatCharacter *pOperator);
 	void	Operator_ForceNPCFire(CBaseCombatCharacter* pOperator, bool bSecondary);
 	int		CapabilitiesGet(void) { return bits_CAP_WEAPON_RANGE_ATTACK1; }
@@ -164,17 +165,7 @@ void CWeaponM249Para::Operator_HandleAnimEvent(animevent_t *pEvent, CBaseCombatC
 		vecShootOrigin = pOperator->Weapon_ShootPosition();
 		vecShootDir = npc->GetActualShootTrajectory(vecShootOrigin);
 
-		WeaponSoundRealtime(SINGLE);
-
-		CSoundEnt::InsertSound(SOUND_COMBAT | SOUND_CONTEXT_GUNFIRE, pOperator->GetAbsOrigin(), SOUNDENT_VOLUME_MACHINEGUN, 0.2, pOperator, SOUNDENT_CHANNEL_WEAPON, pOperator->GetEnemy());
-
-		//shoot 2 to make it seem we're shooting super fast.
-		pOperator->FireBullets(2, vecShootOrigin, vecShootDir, GetBulletSpread(), MAX_TRACE_LENGTH, m_iPrimaryAmmoType, 2);
-
-		// NOTENOTE: This is overriden on the client-side
-		pOperator->DoMuzzleFlash();
-
-		m_iClip1 = m_iClip1 - 2;
+		FireNPCPrimaryAttack(pOperator, vecShootOrigin, vecShootDir);
 	}
 	break;
 	default:
@@ -185,6 +176,9 @@ void CWeaponM249Para::Operator_HandleAnimEvent(animevent_t *pEvent, CBaseCombatC
 
 void CWeaponM249Para::Operator_ForceNPCFire(CBaseCombatCharacter* pOperator, bool bSecondary)
 {
+	// Ensure we have enough rounds in the clip
+	m_iClip1++;
+
 	Vector vecShootOrigin, vecShootDir;
 	QAngle	angShootDir;
 
@@ -193,13 +187,25 @@ void CWeaponM249Para::Operator_ForceNPCFire(CBaseCombatCharacter* pOperator, boo
 
 	vecShootOrigin = pOperator->Weapon_ShootPosition();
 	vecShootDir = npc->GetActualShootTrajectory(vecShootOrigin);
+	FireNPCPrimaryAttack(pOperator, vecShootOrigin, vecShootDir);
+}
 
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CWeaponM249Para::FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, Vector& vecShootOrigin, Vector& vecShootDir)
+{
 	WeaponSoundRealtime(SINGLE);
 
 	CSoundEnt::InsertSound(SOUND_COMBAT | SOUND_CONTEXT_GUNFIRE, pOperator->GetAbsOrigin(), SOUNDENT_VOLUME_MACHINEGUN, 0.2, pOperator, SOUNDENT_CHANNEL_WEAPON, pOperator->GetEnemy());
 
 	//shoot 2 to make it seem we're shooting super fast.
 	pOperator->FireBullets(2, vecShootOrigin, vecShootDir, GetBulletSpread(), MAX_TRACE_LENGTH, m_iPrimaryAmmoType, 2);
+
+	if (GetWpnData().m_bUseMuzzleSmoke)
+	{
+		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+	}
 
 	// NOTENOTE: This is overriden on the client-side
 	pOperator->DoMuzzleFlash();
