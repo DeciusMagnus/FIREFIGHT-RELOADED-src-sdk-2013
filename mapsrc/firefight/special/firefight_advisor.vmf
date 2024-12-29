@@ -1,8 +1,8 @@
 versioninfo
 {
 	"editorversion" "400"
-	"editorbuild" "8868"
-	"mapversion" "164"
+	"editorbuild" "8869"
+	"mapversion" "165"
 	"formatversion" "100"
 	"prefab" "0"
 }
@@ -89,7 +89,7 @@ bgimages_plus
 world
 {
 	"id" "1"
-	"mapversion" "164"
+	"mapversion" "165"
 	"classname" "worldspawn"
 	"detailmaterial" "detail/detailsprites"
 	"detailvbsp" "detail.vbsp"
@@ -25764,7 +25764,7 @@ entity
 	"pitch" "100"
 	"spawnflags" "81"
 	"targetname" "bossmusic"
-	"volume" "7"
+	"volume" "8"
 	"origin" "-106.976 617.408 129"
 	editor
 	{
@@ -25858,7 +25858,7 @@ entity
 {
 	"id" "4670"
 	"classname" "player_speedmod"
-	"spawnflags" "253"
+	"spawnflags" "191"
 	"targetname" "speedmod"
 	"origin" "-81.2399 509.611 129"
 	editor
