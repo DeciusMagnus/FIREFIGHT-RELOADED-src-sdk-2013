@@ -688,9 +688,9 @@
 	}
 }
 
-"NPC_MetroPolice.SentenceParameters"
+"NPC_KillerScanner.SentenceParameters"
 {
-	"channel"		"CHAN_VOICE"
+	"channel"		"CHAN_VOICE2"
 	"volume"		"0.80"
 	"pitch"		"100,106"
 

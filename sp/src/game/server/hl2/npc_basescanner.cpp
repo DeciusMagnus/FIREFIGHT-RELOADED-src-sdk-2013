@@ -433,7 +433,7 @@ void CNPC_BaseScanner::TraceAttack( const CTakeDamageInfo &info, const Vector &v
 void CNPC_BaseScanner::TakeDamageFromPhyscannon( CBasePlayer *pPlayer )
 {
 	CTakeDamageInfo info;
-	info.SetDamageType( DMG_GENERIC );
+	info.SetDamageType( DMG_CRUSH );
 	info.SetInflictor( this );
 	info.SetAttacker( pPlayer );
 	info.SetDamagePosition( GetAbsOrigin() );
@@ -499,10 +499,76 @@ bool CNPC_BaseScanner::IsHeldByPhyscannon( )
 	return VPhysicsGetObject() && (VPhysicsGetObject()->GetGameFlags() & FVPHYSICS_PLAYER_HELD);
 }
 
+//-----------------------------------------------------------------------------
+// Take damage from a vehicle; it's like a really big crowbar 
+//-----------------------------------------------------------------------------
+void CNPC_BaseScanner::TakeDamageFromVehicle(int index, gamevcollisionevent_t* pEvent)
+{
+	// Use the vehicle velocity to determine the damage
+	int otherIndex = !index;
+	CBaseEntity* pOther = pEvent->pEntities[otherIndex];
+
+	float flSpeed = pEvent->preVelocity[otherIndex].Length();
+	flSpeed = clamp(flSpeed, 300.0f, 600.0f);
+	float flDamage = SimpleSplineRemapVal(flSpeed, 300.0f, 600.0f, 0.0f, 1.0f);
+	if (flDamage == 0.0f)
+		return;
+
+	flDamage *= 20.0f;
+
+	Vector damagePos;
+	pEvent->pInternalData->GetContactPoint(damagePos);
+
+	Vector damageForce = 2.0f * pEvent->postVelocity[index] * pEvent->pObjects[index]->GetMass();
+	if (damageForce == vec3_origin)
+	{
+		// This can happen if this entity is a func_breakable, and can't move.
+		// Use the velocity of the entity that hit us instead.
+		damageForce = 2.0f * pEvent->postVelocity[!index] * pEvent->pObjects[!index]->GetMass();
+	}
+	Assert(damageForce != vec3_origin);
+	CTakeDamageInfo dmgInfo(pOther, pOther, damageForce, damagePos, flDamage, DMG_CRUSH);
+	TakeDamage(dmgInfo);
+}
+
+void CNPC_BaseScanner::HitPhysicsObject(CBaseEntity* pOther)
+{
+	IPhysicsObject* pOtherPhysics = pOther->VPhysicsGetObject();
+	Vector pos, posOther;
+	// Put the force on the line between the manhack origin and hit object origin
+	VPhysicsGetObject()->GetPosition(&pos, NULL);
+	pOtherPhysics->GetPosition(&posOther, NULL);
+	Vector dir = posOther - pos;
+	VectorNormalize(dir);
+	// size/2 is approx radius
+	pos += dir * WorldAlignSize().x * 0.5;
+	Vector cross;
+
+	// UNDONE: Use actual manhack up vector so the fake blade is
+	// in the right plane?
+	// Get a vector in the x/y plane in the direction of blade spin (clockwise)
+	CrossProduct(dir, Vector(0, 0, 1), cross);
+	VectorNormalize(cross);
+	// force is a 30kg object going 100 in/s
+	pOtherPhysics->ApplyForceOffset(cross * 30 * 100, pos);
+}
+
+void CNPC_BaseScanner::VPhysicsShadowCollision(int index, gamevcollisionevent_t* pEvent)
+{
+	int otherIndex = !index;
+	CBaseEntity* pOther = pEvent->pEntities[otherIndex];
+
+	if (pOther->GetMoveType() == MOVETYPE_VPHYSICS)
+	{
+		HitPhysicsObject(pOther);
+	}
+	BaseClass::VPhysicsShadowCollision(index, pEvent);
+}
+
 //------------------------------------------------------------------------------
 // Physics impact
 //------------------------------------------------------------------------------
-#define SCANNER_SMASH_TIME	0.75		// How long after being thrown from a physcannon that a manhack is eligible to die from impact
+#define SCANNER_SMASH_TIME	0.35		// How long after being thrown from a physcannon that a manhack is eligible to die from impact
 void CNPC_BaseScanner::VPhysicsCollision( int index, gamevcollisionevent_t *pEvent )
 {
 	BaseClass::VPhysicsCollision( index, pEvent );
@@ -523,15 +589,24 @@ void CNPC_BaseScanner::VPhysicsCollision( int index, gamevcollisionevent_t *pEve
 	CBaseEntity *pHitEntity = pEvent->pEntities[otherIndex];
 	if ( pHitEntity )
 	{
-		if ( pHitEntity->HasPhysicsAttacker( 0.5f ) )
+		// It can take physics damage if it rams into a vehicle
+		if (pHitEntity->GetServerVehicle())
 		{
-			// It can take physics damage from things thrown by the player.
-			TakeDamageFromPhysicsImpact( index, pEvent );
+			TakeDamageFromVehicle(index, pEvent);
 		}
-		else if ( FClassnameIs( pHitEntity, "prop_combine_ball" ) )
+		else if (pHitEntity->HasPhysicsAttacker(0.5f))
+		{
+			// It also can take physics damage from things thrown by the player.
+			TakeDamageFromPhysicsImpact(index, pEvent);
+		}
+		else if (FClassnameIs(pHitEntity, "prop_combine_ball"))
 		{
 			// It also can take physics damage from a combine ball.
-			TakeDamageFromPhysicsImpact( index, pEvent );
+			TakeDamageFromPhysicsImpact(index, pEvent);
+		}
+		else if (m_iHealth <= 0)
+		{
+			TakeDamageFromPhysicsImpact(index, pEvent);
 		}
 	}
 }

@@ -89,7 +89,12 @@ public:
 
 	virtual float	GetHeadTurnRate( void );
 
+	virtual void	VPhysicsShadowCollision(int index, gamevcollisionevent_t* pEvent);
 	virtual void	VPhysicsCollision( int index, gamevcollisionevent_t *pEvent );
+
+	virtual void	TakeDamageFromVehicle(int index, gamevcollisionevent_t* pEvent);
+
+	void			HitPhysicsObject(CBaseEntity* pOther);
 
 	// 	CDefaultPlayerPickupVPhysics
 	void			OnPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason );

@@ -180,7 +180,7 @@
 		"npc_killerscanner"
 		{
 				"font"		"WeaponIconsKillFeed"
-				"character"	"2"
+				"character"	"9"
 		}
 		"npc_grenade_frag"
 		{

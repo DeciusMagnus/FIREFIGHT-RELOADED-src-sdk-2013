@@ -915,6 +915,15 @@ V_MYNUMP8 nine
 //V_MYNUMP16 9l14
 //V_MYNUMP17 6r3
 
+//randomized suspect names. - FR
+V_RNDSUSPECTP0 subject
+V_RNDSUSPECTP1 citizen
+V_RNDSUSPECTP2 UPI
+V_RNDSUSPECTP3 noncitizen
+V_RNDSUSPECTP4 sociocide
+V_RNDSUSPECTP5 anticitizen
+V_RNDSUSPECTP6 infection
+
 //
 // Death sounds
 
@@ -937,7 +946,8 @@ METROPOLICE_DIE_NOSCREAM4 npc/overwatch/radiovoice/(v80) on3 V_MYNAMEP V_MYNUMP 
 //
 // Alert sounds (unused currently) - see monst_player
 //
-METROPOLICE_GO_ALERT0 npc/metropolice/vo/(v100) on1 designatesuspectas V_G2_SUSPECT_MAP__P allunitscode2 off1 {Len 1.5 closecaption NPC_Combine.Alert}
+//METROPOLICE_GO_ALERT0 npc/metropolice/vo/(v100) on1 designatesuspectas V_G2_SUSPECT_MAP__P allunitscode2 off1 {Len 1.5 closecaption NPC_Combine.Alert}
+METROPOLICE_GO_ALERT0 npc/metropolice/vo/(v100) on1 designatesuspectas V_RNDSUSPECTP allunitscode2 off1 {Len 1.5 closecaption NPC_Combine.Alert}
 METROPOLICE_GO_ALERT1 npc/metropolice/vo/(v100) on2 thereheis V_DISTP meters off4 {Len 1.5 closecaption NPC_Combine.Alert}
 METROPOLICE_GO_ALERT2 npc/metropolice/vo/(v100) on2 contactwith243suspect, V_G1_LOCATION_MAP__P V_G3_NUMBP off3 {Len 1.5 closecaption NPC_Combine.Alert}
 METROPOLICE_GO_ALERT3 npc/metropolice/vo/(v100) on1 allunitsrespondcode3 off3 {Len 1.5 closecaption NPC_Combine.Alert}
@@ -1068,8 +1078,10 @@ METROPOLICE_IDLE_CHECK_CR2 npc/metropolice/vo/(v50) on2 cpbolforthat243 off1 {Le
 METROPOLICE_IDLE_CHECK_CR3 npc/metropolice/vo/(v50) on1 localcptreportstatus off4 {Len 1.5 closecaption NPC_Combine.RadioChatter}
 METROPOLICE_IDLE_CHECK_CR4 npc/overwatch/radiovoice/(v50) on3 allunitsbolfor243suspect off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
 METROPOLICE_IDLE_CHECK_CR5 npc/overwatch/radiovoice/(v50) on3 statuson243suspect off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
-METROPOLICE_IDLE_CHECK_CR6 npc/overwatch/radiovoice/(v50) on3 reporton V_G2_SUSPECT_MAP__P off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
-METROPOLICE_IDLE_CHECK_CR7 npc/metropolice/vo/(v50) on1 reportsightingsaccomplices V_G2_SUSPECT_MAP__P off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+//METROPOLICE_IDLE_CHECK_CR6 npc/overwatch/radiovoice/(v50) on3 reporton V_G2_SUSPECT_MAP__P off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+//METROPOLICE_IDLE_CHECK_CR7 npc/metropolice/vo/(v50) on1 reportsightingsaccomplices V_G2_SUSPECT_MAP__P off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+METROPOLICE_IDLE_CHECK_CR6 npc/overwatch/radiovoice/(v50) on3 reporton V_RNDSUSPECTP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+METROPOLICE_IDLE_CHECK_CR7 npc/metropolice/vo/(v50) on1 reportsightingsaccomplices V_RNDSUSPECTP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
 
 // Response to the check with squadmates
 METROPOLICE_IDLE_CLEAR_CR0 npc/metropolice/vo/(v50) on1 suspectlocationunknown off3 {Len 1.5}
@@ -1082,8 +1094,10 @@ METROPOLICE_IDLE_CLEAR_CR4 npc/metropolice/vo/(v50) on2 utlthatsuspect off1 {Len
 METROPOLICE_IDLE_QUEST_CR0 npc/metropolice/vo/(v50) on1 confirmadw off3 {Len 1.5 closecaption NPC_Combine.RadioChatter}
 METROPOLICE_IDLE_QUEST_CR1 npc/metropolice/vo/(v50) on1 allunitsbol34sat V_G1_LOCATION_MAP__P off3 {Len 1.5 closecaption NPC_Combine.RadioChatter}
 METROPOLICE_IDLE_QUEST_CR2 npc/metropolice/vo/(v50) on2 dispreportssuspectincursion V_G1_LOCATION_MAP__P V_G3_NUMBP off1 off1 {Len 1.5 closecaption NPC_Combine.RadioChatter}
-METROPOLICE_IDLE_QUEST_CR3 npc/metropolice/vo/(v50) on1 dispupdatingapb V_G2_SUSPECT_MAP__P off3 {Len 1.5 closecaption NPC_Combine.RadioChatter}
-METROPOLICE_IDLE_QUEST_CR4 npc/overwatch/radiovoice/(v50) on3 allunitsverdictcodeonsuspect V_G2_SUSPECT_MAP__P, isnow V_RNDACTP V_RNDNUMP V_RNDACTP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+//METROPOLICE_IDLE_QUEST_CR3 npc/metropolice/vo/(v50) on1 dispupdatingapb V_G2_SUSPECT_MAP__P off3 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+//METROPOLICE_IDLE_QUEST_CR4 npc/overwatch/radiovoice/(v50) on3 allunitsverdictcodeonsuspect V_G2_SUSPECT_MAP__P, isnow V_RNDACTP V_RNDNUMP V_RNDACTP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+METROPOLICE_IDLE_QUEST_CR3 npc/metropolice/vo/(v50) on1 dispupdatingapb V_RNDSUSPECTP off3 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+METROPOLICE_IDLE_QUEST_CR4 npc/overwatch/radiovoice/(v50) on3 allunitsverdictcodeonsuspect V_RNDSUSPECTP, isnow V_RNDACTP V_RNDNUMP V_RNDACTP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
 METROPOLICE_IDLE_QUEST_CR5 npc/overwatch/radiovoice/(v50) on3 preparetoinnoculate V_G1_LOCATION_MAP__P off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
 METROPOLICE_IDLE_QUEST_CR6 npc/overwatch/radiovoice/(v50) on3 allunitsreturntocode12 off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
 
@@ -1195,13 +1209,17 @@ V_RNDJUDGEP2 disassociationfromcivic
 // The player is significantly hurt
 METROPOLICE_PLAYERHIT0 npc/metropolice/vo/(v100) on1 wegotadbherecancel10-102 off4 {Len 1.5 closecaption NPC_Combine.RadioChatter}
 METROPOLICE_PLAYERHIT1 npc/metropolice/vo/(v100) on2 suspectisbleeding off3 {Len 1.5 closecaption NPC_Combine.RadioChatter}
-METROPOLICE_PLAYERHIT2 npc/metropolice/vo/(v100) on1 V_G2_SUSPECT_MAP__P ispassive off3 {Len 1.5 closecaption NPC_Combine.RadioChatter}
-METROPOLICE_PLAYERHIT3 npc/metropolice/vo/(v100) on2 readytoamputate V_G2_SUSPECT_MAP__P off1 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+//METROPOLICE_PLAYERHIT2 npc/metropolice/vo/(v100) on1 V_G2_SUSPECT_MAP__P ispassive off3 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+//METROPOLICE_PLAYERHIT3 npc/metropolice/vo/(v100) on2 readytoamputate V_G2_SUSPECT_MAP__P off1 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+METROPOLICE_PLAYERHIT2 npc/metropolice/vo/(v100) on1 V_RNDSUSPECTP ispassive off3 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+METROPOLICE_PLAYERHIT3 npc/metropolice/vo/(v100) on2 readytoamputate V_RNDSUSPECTP off1 {Len 1.5 closecaption NPC_Combine.RadioChatter}
 METROPOLICE_PLAYERHIT4 npc/metropolice/vo/(v100) on1 get11-44inboundcleaningup off3 {Len 1.5 closecaption NPC_Combine.RadioChatter}
 METROPOLICE_PLAYERHIT5 npc/overwatch/radiovoice/(v100) on1, on1, on1, on3 attentionyouhavebeenchargedwith V_RNDCHARGEP, preparetoreceiveverdict V_RNDJUDGEP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
-METROPOLICE_PLAYERHIT6 npc/overwatch/radiovoice/(v100) on1, on1, on1, on3 attention V_G2_SUSPECT_MAP__P, prepareforfinalsentencing off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+//METROPOLICE_PLAYERHIT6 npc/overwatch/radiovoice/(v100) on1, on1, on1, on3 attention V_G2_SUSPECT_MAP__P, prepareforfinalsentencing off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+METROPOLICE_PLAYERHIT6 npc/overwatch/radiovoice/(v100) on1, on1, on1, on3 attention V_RNDSUSPECTP, prepareforfinalsentencing off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
 METROPOLICE_PLAYERHIT7 npc/overwatch/radiovoice/(v100) on1, on1, on1, on3 youarechargedwithterminal, completesentencingatwill off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
-METROPOLICE_PLAYERHIT8 npc/overwatch/radiovoice/(v100) on1, on1, on1, on3 attention V_G2_SUSPECT_MAP__P, youarejudgedguilty, allunitsdeliverterminalverdict off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+//METROPOLICE_PLAYERHIT8 npc/overwatch/radiovoice/(v100) on1, on1, on1, on3 attention V_G2_SUSPECT_MAP__P, youarejudgedguilty, allunitsdeliverterminalverdict off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+METROPOLICE_PLAYERHIT8 npc/overwatch/radiovoice/(v100) on1, on1, on1, on3 attention V_RNDSUSPECTP, youarejudgedguilty, allunitsdeliverterminalverdict off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
 
 //
 // Taking cover
@@ -1229,7 +1247,8 @@ METROPOLICE_COVER_HEAVY_DAMAGE5 npc/metropolice/vo/(v80) on1 off3 {Len 1.5}
 //
 
 // (UNDONE?) I lost my enemy under 10 seconds ago
-METROPOLICE_LOST_SHORT0 npc/metropolice/vo/(v60) on1 V_G2_SUSPECT_MAP__P hidinglastseenatrange V_DISTP meters off1 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+//METROPOLICE_LOST_SHORT0 npc/metropolice/vo/(v60) on1 V_G2_SUSPECT_MAP__P hidinglastseenatrange V_DISTP meters off1 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+METROPOLICE_LOST_SHORT0 npc/metropolice/vo/(v60) on1 V_RNDSUSPECTP hidinglastseenatrange V_DISTP meters off1 {Len 1.5 closecaption NPC_Combine.RadioChatter}
 METROPOLICE_LOST_SHORT1 npc/metropolice/vo/(v60) on2 sweepingforsuspect off3 {Len 1.5 closecaption NPC_Combine.RadioChatter}
 METROPOLICE_LOST_SHORT2 npc/overwatch/radiovoice/(v50) on3 switchcomtotac3, reportplease off4 {Len 1.5 closecaption NPC_Combine.RadioChatter}
 
@@ -1253,11 +1272,14 @@ METROPOLICE_REFIND_ENEMY2 npc/metropolice/vo/(v100) on1 therehegoeshesat V_DISTP
 METROPOLICE_MONST0 npc/metropolice/vo/(v100) on1 outbreak V_RNDNUMP V_RNDACTP off1 {Len 1.5 closecaption NPC_Combine.Alert}
 METROPOLICE_MONST1 npc/metropolice/vo/(v100) on1 V_RNDACTP V_RNDNUMP off1 {Len 1.5 closecaption NPC_Combine.Alert}
 
-METROPOLICE_MONST_PLAYER0 npc/metropolice/vo/(v100) on1 V_G2_SUSPECT_MAP__P matchonapblikeness off4 {Len 1.5 closecaption NPC_Combine.Alert}
+//METROPOLICE_MONST_PLAYER0 npc/metropolice/vo/(v100) on1 V_G2_SUSPECT_MAP__P matchonapblikeness off4 {Len 1.5 closecaption NPC_Combine.Alert}
+METROPOLICE_MONST_PLAYER0 npc/metropolice/vo/(v100) on1 V_RNDSUSPECTP matchonapblikeness off4 {Len 1.5 closecaption NPC_Combine.Alert}
 METROPOLICE_MONST_PLAYER1 npc/metropolice/vo/(v100) on1 confirmpriority1sighted off1 {Len 1.5 closecaption NPC_Combine.Alert}
 METROPOLICE_MONST_PLAYER2 npc/metropolice/vo/(v100) on2 allunitsrespondcode3, V_G1_LOCATION_MAP__P V_G3_NUMBP off3 {Len 1.5 closecaption NPC_Combine.Alert}
-METROPOLICE_MONST_PLAYER3 npc/metropolice/vo/(v100) on1 V_G2_SUSPECT_MAP__P location V_G1_LOCATION_MAP__P V_G3_NUMBP off1 {Len 1.5 closecaption NPC_Combine.Alert}
-METROPOLICE_MONST_PLAYER4 npc/metropolice/vo/(v100) on1 designatesuspectas V_G2_SUSPECT_MAP__P allunitscode2 off1 {Len 1.5 closecaption NPC_Combine.Alert}
+//METROPOLICE_MONST_PLAYER3 npc/metropolice/vo/(v100) on1 V_G2_SUSPECT_MAP__P location V_G1_LOCATION_MAP__P V_G3_NUMBP off1 {Len 1.5 closecaption NPC_Combine.Alert}
+//METROPOLICE_MONST_PLAYER4 npc/metropolice/vo/(v100) on1 designatesuspectas V_G2_SUSPECT_MAP__P allunitscode2 off1 {Len 1.5 closecaption NPC_Combine.Alert}
+METROPOLICE_MONST_PLAYER3 npc/metropolice/vo/(v100) on1 V_RNDSUSPECTP location V_G1_LOCATION_MAP__P V_G3_NUMBP off1 {Len 1.5 closecaption NPC_Combine.Alert}
+METROPOLICE_MONST_PLAYER4 npc/metropolice/vo/(v100) on1 designatesuspectas V_RNDSUSPECTP allunitscode2 off1 {Len 1.5 closecaption NPC_Combine.Alert}
 METROPOLICE_MONST_PLAYER5 npc/metropolice/vo/(v100) on2 thereheis V_DISTP meters off4 {Len 1.5 closecaption NPC_Combine.Alert}
 METROPOLICE_MONST_PLAYER6 npc/metropolice/vo/(v100) on2 contactwith243suspect, V_G1_LOCATION_MAP__P V_G3_NUMBP off3 {Len 1.5 closecaption NPC_Combine.Alert}
 
@@ -1298,7 +1320,8 @@ METROPOLICE_KILL_BUGS0 npc/metropolice/vo/(v100) on1 tagonebug off1 {Len 1.5}
 METROPOLICE_KILL_BUGS1 npc/metropolice/vo/(v100) on1 sterilize V_SEQG0_NBRP off1 {Len 1.5}
 
 METROPOLICE_KILL_PLAYER0 npc/metropolice/vo/(v100) on2 sentencedelivered off3 {Len 1.5}
-METROPOLICE_KILL_PLAYER1 npc/metropolice/vo/(v100) on2 V_G2_SUSPECT_MAP__P ispassive off3 {Len 1.5}
+//METROPOLICE_KILL_PLAYER1 npc/metropolice/vo/(v100) on2 V_G2_SUSPECT_MAP__P ispassive off3 {Len 1.5}
+METROPOLICE_KILL_PLAYER1 npc/metropolice/vo/(v100) on2 V_RNDSUSPECTP ispassive off3 {Len 1.5}
 METROPOLICE_KILL_PLAYER2 npc/metropolice/vo/(v100) on2 finalverdictadministered off3 {Len 1.5}
 METROPOLICE_KILL_PLAYER3 npc/metropolice/vo/(v100) on2 protectioncomplete off3 {Len 1.5}
 METROPOLICE_KILL_PLAYER4 npc/metropolice/vo/(v100) on2 sentencedelivered off3 {Len 1.5}
@@ -1887,7 +1910,7 @@ HEV_DET5 hl1/fvox/blip blip blip, antitoxin_shot(e25) radiation_detected(e50), o
 
 //killer
 
-KILLERSCANNER_PLAYERHIT0 npc/overwatch/radiovoice/(v100) on1, on1, on1, on3 attentionyouhavebeenchargedwith V_RNDCHARGEP, preparetoreceiveverdict V_RNDJUDGEP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
-KILLERSCANNER_PLAYERHIT1 npc/overwatch/radiovoice/(v100) on1, on1, on1, on3 attention V_G2_SUSPECT_MAP__P, prepareforfinalsentencing off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
-KILLERSCANNER_PLAYERHIT2 npc/overwatch/radiovoice/(v100) on1, on1, on1, on3 youarechargedwithterminal, completesentencingatwill off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
-KILLERSCANNER_PLAYERHIT3 npc/overwatch/radiovoice/(v100) on1, on1, on1, on3 attention V_G2_SUSPECT_MAP__P, youarejudgedguilty, allunitsdeliverterminalverdict off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+KILLERSCANNER_PLAYERHIT0 npc/overwatch/radiovoice/(v100) on3 cauterize V_RNDSUSPECTP V_RNDNUMP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+KILLERSCANNER_PLAYERHIT1 npc/overwatch/radiovoice/(v100) on3 sterilize V_RNDSUSPECTP V_RNDNUMP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+KILLERSCANNER_PLAYERHIT2 npc/overwatch/radiovoice/(v100) on3 amputate V_RNDSUSPECTP V_RNDNUMP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+KILLERSCANNER_PLAYERHIT3 npc/overwatch/radiovoice/(v100) on3 pressure V_RNDSUSPECTP V_RNDNUMP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}

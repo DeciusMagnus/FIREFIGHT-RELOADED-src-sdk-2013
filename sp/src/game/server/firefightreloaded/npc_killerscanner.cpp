@@ -34,6 +34,7 @@ ConVar	sk_killerscanner_minheight_combat("sk_killerscanner_minheight_combat", "1
 ConVar	sk_killerscanner_minheight_idle("sk_killerscanner_minheight_idle", "72");
 ConVar	sk_killerscanner_flight_accel_combat("sk_killerscanner_flight_accel_combat", "450");
 ConVar	sk_killerscanner_projectile_speed("sk_killerscanner_projectile_speed", "2000");
+ConVar	sk_killerscanner_sentence_delay("sk_killerscanner_sentence_delay", "30");
 
 #define KILLERSCANNER_MUZZLE_ATTACHMENT	"light"
 
@@ -109,6 +110,7 @@ public:
 	bool				m_bJustSpawned;
 
 	CAI_Sentence< CNPC_KillerScanner > m_Sentences;
+	float m_fTimeSinceLastSpoke;
 
 private:
 	DEFINE_CUSTOM_AI;
@@ -133,16 +135,35 @@ private:
 };
 
 BEGIN_DATADESC(CNPC_KillerScanner)
-	DEFINE_FIELD(m_fCycleTime, FIELD_TIME),
-	DEFINE_FIELD(m_iShots, FIELD_TIME),
+	DEFINE_SOUNDPATCH(m_pEngineSound),
+
+	DEFINE_EMBEDDED(m_KilledInfo),
+	DEFINE_FIELD(m_flGoalOverrideDistance, FIELD_FLOAT),
+	DEFINE_FIELD(m_fNextFlySoundTime, FIELD_TIME),
+	DEFINE_FIELD(m_nFlyMode, FIELD_INTEGER),
 	DEFINE_FIELD(m_nPoseTail, FIELD_INTEGER),
 	DEFINE_FIELD(m_nPoseDynamo, FIELD_INTEGER),
 	DEFINE_FIELD(m_nPoseFlare, FIELD_INTEGER),
 	DEFINE_FIELD(m_nPoseFaceVert, FIELD_INTEGER),
 	DEFINE_FIELD(m_nPoseFaceHoriz, FIELD_INTEGER),
+
+	DEFINE_FIELD(m_pSmokeTrail, FIELD_CLASSPTR),
+	DEFINE_FIELD(m_flFlyNoiseBase, FIELD_FLOAT),
+	DEFINE_FIELD(m_flEngineStallTime, FIELD_TIME),
+
+	DEFINE_FIELD(m_vecDiveBombDirection, FIELD_VECTOR),
+	DEFINE_FIELD(m_flDiveBombRollForce, FIELD_FLOAT),
+
+	// Physics Influence
+	DEFINE_FIELD(m_hPhysicsAttacker, FIELD_EHANDLE),
+	DEFINE_FIELD(m_flLastPhysicsInfluenceTime, FIELD_TIME),
+
+	DEFINE_FIELD(m_fCycleTime, FIELD_TIME),
 	DEFINE_FIELD(m_bPlayedChargeup, FIELD_BOOLEAN),
 	DEFINE_FIELD(m_bJustSpawned, FIELD_BOOLEAN),
 	DEFINE_EMBEDDED(m_Sentences),
+	DEFINE_FIELD(m_fTimeSinceLastSpoke, FIELD_TIME),
+
 END_DATADESC()
 
 LINK_ENTITY_TO_CLASS( npc_killerscanner, CNPC_KillerScanner );
@@ -175,6 +196,8 @@ void CNPC_KillerScanner::Spawn( void )
 	m_nPoseFaceHoriz = LookupPoseParameter("flex_horz");
 
 	BaseClass::Spawn();
+
+	m_fTimeSinceLastSpoke = gpGlobals->curtime;
 
 	//give us a bit of delay.
 	m_bJustSpawned = true;
@@ -231,7 +254,7 @@ bool CNPC_KillerScanner::CreateComponents()
 	if (!BaseClass::CreateComponents())
 		return false;
 
-	m_Sentences.Init(this, "NPC_MetroPolice.SentenceParameters");
+	m_Sentences.Init(this, "NPC_KillerScanner.SentenceParameters");
 
 	return true;
 }
@@ -284,9 +307,8 @@ int CNPC_KillerScanner::SelectSchedule(void)
 		if (HasCondition(COND_LOST_ENEMY))
 			return SCHED_SCANNER_PATROL;
 
-		if (HasCondition(COND_SEE_ENEMY) ||
-			HasCondition(COND_ENEMY_OCCLUDED) || 
-			HasCondition(COND_HAVE_ENEMY_LOS))
+		//attack if the enemy is behind glass. we have other code that helps us determine if enemies are reachable. 
+		if (HasCondition(COND_SEE_ENEMY) || HasCondition(COND_HAVE_ENEMY_LOS))
 			return SCHED_SCANNER_ATTACK;
 	}
 
@@ -351,8 +373,13 @@ Vector CNPC_KillerScanner::DesiredBodyTarget(CBaseEntity* pTarget)
 bool CNPC_KillerScanner::VerifyShot(CBaseEntity* pTarget)
 {
 	//if we're not facing the player, fail it.
-	if (HasCondition(COND_NOT_FACING_ATTACK) || IsHeldByPhyscannon())
+	if (HasCondition(COND_NOT_FACING_ATTACK) || 
+		HasCondition(COND_ENEMY_OCCLUDED) || 
+		HasCondition(COND_LOST_ENEMY) ||
+		IsHeldByPhyscannon())
+	{
 		return false;
+	}
 
 	Vector vecFirePos;
 	QAngle vecAngles;
@@ -365,19 +392,6 @@ bool CNPC_KillerScanner::VerifyShot(CBaseEntity* pTarget)
 
 	if (tr.fraction != 1.0)
 	{
-		if (pTarget->IsPlayer())
-		{
-			// if the target is the player, do another trace to see if we can shoot his eyeposition. This should help 
-			// improve sniper responsiveness in cases where the player is hiding his chest from the sniper with his 
-			// head in full view.
-			UTIL_TraceLine(vecFirePos, pTarget->EyePosition(), MASK_SHOT, pTarget, COLLISION_GROUP_NONE, &tr);
-
-			if (tr.fraction == 1.0)
-			{
-				return true;
-			}
-		}
-
 		// Trace hit something.
 		if (tr.m_pEnt)
 		{
@@ -406,13 +420,6 @@ void CNPC_KillerScanner::StartTask( const Task_t *pTask )
 	{
 		case TASK_KILLERSCANNER_SHOOT:
 		{
-			if (GetEnemy())
-			{
-				if (GetEnemy()->IsPlayer() && (GetEnemy()->GetHealth() <= 20))
-				{
-					m_Sentences.Speak("KILLERSCANNER_PLAYERHIT", SENTENCE_PRIORITY_HIGH, SENTENCE_CRITERIA_ALWAYS);
-				}
-			}
 			break;
 		}
 
@@ -538,6 +545,18 @@ void CNPC_KillerScanner::Attack(void)
 		if (!m_bPlayedChargeup)
 		{
 			ScannerEmitSound("Windup");
+			//taunt the player while recharging.
+			if (GetEnemy())
+			{
+				if (GetEnemy()->IsPlayer() && (GetEnemy()->GetHealth() <= 20))
+				{
+					if (m_fTimeSinceLastSpoke < gpGlobals->curtime)
+					{
+						m_Sentences.Speak("KILLERSCANNER_PLAYERHIT", SENTENCE_PRIORITY_HIGH, SENTENCE_CRITERIA_ALWAYS);
+						m_fTimeSinceLastSpoke = gpGlobals->curtime + sk_killerscanner_sentence_delay.GetFloat();
+					}
+				}
+			}
 			m_bPlayedChargeup = true;
 		}
 		return;
@@ -702,7 +721,10 @@ void CNPC_KillerScanner::RunTask( const Task_t *pTask )
 				return;
 			}
 
-			if (HasCondition(COND_NOT_FACING_ATTACK) || IsHeldByPhyscannon())
+			if (HasCondition(COND_NOT_FACING_ATTACK) ||
+				HasCondition(COND_ENEMY_OCCLUDED) ||
+				HasCondition(COND_LOST_ENEMY) ||
+				IsHeldByPhyscannon())
 			{
 				TaskFail(FAIL_NO_SHOOT);
 				return;
