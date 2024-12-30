@@ -1748,12 +1748,12 @@ RG_CIVVIES npc/hgrunt_robot/hg_civvies {Len 6.73}
 
 //killer
 
-KILLERSCANNER_PLAYER_TARGET0 npc/overwatch/radiovoice/(v100) on3 cauterize V_RNDSUSPECTP V_RNDNUMP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
-KILLERSCANNER_PLAYER_TARGET1 npc/overwatch/radiovoice/(v100) on3 sterilize V_RNDSUSPECTP V_RNDNUMP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
-KILLERSCANNER_PLAYER_TARGET2 npc/overwatch/radiovoice/(v100) on3 amputate V_RNDSUSPECTP V_RNDNUMP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
-KILLERSCANNER_PLAYER_TARGET3 npc/overwatch/radiovoice/(v100) on3 pressure V_RNDSUSPECTP V_RNDNUMP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
-KILLERSCANNER_PLAYER_TARGET4 npc/overwatch/radiovoice/(v100) on3 restrict V_RNDSUSPECTP V_RNDNUMP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
-KILLERSCANNER_PLAYER_TARGET5 npc/overwatch/radiovoice/(v100) on3 suspend V_RNDSUSPECTP V_RNDNUMP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+KILLERSCANNER_PLAYER_TARGET0 npc/overwatch/radiovoice/(v100) on3 cauterize V_RNDSUSPECTP one off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+KILLERSCANNER_PLAYER_TARGET1 npc/overwatch/radiovoice/(v100) on3 sterilize V_RNDSUSPECTP one off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+KILLERSCANNER_PLAYER_TARGET2 npc/overwatch/radiovoice/(v100) on3 amputate V_RNDSUSPECTP one off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+KILLERSCANNER_PLAYER_TARGET3 npc/overwatch/radiovoice/(v100) on3 pressure V_RNDSUSPECTP one off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+KILLERSCANNER_PLAYER_TARGET4 npc/overwatch/radiovoice/(v100) on3 restrict V_RNDSUSPECTP one off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+KILLERSCANNER_PLAYER_TARGET5 npc/overwatch/radiovoice/(v100) on3 suspend V_RNDSUSPECTP one off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
 
 //END CHARACTER SECTION
 
