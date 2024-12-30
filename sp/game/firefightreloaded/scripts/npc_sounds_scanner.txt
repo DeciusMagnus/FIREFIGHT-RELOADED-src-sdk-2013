@@ -656,22 +656,34 @@
 
 "NPC_KillerScanner.Fire"
 {
-	"channel"		"CHAN_WEAPON"
-	"volume"		"VOL_NORM"
-	"pitch"			"PITCH_NORM"
+	"channel"	"CHAN_WEAPON"
+	"volume"		"1.0"
+	"soundlevel"	"SNDLVL_GUNFIRE"
+	"pitch"		"70, 105"
 
-	"soundlevel"	"SNDLVL_NORM"
-
-	"wave"			"npc/ministrider/fire.wav"
+	"rndwave"
+	{
+		"wave"			"npc/killerscanner/killerscanner_shoot1.wav"
+		"wave"			"npc/killerscanner/killerscanner_shoot2.wav"
+		"wave"			"npc/killerscanner/killerscanner_shoot3.wav"
+		"wave"			"npc/killerscanner/killerscanner_shoot4.wav"
+		"wave"			"npc/killerscanner/killerscanner_shoot5.wav"
+		"wave"			"npc/killerscanner/killerscanner_shoot6.wav"
+		"wave"			"npc/killerscanner/killerscanner_shoot7.wav"
+		"wave"			"npc/killerscanner/killerscanner_shoot8.wav"
+	}
 }
 
 "NPC_KillerScanner.Windup"
 {
 	"channel"		"CHAN_WEAPON"
 	"volume"		"VOL_NORM"
-	"pitch"			"PITCH_NORM"
+	"pitch"		"95,105"
 
 	"soundlevel"	"SNDLVL_NORM"
 
-	"wave"			"npc/ministrider/ministrider_preflechette.wav"
+	"rndwave"
+	{
+		"wave"			"npc/ministrider/ministrider_preflechette.wav"
+	}
 }
