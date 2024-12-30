@@ -15,6 +15,7 @@
 #include "beam_shared.h"
 #include "hl2/grenade_frag.h"
 #include "ai_sentence.h"
+#include "func_break.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -28,13 +29,17 @@ ConVar	sk_killerscanner_attack_near("sk_killerscanner_attack_near", "72");
 ConVar	sk_killerscanner_attack_maxrange("sk_killerscanner_attack_maxrange", "750");
 ConVar	sk_killerscanner_mindist_idle("sk_killerscanner_mindist_idle", "128");
 ConVar	sk_killerscanner_mindist_combat("sk_killerscanner_mindist_combat", "128");
-ConVar	sk_killerscanner_turn_rate_combat("sk_killerscanner_turn_rate_combat", "900");
-ConVar	sk_killerscanner_turn_rate_idle("sk_killerscanner_turn_rate_idle", "500");
+ConVar	sk_killerscanner_turn_rate_combat("sk_killerscanner_turn_rate_combat", "1500");
+ConVar	sk_killerscanner_turn_rate_idle("sk_killerscanner_turn_rate_idle", "750");
 ConVar	sk_killerscanner_minheight_combat("sk_killerscanner_minheight_combat", "16");
 ConVar	sk_killerscanner_minheight_idle("sk_killerscanner_minheight_idle", "72");
 ConVar	sk_killerscanner_flight_accel_combat("sk_killerscanner_flight_accel_combat", "450");
 ConVar	sk_killerscanner_projectile_speed("sk_killerscanner_projectile_speed", "2000");
 ConVar	sk_killerscanner_sentence_delay("sk_killerscanner_sentence_delay", "30");
+
+ConVar	debug_killerscanner_showshootpath("debug_killerscanner_showshootpath", "0");
+
+#define SF_KILLERSCANNER_USE_AIR_NODES	(1 << 16)
 
 #define KILLERSCANNER_MUZZLE_ATTACHMENT	"light"
 
@@ -99,6 +104,7 @@ public:
 public:
 	float m_fCycleTime;
 	int m_iShots;
+	int					m_iAmmoType;
 
 	int					m_nPoseTail;
 	int					m_nPoseDynamo;
@@ -195,7 +201,14 @@ void CNPC_KillerScanner::Spawn( void )
 	m_nPoseFaceVert = LookupPoseParameter("flex_vert");
 	m_nPoseFaceHoriz = LookupPoseParameter("flex_horz");
 
+	m_iAmmoType = GetAmmoDef()->Index("Pistol");
+
 	BaseClass::Spawn();
+
+	if (!HasSpawnFlags(SF_KILLERSCANNER_USE_AIR_NODES))
+	{
+		SetNavType(NAV_GROUND);
+	}
 
 	m_fTimeSinceLastSpoke = gpGlobals->curtime;
 
@@ -308,7 +321,9 @@ int CNPC_KillerScanner::SelectSchedule(void)
 			return SCHED_SCANNER_PATROL;
 
 		//attack if the enemy is behind glass. we have other code that helps us determine if enemies are reachable. 
-		if (HasCondition(COND_SEE_ENEMY) || HasCondition(COND_HAVE_ENEMY_LOS))
+		if (HasCondition(COND_SEE_ENEMY) ||
+			HasCondition(COND_HAVE_ENEMY_LOS) || 
+			HasCondition(COND_SCANNER_FLY_BLOCKED))
 			return SCHED_SCANNER_ATTACK;
 	}
 
@@ -373,10 +388,7 @@ Vector CNPC_KillerScanner::DesiredBodyTarget(CBaseEntity* pTarget)
 bool CNPC_KillerScanner::VerifyShot(CBaseEntity* pTarget)
 {
 	//if we're not facing the player, fail it.
-	if (HasCondition(COND_NOT_FACING_ATTACK) || 
-		HasCondition(COND_ENEMY_OCCLUDED) || 
-		HasCondition(COND_LOST_ENEMY) ||
-		IsHeldByPhyscannon())
+	if (HasCondition(COND_NOT_FACING_ATTACK) || IsHeldByPhyscannon())
 	{
 		return false;
 	}
@@ -395,17 +407,66 @@ bool CNPC_KillerScanner::VerifyShot(CBaseEntity* pTarget)
 		// Trace hit something.
 		if (tr.m_pEnt)
 		{
-			if (tr.m_pEnt->m_takedamage == DAMAGE_YES)
+			if (pTarget->IsPlayer())
 			{
-				// Just shoot it if I can hurt it. Probably a breakable or glass pane.
-				return true;
+				// if the target is the player, do another trace to see if we can shoot his eyeposition. This should help 
+				// improve sniper responsiveness in cases where the player is hiding his chest from the sniper with his 
+				// head in full view.
+				UTIL_TraceLine(vecFirePos, pTarget->EyePosition(), MASK_SHOT, pTarget, COLLISION_GROUP_NONE, &tr);
+
+				if (tr.fraction == 1.0)
+				{
+					if (debug_killerscanner_showshootpath.GetBool())
+					{
+						NDebugOverlay::Line(GetLocalOrigin(), vecTarget, 0, 255, 0, true, 1);
+					}
+
+					return true;
+				}
 			}
+
+			//haha, makes glass!
+			if (FClassnameIs(tr.m_pEnt, "func_breakable"))
+			{
+				CBreakable* pBreak = dynamic_cast <CBreakable*>(tr.m_pEnt);
+				if (pBreak && (pBreak->GetMaterialType() == matGlass))
+				{
+					if (debug_killerscanner_showshootpath.GetBool())
+					{
+						NDebugOverlay::Line(GetLocalOrigin(), vecTarget, 0, 0, 255, true, 1);
+					}
+
+					return true;
+				}
+			}
+			else
+			{
+				if (tr.m_pEnt->GetCollisionGroup() == COLLISION_GROUP_BREAKABLE_GLASS)
+				{
+					if (debug_killerscanner_showshootpath.GetBool())
+					{
+						NDebugOverlay::Line(GetLocalOrigin(), vecTarget, 0, 0, 255, true, 1);
+					}
+
+					return true;
+				}
+			}
+		}
+
+		if (debug_killerscanner_showshootpath.GetBool())
+		{
+			NDebugOverlay::Line(GetLocalOrigin(), vecTarget, 255, 0, 0, true, 1);
 		}
 
 		return false;
 	}
 	else
 	{
+		if (debug_killerscanner_showshootpath.GetBool())
+		{
+			NDebugOverlay::Line(GetLocalOrigin(), vecTarget, 0, 255, 0, true, 1);
+		}
+
 		return true;
 	}
 }
@@ -513,7 +574,7 @@ void CNPC_KillerScanner::ShootRound(const Vector& vecSrc, const Vector& vecDir)
 
 	CSoundEnt::InsertSound(SOUND_COMBAT | SOUND_CONTEXT_GUNFIRE, GetAbsOrigin(), SOUNDENT_VOLUME_MACHINEGUN, 0.2, this, SOUNDENT_CHANNEL_WEAPON, GetEnemy());
 
-	FireBullets(1, vecSrc, vecDir, GetAttackSpread(), MAX_COORD_RANGE, GetAmmoDef()->Index("AR2"), 1);
+	FireBullets(1, vecSrc, vecDir, GetAttackSpread(), MAX_COORD_RANGE, m_iAmmoType, 1);
 
 	DoMuzzleFlash();
 }
@@ -546,18 +607,23 @@ void CNPC_KillerScanner::Attack(void)
 		{
 			ScannerEmitSound("Windup");
 			//taunt the player while recharging.
-			if (GetEnemy())
+			if (GetEnemy() && HasCondition(COND_SEE_ENEMY))
 			{
-				if (GetEnemy()->IsPlayer() && (GetEnemy()->GetHealth() <= 20))
+				if (GetEnemy()->IsPlayer())
 				{
 					if (m_fTimeSinceLastSpoke < gpGlobals->curtime)
 					{
-						m_Sentences.Speak("KILLERSCANNER_PLAYERHIT", SENTENCE_PRIORITY_HIGH, SENTENCE_CRITERIA_ALWAYS);
+						m_Sentences.Speak("KILLERSCANNER_PLAYER_TARGET", SENTENCE_PRIORITY_HIGH, SENTENCE_CRITERIA_NORMAL);
 						m_fTimeSinceLastSpoke = gpGlobals->curtime + sk_killerscanner_sentence_delay.GetFloat();
 					}
 				}
 			}
 			m_bPlayedChargeup = true;
+
+			if (m_bJustSpawned)
+			{
+				m_bJustSpawned = false;
+			}
 		}
 		return;
 	}
@@ -721,10 +787,7 @@ void CNPC_KillerScanner::RunTask( const Task_t *pTask )
 				return;
 			}
 
-			if (HasCondition(COND_NOT_FACING_ATTACK) ||
-				HasCondition(COND_ENEMY_OCCLUDED) ||
-				HasCondition(COND_LOST_ENEMY) ||
-				IsHeldByPhyscannon())
+			if (HasCondition(COND_NOT_FACING_ATTACK) || IsHeldByPhyscannon())
 			{
 				TaskFail(FAIL_NO_SHOOT);
 				return;
@@ -733,8 +796,6 @@ void CNPC_KillerScanner::RunTask( const Task_t *pTask )
 			if (m_bJustSpawned)
 			{
 				m_fCycleTime = gpGlobals->curtime + sk_killerscanner_cycle_time.GetFloat();
-				m_bJustSpawned = false;
-				//don't return so we can play the charging sound
 			}
 
             Attack();
@@ -1022,7 +1083,7 @@ AI_BEGIN_CUSTOM_NPC( npc_killerscanner, CNPC_KillerScanner )
 		"		TASK_SCANNER_SET_FLY_ATTACK			0"
 		"		TASK_SET_ACTIVITY					ACTIVITY:ACT_IDLE"
 		"		TASK_KILLERSCANNER_SHOOT				0"
-		"		TASK_WAIT_RANDOM					0.5"
+		"		TASK_WAIT							0.5"
 		""
 		"	Interrupts"
 		"		COND_NEW_ENEMY"

@@ -1730,21 +1730,30 @@ RG_CHECK7 npc/hgrunt_robot/clik (t30) everything(e85) ok(e75) there, clik(p130) 
 
 //narrative
 
-RG_SNOOP1A npc/hgrunt_robot/c2a2_RG_chat1a {Len 2.65}
-RG_SNOOP2A npc/hgrunt_robot/c2a2_RG_chat2a {Len 1.95}
-RG_SNOOP3A npc/hgrunt_robot/c2a2_RG_chat3a {Len 5.04}
-RG_SNOOP4A npc/hgrunt_robot/c2a2_RG_chat4a {Len 4.69}
-RG_SNOOP5A npc/hgrunt_robot/c2a2_RG_chat5a {Len 4.59}
+RG_SNOOP1A npc/hgrunt_robot/c2a2_hg_chat1a {Len 2.65}
+RG_SNOOP2A npc/hgrunt_robot/c2a2_hg_chat2a {Len 1.95}
+RG_SNOOP3A npc/hgrunt_robot/c2a2_hg_chat3a {Len 5.04}
+RG_SNOOP4A npc/hgrunt_robot/c2a2_hg_chat4a {Len 4.69}
+RG_SNOOP5A npc/hgrunt_robot/c2a2_hg_chat5a {Len 4.59}
 
-RG_DRAG1A npc/hgrunt_robot/c2a3_RG_1drag {Len 2.17}
-RG_DRAG2A npc/hgrunt_robot/c2a3_RG_2drag {Len 1.84}
-RG_DRAG3A npc/hgrunt_robot/c2a3_RG_3drag {Len 3.48}
-RG_DRAG4A npc/hgrunt_robot/c2a3_RG_4drag {Len 2.64}
-RG_DRAG5A npc/hgrunt_robot/c2a3_RG_5drag {Len 2.19}
-RG_DRAG6A npc/hgrunt_robot/c2a3_RG_laugh {Len 2.94}
+RG_DRAG1A npc/hgrunt_robot/c2a3_hg_1drag {Len 2.17}
+RG_DRAG2A npc/hgrunt_robot/c2a3_hg_2drag {Len 1.84}
+RG_DRAG3A npc/hgrunt_robot/c2a3_hg_3drag {Len 3.48}
+RG_DRAG4A npc/hgrunt_robot/c2a3_hg_4drag {Len 2.64}
+RG_DRAG5A npc/hgrunt_robot/c2a3_hg_5drag {Len 2.19}
+RG_DRAG6A npc/hgrunt_robot/c2a3_hg_laugh {Len 2.94}
 
-RG_SUCKS npc/hgrunt_robot/RG_sucks {Len 6.35}
-RG_CIVVIES npc/hgrunt_robot/RG_civvies {Len 6.73}
+RG_SUCKS npc/hgrunt_robot/hg_sucks {Len 6.35}
+RG_CIVVIES npc/hgrunt_robot/hg_civvies {Len 6.73}
+
+//killer
+
+KILLERSCANNER_PLAYER_TARGET0 npc/overwatch/radiovoice/(v100) on3 cauterize V_RNDSUSPECTP V_RNDNUMP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+KILLERSCANNER_PLAYER_TARGET1 npc/overwatch/radiovoice/(v100) on3 sterilize V_RNDSUSPECTP V_RNDNUMP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+KILLERSCANNER_PLAYER_TARGET2 npc/overwatch/radiovoice/(v100) on3 amputate V_RNDSUSPECTP V_RNDNUMP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+KILLERSCANNER_PLAYER_TARGET3 npc/overwatch/radiovoice/(v100) on3 pressure V_RNDSUSPECTP V_RNDNUMP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+KILLERSCANNER_PLAYER_TARGET4 npc/overwatch/radiovoice/(v100) on3 restrict V_RNDSUSPECTP V_RNDNUMP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+KILLERSCANNER_PLAYER_TARGET5 npc/overwatch/radiovoice/(v100) on3 suspend V_RNDSUSPECTP V_RNDNUMP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
 
 //END CHARACTER SECTION
 
@@ -1907,10 +1916,3 @@ HEV_DET5 hl1/fvox/blip blip blip, antitoxin_shot(e25) radiation_detected(e50), o
 //HEV_GR0r hl1/fvox/range twenty meters(t60)
 //HEV_GR1r hl1/fvox/range nineteen meters
 //HEV_GR2r hl1/fvox/range eighteen meters
-
-//killer
-
-KILLERSCANNER_PLAYERHIT0 npc/overwatch/radiovoice/(v100) on3 cauterize V_RNDSUSPECTP V_RNDNUMP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
-KILLERSCANNER_PLAYERHIT1 npc/overwatch/radiovoice/(v100) on3 sterilize V_RNDSUSPECTP V_RNDNUMP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
-KILLERSCANNER_PLAYERHIT2 npc/overwatch/radiovoice/(v100) on3 amputate V_RNDSUSPECTP V_RNDNUMP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
-KILLERSCANNER_PLAYERHIT3 npc/overwatch/radiovoice/(v100) on3 pressure V_RNDSUSPECTP V_RNDNUMP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}

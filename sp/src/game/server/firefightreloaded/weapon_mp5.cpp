@@ -40,7 +40,7 @@ public:
 	void	FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, Vector& vecShootOrigin, Vector& vecShootDir);
 	void	Operator_HandleAnimEvent(animevent_t *pEvent, CBaseCombatCharacter *pOperator);
 	void	Operator_ForceNPCFire(CBaseCombatCharacter* pOperator, bool bSecondary);
-	float	GetFireRate(void) { return 0.055f; }
+	float	GetFireRate(void) { return 0.075f; }
 	virtual void	FireModeLogic(int burstsize, float firerate, int firemode);
 	void AddViewKick(void);
 	void DoMachineGunKick(CBasePlayer *pPlayer, float dampEasy, float maxVerticleKickAngle, float fireDurationTime, float slideLimitTime);
