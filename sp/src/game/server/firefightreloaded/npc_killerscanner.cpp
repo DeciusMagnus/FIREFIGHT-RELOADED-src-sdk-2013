@@ -14,6 +14,7 @@
 #include "beam_flags.h"
 #include "beam_shared.h"
 #include "hl2/grenade_frag.h"
+#include "ai_sentence.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -78,6 +79,11 @@ public:
 	bool		VerifyShot(CBaseEntity* pTarget);
 	Vector		DesiredBodyTarget(CBaseEntity* pTarget);
 
+	void		PrescheduleThink();
+
+	// Create components
+	virtual bool	CreateComponents();
+
 	//projectile types
 	void		RailgunDrawBeam(const Vector& startPos, const Vector& endPos, bool overcharged);
 	void		CreateRailgunProjectile(const Vector& vecSrc, Vector& vecShoot, bool bOvercharged);
@@ -101,6 +107,8 @@ public:
 
 	bool				m_bPlayedChargeup;
 	bool				m_bJustSpawned;
+
+	CAI_Sentence< CNPC_KillerScanner > m_Sentences;
 
 private:
 	DEFINE_CUSTOM_AI;
@@ -134,6 +142,7 @@ BEGIN_DATADESC(CNPC_KillerScanner)
 	DEFINE_FIELD(m_nPoseFaceHoriz, FIELD_INTEGER),
 	DEFINE_FIELD(m_bPlayedChargeup, FIELD_BOOLEAN),
 	DEFINE_FIELD(m_bJustSpawned, FIELD_BOOLEAN),
+	DEFINE_EMBEDDED(m_Sentences),
 END_DATADESC()
 
 LINK_ENTITY_TO_CLASS( npc_killerscanner, CNPC_KillerScanner );
@@ -212,6 +221,30 @@ void CNPC_KillerScanner::Precache()
 	PrecacheModel( STRING( GetModelName() ) );
 
 	BaseClass::Precache();
+}
+
+//-----------------------------------------------------------------------------
+// Create components
+//-----------------------------------------------------------------------------
+bool CNPC_KillerScanner::CreateComponents()
+{
+	if (!BaseClass::CreateComponents())
+		return false;
+
+	m_Sentences.Init(this, "NPC_MetroPolice.SentenceParameters");
+
+	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CNPC_KillerScanner::PrescheduleThink()
+{
+	BaseClass::PrescheduleThink();
+
+	// Speak any queued sentences
+	m_Sentences.UpdateSentenceQueue();
 }
 
 //-----------------------------------------------------------------------------
@@ -373,6 +406,13 @@ void CNPC_KillerScanner::StartTask( const Task_t *pTask )
 	{
 		case TASK_KILLERSCANNER_SHOOT:
 		{
+			if (GetEnemy())
+			{
+				if (GetEnemy()->IsPlayer() && (GetEnemy()->GetHealth() <= 20))
+				{
+					m_Sentences.Speak("KILLERSCANNER_PLAYERHIT", SENTENCE_PRIORITY_HIGH, SENTENCE_CRITERIA_ALWAYS);
+				}
+			}
 			break;
 		}
 

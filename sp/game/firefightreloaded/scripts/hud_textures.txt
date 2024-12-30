@@ -135,16 +135,21 @@
 				"font"		"WeaponIconsKillFeed"
 				"character"	"2"
 		}
-        "npc_turret_floor"
+        		"npc_turret_floor"
 		{
 				"font"		"WeaponIconsKillFeed"
 				"character"	"2"
 		}
-        "npc_turret_floor_weapon"
+        		"npc_turret_floor_weapon"
 		{
 				"font"		"WeaponIconsKillFeed"
 				"character"	"2"
 		}
+		"npc_turret_ceiling"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"2"
+		}		
 		"func_tank"
 		{
 				"font"		"WeaponIconsKillFeed"
@@ -169,8 +174,13 @@
 		{
 				"font"		"AmmoIconsKillFeed"
 				"character"	"x"
-                "customxyoffset"	"1"
+                				"customxyoffset"	"1"
 				"y_offset"		"-13"
+		}
+		"npc_killerscanner"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"2"
 		}
 		"npc_grenade_frag"
 		{
@@ -242,7 +252,7 @@
 				"customxyoffset"	"1"
 				"y_offset"		"-13"
 		}
-        "npc_manhack_weapon"
+        		"npc_manhack_weapon"
 		{
 				"file"		"VGUI/basic2d_linear/ex_weaponicon_52_killicon"
 				"x"			"0"
@@ -252,7 +262,7 @@
 				"customxyoffset"	"1"
 				"y_offset"		"-13"
 		}
-        "npc_manhack_friendly"
+       		"npc_manhack_friendly"
 		{
 				"file"		"VGUI/basic2d_linear/ex_weaponicon_52_killicon"
 				"x"			"0"

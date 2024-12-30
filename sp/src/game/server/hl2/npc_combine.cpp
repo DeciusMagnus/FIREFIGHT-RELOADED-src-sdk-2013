@@ -3288,7 +3288,7 @@ void CNPC_Combine::LostEnemySound( void)
 //-----------------------------------------------------------------------------
 void CNPC_Combine::FoundEnemySound( void)
 {
-	m_Sentences.Speak("REFIND_ENEMY", SENTENCE_PRIORITY_HIGH);
+	SpeakSentence("REFIND_ENEMY", SENTENCE_PRIORITY_HIGH);
 }
 
 //-----------------------------------------------------------------------------

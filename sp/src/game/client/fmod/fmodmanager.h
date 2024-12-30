@@ -133,7 +133,7 @@ private:
 		song.Title = "Loading";
 		song.Artist = "";
 		song.Album = "";
-		song.Volume = 1.0f;
+		song.Volume = 0.75f;
 		return song;
 	}
 

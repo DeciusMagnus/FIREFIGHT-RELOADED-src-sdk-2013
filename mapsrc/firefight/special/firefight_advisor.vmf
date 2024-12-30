@@ -25764,7 +25764,7 @@ entity
 	"pitch" "100"
 	"spawnflags" "81"
 	"targetname" "bossmusic"
-	"volume" "8"
+	"volume" "7"
 	"origin" "-106.976 617.408 129"
 	editor
 	{
@@ -25858,7 +25858,7 @@ entity
 {
 	"id" "4670"
 	"classname" "player_speedmod"
-	"spawnflags" "191"
+	"spawnflags" "189"
 	"targetname" "speedmod"
 	"origin" "-81.2399 509.611 129"
 	editor

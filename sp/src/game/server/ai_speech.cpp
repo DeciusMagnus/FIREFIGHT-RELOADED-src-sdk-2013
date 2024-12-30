@@ -185,8 +185,11 @@ END_DATADESC()
 
 bool CAI_Expresser::SemaphoreIsAvailable( CBaseEntity *pTalker )
 {
-	if ( !GetSink()->UseSemaphore() )
-		return true;
+	if (GetSink())
+	{
+		if (!GetSink()->UseSemaphore())
+			return true;
+	}
 
 	CAI_TimedSemaphore *pSemaphore = GetMySpeechSemaphore( pTalker->MyNPCPointer() );
 	return (pSemaphore ? pSemaphore->IsAvailable( pTalker ) : true);

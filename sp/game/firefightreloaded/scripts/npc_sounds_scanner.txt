@@ -656,10 +656,10 @@
 
 "NPC_KillerScanner.Fire"
 {
-	"channel"	"CHAN_WEAPON"
+	"channel"		"CHAN_WEAPON"
 	"volume"		"1.0"
 	"soundlevel"	"SNDLVL_GUNFIRE"
-	"pitch"		"70, 105"
+	"pitch"		"95, 105"
 
 	"rndwave"
 	{
@@ -686,4 +686,14 @@
 	{
 		"wave"			"npc/ministrider/ministrider_preflechette.wav"
 	}
+}
+
+"NPC_MetroPolice.SentenceParameters"
+{
+	"channel"		"CHAN_VOICE"
+	"volume"		"0.80"
+	"pitch"		"100,106"
+
+	"soundlevel"	"SNDLVL_90dB"
+	"wave"		"common/null.wav"
 }

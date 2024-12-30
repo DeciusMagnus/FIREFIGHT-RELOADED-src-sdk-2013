@@ -1885,5 +1885,9 @@ HEV_DET5 hl1/fvox/blip blip blip, antitoxin_shot(e25) radiation_detected(e50), o
 //HEV_GR1r hl1/fvox/range nineteen meters
 //HEV_GR2r hl1/fvox/range eighteen meters
 
+//killer
 
-
+KILLERSCANNER_PLAYERHIT0 npc/overwatch/radiovoice/(v100) on1, on1, on1, on3 attentionyouhavebeenchargedwith V_RNDCHARGEP, preparetoreceiveverdict V_RNDJUDGEP off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+KILLERSCANNER_PLAYERHIT1 npc/overwatch/radiovoice/(v100) on1, on1, on1, on3 attention V_G2_SUSPECT_MAP__P, prepareforfinalsentencing off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+KILLERSCANNER_PLAYERHIT2 npc/overwatch/radiovoice/(v100) on1, on1, on1, on3 youarechargedwithterminal, completesentencingatwill off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
+KILLERSCANNER_PLAYERHIT3 npc/overwatch/radiovoice/(v100) on1, on1, on1, on3 attention V_G2_SUSPECT_MAP__P, youarejudgedguilty, allunitsdeliverterminalverdict off2 {Len 1.5 closecaption NPC_Combine.RadioChatter}
