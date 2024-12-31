@@ -380,6 +380,11 @@
 				"font"		"WeaponIconsKillFeed3"
 				"character"	"x"
 		}
+        "npc_hgrunt_robot"
+		{
+				"font"		"WeaponIconsKillFeed3"
+				"character"	"x"
+		}
         "weapon_physgun"
 		{
 				"font"		"WeaponIconsKillFeed2"
