@@ -162,7 +162,6 @@
 	{
 		"classname"	"npc_killerscanner"
 		"min_level"	"7"
-		"rare"	"1"
 		"exp"	"45"
 	}
 	"21"
