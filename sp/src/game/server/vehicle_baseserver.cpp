@@ -1078,13 +1078,6 @@ void CBaseServerVehicle::HandlePassengerEntry( CBaseCombatCharacter *pPassenger,
 						pPlayer->ShowCrosshair(false);
 					}
 
-					CBaseViewModel* vm = pPlayer->GetViewModel();
-					vm->AddEffects(EF_NODRAW);
-
-					CBaseViewModel* vm2 = pPlayer->GetViewModel(1);
-					vm2->SetSequence(vm2->SelectWeightedSequence(ACT_VM_IDLE));
-					vm2->AddEffects(EF_NODRAW);
-
 					pPlayer->GetInVehicle(this, VEHICLE_ROLE_DRIVER);
 
 					if (bDisableEntryAnimations)
@@ -1150,13 +1143,6 @@ bool CBaseServerVehicle::HandlePassengerExit( CBaseCombatCharacter *pPassenger )
 		// Now we either have an exit sequence to play, a valid static exit position, or we don't care
 		// whether we're blocked or not. We're getting out, one way or another.
 		GetDrivableVehicle()->PreExitVehicle( pPlayer, nRole );
-
-		CBaseViewModel* vm = pPlayer->GetViewModel();
-		vm->RemoveEffects(EF_NODRAW);
-
-		CBaseViewModel* vm2 = pPlayer->GetViewModel(1);
-		vm2->SetSequence(vm2->SelectWeightedSequence(ACT_VM_IDLE));
-		vm2->RemoveEffects(EF_NODRAW);
 
 		if ( iSequence > ACTIVITY_NOT_AVAILABLE )
 		{
