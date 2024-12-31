@@ -662,7 +662,7 @@ float CNPC_BaseZombie::GetHitgroupDamageMultiplier( int iHitGroup, const CTakeDa
 		{
 			if (!(g_Language.GetInt() == LANGUAGE_GERMAN || UTIL_IsLowViolence()) && g_fr_headshotgore.GetBool() && !m_bNoHeadshotGore)
 			{
-				if (!IsHeadless() && (info.GetDamageType() & (DMG_SNIPER | DMG_BUCKSHOT)) && !(info.GetDamageType() & DMG_NEVERGIB) && !FClassnameIs(this, "npc_poisonzombie"))
+				if (!IsHeadless() && (info.GetDamageType() & (DMG_SNIPER)) && !(info.GetDamageType() & DMG_NEVERGIB) && !FClassnameIs(this, "npc_poisonzombie"))
 				{
 					DispatchParticleEffect("smod_headshot_y", PATTACH_POINT_FOLLOW, this, "headcrab", true);
 					CGib::SpawnSpecificStickyGibs(this, 3, 750, 1500, "models/gibs/agib_p3.mdl", 6);
@@ -1079,6 +1079,12 @@ bool CNPC_BaseZombie::IsChopped( const CTakeDamageInfo &info )
 
 	if (info.GetDamageType() & DMG_DISSOLVE)
 		return false;
+
+	if (info.GetDamageType() & DMG_NEVERGIB)
+		return false;
+
+	if (info.GetDamageType() & DMG_ALWAYSGIB)
+		return true;
 
 	if (info.GetDamageType() & DMG_SLASH)
 		return true;

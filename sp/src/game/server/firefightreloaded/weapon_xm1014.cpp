@@ -20,6 +20,7 @@
 #include "gamestats.h"
 #include "npc_combine.h"
 #include "npc_citizen17.h"
+#include "ammodef.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -45,9 +46,9 @@ public:
 
 	virtual const Vector& GetBulletSpread( void )
 	{
-		static Vector vitalAllyCone = VECTOR_CONE_3DEGREES;
-		static Vector cone = VECTOR_CONE_6DEGREES;
-		static Vector ironsightCone = VECTOR_CONE_4DEGREES;
+		static Vector vitalAllyCone = VECTOR_CONE_4DEGREES;
+		static Vector cone = VECTOR_CONE_7DEGREES;
+		static Vector ironsightCone = VECTOR_CONE_5DEGREES;
 
 		if( GetOwner() && (GetOwner()->Classify() == CLASS_PLAYER_ALLY_VITAL) )
 		{
@@ -64,8 +65,8 @@ public:
 		return cone;
 	}
 
-	virtual int				GetMinBurst() { return 5; }
-	virtual int				GetMaxBurst() { return 5; }
+	virtual int				GetMinBurst() { return 4; }
+	virtual int				GetMaxBurst() { return 7; }
 
 	virtual float			GetMinRestTime();
 	virtual float			GetMaxRestTime();
@@ -198,7 +199,21 @@ void CWeaponXM1014::FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, bool b
 		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
 	}
 
-	pOperator->FireBullets(6, vecShootOrigin, vecShootDir, GetBulletSpread(), MAX_TRACE_LENGTH, m_iPrimaryAmmoType, 0);
+	CAmmoDef* def = GetAmmoDef();
+
+	FireBulletsInfo_t info;
+	info.m_iShots = 6;
+	info.m_vecSrc = vecShootOrigin;
+	info.m_vecDirShooting = vecShootDir;
+	info.m_vecSpread = GetBulletSpread();
+	info.m_flDistance = MAX_TRACE_LENGTH;
+	info.m_iTracerFreq = 0;
+	info.m_iAmmoType = m_iPrimaryAmmoType;
+
+	int dmgType = def->DamageType(info.m_iAmmoType);
+
+	info.m_nDamageFlags = (dmgType &= ~DMG_SNIPER);
+	pOperator->FireBullets(info);
 }
 
 //-----------------------------------------------------------------------------
@@ -237,14 +252,14 @@ void CWeaponXM1014::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCh
 //-----------------------------------------------------------------------------
 float CWeaponXM1014::GetMinRestTime()
 {
-	return BaseClass::GetMinRestTime();
+	return 0.1;
 }
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 float CWeaponXM1014::GetMaxRestTime()
 {
-	return BaseClass::GetMaxRestTime();
+	return 0.25;
 }
 
 //-----------------------------------------------------------------------------
@@ -253,6 +268,11 @@ float CWeaponXM1014::GetMaxRestTime()
 //-----------------------------------------------------------------------------
 float CWeaponXM1014::GetFireRate()
 {
+	if (IsIronsighted())
+	{
+		return 0.35f;
+	}
+
 	return 0.25f;
 }
 
@@ -439,8 +459,24 @@ void CWeaponXM1014::PrimaryAttack( void )
 
 	pPlayer->SetMuzzleFlashTime( gpGlobals->curtime + 1.0 );
 	
+	CAmmoDef* def = GetAmmoDef();
+
 	// Fire the bullets, and force the first shot to be perfectly accuracy
-	pPlayer->FireBullets( 6, vecSrc, vecAiming, GetBulletSpread(), MAX_TRACE_LENGTH, m_iPrimaryAmmoType, 0, -1, -1, 0, NULL, true, true );
+	FireBulletsInfo_t info;
+	info.m_iShots = 6;
+	info.m_vecSrc = vecSrc;
+	info.m_vecDirShooting = vecAiming;
+	info.m_vecSpread = GetBulletSpread();
+	info.m_flDistance = MAX_TRACE_LENGTH;
+	info.m_iTracerFreq = 0;
+	info.m_iAmmoType = m_iPrimaryAmmoType;
+	info.m_nFlags = FIRE_BULLETS_FIRST_SHOT_ACCURATE;
+	info.m_bPrimaryAttack = true;
+
+	int dmgType = def->DamageType(info.m_iAmmoType);
+
+	info.m_nDamageFlags = !IsIronsighted() ? (dmgType &= ~DMG_SNIPER) : dmgType;
+	pPlayer->FireBullets(info);
 	
 	pPlayer->ViewPunch( QAngle( random->RandomFloat( -2, -1 ), random->RandomFloat( -2, 2 ), 0 ) );
 

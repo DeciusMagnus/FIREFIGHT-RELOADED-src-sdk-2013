@@ -4048,11 +4048,18 @@ bool CNPC_MetroPolice::CorpseDecapitate(const CTakeDamageInfo& info)
 		gibs = m_pAttributes->GetBool("gibs", true);
 	}
 
+	if (info.GetDamageType() & DMG_DISSOLVE)
+		return false;
+
+	if (info.GetDamageType() & DMG_NEVERGIB)
+		return false;
+
 	static ConVarRef violence_hgibs( "violence_hgibs" );
 	bool shouldAnimateDecap = !(g_Language.GetInt() == LANGUAGE_GERMAN || UTIL_IsLowViolence())
 		&& (violence_hgibs.IsValid() && violence_hgibs.GetBool())
 		&& g_fr_headshotgore.GetBool() && gibs;
-	if ((info.GetDamageType() & (DMG_SNIPER | DMG_BUCKSHOT)) && !(info.GetDamageType() & DMG_NEVERGIB))
+
+	if (info.GetDamageType() & (DMG_SNIPER))
 	{
 		if ( shouldAnimateDecap )
 		{
@@ -4079,7 +4086,7 @@ bool CNPC_MetroPolice::CorpseDecapitate(const CTakeDamageInfo& info)
 
 		return true;
 	}
-	else if ((info.GetDamageType() & (DMG_SLASH)) && !(info.GetDamageType() & DMG_NEVERGIB))
+	else if (info.GetDamageType() & (DMG_SLASH))
 	{
 		if ( shouldAnimateDecap )
 		{
@@ -4123,11 +4130,11 @@ bool CNPC_MetroPolice::CorpseDecapitate(const CTakeDamageInfo& info)
 Vector RagForce(Vector vecDamageDir)
 {
 	Vector vecRagForce;
-	vecRagForce.x = random->RandomFloat(-400, 400);
-	vecRagForce.y = random->RandomFloat(-400, 400);
+	vecRagForce.x = random->RandomFloat(-250, 250);
+	vecRagForce.y = random->RandomFloat(-250, 250);
 	vecRagForce.z = random->RandomFloat(0, 250);
 
-	return (vecRagForce + vecDamageDir) * 100.0f;
+	return (vecRagForce + vecDamageDir) * 50.0f;
 }
 
 bool CNPC_MetroPolice::CorpseGib(const CTakeDamageInfo& info)
@@ -4138,10 +4145,16 @@ bool CNPC_MetroPolice::CorpseGib(const CTakeDamageInfo& info)
 		gibs = m_pAttributes->GetBool("gibs", true);
 	}
 
+	if (info.GetDamageType() & DMG_DISSOLVE)
+		return false;
+
+	if (info.GetDamageType() & DMG_NEVERGIB)
+		return false;
+
 	static ConVarRef violence_hgibs( "violence_hgibs" );
 	if (!(g_Language.GetInt() == LANGUAGE_GERMAN || UTIL_IsLowViolence())
 		&& (violence_hgibs.IsValid() && violence_hgibs.GetBool())
-		&& info.GetDamageType() & (DMG_BLAST) && !(info.GetDamageType() & (DMG_DISSOLVE)) && gibs)
+		&& info.GetDamageType() & (DMG_BLAST | DMG_ALWAYSGIB) && gibs)
 	{
 		if (IsCurSchedule(SCHED_NPC_FREEZE))
 		{
