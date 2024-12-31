@@ -2773,6 +2773,19 @@ void CBasePlayer::Event_Killed( const CTakeDamageInfo &info )
 		GetActiveWeapon()->Holster();
 	}
 
+	CBaseViewModel* vm = GetViewModel();
+	if (vm)
+	{
+		vm->AddEffects(EF_NODRAW);
+	}
+
+	CBaseViewModel* vm2 = GetViewModel(VM_LEGS);
+	if (vm2)
+	{
+		vm2->SetSequence(vm2->SelectWeightedSequence(ACT_VM_IDLE));
+		vm2->AddEffects(EF_NODRAW);
+	}
+
 	SetAnimation( PLAYER_DIE );
 
 	if ( !IsObserver() )
@@ -6567,8 +6580,26 @@ void CBasePlayer::Spawn( void )
 	CSingleUserRecipientFilter user( this );
 	enginesound->SetPlayerDSP( user, 0, false );
 
-	CreateViewModel();
-	CreateViewModel(VM_LEGS);
+	CBaseViewModel* vm = GetViewModel();
+	if (vm)
+	{
+		vm->RemoveEffects(EF_NODRAW);
+	}
+	else
+	{
+		CreateViewModel();
+	}
+
+	CBaseViewModel* vm2 = GetViewModel(VM_LEGS);
+	if (vm2)
+	{
+		vm2->SetSequence(vm2->SelectWeightedSequence(ACT_VM_IDLE));
+		vm2->RemoveEffects(EF_NODRAW);
+	}
+	else
+	{
+		CreateViewModel(VM_LEGS);
+	}
 
 	SetCollisionGroup( COLLISION_GROUP_PLAYER );
 
@@ -7117,7 +7148,7 @@ bool CBasePlayer::GetInVehicle( IServerVehicle *pVehicle, int nRole )
 		vm->AddEffects(EF_NODRAW);
 	}
 
-	CBaseViewModel* vm2 = GetViewModel(1);
+	CBaseViewModel* vm2 = GetViewModel(VM_LEGS);
 	if (vm2)
 	{
 		vm2->SetSequence(vm2->SelectWeightedSequence(ACT_VM_IDLE));
@@ -7244,19 +7275,19 @@ void CBasePlayer::LeaveVehicle( const Vector &vecExitPoint, const QAngle &vecExi
 			GetActiveWeapon()->Deploy();
 			ShowCrosshair( true );
 		}
-	}
 
-	CBaseViewModel* vm = GetViewModel();
-	if (vm)
-	{
-		vm->RemoveEffects(EF_NODRAW);
-	}
+		CBaseViewModel* vm = GetViewModel();
+		if (vm)
+		{
+			vm->RemoveEffects(EF_NODRAW);
+		}
 
-	CBaseViewModel* vm2 = GetViewModel(1);
-	if (vm2)
-	{
-		vm2->SetSequence(vm2->SelectWeightedSequence(ACT_VM_IDLE));
-		vm2->RemoveEffects(EF_NODRAW);
+		CBaseViewModel* vm2 = GetViewModel(VM_LEGS);
+		if (vm2)
+		{
+			vm2->SetSequence(vm2->SelectWeightedSequence(ACT_VM_IDLE));
+			vm2->RemoveEffects(EF_NODRAW);
+		}
 	}
 
 	// Just cut all of the rumble effects. 
