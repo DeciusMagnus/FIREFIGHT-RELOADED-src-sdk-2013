@@ -48,7 +48,7 @@ ConVar g_fr_classic("g_fr_classic", "0", FCVAR_ARCHIVE | FCVAR_REPLICATED);
 ConVar g_fr_lonewolf("g_fr_lonewolf", "0", FCVAR_ARCHIVE | FCVAR_REPLICATED);
 ConVar g_fr_headshotgore("g_fr_headshotgore", "1", FCVAR_ARCHIVE | FCVAR_REPLICATED);
 ConVar g_fr_economy("g_fr_economy", "1", FCVAR_ARCHIVE | FCVAR_REPLICATED);
-ConVar g_fr_entitytolerance("g_fr_entitytolerance", "32", FCVAR_ARCHIVE | FCVAR_REPLICATED);
+ConVar g_fr_entitytolerance("g_fr_entitytolerance", "16", FCVAR_ARCHIVE | FCVAR_REPLICATED);
 ConVar g_fr_spawneroldfunctionality("g_fr_spawneroldfunctionality", "0", FCVAR_ARCHIVE | FCVAR_REPLICATED);
 
 static CViewVectors g_DefaultViewVectors(
