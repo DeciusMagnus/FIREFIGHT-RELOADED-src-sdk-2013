@@ -36,9 +36,6 @@ public:
 
 	DECLARE_SERVERCLASS();
 
-private:
-	bool	m_bDelayedFire1;	// Fire primary when finished reloading
-
 public:
 	void	Precache( void );
 
@@ -100,7 +97,6 @@ LINK_ENTITY_TO_CLASS( weapon_xm1014, CWeaponXM1014 );
 PRECACHE_WEAPON_REGISTER(weapon_xm1014);
 
 BEGIN_DATADESC( CWeaponXM1014 )
-	DEFINE_FIELD( m_bDelayedFire1, FIELD_BOOLEAN ),
 END_DATADESC()
 
 acttable_t	CWeaponXM1014::m_acttable[] = 
@@ -549,7 +545,6 @@ void CWeaponXM1014::ItemPostFrame( void )
 		if ((pOwner->m_nButtons & IN_ATTACK ) && (m_iClip1 >=1))
 		{
 			m_bInReload		= false;
-			m_bDelayedFire1 = true;
 		}
 		else if (m_flNextPrimaryAttack <= gpGlobals->curtime)
 		{
@@ -574,9 +569,8 @@ void CWeaponXM1014::ItemPostFrame( void )
 		}
 	}
     
-	if ( (m_bDelayedFire1 || pOwner->m_nButtons & IN_ATTACK) && m_flNextPrimaryAttack <= gpGlobals->curtime)
+	if ( (pOwner->m_nButtons & IN_ATTACK) && m_flNextPrimaryAttack <= gpGlobals->curtime)
 	{
-		m_bDelayedFire1 = false;
 		if ( (m_iClip1 <= 0 && UsesClipsForAmmo1()) || ( !UsesClipsForAmmo1() && !pOwner->GetAmmoCount(m_iPrimaryAmmoType) ) )
 		{
 			if (!pOwner->GetAmmoCount(m_iPrimaryAmmoType))
@@ -652,8 +646,6 @@ void CWeaponXM1014::ItemPostFrame( void )
 CWeaponXM1014::CWeaponXM1014( void )
 {
 	m_bReloadsSingly = true;
-    
-	m_bDelayedFire1 = false;
 
 	m_fMinRange1		= 0.0;
 	m_fMaxRange1		= 500;

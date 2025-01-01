@@ -85,7 +85,7 @@ public:
         , m_iKashValue(pKashValue)
         , m_iItemLimit(pItemLimit)
     {
-        m_iItemPurchases = 0;
+        Initalize();
     }
 
     GamepadUIStoreButton(vgui::Panel* pParent, vgui::Panel* pActionSignalTarget, const char* pSchemeFile, const char* pCommand, const wchar* pText, const wchar* pDescription, const char* pChapterImage, int pKashValue, int pItemLimit)
@@ -94,7 +94,14 @@ public:
         , m_iKashValue(pKashValue)
         , m_iItemLimit(pItemLimit)
     {
+        Initalize();
+    }
+
+    void Initalize()
+    {
         m_iItemPurchases = 0;
+        m_flWaitTime = 0.0f;
+        m_bClicked = false;
     }
 
     ~GamepadUIStoreButton()
@@ -103,51 +110,103 @@ public:
 
     void DoClick() OVERRIDE
     {
+        //set the currency amount to the current player_cur_money value. Will be changed again if purchase is valid.
+        static ConVarRef player_cur_money("player_cur_money");
+        int money = player_cur_money.GetInt();
+        m_iCurCurrencyAmount = money;
+
         BaseClass::DoClick();
 
+        //queue a click.
+        m_bClicked = true;
+        m_flWaitTime = GamepadUI::GetInstance().GetTime() + 0.1f;
+    }
+
+    void VerifyPurchase()
+    {
         static ConVarRef player_cur_money("player_cur_money");
         int money = player_cur_money.GetInt();
 
-        m_iItemPurchases++;
-
-        if (money >= m_iKashValue)
+        //if we can afford the item, make sure we heven't went to the limit already.
+        if (money >= m_iKashValue && m_iItemLimit > 0 && m_iItemPurchases >= m_iItemLimit)
         {
-            if (m_iItemPurchases == 1)
+            SetButtonDescription(GamepadUIString("#FR_Store_GamepadUI_AlreadyPurchased"));
+            return;
+        }
+
+        //if the cash amount has not changed, deny it.
+        if (m_iCurCurrencyAmount == money)
+        {
+            if (money < m_iKashValue)
             {
-                if (m_iItemLimit == 1)
-                {
-                    SetButtonDescription(GamepadUIString("#FR_Store_GamepadUI_Purchased_LimitExceeded"));
-                }
-                else
-                {
-                    SetButtonDescription(GamepadUIString("#FR_Store_GamepadUI_Purchased"));
-                }
-            }
-            else if (m_iItemPurchases < m_iItemLimit || m_iItemLimit <= 0)
-            {
-                char szPurchases[1024];
-#ifdef _WIN32
-                itoa(m_iItemPurchases, szPurchases, 10);
-#else
-                Q_snprintf( szPurchases, sizeof(szPurchases), "%d", m_iItemPurchases );
-#endif
-
-                wchar_t wzPurchases[1024];
-                g_pVGuiLocalize->ConvertANSIToUnicode(szPurchases, wzPurchases, sizeof(wzPurchases));
-
-                wchar_t string1[1024];
-                g_pVGuiLocalize->ConstructString(string1, sizeof(string1), g_pVGuiLocalize->Find("#FR_Store_GamepadUI_Purchased_Multiple"), 1, wzPurchases);
-
-                SetButtonDescription(GamepadUIString(string1));
+                //if we're below the budget, we deny.
+                SetButtonDescription(GamepadUIString("#FR_Store_GamepadUI_Denied"));
             }
             else
             {
+                //if we're above, we deny for a different reason.
                 SetButtonDescription(GamepadUIString("#FR_Store_GamepadUI_AlreadyPurchased"));
             }
+            return;
         }
         else
         {
-            SetButtonDescription(GamepadUIString("#FR_Store_GamepadUI_Denied"));
+            m_iCurCurrencyAmount = money;
+        }
+
+        // add to the purchase count
+        m_iItemPurchases++;
+
+        //check if we can afford it
+        if (m_iItemPurchases == 1)
+        {
+            if (m_iItemLimit == 1)
+            {
+                SetButtonDescription(GamepadUIString("#FR_Store_GamepadUI_Purchased_LimitExceeded"));
+            }
+            else
+            {
+                SetButtonDescription(GamepadUIString("#FR_Store_GamepadUI_Purchased"));
+            }
+        }
+        //handle purchasing of multiple items.
+        else if (m_iItemPurchases < m_iItemLimit || m_iItemLimit <= 0)
+        {
+            char szPurchases[1024];
+#ifdef _WIN32
+            itoa(m_iItemPurchases, szPurchases, 10);
+#else
+            Q_snprintf(szPurchases, sizeof(szPurchases), "%d", m_iItemPurchases);
+#endif
+
+            wchar_t wzPurchases[1024];
+            g_pVGuiLocalize->ConvertANSIToUnicode(szPurchases, wzPurchases, sizeof(wzPurchases));
+
+            wchar_t string1[1024];
+            g_pVGuiLocalize->ConstructString(string1, sizeof(string1), g_pVGuiLocalize->Find("#FR_Store_GamepadUI_Purchased_Multiple"), 1, wzPurchases);
+
+            SetButtonDescription(GamepadUIString(string1));
+        }
+        //display message if we purchased but went to the limit
+        else
+        {
+            SetButtonDescription(GamepadUIString("#FR_Store_GamepadUI_Purchased_LimitExceeded"));
+        }
+        //no else statement because denials ahve been checked earlier.
+    }
+
+    void OnThink() OVERRIDE
+    {
+        BaseClass::OnThink();
+
+        if (m_bClicked)
+        {
+            if (m_flWaitTime < GamepadUI::GetInstance().GetTime())
+            {
+                //GamepadUI_Log("Purchase Verifying.\n");
+                VerifyPurchase();
+                m_bClicked = false;
+            }
         }
     }
 
@@ -170,11 +229,17 @@ public:
         PaintText();
     }
 
+public:
+    int m_iCurCurrencyAmount;
+
 private:
     GamepadUIImage m_Image;
     int m_iKashValue;
     int m_iItemPurchases;
     int m_iItemLimit;
+
+    float m_flWaitTime;
+    bool m_bClicked;
 
     GAMEPADUI_PANEL_PROPERTY(Color, m_colUnderlineColor, "Button.Background.Underline", "255 0 0 255", SchemeValueTypes::Color);
     GAMEPADUI_PANEL_PROPERTY(float, m_flUnderlineHeight, "Button.Underline.Height", "1", SchemeValueTypes::ProportionalFloat);
@@ -349,6 +414,8 @@ void GamepadUIStore::CreateItemList()
             this, this,
             GAMEPADUI_MAP_SCHEME, szCommand,
             strChapterName.String(), strItemPrice.String(), chapterImage, itemPrice, itemLimit);
+
+        static ConVarRef player_cur_money("player_cur_money");
         pChapterButton->SetEnabled(true);
         pChapterButton->SetPriority(i);
         pChapterButton->SetForwardToParent(true);

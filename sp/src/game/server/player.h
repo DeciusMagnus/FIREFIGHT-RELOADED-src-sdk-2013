@@ -954,7 +954,12 @@ public:
 			ResetMoney();
 		}
 	}
-	void ResetMoney() { m_iMoney = 0; }
+	void ResetMoney() 
+	{ 
+		static ConVarRef player_cur_money("player_cur_money");
+		player_cur_money.SetValue(m_iMoney);
+		m_iMoney = 0; 
+	}
 
 	void DetermineReward(void);
 	KeyValues *LoadItemData(KeyValues* pData, int count, int itemID = -1);
