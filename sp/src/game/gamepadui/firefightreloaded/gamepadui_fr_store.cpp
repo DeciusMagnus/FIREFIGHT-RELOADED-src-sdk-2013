@@ -160,10 +160,12 @@ public:
         //check if we can afford it
         if (m_iItemPurchases == 1)
         {
+            //tell us that we have exceeded the limit already.
             if (m_iItemLimit == 1)
             {
                 SetButtonDescription(GamepadUIString("#FR_Store_GamepadUI_Purchased_LimitExceeded"));
             }
+            //normal purchase message
             else
             {
                 SetButtonDescription(GamepadUIString("#FR_Store_GamepadUI_Purchased"));
@@ -192,7 +194,7 @@ public:
         {
             SetButtonDescription(GamepadUIString("#FR_Store_GamepadUI_Purchased_LimitExceeded"));
         }
-        //no else statement because denials ahve been checked earlier.
+        //no else statement because denials have been checked earlier.
     }
 
     void OnThink() OVERRIDE
