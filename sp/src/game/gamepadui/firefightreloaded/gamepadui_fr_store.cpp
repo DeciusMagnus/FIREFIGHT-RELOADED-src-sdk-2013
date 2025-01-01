@@ -151,6 +151,7 @@ public:
         }
         else
         {
+            //set the cash amount tracking to the current value.
             m_iCurCurrencyAmount = money;
         }
 
