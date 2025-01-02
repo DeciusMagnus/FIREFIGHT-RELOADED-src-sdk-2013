@@ -312,8 +312,8 @@
 
 				"options"
 				{
-					"0"		"#gameui_enabled"
-					"1"		"#gameui_disabled"
+					"0"		"#gameui_disabled"
+					"1"		"#gameui_enabled"
 				}
 			}
             
