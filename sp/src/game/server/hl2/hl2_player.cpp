@@ -121,7 +121,7 @@ ConVar sv_stickysprint("sv_stickysprint", "0", FCVAR_ARCHIVE | FCVAR_ARCHIVE_XBO
 
 ConVar sv_suitpower_mintosprint("sv_suitpower_mintosprint", "10");
 
-ConVar sv_leagcy_flashlight("sv_leagcy_flashlight", "0", FCVAR_ARCHIVE);
+ConVar sv_legacy_flashlight("sv_legacy_flashlight", "0", FCVAR_ARCHIVE);
 
 ConVar sv_hud_hidechat("sv_hud_hidechat", "1");
 
@@ -142,6 +142,8 @@ ConVar sv_player_bullettime_timescale("sv_player_bullettime_timescale", "35", FC
 ConVar sv_player_bullettime_shop_timescale("sv_player_bullettime_shop_timescale", "5", FCVAR_ARCHIVE);
 
 ConVar sv_player_grapple("sv_player_grapple", "1", FCVAR_ARCHIVE, "");
+
+ConVar sv_player_katana("sv_player_katana", "1", FCVAR_ARCHIVE, "");
 
 ConVar sv_suitintro("sv_suitintro", "3", FCVAR_ARCHIVE);
 
@@ -216,7 +218,7 @@ bool Flashlight_UseLegacyVersion( void )
 		//g_bCacheLegacyFlashlightStatus = false;
 	//}
 	
-	g_bUseLegacyFlashlight = sv_leagcy_flashlight.GetBool();
+	g_bUseLegacyFlashlight = sv_legacy_flashlight.GetBool();
 
 	// Return the results
 	return g_bUseLegacyFlashlight;
@@ -1767,7 +1769,7 @@ void CHL2_Player::Spawn(void)
 
 	// Setup our flashlight values
 //#ifdef HL2_EPISODIC
-	if (sv_leagcy_flashlight.GetBool())
+	if (!g_bUseLegacyFlashlight)
 	{
 		m_HL2Local.m_flFlashBattery = 100.0f;
 	}

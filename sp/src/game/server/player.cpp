@@ -1086,8 +1086,6 @@ void CBasePlayer::SetBonusChallenge( int iBonusChallenge )
 	m_iBonusChallenge = iBonusChallenge;
 }
 
-extern ConVar sv_player_grapple;
-
 void CBasePlayer::CheckLevel()
 {
 	if (!g_fr_classic.GetBool())
@@ -7391,6 +7389,9 @@ void CBloodSplat::Think( void )
 
 //==============================================
 
+extern ConVar sv_player_grapple;
+extern ConVar sv_player_katana;
+
 //-----------------------------------------------------------------------------
 // Purpose: Create and give the named item to the player. Then return it.
 //-----------------------------------------------------------------------------
@@ -7402,6 +7403,11 @@ CBaseEntity	*CBasePlayer::GiveNamedItem( const char *pszName, int iSubType, bool
 
 	KeyValues* pInfo = CMapInfo::GetMapInfoData();
 	if (Q_stristr(pszName, "weapon_grapple") && (!sv_player_grapple.GetBool() || (pInfo != NULL && !pInfo->GetBool("CanGrapple", true))))
+	{
+		return NULL;
+	}
+
+	if (Q_stristr(pszName, "weapon_katana") && !sv_player_katana.GetBool())
 	{
 		return NULL;
 	}
@@ -8367,9 +8373,22 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 						}
 					}
 				}
-			}
 
-			engine->ClientCommand(edict(), "confirm_purchase %i", moneyAmount);
+				engine->ClientCommand(edict(), "confirm_purchase %i", moneyAmount);
+			}
+			else
+			{
+				if (sv_store_denynotifications.GetBool())
+				{
+					CFmtStr hint;
+					hint.sprintf("#Valve_StoreBuyDenyItemNotAvailable");
+					ShowLevelMessage(hint.Access());
+				}
+				if (sv_store_denysounds.GetBool())
+				{
+					EmitSound("Store.InsufficientFunds");
+				}
+			}
 		}
 
 		return true;
