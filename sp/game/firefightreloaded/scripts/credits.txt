@@ -122,6 +122,8 @@
 	" "	"CreditsOutroText"
 	"The Source SDK 2013 CE Team for making the many fixes implemented in this mod." "CreditsOutroText"
 	" "	"CreditsOutroText"
+	"ozxybox for the port of the SDK 2013 SP Base to Visual Studio 2022." "CreditsOutroText"
+	" "	"CreditsOutroText"
 	"Momentum Mod team for the FOV patch and some Mobility Mod code changes." "CreditsOutroText"
 	" "	"CreditsOutroText"
 	"Maestra Fénix for the following:" "CreditsOutroText"
