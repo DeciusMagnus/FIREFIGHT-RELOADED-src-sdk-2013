@@ -2818,7 +2818,10 @@ void CBaseCombatWeapon::PrimaryAttack( void )
 
 	if (GetWpnData().m_bUseMuzzleSmoke)
 	{
-		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
+		if (g_fr_plr_muzzlesmoke.GetBool())
+		{
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
+		}
 	}
 
 	FireBulletsInfo_t info;

@@ -6342,7 +6342,14 @@ void CNPC_Hunter::GetShootDir( Vector &vecDir, const Vector &vecSrc, CBaseEntity
 			flSpeed = 2500.0f;
 		}
 
-		flSpeed *= 1.5;
+		if (!isFiringAR2Rounds)
+		{
+			flSpeed *= 1.5;
+		}
+		else
+		{
+			flSpeed *= 3.5;
+		}
 
 		float flDeltaTime = flDist / flSpeed;
 		vecTarget = vecTarget + flDeltaTime * pTargetEntity->GetSmoothedVelocity();
@@ -6788,7 +6795,10 @@ bool CNPC_Hunter::ShootFlechette( CBaseEntity *pTargetEntity, bool bSingleShot )
 				break;
 			case PROJ_AR2_ROUND:
 				CreateAR2Round(vecSrc, vecDir);
-				DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, iAttachment);
+				if (g_fr_npc_muzzlesmoke.GetBool())
+				{
+					DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, iAttachment);
+				}
 				break;
 			case PROJ_RAILGUN:
 				CreateRailgunProjectile(vecSrc, vecShoot, bOvercharge);
@@ -6799,14 +6809,20 @@ bool CNPC_Hunter::ShootFlechette( CBaseEntity *pTargetEntity, bool bSingleShot )
 			case PROJ_FLECHETTE:
 			default:
 				CreateDefaultProjectile(pTargetEntity, vecSrc, vecShoot, angShoot);
-				DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, iAttachment);
+				if (g_fr_npc_muzzlesmoke.GetBool())
+				{
+					DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, iAttachment);
+				}
 				break;
 		}
 	}
 	else
 	{
 		CreateDefaultProjectile(pTargetEntity, vecSrc, vecShoot, angShoot);
-		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, iAttachment);
+		if (g_fr_npc_muzzlesmoke.GetBool())
+		{
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, iAttachment);
+		}
 	}
 
 	if (bOvercharge)

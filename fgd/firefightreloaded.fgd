@@ -195,6 +195,17 @@
 	input PullGrenade(void) : "Forces the zombine to pull a grenade."
 ]
 
+@NPCClass base(BaseNPC) studio("models/combine_scanner.mdl") = npc_killerscanner : "Killer Scanner/Combine Cauterizer"
+[
+	spawnflags(Flags) = 
+	[
+		65536 :  "Use air nodes" : 0
+	]
+
+	input InputSetFlightSpeed(integer) : "Sets the flight speed of the scanner"
+	input SetDistanceOverride(float) : "Override the distance the scanner will attempt to keep between inspection targets and itself"
+]
+
 @PointClass base(Item) studio("models/items/grenadeammo.mdl") = item_ammo_grenade : "Frag Grenade (ammo)" []
 @PointClass base(Weapon) studio("models/weapons/w_sniper_new.mdl") = weapon_sniper_rifle : "Sniper Rifle" []
 @PointClass base(Weapon) studio("models/weapons/w_gauss.mdl") = weapon_gauss : "Tau Cannon" []
@@ -209,6 +220,8 @@
 @PointClass base(Weapon) studio("models/weapons/w_alyx_gun.mdl") = weapon_alyxgun : "Alyxgun" []
 @PointClass base(Weapon) studio("models/weapons/w_gatling.mdl") = weapon_gatling : "Gatling Gun" []
 @PointClass base(Weapon) studio("models/weapons/w_turret_rb.mdl") = weapon_turret : "Turret" []
+@PointClass base(Weapon) studio("models/weapons/w_manhack.mdl") = weapon_manhackthrower : "Manhack" []
+@PointClass base(Weapon) studio("models/weapons/w_shot_xm1014.mdl") = weapon_xm1014 : "M1014" []
 @PointClass base(Weapon) studio("models/weapons/w_pistol.mdl") = weapon_custom1 : "Custom Weapon 1" []
 @PointClass base(Weapon) studio("models/weapons/w_pistol.mdl") = weapon_custom2 : "Custom Weapon 2" []
 @PointClass base(Weapon) studio("models/weapons/w_pistol.mdl") = weapon_custom3 : "Custom Weapon 3" []
@@ -350,13 +363,6 @@
 	output OutValue06(string)  : "Passes the value found in its respective keyname when an event is fired."
 	output OutValue07(string)  : "Passes the value found in its respective keyname when an event is fired."
 	output OutValue08(string)  : "Passes the value found in its respective keyname when an event is fired."
-]
-
-@PointClass base(Targetname) size(-16 -16 -16, 16 16 16) = player_loadoutchanger : "Gives the player a default loadout."
-[
-	// Inputs
-	input SetLoadout(string) : "Set the player's loadout."
-    input UnsetLoadout(void) : "Revert the player's loadout back to the currently set default."
 ]
 
 @PointClass base(Targetname) size(-16 -16 -16, 16 16 16) = player_levelchecker : "Checks the player's level and sees if it's at a certain point."

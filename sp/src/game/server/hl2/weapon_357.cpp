@@ -160,7 +160,10 @@ void CWeapon357::FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, Vector& v
 	pOperator->FireBullets(1, vecShootOrigin, vecShootDir, VECTOR_CONE_PRECALCULATED, MAX_TRACE_LENGTH, m_iPrimaryAmmoType, 2);
 	if (GetWpnData().m_bUseMuzzleSmoke)
 	{
-		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+		if (g_fr_npc_muzzlesmoke.GetBool())
+		{
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+		}
 	}
 	pOperator->DoMuzzleFlash();
 	m_iClip1 = m_iClip1 - 1;
@@ -225,7 +228,10 @@ void CWeapon357::PrimaryAttack( void )
 
 	if (GetWpnData().m_bUseMuzzleSmoke)
 	{
-		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
+		if (g_fr_plr_muzzlesmoke.GetBool())
+		{
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
+		}
 	}
 
 	m_flNextPrimaryAttack = gpGlobals->curtime + 0.75;

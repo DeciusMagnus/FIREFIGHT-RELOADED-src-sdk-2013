@@ -16,6 +16,7 @@
 #include "hl2/grenade_frag.h"
 #include "ai_sentence.h"
 #include "func_break.h"
+#include "ai_senses.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -83,7 +84,9 @@ public:
 	bool		OverrideMove(float flInterval);
 	float		GetGoalDistance(void);
 	bool		VerifyShot(CBaseEntity* pTarget);
-	Vector		DesiredBodyTarget(CBaseEntity* pTarget);
+	void		AdjustScannerVelocity();
+	void		MoveToAttack(float flInterval);
+	int			OnTakeDamage_Alive(const CTakeDamageInfo& info);
 
 	void		PrescheduleThink();
 
@@ -125,6 +128,7 @@ private:
 	enum
 	{
 		SCHED_KILLERSCANNER_SHOOT = BaseClass::NEXT_SCHEDULE,
+		SCHED_KILLERSCANNER_HUNT,
 
 		NEXT_SCHEDULE,
 	};
@@ -315,72 +319,22 @@ int CNPC_KillerScanner::TranslateSchedule( int scheduleType )
 int CNPC_KillerScanner::SelectSchedule(void)
 {
 	// Patrol if the enemy has vanished
-	if (GetEnemy() && m_nFlyMode == SCANNER_FLY_ATTACK)
+	if (GetEnemy())
 	{
 		if (HasCondition(COND_LOST_ENEMY))
-			return SCHED_SCANNER_PATROL;
+			return SCHED_KILLERSCANNER_HUNT;
 
-		//attack if the enemy is behind glass. we have other code that helps us determine if enemies are reachable. 
-		if (HasCondition(COND_SEE_ENEMY) ||
-			HasCondition(COND_HAVE_ENEMY_LOS) || 
-			HasCondition(COND_SCANNER_FLY_BLOCKED))
-			return SCHED_SCANNER_ATTACK;
+		if (m_nFlyMode == SCANNER_FLY_ATTACK)
+		{
+			//attack if the enemy is behind glass. we have other code that helps us determine if enemies are reachable. 
+			if (HasCondition(COND_SEE_ENEMY) ||
+				HasCondition(COND_HAVE_ENEMY_LOS) || 
+				HasCondition(COND_SCANNER_FLY_BLOCKED))
+				return SCHED_SCANNER_ATTACK;
+		}
 	}
 
 	return BaseClass::SelectSchedule();
-}
-
-//---------------------------------------------------------
-//---------------------------------------------------------
-Vector CNPC_KillerScanner::DesiredBodyTarget(CBaseEntity* pTarget)
-{
-	Vector vecFirePos;
-	QAngle vecAngles;
-	GetAttachment(LookupAttachment(KILLERSCANNER_MUZZLE_ATTACHMENT), vecFirePos, vecAngles);
-
-	// By default, aim for the center
-	Vector vecTarget = pTarget->WorldSpaceCenter();
-
-	if (pTarget->GetFlags() & FL_CLIENT)
-	{
-		if (!BaseClass::FVisible(vecTarget))
-		{
-			// go to the player's eyes if his center is concealed.
-			// Bump up an inch so the player's not looking straight down a beam.
-			vecTarget = pTarget->EyePosition() + Vector(0, 0, 1);
-		}
-	}
-	else
-	{
-		if (pTarget->Classify() == CLASS_HEADCRAB)
-		{
-			// Headcrabs are tiny inside their boxes.
-			vecTarget = pTarget->GetAbsOrigin();
-			vecTarget.z += 4.0;
-		}
-		else if (pTarget->Classify() == CLASS_ZOMBIE)
-		{
-			vecTarget = pTarget->BodyTarget(vecFirePos);
-		}
-		else if (pTarget->Classify() == CLASS_ANTLION)
-		{
-			// Shoot about a few inches above the origin. This makes it easy to hit antlions
-			// even if they are on their backs.
-			vecTarget = pTarget->GetAbsOrigin();
-			vecTarget.z += 18.0f;
-		}
-		else if (pTarget->Classify() == CLASS_EARTH_FAUNA)
-		{
-			// Shoot birds in the center
-		}
-		else
-		{
-			// Shoot NPCs in the chest
-			vecTarget.z += 8.0f;
-		}
-	}
-
-	return vecTarget;
 }
 
 //---------------------------------------------------------
@@ -397,77 +351,23 @@ bool CNPC_KillerScanner::VerifyShot(CBaseEntity* pTarget)
 	QAngle vecAngles;
 	GetAttachment(LookupAttachment(KILLERSCANNER_MUZZLE_ATTACHMENT), vecFirePos, vecAngles);
 
-	trace_t tr;
-
-	Vector vecTarget = DesiredBodyTarget(pTarget);
-	UTIL_TraceLine(vecFirePos, vecTarget, MASK_SHOT, pTarget, COLLISION_GROUP_NONE, &tr);
-
-	if (tr.fraction != 1.0)
+	if (GetSenses()->CanSeeEntity(pTarget) && GetSenses()->DidSeeEntity(pTarget))
 	{
-		// Trace hit something.
-		if (tr.m_pEnt)
-		{
-			if (pTarget->IsPlayer())
-			{
-				// if the target is the player, do another trace to see if we can shoot his eyeposition. This should help 
-				// improve sniper responsiveness in cases where the player is hiding his chest from the sniper with his 
-				// head in full view.
-				UTIL_TraceLine(vecFirePos, pTarget->EyePosition(), MASK_SHOT, pTarget, COLLISION_GROUP_NONE, &tr);
-
-				if (tr.fraction == 1.0)
-				{
-					if (debug_killerscanner_showshootpath.GetBool())
-					{
-						NDebugOverlay::Line(GetLocalOrigin(), vecTarget, 0, 255, 0, true, 1);
-					}
-
-					return true;
-				}
-			}
-
-			//haha, makes glass!
-			if (FClassnameIs(tr.m_pEnt, "func_breakable"))
-			{
-				CBreakable* pBreak = dynamic_cast <CBreakable*>(tr.m_pEnt);
-				if (pBreak && (pBreak->GetMaterialType() == matGlass))
-				{
-					if (debug_killerscanner_showshootpath.GetBool())
-					{
-						NDebugOverlay::Line(GetLocalOrigin(), vecTarget, 0, 0, 255, true, 1);
-					}
-
-					return true;
-				}
-			}
-			else
-			{
-				if (tr.m_pEnt->GetCollisionGroup() == COLLISION_GROUP_BREAKABLE_GLASS)
-				{
-					if (debug_killerscanner_showshootpath.GetBool())
-					{
-						NDebugOverlay::Line(GetLocalOrigin(), vecTarget, 0, 0, 255, true, 1);
-					}
-
-					return true;
-				}
-			}
-		}
-
 		if (debug_killerscanner_showshootpath.GetBool())
 		{
-			NDebugOverlay::Line(GetLocalOrigin(), vecTarget, 255, 0, 0, true, 1);
+			NDebugOverlay::Line(vecFirePos, pTarget->GetLocalOrigin(), 0, 255, 0, true, 1);
 		}
 
-		return false;
+		return true;
 	}
 	else
 	{
 		if (debug_killerscanner_showshootpath.GetBool())
 		{
-			NDebugOverlay::Line(GetLocalOrigin(), vecTarget, 0, 255, 0, true, 1);
+			NDebugOverlay::Line(vecFirePos, pTarget->GetLocalOrigin(), 255, 0, 0, true, 1);
 		}
 
-		return true;
+		return false;
 	}
 }
 
@@ -520,6 +420,9 @@ void CNPC_KillerScanner::RailgunDrawBeam(const Vector& startPos, const Vector& e
 
 void CNPC_KillerScanner::CreateRailgunProjectile(const Vector& vecSrc, Vector& vecShoot, bool bOvercharged)
 {
+	if (!GetEnemy())
+		return;
+
 	Vector vecShootDir = vecShoot;
 	Vector VecShootOrigin = vecSrc;
 
@@ -583,6 +486,9 @@ void CNPC_KillerScanner::ShootRound(const Vector& vecSrc, const Vector& vecDir)
 
 void CNPC_KillerScanner::CreateFragGrenadeProjectile(const Vector& vecSrc, QAngle& angShoot)
 {
+	if (!GetEnemy())
+		return;
+
 	Vector vecSpin;
 	vecSpin.x = random->RandomFloat(-1000.0, 1000.0);
 	vecSpin.y = random->RandomFloat(-1000.0, 1000.0);
@@ -594,6 +500,14 @@ void CNPC_KillerScanner::CreateFragGrenadeProjectile(const Vector& vecSrc, QAngl
 	vecThrow = forward * 750 + up * 175;
 	bool bFireGrenade = ((random->RandomInt(0, 1) == 1 && g_pGameRules->GetSkillLevel() >= SKILL_HARD) ? true : false);
 	Fraggrenade_Create(vecSrc, angShoot, vecThrow, vecSpin, this, COMBINE_GRENADE_TIMER, true, bFireGrenade);
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CNPC_KillerScanner::AdjustScannerVelocity(void)
+{
+	m_vCurrentVelocity *= (1 + sin((gpGlobals->curtime + m_flFlyNoiseBase) * 2.5f) * .1);
 }
 
 void CNPC_KillerScanner::Attack(void)
@@ -631,81 +545,96 @@ void CNPC_KillerScanner::Attack(void)
     if ( m_flNextAttack > gpGlobals->curtime )
         return;
 
-	if (VerifyShot(GetEnemy()))
+	Vector vecFirePos;
+	QAngle vecAngles;
+	GetAttachment(LookupAttachment(KILLERSCANNER_MUZZLE_ATTACHMENT), vecFirePos, vecAngles);
+	Vector vecTarget = GetEnemy()->BodyTarget(vecFirePos);
+
+	//nightmare and very hard will make the killerscanner sometimes target the head of the player.
+	if (g_pGameRules->GetSkillLevel() > SKILL_HARD)
 	{
-		Vector vecFirePos;
-		QAngle vecAngles;
-		GetAttachment(LookupAttachment(KILLERSCANNER_MUZZLE_ATTACHMENT), vecFirePos, vecAngles);
-		Vector vecTarget = GetEnemy()->BodyTarget(vecFirePos);
-		Vector vecToTarget = (vecTarget - vecFirePos);
-		VectorNormalize(vecToTarget);
+		int randInt = random->RandomInt(0, 3);
 
-		float firerate = sk_killerscanner_fire_rate.GetFloat();
-
-		if (m_pAttributes)
+		if (GetEnemy()->GetFlags() & FL_CLIENT && randInt == 3)
 		{
-			firerate = m_pAttributes->GetFloat("fire_rate", sk_killerscanner_fire_rate.GetFloat());
+			vecTarget = GetEnemy()->HeadTarget(vecFirePos);
 		}
+	}
 
-		m_flNextAttack = gpGlobals->curtime + firerate;
+	Vector vecToTarget = (vecTarget - vecFirePos);
+	VectorNormalize(vecToTarget);
 
-		CEffectData data;
-		data.m_nEntIndex = entindex();
-		data.m_nAttachmentIndex = LookupAttachment(KILLERSCANNER_MUZZLE_ATTACHMENT);
-		data.m_flScale = 1.0f;
-		data.m_fFlags = MUZZLEFLASH_COMBINE;
-		DispatchEffect("MuzzleFlash", data);
+	float firerate = sk_killerscanner_fire_rate.GetFloat();
 
-		ScannerEmitSound("Fire");
+	if (m_pAttributes)
+	{
+		firerate = m_pAttributes->GetFloat("fire_rate", sk_killerscanner_fire_rate.GetFloat());
+	}
 
-		if (m_pAttributes)
+	m_flNextAttack = gpGlobals->curtime + firerate;
+
+	CEffectData data;
+	data.m_nEntIndex = entindex();
+	data.m_nAttachmentIndex = LookupAttachment(KILLERSCANNER_MUZZLE_ATTACHMENT);
+	data.m_flScale = 1.0f;
+	data.m_fFlags = MUZZLEFLASH_COMBINE;
+	DispatchEffect("MuzzleFlash", data);
+
+	ScannerEmitSound("Fire");
+
+	if (m_pAttributes)
+	{
+		int projInt = 0;
+		bool projIntSaveMyFuckingSanity = m_pAttributes->GetBool("new_projectile_random");
+
+		if (projIntSaveMyFuckingSanity)
 		{
-			int projInt = 0;
-			bool projIntSaveMyFuckingSanity = m_pAttributes->GetBool("new_projectile_random");
-
-			if (projIntSaveMyFuckingSanity)
-			{
-				projInt = RandomInt(PROJ_AR2_ROUND, PROJ_LAST - 1);
-			}
-			else
-			{
-				projInt = m_pAttributes->GetInt("new_projectile");
-			}
-
-			switch (projInt)
-			{
-			case PROJ_RAILGUN:
-				CreateRailgunProjectile(vecFirePos, vecToTarget, false);
-				break;
-			case PROJ_FRAG_GRENADE:
-				CreateFragGrenadeProjectile(vecFirePos, vecAngles);
-				break;
-			case PROJ_AR2_ROUND:
-			default:
-				ShootRound(vecFirePos, vecToTarget);
-				DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, KILLERSCANNER_MUZZLE_ATTACHMENT);
-				break;
-			}
+			projInt = RandomInt(PROJ_AR2_ROUND, PROJ_LAST - 1);
 		}
 		else
 		{
+			projInt = m_pAttributes->GetInt("new_projectile");
+		}
+
+		switch (projInt)
+		{
+		case PROJ_RAILGUN:
+			CreateRailgunProjectile(vecFirePos, vecToTarget, false);
+			break;
+		case PROJ_FRAG_GRENADE:
+			CreateFragGrenadeProjectile(vecFirePos, vecAngles);
+			break;
+		case PROJ_AR2_ROUND:
+		default:
 			ShootRound(vecFirePos, vecToTarget);
+			if (g_fr_npc_muzzlesmoke.GetBool())
+			{
+				DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, KILLERSCANNER_MUZZLE_ATTACHMENT);
+			}
+			break;
+		}
+	}
+	else
+	{
+		ShootRound(vecFirePos, vecToTarget);
+		if (g_fr_npc_muzzlesmoke.GetBool())
+		{
 			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, KILLERSCANNER_MUZZLE_ATTACHMENT);
 		}
+	}
 
-		m_iShots++;
+	m_iShots++;
 
-		int magsize = sk_killerscanner_mag_size.GetInt();
+	int magsize = sk_killerscanner_mag_size.GetInt();
 
-		if (m_pAttributes)
-		{
-			magsize = m_pAttributes->GetFloat("mag_size", sk_killerscanner_mag_size.GetInt());
-		}
+	if (m_pAttributes)
+	{
+		magsize = m_pAttributes->GetFloat("mag_size", sk_killerscanner_mag_size.GetInt());
+	}
 
-		if (m_iShots >= magsize)
-		{
-			Chargeup();
-		}
+	if (m_iShots >= magsize)
+	{
+		Chargeup();
 	}
 }
 
@@ -720,11 +649,11 @@ float CNPC_KillerScanner::GetGoalDistance(void)
 
 	switch (m_nFlyMode)
 	{
-	case SCANNER_FLY_ATTACK:
-	{
-		return sk_killerscanner_mindist_combat.GetFloat();
-	}
-	break;
+		case SCANNER_FLY_ATTACK:
+		{
+			return sk_killerscanner_mindist_combat.GetFloat();
+		}
+		break;
 	}
 
 	return sk_killerscanner_mindist_idle.GetFloat();
@@ -787,7 +716,7 @@ void CNPC_KillerScanner::RunTask( const Task_t *pTask )
 				return;
 			}
 
-			if (HasCondition(COND_NOT_FACING_ATTACK) || IsHeldByPhyscannon())
+			if (!VerifyShot(pEnemy))
 			{
 				TaskFail(FAIL_NO_SHOOT);
 				return;
@@ -1063,6 +992,40 @@ float CNPC_KillerScanner::GetMaxSpeed()
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: 
+// Input  : flInterval - 
+//-----------------------------------------------------------------------------
+void CNPC_KillerScanner::MoveToAttack(float flInterval)
+{
+	if (GetEnemy() == NULL)
+		return;
+
+	if (flInterval <= 0)
+		return;
+
+	Vector vTargetPos = GetEnemyLKP();
+
+	float flIdealHeightDiff = m_flAttackNearDist;
+	if (IsEnemyPlayerInSuit())
+	{
+		flIdealHeightDiff *= 0.5;
+	}
+
+	Vector idealPos = IdealGoalForMovement(vTargetPos, GetAbsOrigin(), GetGoalDistance(), flIdealHeightDiff);
+
+	MoveToTarget(flInterval, idealPos);
+}
+
+int CNPC_KillerScanner::OnTakeDamage_Alive(const CTakeDamageInfo& info)
+{
+	// don't take damage from my own weapons!!!
+	if (info.GetInflictor() && info.GetInflictor()->GetOwnerEntity() == this)
+		return 0;
+
+	return BaseClass::OnTakeDamage_Alive(info);
+}
+
+//-----------------------------------------------------------------------------
 //
 // Schedules
 //
@@ -1091,6 +1054,31 @@ AI_BEGIN_CUSTOM_NPC( npc_killerscanner, CNPC_KillerScanner )
 		"		COND_ENEMY_OCCLUDED"
 		"		COND_TOO_FAR_TO_ATTACK"
 		"		COND_NOT_FACING_ATTACK"
+		"		COND_SCANNER_GRABBED_BY_PHYSCANNON"
+	)
+
+	//=========================================================
+	// > SCHED_KILLERSCANNER_HUNT
+	//
+	//  Like SCHED_SCANNER_CHASE_ENEMY, but tries to find our enemy from the LKP/LOS.  
+	//=========================================================
+	DEFINE_SCHEDULE
+	(
+		SCHED_KILLERSCANNER_HUNT,
+
+		"	Tasks"
+		"		 TASK_SCANNER_SET_FLY_CHASE			0"
+		"		 TASK_SET_FAIL_SCHEDULE				SCHEDULE:SCHED_SCANNER_PATROL"
+		"		 TASK_SET_TOLERANCE_DISTANCE		120"
+		"		 TASK_GET_PATH_TO_ENEMY_LKP_LOS		0"
+		"		 TASK_RUN_PATH						0"
+		"		 TASK_WAIT_FOR_MOVEMENT				0"
+		""
+		"	Interrupts"
+		"		COND_SCANNER_FLY_CLEAR"
+		"		COND_NEW_ENEMY"
+		"		COND_ENEMY_DEAD"
+		"		COND_LOST_ENEMY"
 		"		COND_SCANNER_GRABBED_BY_PHYSCANNON"
 	)
 

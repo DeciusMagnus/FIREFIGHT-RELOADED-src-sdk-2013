@@ -222,6 +222,14 @@ void CWeaponSniperRifle::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCom
 
 			CSoundEnt::InsertSound(SOUND_COMBAT | SOUND_CONTEXT_GUNFIRE, pOperator->GetAbsOrigin(), SOUNDENT_VOLUME_MACHINEGUN, 0.2, pOperator, SOUNDENT_CHANNEL_WEAPON, pOperator->GetEnemy());
 
+			if (GetWpnData().m_bUseMuzzleSmoke)
+			{
+				if (g_fr_npc_muzzlesmoke.GetBool())
+				{
+					DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+				}
+			}
+
 			//shoot 2 to make it seem we're shooting super fast.
 			pOperator->FireBullets(1, vecShootOrigin, vecShootDir, GetBulletSpread(), MAX_TRACE_LENGTH, m_iPrimaryAmmoType, 2);
 
@@ -279,7 +287,10 @@ void CWeaponSniperRifle::PrimaryAttack( void )
 
 	if (GetWpnData().m_bUseMuzzleSmoke)
 	{
-		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
+		if (g_fr_plr_muzzlesmoke.GetBool())
+		{
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
+		}
 	}
 
 	m_iClip1--;

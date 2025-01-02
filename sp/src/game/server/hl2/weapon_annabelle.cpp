@@ -129,7 +129,10 @@ void CWeaponAnnabelle::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseComba
 
 			if (GetWpnData().m_bUseMuzzleSmoke)
 			{
-				DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+				if (g_fr_npc_muzzlesmoke.GetBool())
+				{
+					DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+				}
 			}
 		}
 		break;

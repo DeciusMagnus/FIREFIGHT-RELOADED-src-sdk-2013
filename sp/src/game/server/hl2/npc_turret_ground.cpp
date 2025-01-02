@@ -544,7 +544,10 @@ void CNPC_GroundTurret::Shoot()
 
 		FireBullets( info );
 
-		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, LookupAttachment("eyes"));
+		if (g_fr_npc_muzzlesmoke.GetBool())
+		{
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, LookupAttachment("eyes"));
+		}
 	}
 
 	// Do the AR2 muzzle flash

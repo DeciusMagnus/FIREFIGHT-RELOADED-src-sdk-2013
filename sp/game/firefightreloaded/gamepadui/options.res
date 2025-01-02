@@ -1842,7 +1842,7 @@
 			{
 				"text"			"#GameUI_GravityAdjust"
 				"type"			"wheelywheel"
-				"convar"		"fr_floatymove"
+				"convar"		"sv_gravity"
                 "advanced"		"1"
                 "hidden"		"1"
 
@@ -2617,7 +2617,7 @@
 				}
 			}
             
-            			"Crosshair"
+            "Crosshair"
 			{
 				"text"			"#GameUI_Crosshair"
 				"type"			"wheelywheel"
@@ -2733,6 +2733,34 @@
 				"type"			"wheelywheel"
 				"advanced"		"1"
 				"convar"		"_gamepadui_classicfire"
+
+				"options"
+				{
+					"0"		"#gameui_disabled"
+					"1"		"#gameui_enabled"
+				}
+			}
+            
+            "NPCMuzzleSmoke"
+			{
+				"text"			"#GameUI_NPCMuzzleSmoke"
+				"type"			"wheelywheel"
+				"advanced"		"1"
+				"convar"		"g_fr_npc_muzzlesmoke"
+
+				"options"
+				{
+					"0"		"#gameui_disabled"
+					"1"		"#gameui_enabled"
+				}
+			}
+            
+            "PLRMuzzleSmoke"
+			{
+				"text"			"#GameUI_PLRMuzzleSmoke"
+				"type"			"wheelywheel"
+				"advanced"		"1"
+				"convar"		"g_fr_plr_muzzlesmoke"
 
 				"options"
 				{

@@ -676,6 +676,8 @@
             "GameUI_GravityAdjust_TF2": "Team Fortress 2 Gravity",
             "GameUI_GravityAdjust_ENDGAME": "ENDGAME Gravity",
             "GameUI_JumpHeight": "Jump Height",
+            "GameUI_NPCMuzzleSmoke": "NPC Muzzle Smoke",
+            "GameUI_PLRMuzzleSmoke": "Player Muzzle Smoke",
             "FIREFIGHTRELOADED_KILL20COMBINE_NAME": "The Rookie",
             "FIREFIGHTRELOADED_KILL20COMBINE_DESC": "Kill 20 Combine Soldiers/Civil Protection overall.",
             "FIREFIGHTRELOADED_KILL20COMBINE_ACHIEVED": "ACHIEVEMENT UNLOCKED:\nThe Rookie\nKill 20 Combine Soldiers/Civil Protection overall.",

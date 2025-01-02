@@ -449,6 +449,8 @@ extern ConVar g_fr_headshotgore;
 extern ConVar g_fr_economy;
 extern ConVar g_fr_entitytolerance;
 extern ConVar g_fr_spawneroldfunctionality;
+extern ConVar g_fr_plr_muzzlesmoke;
+extern ConVar g_fr_npc_muzzlesmoke;
 
 //-----------------------------------------------------------------------------
 // Gets us at the game rules

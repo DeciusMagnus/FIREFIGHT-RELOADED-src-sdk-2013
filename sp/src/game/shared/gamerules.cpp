@@ -50,6 +50,8 @@ ConVar g_fr_headshotgore("g_fr_headshotgore", "1", FCVAR_ARCHIVE | FCVAR_REPLICA
 ConVar g_fr_economy("g_fr_economy", "1", FCVAR_ARCHIVE | FCVAR_REPLICATED);
 ConVar g_fr_entitytolerance("g_fr_entitytolerance", "16", FCVAR_ARCHIVE | FCVAR_REPLICATED);
 ConVar g_fr_spawneroldfunctionality("g_fr_spawneroldfunctionality", "0", FCVAR_ARCHIVE | FCVAR_REPLICATED);
+ConVar g_fr_plr_muzzlesmoke("g_fr_plr_muzzlesmoke", "1", FCVAR_ARCHIVE | FCVAR_REPLICATED);
+ConVar g_fr_npc_muzzlesmoke("g_fr_npc_muzzlesmoke", "1", FCVAR_ARCHIVE | FCVAR_REPLICATED);
 
 static CViewVectors g_DefaultViewVectors(
 	Vector( 0, 0, 64 ),			//VEC_VIEW (m_vView)

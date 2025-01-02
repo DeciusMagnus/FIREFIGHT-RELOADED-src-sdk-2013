@@ -113,7 +113,10 @@ void CHLMachineGun::PrimaryAttack( void )
 
 	if (GetWpnData().m_bUseMuzzleSmoke)
 	{
-		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
+		if (g_fr_plr_muzzlesmoke.GetBool())
+		{
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
+		}
 	}
 
 	// Register a muzzleflash for the AI
@@ -364,7 +367,10 @@ void CHLSelectFireMachineGun::PrimaryAttack( void )
 		m_iPrimaryAttacks++;
 		if (GetWpnData().m_bUseMuzzleSmoke)
 		{
-			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pOwner->GetViewModel(), "muzzle", true);
+			if (g_fr_plr_muzzlesmoke.GetBool())
+			{
+				DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pOwner->GetViewModel(), "muzzle", true);
+			}
 		}
 		gamestats->Event_WeaponFired( pOwner, true, GetClassname() );
 	}

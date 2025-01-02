@@ -555,7 +555,7 @@ bool CNPC_Combine::CorpseGib(const CTakeDamageInfo& info)
 
 	//soldiers have body armor, so if we're set to gib do it on random.
 	int randInt = random->RandomInt(0, 3);
-	if (info.GetDamageType() & (DMG_BLAST | DMG_ALWAYSGIB) && randInt == 3)
+	if (info.GetDamageType() & (DMG_BLAST | DMG_ALWAYSGIB) && randInt < 3)
 		return false;
 
 	static ConVarRef violence_hgibs( "violence_hgibs" );

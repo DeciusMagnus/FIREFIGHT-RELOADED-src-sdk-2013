@@ -1482,7 +1482,7 @@ bool CNPC_BaseScanner::GetGoalDirection( Vector *vOut )
 	if ( pTarget == NULL )
 		return false;
 
-	if ( FClassnameIs( pTarget, "info_hint_air" ) || FClassnameIs( pTarget, "info_target" ) )
+	if ( FClassnameIs( pTarget, "info_hint" ) || FClassnameIs( pTarget, "info_target" ) )
 	{
 		AngleVectors( pTarget->GetAbsAngles(), vOut );
 		return true;

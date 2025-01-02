@@ -192,7 +192,10 @@ void CWeaponXM1014::FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, bool b
 
 	if (GetWpnData().m_bUseMuzzleSmoke)
 	{
-		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+		if (g_fr_npc_muzzlesmoke.GetBool())
+		{
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+		}
 	}
 
 	CAmmoDef* def = GetAmmoDef();
@@ -443,7 +446,10 @@ void CWeaponXM1014::PrimaryAttack( void )
 
 	if (GetWpnData().m_bUseMuzzleSmoke)
 	{
-		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
+		if (g_fr_plr_muzzlesmoke.GetBool())
+		{
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
+		}
 	}
 
 	// Don't fire again until fire animation has completed

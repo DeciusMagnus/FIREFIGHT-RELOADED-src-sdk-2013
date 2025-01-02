@@ -779,7 +779,10 @@ void CHGrunt::Shoot (int bulletnum, Vector cone)
 	}
 	DispatchEffect("MuzzleFlash", data);
 
-	DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, LookupAttachment("0"));
+	if (g_fr_npc_muzzlesmoke.GetBool())
+	{
+		DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, LookupAttachment("0"));
+	}
 
 	//redundant?
 	DoMuzzleFlash();

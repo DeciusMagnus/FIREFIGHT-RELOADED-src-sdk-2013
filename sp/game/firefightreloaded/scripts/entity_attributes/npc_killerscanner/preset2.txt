@@ -6,8 +6,8 @@
 	"outline_color"	"156 80 20"
 	"is_rare"		"1"
 	"new_projectile"	"2"
-	"fire_rate"		"0.15"
-	"mag_size"	"5"
+	"fire_rate"		"0.35"
+	"mag_size"	"3"
 	"cycle_time"	"1.5"
 	"persist"		"0"
 }
