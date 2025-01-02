@@ -860,7 +860,7 @@ void BuildGroup::PanelAdded(Panel *panel)
 	int c = _panelDar.Count();
 	for ( int i = 0; i < c; ++i )
 	{
-		if ( _panelDar[ i ] == temp )
+		if ( _panelDar[ i ].Get() == temp )
 		{
 			return;
 		}
