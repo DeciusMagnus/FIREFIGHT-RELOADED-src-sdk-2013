@@ -34,6 +34,10 @@ const int MAX_OPTIONS_TABS = 8;
 
 class GamepadUIWheelyWheel;
 void OnResolutionsNeedUpdate( IConVar *var, const char *pOldValue, float flOldValue );
+void OnShowAdvancedOptions(IConVar* var, const char* pOldValue, float flOldValue);
+
+ConVar gamepadui_last_options_tab("gamepadui_last_options_tab", "0", FCVAR_ARCHIVE);
+ConVar gamepadui_showadvancedoptions("gamepadui_showadvancedoptions", "0", FCVAR_ARCHIVE, "", OnShowAdvancedOptions);
 
 ConVar _gamepadui_water_detail( "_gamepadui_water_detail", "0" );
 ConVar _gamepadui_shadow_detail( "_gamepadui_shadow_detail", "0" );
@@ -107,6 +111,8 @@ public:
 public:
 
     bool childDisabledScrolling = false;
+    GamepadUITab m_Tabs[MAX_OPTIONS_TABS];
+    int m_nTabCount = 0;
 
 private:
 
@@ -117,8 +123,6 @@ private:
     GAMEPADUI_PANEL_PROPERTY( float, m_flScrollBarWidth, "Scrollbar.Width", "80", SchemeValueTypes::ProportionalFloat );
     GAMEPADUI_PANEL_PROPERTY( float, m_flScrollBarHeight, "Scrollbar.Height", "80", SchemeValueTypes::ProportionalFloat );
 
-    GamepadUITab m_Tabs[ MAX_OPTIONS_TABS ];
-    int m_nTabCount = 0;
     bool isKeyPress = false;
 
     GamepadUIWheelyWheel* m_pResolutionButton = NULL;
@@ -130,8 +134,6 @@ private:
 };
 
 GamepadUIOptionsPanel* GamepadUIOptionsPanel::s_pOptionsPanel = NULL;
-
-ConVar gamepadui_last_options_tab( "gamepadui_last_options_tab", "0", FCVAR_ARCHIVE );
 
 class GamepadUICheckButton : public GamepadUIButton
 {
@@ -992,6 +994,31 @@ void OnResolutionsNeedUpdate( IConVar *var, const char *pOldValue, float flOldVa
     GamepadUIOptionsPanel* pOptionsPanel = GamepadUIOptionsPanel::GetInstance();
     if ( pOptionsPanel )
         pOptionsPanel->UpdateResolutions();
+}
+
+void OnShowAdvancedOptions(IConVar* var, const char* pOldValue, float flOldValue)
+{
+    GamepadUIOptionsPanel* pOptionsPanel = GamepadUIOptionsPanel::GetInstance();
+    if (pOptionsPanel)
+    {
+        //clear buttons in current tabs so we can reload them.
+        for (int i = 0; i < pOptionsPanel->m_nTabCount; i++)
+        {
+            pOptionsPanel->m_Tabs[i].pButtons.PurgeAndDeleteElements();
+            delete pOptionsPanel->m_Tabs[i].pTabButton;
+        }
+
+        pOptionsPanel->m_nTabCount = 0;
+
+        pOptionsPanel->LoadOptionTabs(GAMEPADUI_OPTIONS_FILE);
+        pOptionsPanel->FillInBindings();
+
+        pOptionsPanel->SetActiveTab(pOptionsPanel->GetActiveTab());
+
+        pOptionsPanel->Repaint();
+
+        pOptionsPanel->UpdateGradients();
+    }
 }
 
 static int GetSDLDisplayIndex()
@@ -2186,6 +2213,14 @@ void GamepadUIOptionsPanel::LoadOptionTabs( const char *pszOptionsFile )
             {
                 for ( KeyValues* pItemData = pTabItems->GetFirstSubKey(); pItemData != NULL; pItemData = pItemData->GetNextKey() )
                 {
+                    if (pItemData->GetBool("advanced", 0) && pItemData->GetBool("hidden", 0))
+                    {
+                        if (!gamepadui_showadvancedoptions.GetBool())
+                        {
+                            continue;
+                        }
+                    }
+
                     const char *pItemType = pItemData->GetString( "type", "droppydown" );
                     if ( !V_strcmp( pItemType, "checkybox" ) )
                     {
