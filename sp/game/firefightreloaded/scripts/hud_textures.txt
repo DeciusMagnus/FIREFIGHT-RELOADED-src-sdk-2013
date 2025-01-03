@@ -180,7 +180,7 @@
 		"npc_killerscanner"
 		{
 				"font"		"WeaponIconsKillFeed"
-				"character"	"9"
+				"character"	"2"
 		}
 		"npc_grenade_frag"
 		{
@@ -201,6 +201,16 @@
 		{
 				"font"		"WeaponIconsKillFeed"
 				"character"	"-"
+		}
+		"npc_assassin"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"-"
+		}
+		"world"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"9"
 		}
 		"npc_houndeye"
 		{
@@ -492,7 +502,7 @@
 				"width"		"64"
 				"height"	"32"
 				"customxyoffset"	"1"
-				"y_offset"		"-13"
+				"y_offset"		"-10"
 		}
 		"weapon_gatling"
 		{
