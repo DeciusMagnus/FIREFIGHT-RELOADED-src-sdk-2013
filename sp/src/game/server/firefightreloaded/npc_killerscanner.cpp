@@ -21,22 +21,24 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+//SKILL VARS
 ConVar	sk_killerscanner_health( "sk_killerscanner_health","0");
-ConVar	sk_killerscanner_fire_rate("sk_killerscanner_fire_rate", "0.03");
-ConVar	sk_killerscanner_cycle_time("sk_killerscanner_cycle_time", "1.4");
-ConVar	sk_killerscanner_mag_size("sk_killerscanner_mag_size", "25");
-ConVar	sk_killerscanner_max_speed("sk_killerscanner_max_speed", "350");
-ConVar	sk_killerscanner_attack_near("sk_killerscanner_attack_near", "72");
-ConVar	sk_killerscanner_attack_maxrange("sk_killerscanner_attack_maxrange", "750");
-ConVar	sk_killerscanner_mindist_idle("sk_killerscanner_mindist_idle", "128");
-ConVar	sk_killerscanner_mindist_combat("sk_killerscanner_mindist_combat", "128");
-ConVar	sk_killerscanner_turn_rate_combat("sk_killerscanner_turn_rate_combat", "1500");
-ConVar	sk_killerscanner_turn_rate_idle("sk_killerscanner_turn_rate_idle", "750");
-ConVar	sk_killerscanner_minheight_combat("sk_killerscanner_minheight_combat", "16");
-ConVar	sk_killerscanner_minheight_idle("sk_killerscanner_minheight_idle", "72");
-ConVar	sk_killerscanner_flight_accel_combat("sk_killerscanner_flight_accel_combat", "450");
-ConVar	sk_killerscanner_projectile_speed("sk_killerscanner_projectile_speed", "2000");
-ConVar	sk_killerscanner_sentence_delay("sk_killerscanner_sentence_delay", "30");
+ConVar	sk_killerscanner_fire_rate("sk_killerscanner_fire_rate", "0");
+ConVar	sk_killerscanner_cycle_time("sk_killerscanner_cycle_time", "0");
+ConVar	sk_killerscanner_mag_size("sk_killerscanner_mag_size", "0");
+ConVar	sk_killerscanner_max_speed("sk_killerscanner_max_speed", "0");
+ConVar	sk_killerscanner_projectile_speed("sk_killerscanner_projectile_speed", "0");
+//STAT VARS
+ConVar	sk_killerscanner_attack_near("sk_killerscanner_attack_near", "72", FCVAR_DEVELOPMENTONLY);
+ConVar	sk_killerscanner_attack_maxrange("sk_killerscanner_attack_maxrange", "750", FCVAR_DEVELOPMENTONLY);
+ConVar	sk_killerscanner_mindist_idle("sk_killerscanner_mindist_idle", "128", FCVAR_DEVELOPMENTONLY);
+ConVar	sk_killerscanner_mindist_combat("sk_killerscanner_mindist_combat", "128", FCVAR_DEVELOPMENTONLY);
+ConVar	sk_killerscanner_turn_rate_combat("sk_killerscanner_turn_rate_combat", "1500", FCVAR_DEVELOPMENTONLY);
+ConVar	sk_killerscanner_turn_rate_idle("sk_killerscanner_turn_rate_idle", "750", FCVAR_DEVELOPMENTONLY);
+ConVar	sk_killerscanner_minheight_combat("sk_killerscanner_minheight_combat", "16", FCVAR_DEVELOPMENTONLY);
+ConVar	sk_killerscanner_minheight_idle("sk_killerscanner_minheight_idle", "72", FCVAR_DEVELOPMENTONLY);
+ConVar	sk_killerscanner_flight_accel_combat("sk_killerscanner_flight_accel_combat", "450", FCVAR_DEVELOPMENTONLY);
+ConVar	sk_killerscanner_sentence_delay("sk_killerscanner_sentence_delay", "30", FCVAR_DEVELOPMENTONLY);
 
 ConVar	debug_killerscanner_showshootpath("debug_killerscanner_showshootpath", "0");
 
