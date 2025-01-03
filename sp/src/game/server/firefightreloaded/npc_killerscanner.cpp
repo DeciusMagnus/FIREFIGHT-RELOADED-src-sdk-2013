@@ -21,7 +21,7 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-ConVar	sk_killerscanner_health( "sk_killerscanner_health","55");
+ConVar	sk_killerscanner_health( "sk_killerscanner_health","0");
 ConVar	sk_killerscanner_fire_rate("sk_killerscanner_fire_rate", "0.03");
 ConVar	sk_killerscanner_cycle_time("sk_killerscanner_cycle_time", "1.4");
 ConVar	sk_killerscanner_mag_size("sk_killerscanner_mag_size", "25");
@@ -205,7 +205,7 @@ void CNPC_KillerScanner::Spawn( void )
 	m_nPoseFaceVert = LookupPoseParameter("flex_vert");
 	m_nPoseFaceHoriz = LookupPoseParameter("flex_horz");
 
-	m_iAmmoType = GetAmmoDef()->Index("Pistol");
+	m_iAmmoType = GetAmmoDef()->Index("KillerScannerPistol");
 
 	BaseClass::Spawn();
 

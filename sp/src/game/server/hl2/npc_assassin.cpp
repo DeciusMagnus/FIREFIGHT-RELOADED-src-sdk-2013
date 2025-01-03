@@ -659,14 +659,7 @@ int CNPC_Assassin::SelectSchedule ( void )
 			// new enemy
 			if (HasCondition(COND_NEW_ENEMY))
 			{
-				if (m_bAce)
-				{
-					return SCHED_CHASE_ENEMY;
-				}
-				else
-				{
-					return SCHED_ASSASSIN_HUNT_ENEMY;
-				}
+				return SCHED_ASSASSIN_HUNT_ENEMY;
 			}
 
 			// ALERT( at_console, "stand\n");
@@ -1175,23 +1168,23 @@ void CNPC_Assassin::GatherEnemyConditions( CBaseEntity *pEnemy )
 	float	enemyDot = DotProduct(enemyBodyDir, enemyDir);
 
 	// See if we're being targetted specifically
-	if ( HasCondition( COND_ENEMY_FACING_ME ) )
+	/*if ( HasCondition( COND_ENEMY_FACING_ME ) )
 	{
 		//FIXME: Need to refine this a bit
-		if (m_bAce && enemyDot > 0.96f )
+		if (m_bAce && enemyDot > 0.96f)
 		{
 			SetCondition( COND_ASSASSIN_ENEMY_TARGETTING_ME );
 		}
 	}
 	else
-	{
-		//we may need to move, enemie might be behind us.
+	{*/
+		//we may need to move, enemy might be behind us.
 
 		if (enemyDot < 0)
 		{
 			SetCondition(COND_ENEMY_OCCLUDED);
 		}
-	}
+	//}
 }
 
 //-----------------------------------------------------------------------------
