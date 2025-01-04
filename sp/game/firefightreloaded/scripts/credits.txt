@@ -218,6 +218,11 @@
 	" "	"CreditsOutroText"
 	" "	"CreditsOutroText"
 	" "	"CreditsOutroText"
+	"The Traveller will return."	"CreditsOutroText"
+	" "	"CreditsOutroText"
+	" "	"CreditsOutroText"
+	" "	"CreditsOutroText"
+	" "	"CreditsOutroText"
 	"@"	"CreditsOutroLogos"
 }
 

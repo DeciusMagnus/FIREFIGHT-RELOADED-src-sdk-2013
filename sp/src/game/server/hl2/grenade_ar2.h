@@ -30,12 +30,16 @@ public:
 	float				 m_fSpawnTime;
 	float				m_fDangerRadius;
 
+	Vector		m_vecVelocity;
+	bool		m_bTouched;
 
 	void		Spawn( void );
 	void		Precache( void );
 	void 		GrenadeAR2Touch( CBaseEntity *pOther );
 	void		GrenadeAR2Think( void );
 	void		Event_Killed( const CTakeDamageInfo &info );
+
+	void		GlassCollide(CBaseEntity* pOther);
 
 public:
 	void EXPORT				Detonate(void);

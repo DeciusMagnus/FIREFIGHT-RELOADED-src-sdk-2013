@@ -745,6 +745,36 @@
 					"1"		"#gameui_enabled"
 				}
 			}
+            
+            "SMG1GrenadeGlassPassthrough"
+			{
+				"text"			"#GameUI_SMG1GrenadeGlassPassthrough"
+				"type"			"wheelywheel"
+				"convar"		"smg1_grenade_glass_passthrough"
+                "advanced"		"1"
+                "hidden"		"1"
+
+				"options"
+				{
+					"0"		"#gameui_disabled"
+					"1"		"#gameui_enabled"
+				}
+			}
+            
+            "CrossbowGlassPassthrough"
+			{
+				"text"			"#GameUI_CrossbowGlassPassthrough"
+				"type"			"wheelywheel"
+				"convar"		"crossbow_new_glass_passthrough"
+                "advanced"		"1"
+                "hidden"		"1"
+
+				"options"
+				{
+					"0"		"#gameui_disabled"
+					"1"		"#gameui_enabled"
+				}
+			}
 			
 			"MagStyledReloads"
 			{

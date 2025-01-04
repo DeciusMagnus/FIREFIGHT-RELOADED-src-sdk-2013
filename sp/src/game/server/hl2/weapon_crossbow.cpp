@@ -45,6 +45,8 @@
 extern ConVar sk_plr_dmg_crossbow;
 extern ConVar sk_npc_dmg_crossbow;
 
+ConVar	  crossbow_new_glass_passthrough("crossbow_new_glass_passthrough", "1", FCVAR_ARCHIVE);
+
 #define	BOLT_SKIN_NORMAL	0
 #define BOLT_SKIN_GLOW		1
 
@@ -246,18 +248,21 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 		if ( pOther->GetCollisionGroup() == COLLISION_GROUP_BREAKABLE_GLASS )
 			 return;
 
-		if (FClassnameIs(pOther, "func_breakable"))
+		if (crossbow_new_glass_passthrough.GetBool())
 		{
-			CBreakable* pOtherEntity = static_cast<CBreakable*>(pOther);
-			if (pOtherEntity && (pOtherEntity->GetMaterialType() == matGlass || pOtherEntity->GetMaterialType() == matWeb))
-				return;
-		}
+			if (FClassnameIs(pOther, "func_breakable"))
+			{
+				CBreakable* pOtherEntity = static_cast<CBreakable*>(pOther);
+				if (pOtherEntity && (pOtherEntity->GetMaterialType() == matGlass || pOtherEntity->GetMaterialType() == matWeb))
+					return;
+			}
 
-		if (FClassnameIs(pOther, "func_breakable_surf"))
-		{
-			CBreakableSurface* pOtherEntity = static_cast<CBreakableSurface*>(pOther);
-			if (pOtherEntity && (pOtherEntity->GetMaterialType() == matGlass || pOtherEntity->GetMaterialType() == matWeb))
-				return;
+			if (FClassnameIs(pOther, "func_breakable_surf"))
+			{
+				CBreakableSurface* pOtherEntity = static_cast<CBreakableSurface*>(pOther);
+				if (pOtherEntity && (pOtherEntity->GetMaterialType() == matGlass || pOtherEntity->GetMaterialType() == matWeb))
+					return;
+			}
 		}
 
 		if ( !pOther->IsAlive() )
