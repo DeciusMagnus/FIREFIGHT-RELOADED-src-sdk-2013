@@ -331,13 +331,20 @@ protected:
 	void Init()
 	{
 		SetFlags(ACH_LISTEN_KILL_EVENTS | ACH_SAVE_GLOBAL);
-		SetVictimFilter("npc_hunter");
 		SetInflictorFilter("hunter_flechette");
 		SetGameDirFilter("firefightreloaded");
 #ifndef MOD_VER
 		SetStoreProgressInSteam( true );
 #endif
 		SetGoal(10);
+	}
+
+	virtual void Event_EntityKilled(CBaseEntity* pVictim, CBaseEntity* pAttacker, CBaseEntity* pInflictor, IGameEvent* event)
+	{
+		if (FClassnameIs(pVictim, "npc_hunter"))
+		{
+			IncrementCount();
+		}
 	}
 
 #ifndef MOD_VER
