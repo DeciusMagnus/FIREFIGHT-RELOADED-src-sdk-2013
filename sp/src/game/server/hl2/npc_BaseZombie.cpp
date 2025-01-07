@@ -1083,9 +1083,6 @@ bool CNPC_BaseZombie::IsChopped( const CTakeDamageInfo &info )
 	if (info.GetDamageType() & DMG_NEVERGIB)
 		return false;
 
-	if (info.GetDamageType() & DMG_ALWAYSGIB)
-		return true;
-
 	if (info.GetDamageType() & DMG_SLASH)
 		return true;
 

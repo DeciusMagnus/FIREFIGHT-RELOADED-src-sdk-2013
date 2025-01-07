@@ -4174,19 +4174,10 @@ bool CNPC_MetroPolice::CorpseGib(const CTakeDamageInfo& info)
 	if (info.GetDamageType() & DMG_NEVERGIB)
 		return false;
 
-	//SNIPER OR SLASH SHOULD NOT GIB
-	//STOP IT
-
-	if (info.GetDamageType() & DMG_SNIPER)
-		return false;
-
-	if (info.GetDamageType() & DMG_SLASH)
-		return false;
-
 	static ConVarRef violence_hgibs( "violence_hgibs" );
 	if (!(g_Language.GetInt() == LANGUAGE_GERMAN || UTIL_IsLowViolence())
 		&& (violence_hgibs.IsValid() && violence_hgibs.GetBool())
-		&& (info.GetDamageType() & (DMG_BLAST) || info.GetDamageType() & (DMG_ALWAYSGIB)) && gibs)
+		&& (info.GetDamageType() & (DMG_BLAST)) && gibs)
 	{
 		if (IsCurSchedule(SCHED_NPC_FREEZE))
 		{

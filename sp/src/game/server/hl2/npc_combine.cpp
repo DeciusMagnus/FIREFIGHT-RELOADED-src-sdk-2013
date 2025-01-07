@@ -570,24 +570,15 @@ bool CNPC_Combine::CorpseGib(const CTakeDamageInfo& info)
 	if (info.GetDamageType() & DMG_NEVERGIB)
 		return false;
 
-	//SNIPER OR SLASH SHOULD NOT GIB
-	//STOP IT
-
-	if (info.GetDamageType() & DMG_SNIPER)
-		return false;
-
-	if (info.GetDamageType() & DMG_SLASH)
-		return false;
-
 	//soldiers have body armor, so if we're set to gib do it on random.
 	int randInt = random->RandomInt(0, 3);
-	if ((info.GetDamageType() & (DMG_BLAST) || info.GetDamageType() & (DMG_ALWAYSGIB)) && randInt < 3)
+	if ((info.GetDamageType() & (DMG_BLAST)) && randInt < 3)
 		return false;
 
 	static ConVarRef violence_hgibs( "violence_hgibs" );
 	if (!(g_Language.GetInt() == LANGUAGE_GERMAN || UTIL_IsLowViolence())
 		&& (violence_hgibs.IsValid() && violence_hgibs.GetBool())
-		&& (info.GetDamageType() & (DMG_BLAST) || info.GetDamageType() & (DMG_ALWAYSGIB)) && gibs)
+		&& (info.GetDamageType() & (DMG_BLAST)) && gibs)
 	{
 		if (IsCurSchedule(SCHED_NPC_FREEZE))
 		{

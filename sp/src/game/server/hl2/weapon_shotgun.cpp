@@ -236,11 +236,12 @@ void CWeaponShotgun::FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, bool 
 		}
 	}
 
+	FireBulletsInfo_t info;
 	CAmmoDef* def = GetAmmoDef();
+	int dmgType = def->DamageType(info.m_iAmmoType);
 
 	if (bSecondary)
 	{
-		FireBulletsInfo_t info;
 		info.m_iShots = 12;
 		info.m_vecSrc = vecShootOrigin;
 		info.m_vecDirShooting = vecShootDir;
@@ -249,11 +250,13 @@ void CWeaponShotgun::FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, bool 
 		info.m_iTracerFreq = 0;
 		info.m_iAmmoType = m_iPrimaryAmmoType;
 
+		int randInt = random->RandomInt(0, 3);
+		info.m_nDamageFlags = (randInt == 3) ? (dmgType | DMG_BLAST) : dmgType;
+
 		pOperator->FireBullets(info);
 	}
 	else
 	{
-		FireBulletsInfo_t info;
 		info.m_iShots = 8;
 		info.m_vecSrc = vecShootOrigin;
 		info.m_vecDirShooting = vecShootDir;
@@ -261,8 +264,6 @@ void CWeaponShotgun::FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, bool 
 		info.m_flDistance = MAX_TRACE_LENGTH;
 		info.m_iTracerFreq = 0;
 		info.m_iAmmoType = m_iPrimaryAmmoType;
-
-		int dmgType = def->DamageType(info.m_iAmmoType);
 
 		info.m_nDamageFlags = (dmgType &= ~DMG_SNIPER);
 
@@ -795,7 +796,7 @@ void CWeaponShotgun::SecondaryAttack( void )
 	int dmgType = def->DamageType(info.m_iAmmoType);
 	int randInt = random->RandomInt(0, 3);
 
-	info.m_nDamageFlags = (randInt == 3) ? (dmgType | DMG_ALWAYSGIB) : dmgType;
+	info.m_nDamageFlags = (randInt == 3) ? (dmgType | DMG_BLAST) : dmgType;
 
 	pPlayer->FireBullets(info);
 	pPlayer->ViewPunch( QAngle(random->RandomFloat( -5, 5 ),0,0) );
