@@ -12,6 +12,7 @@
 #endif
 
 class CBaseEntity;
+class CHunterFlechette;
 
 /// true if given entity pointer is a hunter.
 bool Hunter_IsHunter(CBaseEntity *pEnt);
@@ -21,5 +22,7 @@ bool Hunter_IsHunter(CBaseEntity *pEnt);
 void Hunter_StriderBusterAttached( CBaseEntity *pHunter, CBaseEntity *pAttached );
 void Hunter_StriderBusterDetached( CBaseEntity *pHunter, CBaseEntity *pAttached );
 void Hunter_StriderBusterLaunched( CBaseEntity *pBuster );
+
+void FlechetteCreateAutoShoot(const Vector& vecOrigin, Vector& vecShoot, const QAngle& angAngles, CBaseEntity* pentOwner = NULL);
 
 #endif

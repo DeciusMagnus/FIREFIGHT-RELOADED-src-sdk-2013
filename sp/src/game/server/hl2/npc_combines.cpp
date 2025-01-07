@@ -585,7 +585,7 @@ void CNPC_CombineS::Event_Killed( const CTakeDamageInfo &info )
 {
 	CBasePlayer* pPlayer = ToBasePlayer(info.GetAttacker());
 
-	if (pPlayer != NULL && combine_spawn_health.GetBool() && !PlayerHasMegaPhysCannon())
+	if (pPlayer != NULL && combine_spawn_health.GetBool() && (pPlayer->Weapon_OwnsThisType("weapon_ar2") || pPlayer->Weapon_OwnsThisType("weapon_smg1")))
 	{
 		if (m_hActiveWeapon && IsElite())
 		{

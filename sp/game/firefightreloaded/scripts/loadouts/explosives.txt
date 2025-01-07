@@ -36,4 +36,10 @@
 		"ammotype"	"slam"
 		"ammonum"	"100"
 	}
+	"6"
+	{
+		"weapon"	"weapon_flechettegun"
+		"ammotype"	"Flechette"
+		"ammonum"	"96"
+	}
 }

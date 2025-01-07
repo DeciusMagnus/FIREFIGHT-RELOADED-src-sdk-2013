@@ -672,6 +672,39 @@ public:
 };
 LINK_ENTITY_TO_CLASS(item_ammo_manhack, CItem_AmmoManhack);
 
+// ========================================================================
+//	>> CItem_AmmoManhack
+// ========================================================================
+class CItem_AmmoFlechette : public CItem
+{
+public:
+	DECLARE_CLASS(CItem_AmmoFlechette, CItem);
+
+	void Spawn(void)
+	{
+		Precache();
+		SetModel("models/items/ammo_laser.mdl");
+		BaseClass::Spawn();
+	}
+	void Precache(void)
+	{
+		PrecacheModel("models/items/ammo_laser.mdl");
+	}
+	bool MyTouch(CBasePlayer* pPlayer)
+	{
+		if (ITEM_GiveAmmo(pPlayer, 8, "Flechette"))
+		{
+			if (g_pGameRules->ItemShouldRespawn(this) == GR_ITEM_RESPAWN_NO)
+			{
+				UTIL_Remove(this);
+			}
+			return true;
+		}
+		return false;
+	}
+};
+LINK_ENTITY_TO_CLASS(item_ammo_flechette, CItem_AmmoFlechette);
+
 class CItem_BoxSniperRifle : public CItem
 {
 public:

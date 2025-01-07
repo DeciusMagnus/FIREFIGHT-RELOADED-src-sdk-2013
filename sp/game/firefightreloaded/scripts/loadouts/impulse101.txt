@@ -168,4 +168,10 @@
 		"ammotype"	"Buckshot"
 		"ammonum"	"999"
 	}
+	"31"
+	{
+		"weapon"	"weapon_flechettegun"
+		"ammotype"	"Flechette"
+		"ammonum"	"999"
+	}
 }

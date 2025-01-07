@@ -66,6 +66,7 @@
 #include "hl2/grenade_frag.h"
 #include "hl2/grenade_spit.h"
 #include "hl2/grenade_ar2.h"
+#include "gameweaponmanager.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -96,6 +97,10 @@ ConVar hunter_flechette_speed( "hunter_flechette_speed", "2000" );
 ConVar sk_hunter_dmg_flechette( "sk_hunter_dmg_flechette", "4.0" );
 ConVar sk_hunter_flechette_explode_dmg( "sk_hunter_flechette_explode_dmg", "12.0" );
 ConVar sk_hunter_flechette_explode_radius( "sk_hunter_flechette_explode_radius", "128.0" );
+
+ConVar sk_hunter_dmg_plr_flechette("sk_hunter_dmg_plr_flechette", "4.0");
+ConVar sk_hunter_flechette_explode_dmg_plr("sk_hunter_flechette_explode_dmg_plr", "12.0");
+
 ConVar hunter_flechette_explode_delay( "hunter_flechette_explode_delay", "2.5" );
 ConVar hunter_flechette_delay( "hunter_flechette_delay", "0.1" );
 ConVar hunter_first_flechette_delay( "hunter_first_flechette_delay", "0.5" );
@@ -367,7 +372,7 @@ public:
 	bool CreateVPhysics();
 
 	unsigned int PhysicsSolidMaskForEntity() const;
-	static CHunterFlechette *FlechetteCreate( const Vector &vecOrigin, const QAngle &angAngles, CBaseEntity *pentOwner = NULL );
+	static CHunterFlechette* FlechetteCreate(const Vector& vecOrigin, const QAngle& angAngles, CBaseEntity* pentOwner = NULL);
 
 	// IParentPropInteraction
 	void OnParentCollisionInteraction( parentCollisionInteraction_t eType, int index, gamevcollisionevent_t *pEvent );
@@ -434,6 +439,21 @@ CHunterFlechette *CHunterFlechette::FlechetteCreate( const Vector &vecOrigin, co
 	return pFlechette;
 }
 
+void FlechetteCreateAutoShoot(const Vector& vecOrigin, Vector& vecShoot, const QAngle& angAngles, CBaseEntity* pentOwner)
+{
+	CHunterFlechette* pFlechette = (CHunterFlechette*)CreateEntityByName("hunter_flechette");
+	UTIL_SetOrigin(pFlechette, vecOrigin);
+	pFlechette->SetAbsAngles(angAngles);
+	pFlechette->Spawn();
+	pFlechette->Activate();
+	pFlechette->SetOwnerEntity(pentOwner);
+
+	pFlechette->AddEffects(EF_NOSHADOW);
+
+	vecShoot *= hunter_flechette_speed.GetFloat();
+
+	pFlechette->Shoot(vecShoot, false);
+}
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -706,6 +726,12 @@ void CHunterFlechette::FlechetteTouch( CBaseEntity *pOther )
 		VectorNormalize( vecNormalizedVel );
 
 		float flDamage = sk_hunter_dmg_flechette.GetFloat();
+
+		if (GetOwnerEntity() && GetOwnerEntity()->IsPlayer())
+		{
+			flDamage = sk_hunter_dmg_plr_flechette.GetFloat();
+		}
+
 		CBreakable *pBreak = dynamic_cast <CBreakable *>(pOther);
 		if ( pBreak && ( pBreak->GetMaterialType() == matGlass ) )
 		{
@@ -941,7 +967,14 @@ void CHunterFlechette::Explode()
 		nDamageType |= DMG_PREVENT_PHYSICS_FORCE;
 	}
 
-	RadiusDamage( CTakeDamageInfo( this, GetOwnerEntity(), sk_hunter_flechette_explode_dmg.GetFloat(), nDamageType ), GetAbsOrigin(), sk_hunter_flechette_explode_radius.GetFloat(), CLASS_NONE, NULL );
+	float flDamage = sk_hunter_flechette_explode_dmg.GetFloat();
+
+	if (GetOwnerEntity() && GetOwnerEntity()->IsPlayer())
+	{
+		flDamage = sk_hunter_flechette_explode_dmg_plr.GetFloat();
+	}
+
+	RadiusDamage( CTakeDamageInfo( this, GetOwnerEntity(), flDamage, nDamageType ), GetAbsOrigin(), sk_hunter_flechette_explode_radius.GetFloat(), CLASS_NONE, NULL );
 		
     AddEffects( EF_NODRAW );
 
@@ -1363,7 +1396,7 @@ private:
 	void CreateSMGGrenade(const Vector& vecSrc, Vector& vecShoot, QAngle& angShoot, int nShotNum);
 	void CreateCombineBallProjectile(const Vector& vecSrc, Vector& vecShoot, QAngle& angShoot);
 	void CreateDefaultProjectile(CBaseEntity* pTargetEntity, const Vector &vecSrc, Vector& vecShoot, QAngle& angShoot);
-	void CreateAR2Round(const Vector& vecSrc, const Vector& vecDir);
+	void CreateAR2Round(const Vector& vecSrc, const Vector& vecDir, Vector& spread);
 	bool ShootFlechette( CBaseEntity *pTargetEntity, bool bSingleShot );
 	bool ShouldSeekTarget( CBaseEntity *pTargetEntity, bool bStriderBuster );
 	void GetShootDir( Vector &vecDir, const Vector &vecSrc, CBaseEntity *pTargetEntity, bool bStriderbuster, int nShotNum, bool bSingleShot );
@@ -1772,6 +1805,7 @@ void CNPC_Hunter::Precache()
 	UTIL_PrecacheOther("grenade_ar2");
 	UTIL_PrecacheOther("rpg_missile");
 	UTIL_PrecacheOther( "sparktrail" );
+	UTIL_PrecacheOther("item_ammo_flechette");
 
 	m_bInLargeOutdoorMap = false;
 	if( !Q_strnicmp( STRING(gpGlobals->mapname), "ep2_outland_12", 14) )
@@ -5871,7 +5905,9 @@ int CNPC_Hunter::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		}
 		else if ( pInflictor->ClassMatches( "hunter_flechette" ) ) 
 		{
-			if ( !( ( CHunterFlechette *)pInflictor )->WasThrownBack() )
+			int relation = IRelationType(info.GetAttacker());
+
+			if (relation != D_HT)
 			{
 				// Flechettes only hurt us if they were thrown back at us by the player. This prevents
 				// hunters from hurting themselves when they walk into their own flechette clusters.
@@ -6061,9 +6097,48 @@ void CNPC_Hunter::Event_Killed( const CTakeDamageInfo &info )
 		m_nSkin = HUNTER_SKIN_DEAD;
 	}
 
+	//drop flechettes for the new gun
+	bool isFiringFlechettes = (m_pAttributes) ? (m_pAttributes->GetInt("new_projectile") == 0 ? true : false) : true;
+
+	CBasePlayer* pPlayer = ToBasePlayer(info.GetAttacker());
+
+	if (pPlayer != NULL && isFiringFlechettes && pPlayer->Weapon_OwnsThisType("weapon_flechettegun"))
+	{
+		CBaseEntity* pItem = NULL;
+
+		pItem = DropItem("item_ammo_flechette", WorldSpaceCenter() + RandomVector(-4, 4), RandomAngle(0, 360));
+
+		if (pItem)
+		{
+			IPhysicsObject* pObj = pItem->VPhysicsGetObject();
+
+			if (pObj)
+			{
+				Vector			vel = RandomVector(-64.0f, 64.0f);
+				AngularImpulse	angImp = RandomAngularImpulse(-300.0f, 300.0f);
+
+				vel[2] = 0.0f;
+				pObj->AddVelocity(&vel, &angImp);
+			}
+
+			if (info.GetDamageType() & DMG_DISSOLVE)
+			{
+				CBaseAnimating* pAnimating = dynamic_cast<CBaseAnimating*>(pItem);
+
+				if (pAnimating)
+				{
+					pAnimating->Dissolve(NULL, gpGlobals->curtime, false, ENTITY_DISSOLVE_NORMAL);
+				}
+			}
+			else
+			{
+				WeaponManager_AddManaged(pItem);
+			}
+		}
+	}
+
 	BaseClass::Event_Killed( info );
 }
-
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -6643,11 +6718,11 @@ void CNPC_Hunter::CreateRPGRocketProjectile(const Vector& vecSrc, Vector& vecSho
 	pRocket->SetAbsVelocity(vecShoot * hunter_flechette_speed.GetFloat());
 }
 
-void CNPC_Hunter::CreateAR2Round(const Vector& vecSrc, const Vector& vecDir)
+void CNPC_Hunter::CreateAR2Round(const Vector& vecSrc, const Vector& vecDir, Vector& spread)
 {
 	CSoundEnt::InsertSound(SOUND_COMBAT | SOUND_CONTEXT_GUNFIRE, GetAbsOrigin(), SOUNDENT_VOLUME_MACHINEGUN, 0.2, this, SOUNDENT_CHANNEL_WEAPON, GetEnemy());
 
-	FireBullets(1, vecSrc, vecDir, VECTOR_CONE_5DEGREES, MAX_COORD_RANGE, GetAmmoDef()->Index("AR2"), 1);
+	FireBullets(1, vecSrc, vecDir, spread, MAX_COORD_RANGE, GetAmmoDef()->Index("AR2"), 1);
 }
 
 
@@ -6706,6 +6781,8 @@ bool CNPC_Hunter::ShootFlechette( CBaseEntity *pTargetEntity, bool bSingleShot )
 		spread = m_pAttributes->GetBool("spread_enable", true);
 	}
 
+	Vector cone = VECTOR_CONE_1DEGREES;
+
 	if (spread)
 	{
 		if (IsUsingSiegeTargets() && nShotNum >= 2 && (nShotNum % 2) == 0)
@@ -6719,7 +6796,6 @@ bool CNPC_Hunter::ShootFlechette( CBaseEntity *pTargetEntity, bool bSingleShot )
 		else
 		{
 			int conespread = 4;
-			Vector cone;
 			float spreadbias = 1.0f;
 
 			if (m_pAttributes)
@@ -6794,7 +6870,7 @@ bool CNPC_Hunter::ShootFlechette( CBaseEntity *pTargetEntity, bool bSingleShot )
 				CreateCombineBallProjectile(vecSrc, vecShoot, angShoot);
 				break;
 			case PROJ_AR2_ROUND:
-				CreateAR2Round(vecSrc, vecDir);
+				CreateAR2Round(vecSrc, vecDir, cone);
 				if (g_fr_npc_muzzlesmoke.GetBool())
 				{
 					DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, iAttachment);

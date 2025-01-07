@@ -141,4 +141,10 @@
 		"ammotype"	"Buckshot"
 		"ammonum"	"50"
 	}
+	"24"
+	{
+		"weapon"	"weapon_flechettegun"
+		"ammotype"	"Flechette"
+		"ammonum"	"120"
+	}
 }

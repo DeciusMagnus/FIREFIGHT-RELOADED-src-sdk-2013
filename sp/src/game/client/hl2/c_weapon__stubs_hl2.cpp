@@ -49,6 +49,7 @@ STUB_WEAPON_CLASS(weapon_xm1014, WeaponXM1014, C_BaseHLCombatWeapon);
 #ifdef HL2_EPISODIC
 STUB_WEAPON_CLASS( weapon_hopwire, WeaponHopwire, C_BaseHLCombatWeapon );
 //STUB_WEAPON_CLASS( weapon_proto1, WeaponProto1, C_BaseHLCombatWeapon );
+STUB_WEAPON_CLASS(weapon_flechettegun, WeaponFlechetteGun, C_HLMachineGun);
 #endif
 #ifdef HL2_LOSTCOAST
 STUB_WEAPON_CLASS( weapon_oldmanharpoon, WeaponOldManHarpoon, C_WeaponCitizenPackage );

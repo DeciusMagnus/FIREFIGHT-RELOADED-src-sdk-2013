@@ -192,4 +192,11 @@
 		"ammotype"	"Buckshot"
 		"ammonum"	"999"
 	}
+	"31"
+	{
+		"randomizermode"	"1"
+		"weapon"	"weapon_flechettegun"
+		"ammotype"	"Flechette"
+		"ammonum"	"999"
+	}
 }
