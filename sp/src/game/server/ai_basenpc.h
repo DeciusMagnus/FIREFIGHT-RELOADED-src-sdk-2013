@@ -944,6 +944,7 @@ private:
 
 	float				m_fIdleTime;
 	float				m_framerate;
+	float				m_fVisualCheckTime;
 
 public:
 	//-----------------------------------------------------

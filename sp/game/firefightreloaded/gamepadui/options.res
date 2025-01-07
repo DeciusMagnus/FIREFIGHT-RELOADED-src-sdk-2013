@@ -3283,30 +3283,31 @@
             
             "AIGoByeByeMinFPS"
 			{
-				"text"			"#GameUI_NPCRemoveMinFPS"
+				"text"			"#GameUI_NPCFPSTarget"
 				"type"			"slideyslide"
 				"advanced"		"1"
-				"convar"		"ai_min_fps"
+				"convar"		"ai_fps_control_target"
 
 				"min"			"10"
-				"max"			"60"
+				"max"			"300"
 				"step"			"5"
 
 				"textprecision" "2"
 			}
             
-            "AIGoByeByeMinDangerFPS"
+            "AIGoByeByeFPSMode"
 			{
-				"text"			"#GameUI_NPCRemoveMinDangerFPS"
-				"type"			"slideyslide"
+				"text"			"#GameUI_NPCFPSMode"
+				"type"			"wheelywheel"
 				"advanced"		"1"
-				"convar"		"ai_min_danger_fps"
+				"convar"		"ai_fps_control_mode"
 
-				"min"			"10"
-				"max"			"60"
-				"step"			"5"
-
-				"textprecision" "2"
+				"options"
+				{
+					"0"		"#gameui_low"
+					"1"		"#gameui_medium"
+					"2"		"#gameui_high"
+				}
 			}
             
             "SpawnerFPSControl"

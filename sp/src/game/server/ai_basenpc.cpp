@@ -156,8 +156,8 @@ ConVar	ai_disappear_time_rare("ai_disappear_time_rare", "30", FCVAR_ARCHIVE, "Ad
 ConVar	ai_disappear_max_distance("ai_disappear_max_distance", "3584", FCVAR_ARCHIVE, "If the NPC is this far away from the enemy, it might be considered for deletion.");
 
 ConVar	ai_fps_control("ai_fps_control", "1", FCVAR_ARCHIVE, "Allow NPCs to remove themselves based on framerate.");
-ConVar	ai_min_fps("ai_min_fps", "55", FCVAR_ARCHIVE, "The minimum FPS to remove NPCs due to lag.");
-ConVar	ai_min_danger_fps("ai_min_danger_fps", "25", FCVAR_ARCHIVE, "The minimum danger FPS to remove NPCs due to severe lag.");
+ConVar	ai_fps_control_target("ai_fps_control_target", "60", FCVAR_ARCHIVE, "The framerate target we should be reaching.");
+ConVar	ai_fps_control_mode("ai_fps_control_mode", "1", FCVAR_ARCHIVE, "0: remove npcs that are far away and are non visible. 1: remove npcs that are non visible. 2: no checks are used when deleting NPCs.");
 
 ConVar	ai_disappear_debugmsg_overload("ai_disappear_debugmsg_overload", "0", FCVAR_NONE, "");
 
@@ -4166,7 +4166,6 @@ void CAI_BaseNPC::NPCThink( void )
 	if (ai_disappear.GetBool() && !m_bBoss && !m_bNoRemove && (Classify() != CLASS_PLAYER_ALLY_VITAL))
 	{
 		bool fpsRemoval = false;
-		bool fpsDanger = false;
 
 		if (ai_fps_control.GetBool())
 		{
@@ -4179,14 +4178,13 @@ void CAI_BaseNPC::NPCThink( void )
 
 			//Msg("FPS: %i\n", fps);
 
-			fpsRemoval = (fps < ai_min_fps.GetInt());
-			fpsDanger = (fps < ai_min_danger_fps.GetInt());
+			fpsRemoval = (fps < ai_fps_control_target.GetInt());
 		}
 
 		CBaseEntity* pEnemy = GetEnemy();
 		CBaseCombatCharacter* pComChar = (pEnemy != nullptr) ? pEnemy->MyCombatCharacterPointer() : nullptr;
 
-		bool isNotVisible = (pComChar != nullptr && !pComChar->FInViewCone(this) && !pComChar->FVisible(this));
+		bool isNotVisible = (pComChar != nullptr && (!pComChar->FInViewCone(GetAbsOrigin()) && !pComChar->FVisible(GetAbsOrigin())));
 
 		float dist = ai_disappear_max_distance.GetFloat();
 
@@ -4198,18 +4196,58 @@ void CAI_BaseNPC::NPCThink( void )
 		bool isNotClose = (EnemyDistance(pEnemy) > dist);
 		bool isDeleteable = (isNotVisible && isNotClose);
 
-		if (isDeleteable && ai_disappear_debugmsg_overload.GetBool())
-			DevWarning("NPC %s (%s) marked for deletion.\n", GetEntityName(), GetClassname());
-
-		if (fpsDanger && isNotVisible)
+		if (ai_fps_control_mode.GetInt() == 1)
 		{
-			DevWarning("Deleted NPC %s (%s). Reason: Severely Low FPS\n", GetEntityName(), GetClassname());
-			SUB_Remove();
+			isDeleteable = isNotVisible;
 		}
-		else if (fpsRemoval && isDeleteable)
+		else if (ai_fps_control_mode.GetInt() >= 2)
 		{
-			DevWarning("Deleted NPC %s (%s). Reason: Low FPS\n", GetEntityName(), GetClassname());
-			SUB_Remove();
+			isDeleteable = true;
+		}
+
+		bool enableVisualCheck = false;
+
+		if (ai_fps_control_mode.GetInt() < 2)
+		{
+			enableVisualCheck = true;
+		}
+
+		if (isDeleteable && ai_disappear_debugmsg_overload.GetBool())
+		{
+			DevWarning("NPC %s (%s) marked for deletion.\n", GetEntityName(), GetClassname());
+		}
+
+		if (fpsRemoval && isDeleteable)
+		{
+			if (enableVisualCheck)
+			{
+				if (gpGlobals->curtime >= m_fVisualCheckTime)
+				{
+					if (ai_fps_control_mode.GetInt() == 0)
+					{
+						DevWarning("Deleted NPC %s (%s). Reason: Low FPS, Not Visible, Too Far\n", GetEntityName(), GetClassname());
+					}
+					else if (ai_fps_control_mode.GetInt() == 1)
+					{
+						DevWarning("Deleted NPC %s (%s). Reason: Low FPS, Not Visible\n", GetEntityName(), GetClassname());
+					}
+					SUB_Remove();
+					return;
+				}
+				else
+				{
+					if (ai_disappear_debugmsg_overload.GetBool())
+					{
+						DevWarning("Delaying deletion of NPC %s (%s)...\n", GetEntityName(), GetClassname());
+					}
+					m_fVisualCheckTime = gpGlobals->curtime + 1.0;
+				}
+			}
+			else
+			{
+				DevWarning("Deleted NPC %s (%s). Reason: Low FPS\n", GetEntityName(), GetClassname());
+				SUB_Remove();
+			}
 		}
 		else if (gpGlobals->curtime >= m_fIdleTime)
 		{
@@ -11859,6 +11897,7 @@ CAI_BaseNPC::CAI_BaseNPC(void)
 	if (ai_disappear.GetBool())
 	{
 		m_fIdleTime = gpGlobals->curtime + ai_disappear_time.GetFloat() + (m_isRareEntity ? ai_disappear_time_rare.GetFloat() : 0);
+		m_fVisualCheckTime = gpGlobals->curtime + 9999.0f;
 	}
 }
 
