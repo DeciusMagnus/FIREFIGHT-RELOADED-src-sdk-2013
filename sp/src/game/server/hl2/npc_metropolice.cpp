@@ -4042,6 +4042,9 @@ const char* CNPC_MetroPolice::GetGibModel(appendage_t appendage)
 
 bool CNPC_MetroPolice::CorpseDecapitate(const CTakeDamageInfo& info)
 {
+	if (!IsAlive())
+		return false;
+
 	bool gibs = true;
 	if (m_pAttributes != NULL)
 	{
@@ -4055,7 +4058,7 @@ bool CNPC_MetroPolice::CorpseDecapitate(const CTakeDamageInfo& info)
 		return false;
 
 	static ConVarRef violence_hgibs( "violence_hgibs" );
-	bool shouldAnimateDecap = !(g_Language.GetInt() == LANGUAGE_GERMAN || UTIL_IsLowViolence())
+	bool shouldAnimateDecap = !m_bDecapitated && !(g_Language.GetInt() == LANGUAGE_GERMAN || UTIL_IsLowViolence())
 		&& (violence_hgibs.IsValid() && violence_hgibs.GetBool())
 		&& g_fr_headshotgore.GetBool() && gibs;
 
@@ -4139,6 +4142,12 @@ Vector RagForce(Vector vecDamageDir)
 
 bool CNPC_MetroPolice::CorpseGib(const CTakeDamageInfo& info)
 {
+	if (!IsAlive())
+		return false;
+	
+	if (m_bDecapitated)
+		return false;
+
 	bool gibs = true;
 	if (m_pAttributes != NULL)
 	{
@@ -4151,10 +4160,19 @@ bool CNPC_MetroPolice::CorpseGib(const CTakeDamageInfo& info)
 	if (info.GetDamageType() & DMG_NEVERGIB)
 		return false;
 
+	//SNIPER OR SLASH SHOULD NOT GIB
+	//STOP IT
+
+	if (info.GetDamageType() & DMG_SNIPER)
+		return false;
+
+	if (info.GetDamageType() & DMG_SLASH)
+		return false;
+
 	static ConVarRef violence_hgibs( "violence_hgibs" );
 	if (!(g_Language.GetInt() == LANGUAGE_GERMAN || UTIL_IsLowViolence())
 		&& (violence_hgibs.IsValid() && violence_hgibs.GetBool())
-		&& info.GetDamageType() & (DMG_BLAST | DMG_ALWAYSGIB) && gibs)
+		&& (info.GetDamageType() & (DMG_BLAST) || info.GetDamageType() & (DMG_ALWAYSGIB)) && gibs)
 	{
 		if (IsCurSchedule(SCHED_NPC_FREEZE))
 		{
@@ -4687,27 +4705,6 @@ int CNPC_MetroPolice::SelectSchedule( void )
 
 	return BaseClass::SelectSchedule();
 }
-
-float CNPC_MetroPolice::GetHitgroupDamageMultiplier(int iHitGroup, const CTakeDamageInfo &info)
-{
-	switch (iHitGroup)
-	{
-	case HITGROUP_HEAD:
-		// Soldiers take double headshot damage
-		if (CorpseDecapitate(info))
-		{
-			//we're dead by this point, lol
-			return BaseClass::GetHitgroupDamageMultiplier(iHitGroup, info);
-		}
-		else
-		{
-			return 2.0f;
-		}
-	}
-
-	return BaseClass::GetHitgroupDamageMultiplier(iHitGroup, info);
-}
-
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -5375,14 +5372,21 @@ int CNPC_MetroPolice::OnTakeDamage_Alive( const CTakeDamageInfo &inputInfo )
 		m_flRecentDamageTime = gpGlobals->curtime;
 	}
 
-	//allow the player to decapitate us with a sawblade if our health is low enough
-	float flDamageThreshold = MIN(1, info.GetDamage() / GetMaxHealth());
-
-	if (flDamageThreshold > 0.5)
+	switch (LastHitGroup())
 	{
-		if (info.GetDamageType() & DMG_SLASH)
+		case HITGROUP_HEAD:
 		{
-			CorpseDecapitate(info);
+			//allow the player to decapitate us with a sawblade if our health is low enough
+			float flDamageThreshold = MIN(1, info.GetDamage() / GetMaxHealth());
+
+			if (flDamageThreshold > 0.5)
+			{
+				if (info.GetDamageType() & DMG_SLASH)
+				{
+					CorpseDecapitate(info);
+				}
+			}
+			break;
 		}
 	}
 

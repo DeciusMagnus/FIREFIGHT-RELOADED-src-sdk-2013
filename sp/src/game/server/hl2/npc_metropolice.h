@@ -74,7 +74,6 @@ public:
 	CBaseEntity *CheckTraceHullAttack( const Vector &vStart, const Vector &vEnd, const Vector &mins, const Vector &maxs, int iDamage, int iDmgType, float flForceScale, bool bDamageAnyNPC );
 
 	virtual int	SelectSchedule( void );
-	float		GetHitgroupDamageMultiplier(int iHitGroup, const CTakeDamageInfo &info);
 	virtual int SelectFailSchedule( int failedSchedule, int failedTask, AI_TaskFailureCode_t taskFailCode );
 	virtual int TranslateSchedule( int scheduleType );
 	void		StartTask( const Task_t *pTask );

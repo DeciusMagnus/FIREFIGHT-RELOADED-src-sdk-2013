@@ -211,6 +211,8 @@ void CWeaponKatana::PrimaryAttack(void)
 						}
 					}
 
+					//CAmmoDef* def = GetAmmoDef();
+
 					FireBulletsInfo_t info;
 					info.m_iShots = 3;
 					info.m_vecSrc = vecSrc;
@@ -220,6 +222,10 @@ void CWeaponKatana::PrimaryAttack(void)
 					info.m_iAmmoType = m_iPrimaryAmmoType;
 					info.m_iTracerFreq = 0;
 					info.m_flDamage = damage;
+
+					//int dmgType = def->DamageType(info.m_iAmmoType);
+					//info.m_nDamageFlags = g_pGameRules->isInBullettime ? (dmgType &= ~DMG_NEVERGIB) : dmgType;
+
 					info.m_pAttacker = pPlayer;
 					info.m_nFlags = FIRE_BULLETS_FIRST_SHOT_ACCURATE;
 					info.m_bPrimaryAttack = true;

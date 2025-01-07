@@ -423,14 +423,21 @@ int CNPC_Combine::OnTakeDamage_Alive(const CTakeDamageInfo& inputInfo)
 {
 	CTakeDamageInfo info = inputInfo;
 
-	//allow the player to decapitate us with a sawblade if our health is low enough
-	float flDamageThreshold = MIN(1, info.GetDamage() / GetMaxHealth());
-
-	if (flDamageThreshold > 0.5)
+	switch (LastHitGroup())
 	{
-		if (info.GetDamageType() & DMG_SLASH)
+		case HITGROUP_HEAD:
 		{
-			CorpseDecapitate(info);
+			//allow the player to decapitate us with a sawblade if our health is low enough
+			float flDamageThreshold = MIN(1, info.GetDamage() / GetMaxHealth());
+
+			if (flDamageThreshold > 0.5)
+			{
+				if (info.GetDamageType() & DMG_SLASH)
+				{
+					CorpseDecapitate(info);
+				}
+			}
+			break;
 		}
 	}
 
@@ -444,6 +451,9 @@ const char* CNPC_Combine::GetGibModel(appendage_t appendage)
 
 bool CNPC_Combine::CorpseDecapitate(const CTakeDamageInfo& info)
 {
+	if (!IsAlive())
+		return false;
+
 	bool gibs = true;
 	if (m_pAttributes != NULL)
 	{
@@ -457,7 +467,7 @@ bool CNPC_Combine::CorpseDecapitate(const CTakeDamageInfo& info)
 		return false;
 
 	static ConVarRef violence_hgibs( "violence_hgibs" );
-	bool shouldAnimateDecap = !(g_Language.GetInt() == LANGUAGE_GERMAN || UTIL_IsLowViolence())
+	bool shouldAnimateDecap = !m_bDecapitated && !(g_Language.GetInt() == LANGUAGE_GERMAN || UTIL_IsLowViolence())
 		&& (violence_hgibs.IsValid() && violence_hgibs.GetBool())
 		&& g_fr_headshotgore.GetBool() && gibs;
 
@@ -541,6 +551,12 @@ Vector GetRagForce(Vector vecDamageDir)
 
 bool CNPC_Combine::CorpseGib(const CTakeDamageInfo& info)
 {
+	if (!IsAlive())
+		return false;
+
+	if (m_bDecapitated)
+		return false;
+
 	bool gibs = true;
 	if (m_pAttributes != NULL)
 	{
@@ -553,15 +569,24 @@ bool CNPC_Combine::CorpseGib(const CTakeDamageInfo& info)
 	if (info.GetDamageType() & DMG_NEVERGIB)
 		return false;
 
+	//SNIPER OR SLASH SHOULD NOT GIB
+	//STOP IT
+
+	if (info.GetDamageType() & DMG_SNIPER)
+		return false;
+
+	if (info.GetDamageType() & DMG_SLASH)
+		return false;
+
 	//soldiers have body armor, so if we're set to gib do it on random.
 	int randInt = random->RandomInt(0, 3);
-	if (info.GetDamageType() & (DMG_BLAST | DMG_ALWAYSGIB) && randInt < 3)
+	if ((info.GetDamageType() & (DMG_BLAST) || info.GetDamageType() & (DMG_ALWAYSGIB)) && randInt < 3)
 		return false;
 
 	static ConVarRef violence_hgibs( "violence_hgibs" );
 	if (!(g_Language.GetInt() == LANGUAGE_GERMAN || UTIL_IsLowViolence())
 		&& (violence_hgibs.IsValid() && violence_hgibs.GetBool())
-		&& info.GetDamageType() & (DMG_BLAST | DMG_ALWAYSGIB) && gibs)
+		&& (info.GetDamageType() & (DMG_BLAST) || info.GetDamageType() & (DMG_ALWAYSGIB)) && gibs)
 	{
 		if (IsCurSchedule(SCHED_NPC_FREEZE))
 		{
