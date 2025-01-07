@@ -249,11 +249,6 @@ void CWeaponShotgun::FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, bool 
 		info.m_iTracerFreq = 0;
 		info.m_iAmmoType = m_iPrimaryAmmoType;
 
-		int dmgType = def->DamageType(info.m_iAmmoType);
-		int randInt = random->RandomInt(0, 3);
-
-		info.m_nDamageFlags = (randInt == 3) ? (dmgType | DMG_ALWAYSGIB) : (dmgType | DMG_SNIPER);
-
 		pOperator->FireBullets(info);
 	}
 	else
@@ -266,6 +261,11 @@ void CWeaponShotgun::FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, bool 
 		info.m_flDistance = MAX_TRACE_LENGTH;
 		info.m_iTracerFreq = 0;
 		info.m_iAmmoType = m_iPrimaryAmmoType;
+
+		int dmgType = def->DamageType(info.m_iAmmoType);
+
+		info.m_nDamageFlags = (dmgType &= ~DMG_SNIPER);
+
 		pOperator->FireBullets(info);
 	}
 }

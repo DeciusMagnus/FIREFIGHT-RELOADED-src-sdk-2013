@@ -198,6 +198,8 @@ void CWeaponXM1014::FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, bool b
 		}
 	}
 
+	CAmmoDef* def = GetAmmoDef();
+
 	FireBulletsInfo_t info;
 	info.m_iShots = 6;
 	info.m_vecSrc = vecShootOrigin;
@@ -206,6 +208,11 @@ void CWeaponXM1014::FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, bool b
 	info.m_flDistance = MAX_TRACE_LENGTH;
 	info.m_iTracerFreq = 0;
 	info.m_iAmmoType = m_iPrimaryAmmoType;
+
+	int dmgType = def->DamageType(info.m_iAmmoType);
+
+	info.m_nDamageFlags = (dmgType &= ~DMG_SNIPER);
+
 	pOperator->FireBullets(info);
 }
 
@@ -471,7 +478,7 @@ void CWeaponXM1014::PrimaryAttack( void )
 
 	int dmgType = def->DamageType(info.m_iAmmoType);
 
-	info.m_nDamageFlags = !IsIronsighted() ? (dmgType | DMG_SNIPER) : dmgType;
+	info.m_nDamageFlags = !IsIronsighted() ? (dmgType &= ~DMG_SNIPER) : dmgType;
 	pPlayer->FireBullets(info);
 	
 	pPlayer->ViewPunch( QAngle( random->RandomFloat( -2, -1 ), random->RandomFloat( -2, 2 ), 0 ) );

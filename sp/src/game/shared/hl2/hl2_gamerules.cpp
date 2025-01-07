@@ -1809,7 +1809,7 @@ CAmmoDef *GetAmmoDef()
 		def.AddAmmoType("357",				DMG_BULLET | DMG_SNIPER,	TRACER_LINE_AND_WHIZ,	"sk_plr_dmg_357",			"sk_npc_dmg_357",			"sk_max_357",			BULLET_IMPULSE(800, 5000), 0, 'q');
 		def.AddAmmoType("XBowBolt",			DMG_BULLET,					TRACER_LINE,			"sk_plr_dmg_crossbow",		"sk_npc_dmg_crossbow",		"sk_max_crossbow",		BULLET_IMPULSE(800, 8000), 0, 'w' );
 
-		def.AddAmmoType("Buckshot",			DMG_BULLET | DMG_BUCKSHOT, TRACER_LINE, "sk_plr_dmg_buckshot", "sk_npc_dmg_buckshot", "sk_max_buckshot", BULLET_IMPULSE(400, 1200), 0, 's');
+		def.AddAmmoType("Buckshot",			DMG_BULLET | DMG_BUCKSHOT | DMG_SNIPER, TRACER_LINE, "sk_plr_dmg_buckshot", "sk_npc_dmg_buckshot", "sk_max_buckshot", BULLET_IMPULSE(400, 1200), 0, 's');
 		def.AddAmmoType("RPG_Round",		DMG_BURN | DMG_BLAST,					TRACER_NONE,			"sk_plr_dmg_rpg_round",		"sk_npc_dmg_rpg_round",		"sk_max_rpg_round",		0, 0, 'x' );
 		def.AddAmmoType("SMG1_Grenade",		DMG_BURN | DMG_ALWAYSGIB | DMG_BLAST, TRACER_NONE, "sk_plr_dmg_smg1_grenade", "sk_npc_dmg_smg1_grenade", "sk_max_smg1_grenade", 0, 0, 't');
 		def.AddAmmoType("SniperRound",		DMG_BULLET | DMG_SNIPER,	TRACER_NONE,			"sk_plr_dmg_sniper_round",	"sk_npc_dmg_sniper_round",	"sk_max_sniper_round",	BULLET_IMPULSE(650, 6000), 0, 'r' );

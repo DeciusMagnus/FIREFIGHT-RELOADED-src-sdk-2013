@@ -423,21 +423,28 @@ int CNPC_Combine::OnTakeDamage_Alive(const CTakeDamageInfo& inputInfo)
 {
 	CTakeDamageInfo info = inputInfo;
 
-	switch (LastHitGroup())
+	if (info.GetInflictor())
 	{
-		case HITGROUP_HEAD:
+		if (FClassnameIs(info.GetInflictor(), "prop_physics") || FClassnameIs(info.GetInflictor(), "prop_physics_multiplayer"))
 		{
-			//allow the player to decapitate us with a sawblade if our health is low enough
-			float flDamageThreshold = MIN(1, info.GetDamage() / GetMaxHealth());
-
-			if (flDamageThreshold > 0.5)
+			if (info.GetDamageType() & DMG_SLASH || info.GetDamageType() & DMG_SNIPER)
 			{
-				if (info.GetDamageType() & DMG_SLASH)
+				CorpseDecapitate(info);
+			}
+		}
+		else
+		{
+			switch (LastHitGroup())
+			{
+				case HITGROUP_HEAD:
 				{
-					CorpseDecapitate(info);
+					if (info.GetDamageType() & DMG_SLASH || info.GetDamageType() & DMG_SNIPER)
+					{
+						CorpseDecapitate(info);
+					}
+					break;
 				}
 			}
-			break;
 		}
 	}
 
@@ -451,9 +458,6 @@ const char* CNPC_Combine::GetGibModel(appendage_t appendage)
 
 bool CNPC_Combine::CorpseDecapitate(const CTakeDamageInfo& info)
 {
-	if (!IsAlive())
-		return false;
-
 	bool gibs = true;
 	if (m_pAttributes != NULL)
 	{
@@ -551,9 +555,6 @@ Vector GetRagForce(Vector vecDamageDir)
 
 bool CNPC_Combine::CorpseGib(const CTakeDamageInfo& info)
 {
-	if (!IsAlive())
-		return false;
-
 	if (m_bDecapitated)
 		return false;
 
