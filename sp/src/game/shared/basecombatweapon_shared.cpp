@@ -350,10 +350,24 @@ void CBaseCombatWeapon::Precache(void)
 		// Precache models (preload to avoid hitch)
 		m_iViewModelIndex = 0;
 		m_iWorldModelIndex = 0;
+		m_iViewModelDualIndex = 0;
 		if (GetViewModel() && GetViewModel()[0])
 		{
 			m_iViewModelIndex = CBaseEntity::PrecacheModel(GetViewModel());
+
+			//since dual wieldable models are handled by GetViewModel, i will have to precache those manually.
+
+			if (IsDualWieldable())
+			{
+				const char* dualWieldModel = GetWpnData().szViewModelDualWield;
+
+				if (dualWieldModel && dualWieldModel[0])
+				{
+					m_iViewModelDualIndex = CBaseEntity::PrecacheModel(dualWieldModel);
+				}
+			}
 		}
+
 		if (GetWorldModel() && GetWorldModel()[0])
 		{
 			m_iWorldModelIndex = CBaseEntity::PrecacheModel(GetWorldModel());
@@ -385,12 +399,29 @@ const FileWeaponInfo_t &CBaseCombatWeapon::GetWpnData( void ) const
 	return *GetFileWeaponInfoFromHandle( m_hWeaponFileInfo );
 }
 
+bool CBaseCombatWeapon::IsDualWieldable(void) const
+{
+	return GetWpnData().m_bAllowDualWielding;
+}
+
+bool CBaseCombatWeapon::IsDualWielding(void) const
+{
+	return (IsDualWieldable() && m_bIsDualWielding);
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
 const char *CBaseCombatWeapon::GetViewModel( int /*viewmodelindex = 0 -- this is ignored in the base class here*/ ) const
 {
-	return GetWpnData().szViewModel;
+	if (IsDualWielding())
+	{
+		return GetWpnData().szViewModelDualWield;
+	}
+	else
+	{
+		return GetWpnData().szViewModel;
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -2233,7 +2264,14 @@ void CBaseCombatWeapon::ItemPostFrame( void )
 				 m_flNextPrimaryAttack = gpGlobals->curtime;
 			}
 
-			PrimaryAttack();
+			if (IsDualWielding())
+			{
+				DualWieldAttack();
+			}
+			else
+			{
+				PrimaryAttack();
+			}
 
 			if ( AutoFiresFullClip() )
 			{
@@ -2567,6 +2605,16 @@ Activity CBaseCombatWeapon::GetPrimaryAttackActivity( void )
 	return ACT_VM_PRIMARYATTACK;
 }
 
+Activity CBaseCombatWeapon::GetPrimaryAttackLActivity(void)
+{
+	return ACT_VM_PRIMARYATTACK_L;
+}
+
+Activity CBaseCombatWeapon::GetPrimaryAttackRActivity(void)
+{
+	return ACT_VM_PRIMARYATTACK_R;
+}
+
 //=========================================================
 Activity CBaseCombatWeapon::GetSecondaryAttackActivity( void )
 {
@@ -2880,6 +2928,23 @@ void CBaseCombatWeapon::PrimaryAttack( void )
 	AddViewKick();
 }
 
+void CBaseCombatWeapon::DualWieldAttack()
+{
+	if (!IsDualWielding())
+		return;
+
+	if (m_bIsFiringLeft)
+	{
+		LeftHandAttack();
+		m_bIsFiringLeft = false;
+	}
+	else
+	{
+		RightHandAttack();
+		m_bIsFiringLeft = true;
+	}
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: Called every frame to check if the weapon is going through transition animations
 //-----------------------------------------------------------------------------
@@ -3087,6 +3152,7 @@ BEGIN_PREDICTION_DATA( CBaseCombatWeapon )
 	// DEFINE_FIELD( m_hWeaponFileInfo, FIELD_SHORT ),
 	DEFINE_PRED_FIELD( m_iState, FIELD_INTEGER, FTYPEDESC_INSENDTABLE ),			 
 	DEFINE_PRED_FIELD( m_iViewModelIndex, FIELD_INTEGER, FTYPEDESC_INSENDTABLE | FTYPEDESC_MODELINDEX ),
+	DEFINE_PRED_FIELD(m_iViewModelDualIndex, FIELD_INTEGER, FTYPEDESC_INSENDTABLE | FTYPEDESC_MODELINDEX),
 	DEFINE_PRED_FIELD( m_iWorldModelIndex, FIELD_INTEGER, FTYPEDESC_INSENDTABLE | FTYPEDESC_MODELINDEX ),
 	DEFINE_PRED_FIELD_TOL( m_flNextPrimaryAttack, FIELD_FLOAT, FTYPEDESC_INSENDTABLE, TD_MSECTOLERANCE ),	
 	DEFINE_PRED_FIELD_TOL( m_flNextSecondaryAttack, FIELD_FLOAT, FTYPEDESC_INSENDTABLE, TD_MSECTOLERANCE ),
@@ -3096,6 +3162,9 @@ BEGIN_PREDICTION_DATA( CBaseCombatWeapon )
 	DEFINE_PRED_FIELD( m_iSecondaryAmmoType, FIELD_INTEGER, FTYPEDESC_INSENDTABLE ),
 	DEFINE_PRED_FIELD( m_iClip1, FIELD_INTEGER, FTYPEDESC_INSENDTABLE ),			
 	DEFINE_PRED_FIELD( m_iClip2, FIELD_INTEGER, FTYPEDESC_INSENDTABLE ),
+
+	DEFINE_PRED_FIELD(m_bIsDualWielding, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
+	DEFINE_PRED_FIELD(m_bIsFiringLeft, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
 
 	DEFINE_PRED_FIELD(m_bIsIronsighted, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
 	DEFINE_PRED_FIELD(m_flIronsightedTime, FIELD_FLOAT, FTYPEDESC_INSENDTABLE),
@@ -3123,6 +3192,8 @@ BEGIN_PREDICTION_DATA( CBaseCombatWeapon )
 	DEFINE_FIELD( m_bReloadsSingly, FIELD_BOOLEAN ),
 	DEFINE_FIELD(m_bIsIronsighted, FIELD_BOOLEAN),
 	DEFINE_FIELD(m_flIronsightedTime, FIELD_FLOAT),
+	DEFINE_FIELD(m_bIsDualWielding, FIELD_BOOLEAN),
+	DEFINE_FIELD(m_bIsFiringLeft, FIELD_BOOLEAN),
 	DEFINE_FIELD( m_bRemoveable, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_iPrimaryAmmoCount, FIELD_INTEGER ),
 	DEFINE_FIELD( m_iSecondaryAmmoCount, FIELD_INTEGER ),
@@ -3186,6 +3257,8 @@ BEGIN_DATADESC( CBaseCombatWeapon )
 	DEFINE_FIELD( m_bReloadsSingly, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_bIsIronsighted, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_flIronsightedTime, FIELD_FLOAT ),
+	DEFINE_FIELD(m_bIsDualWielding, FIELD_BOOLEAN),
+	DEFINE_FIELD(m_bIsFiringLeft, FIELD_BOOLEAN),
 	DEFINE_FIELD( m_iSubType, FIELD_INTEGER ),
  	DEFINE_FIELD( m_bRemoveable, FIELD_BOOLEAN ),
 
@@ -3356,6 +3429,9 @@ BEGIN_NETWORK_TABLE_NOBASE( CBaseCombatWeapon, DT_LocalWeaponData )
 	SendPropBool( SENDINFO( m_bIsIronsighted ) ),
 	SendPropFloat( SENDINFO( m_flIronsightedTime ) ),
 
+	SendPropBool(SENDINFO(m_bIsDualWielding)),
+	SendPropBool(SENDINFO(m_bIsFiringLeft)),
+
 	SendPropInt( SENDINFO( m_nViewModelIndex ), VIEWMODEL_INDEX_BITS, SPROP_UNSIGNED ),
 
 	SendPropInt( SENDINFO( m_bFlipViewModel ) ),
@@ -3373,6 +3449,9 @@ BEGIN_NETWORK_TABLE_NOBASE( CBaseCombatWeapon, DT_LocalWeaponData )
 	RecvPropInt(RECVINFO(m_bIsIronsighted), 0, RecvProxy_ToggleSights), //note: RecvPropBool is actually RecvPropInt (see its implementation), but we need a proxy
 	RecvPropFloat(RECVINFO(m_flIronsightedTime)),
 
+	RecvPropBool(RECVINFO(m_bIsDualWielding)),
+	RecvPropBool(RECVINFO(m_bIsFiringLeft)),
+
 	RecvPropInt( RECVINFO( m_nViewModelIndex ) ),
 
 	RecvPropBool( RECVINFO( m_bFlipViewModel ) ),
@@ -3385,6 +3464,7 @@ BEGIN_NETWORK_TABLE(CBaseCombatWeapon, DT_BaseCombatWeapon)
 	SendPropDataTable("LocalWeaponData", 0, &REFERENCE_SEND_TABLE(DT_LocalWeaponData), SendProxy_SendLocalWeaponDataTable ),
 	SendPropDataTable("LocalActiveWeaponData", 0, &REFERENCE_SEND_TABLE(DT_LocalActiveWeaponData), SendProxy_SendActiveLocalWeaponDataTable ),
 	SendPropModelIndex( SENDINFO(m_iViewModelIndex) ),
+	SendPropModelIndex(SENDINFO(m_iViewModelDualIndex) ),
 	SendPropModelIndex( SENDINFO(m_iWorldModelIndex) ),
 	SendPropInt( SENDINFO(m_iState ), 8, SPROP_UNSIGNED ),
 	SendPropEHandle( SENDINFO(m_hOwner) ),
@@ -3392,6 +3472,7 @@ BEGIN_NETWORK_TABLE(CBaseCombatWeapon, DT_BaseCombatWeapon)
 	RecvPropDataTable("LocalWeaponData", 0, 0, &REFERENCE_RECV_TABLE(DT_LocalWeaponData)),
 	RecvPropDataTable("LocalActiveWeaponData", 0, 0, &REFERENCE_RECV_TABLE(DT_LocalActiveWeaponData)),
 	RecvPropInt( RECVINFO(m_iViewModelIndex)),
+	RecvPropInt(RECVINFO(m_iViewModelDualIndex)),
 	RecvPropInt( RECVINFO(m_iWorldModelIndex)),
 	RecvPropInt( RECVINFO(m_iState )),
 	RecvPropEHandle( RECVINFO(m_hOwner ) ),

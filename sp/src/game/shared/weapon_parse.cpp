@@ -470,6 +470,7 @@ void FileWeaponInfo_t::Parse( KeyValues *pKeyValuesData, const char *szWeaponNam
 	Q_strncpy( szPrintName, pKeyValuesData->GetString( "printname", WEAPON_PRINTNAME_MISSING ), MAX_WEAPON_STRING );
 	// View model & world model
 	Q_strncpy( szViewModel, pKeyValuesData->GetString( "viewmodel" ), MAX_WEAPON_STRING );
+	Q_strncpy( szViewModelDualWield, pKeyValuesData->GetString("viewmodel_dualwield"), MAX_WEAPON_STRING);
 	Q_strncpy( szWorldModel, pKeyValuesData->GetString( "playermodel" ), MAX_WEAPON_STRING );
 	Q_strncpy( szAnimationPrefix, pKeyValuesData->GetString( "anim_prefix" ), MAX_WEAPON_PREFIX );
 	Q_strncpy( szWeaponType, pKeyValuesData->GetString("weapon_type"), MAX_WEAPON_STRING );
@@ -524,6 +525,7 @@ void FileWeaponInfo_t::Parse( KeyValues *pKeyValuesData, const char *szWeaponNam
 	m_bLowerWeapon = (pKeyValuesData->GetInt("LowerWeapon", 1) != 0) ? true : false;
 	m_bUseIronsightCrosshair = (pKeyValuesData->GetInt("useironsightcrosshair", 1) != 0) ? true : false;
 	iDefaultIsFOV = pKeyValuesData->GetFloat("default_dynamic_fov", 45.0f);
+	m_bAllowDualWielding = (pKeyValuesData->GetInt("DualWield", 0) != 0) ? true : false;
 
 #if defined(_DEBUG) && defined(HL2_CLIENT_DLL)
 	// make sure two weapons aren't in the same slot & position

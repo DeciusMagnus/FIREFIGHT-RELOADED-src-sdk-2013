@@ -350,10 +350,16 @@ public:
 
 	// Weapon firing
 	virtual void			PrimaryAttack( void );						// do "+ATTACK"
+	//dual wielding stuff should be handled by weapon code 
+	virtual void			DualWieldAttack(void);
+	virtual void			LeftHandAttack(void) { return; }
+	virtual void			RightHandAttack(void) { return; }
 	virtual void			SecondaryAttack( void ) { return; }			// do "+ATTACK2"
 
 	// Firing animations
 	virtual Activity		GetPrimaryAttackActivity( void );
+	virtual Activity		GetPrimaryAttackLActivity(void);
+	virtual Activity		GetPrimaryAttackRActivity(void);
 	virtual Activity		GetSecondaryAttackActivity( void );
 	virtual Activity		GetDrawActivity( void );
 	virtual float			GetDefaultAnimSpeed( void ) { return 1.0; }
@@ -447,6 +453,8 @@ public:
 	virtual int				GetRumbleEffect() const;
 	virtual bool			UsesClipsForAmmo1( void ) const;
 	virtual bool			UsesClipsForAmmo2( void ) const;
+	virtual bool			IsDualWieldable(void) const;
+	virtual bool			IsDualWielding(void) const;
 	Vector					GetIronsightPositionOffset(void) const;
 	QAngle					GetIronsightAngleOffset(void) const;
 	float					GetIronsightFOVOffset(void) const;
@@ -652,8 +660,13 @@ public:
 	bool					m_bFiringWholeClip;		// Are we in the middle of firing the whole clip;
 	bool					m_bHolstering;			// Are we holstering;
 	bool					m_bPlayDeployAnim;			// Are we holstering;
+
+	CNetworkVar(bool, m_bIsDualWielding);
+	CNetworkVar(bool, m_bIsFiringLeft);
+
 	// Weapon art
 	CNetworkVar( int, m_iViewModelIndex );
+	CNetworkVar(int, m_iViewModelDualIndex);
 	CNetworkVar( int, m_iWorldModelIndex );
 	// Sounds
 	float					m_flNextEmptySoundTime;				// delay on empty sound playing
