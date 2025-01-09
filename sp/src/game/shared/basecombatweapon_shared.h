@@ -352,14 +352,12 @@ public:
 	virtual void			PrimaryAttack( void );						// do "+ATTACK"
 	//dual wielding stuff should be handled by weapon code 
 	virtual void			DualWieldAttack(void);
-	virtual void			LeftHandAttack(void) { return; }
-	virtual void			RightHandAttack(void) { return; }
+	virtual void			LeftHandAttack(void);
 	virtual void			SecondaryAttack( void ) { return; }			// do "+ATTACK2"
 
 	// Firing animations
 	virtual Activity		GetPrimaryAttackActivity( void );
 	virtual Activity		GetPrimaryAttackLActivity(void);
-	virtual Activity		GetPrimaryAttackRActivity(void);
 	virtual Activity		GetSecondaryAttackActivity( void );
 	virtual Activity		GetDrawActivity( void );
 	virtual float			GetDefaultAnimSpeed( void ) { return 1.0; }
@@ -455,6 +453,7 @@ public:
 	virtual bool			UsesClipsForAmmo2( void ) const;
 	virtual bool			IsDualWieldable(void) const;
 	virtual bool			IsDualWielding(void) const;
+	virtual bool			CanDualWield(void) const;
 	Vector					GetIronsightPositionOffset(void) const;
 	QAngle					GetIronsightAngleOffset(void) const;
 	float					GetIronsightFOVOffset(void) const;
@@ -661,6 +660,7 @@ public:
 	bool					m_bHolstering;			// Are we holstering;
 	bool					m_bPlayDeployAnim;			// Are we holstering;
 
+	CNetworkVar(bool, m_bOwnerHasSecondWeapon);
 	CNetworkVar(bool, m_bIsDualWielding);
 	CNetworkVar(bool, m_bIsFiringLeft);
 

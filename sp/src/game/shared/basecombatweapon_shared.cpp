@@ -406,7 +406,12 @@ bool CBaseCombatWeapon::IsDualWieldable(void) const
 
 bool CBaseCombatWeapon::IsDualWielding(void) const
 {
-	return (IsDualWieldable() && m_bIsDualWielding);
+	return (CanDualWield() && m_bIsDualWielding);
+}
+
+bool CBaseCombatWeapon::CanDualWield(void) const
+{
+	return (IsDualWieldable() && m_bOwnerHasSecondWeapon);
 }
 
 //-----------------------------------------------------------------------------
@@ -2602,17 +2607,19 @@ void CBaseCombatWeapon::WeaponIdle( void )
 //=========================================================
 Activity CBaseCombatWeapon::GetPrimaryAttackActivity( void )
 {
-	return ACT_VM_PRIMARYATTACK;
+	if (IsDualWielding())
+	{
+		return ACT_VM_PRIMARYATTACK_R;
+	}
+	else
+	{
+		return ACT_VM_PRIMARYATTACK;
+	}
 }
 
 Activity CBaseCombatWeapon::GetPrimaryAttackLActivity(void)
 {
 	return ACT_VM_PRIMARYATTACK_L;
-}
-
-Activity CBaseCombatWeapon::GetPrimaryAttackRActivity(void)
-{
-	return ACT_VM_PRIMARYATTACK_R;
 }
 
 //=========================================================
@@ -2940,9 +2947,97 @@ void CBaseCombatWeapon::DualWieldAttack()
 	}
 	else
 	{
-		RightHandAttack();
+		PrimaryAttack();
 		m_bIsFiringLeft = true;
 	}
+}
+
+void CBaseCombatWeapon::LeftHandAttack()
+{
+	// If my clip is empty (and I use clips) start reload
+	if (UsesClipsForAmmo1() && !m_iClip1)
+	{
+		Reload();
+		return;
+	}
+
+	// Only the player fires this way so we can cast
+	CBasePlayer* pPlayer = ToBasePlayer(GetOwner());
+
+	if (!pPlayer)
+	{
+		return;
+	}
+
+	pPlayer->DoMuzzleFlash();
+
+	SendWeaponAnim(GetPrimaryAttackLActivity());
+
+	// player "shoot" animation
+	pPlayer->SetAnimation(PLAYER_ATTACK1);
+
+	if (GetWpnData().m_bUseMuzzleSmoke)
+	{
+		if (g_fr_plr_muzzlesmoke.GetBool())
+		{
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle2", true);
+		}
+	}
+
+	FireBulletsInfo_t info;
+	info.m_vecSrc = pPlayer->Weapon_ShootPosition();
+
+	info.m_vecDirShooting = pPlayer->GetAutoaimVector(AUTOAIM_SCALE_DEFAULT);
+
+	// To make the firing framerate independent, we may have to fire more than one bullet here on low-framerate systems, 
+	// especially if the weapon we're firing has a really fast rate of fire.
+	info.m_iShots = 0;
+	float fireRate = GetFireRate();
+
+	while (m_flNextPrimaryAttack <= gpGlobals->curtime)
+	{
+		// MUST call sound before removing a round from the clip of a CMachineGun
+		WeaponSound(SINGLE, m_flNextPrimaryAttack);
+		m_flNextPrimaryAttack = m_flNextPrimaryAttack + fireRate;
+		info.m_iShots++;
+		if (!fireRate)
+			break;
+	}
+
+	// Make sure we don't fire more than the amount in the clip
+	if (UsesClipsForAmmo1())
+	{
+		info.m_iShots = MIN(info.m_iShots, m_iClip1);
+		m_iClip1 -= info.m_iShots;
+	}
+	else
+	{
+		info.m_iShots = MIN(info.m_iShots, pPlayer->GetAmmoCount(m_iPrimaryAmmoType));
+		pPlayer->RemoveAmmo(info.m_iShots, m_iPrimaryAmmoType);
+	}
+
+	info.m_flDistance = MAX_TRACE_LENGTH;
+	info.m_iAmmoType = m_iPrimaryAmmoType;
+	info.m_iTracerFreq = 2;
+
+#if !defined( CLIENT_DLL )
+	// Fire the bullets
+	info.m_vecSpread = pPlayer->GetAttackSpread(this);
+#else
+	//!!!HACKHACK - what does the client want this function for? 
+	info.m_vecSpread = GetActiveWeapon()->GetBulletSpread();
+#endif // CLIENT_DLL
+
+	pPlayer->FireBullets(info);
+
+	if (!m_iClip1 && pPlayer->GetAmmoCount(m_iPrimaryAmmoType) <= 0)
+	{
+		// HEV suit - indicate out of ammo condition
+		pPlayer->SetSuitUpdate("!HEV_AMO0", FALSE, 0);
+	}
+
+	//Add our view kick in
+	AddViewKick();
 }
 
 //-----------------------------------------------------------------------------
@@ -3163,6 +3258,7 @@ BEGIN_PREDICTION_DATA( CBaseCombatWeapon )
 	DEFINE_PRED_FIELD( m_iClip1, FIELD_INTEGER, FTYPEDESC_INSENDTABLE ),			
 	DEFINE_PRED_FIELD( m_iClip2, FIELD_INTEGER, FTYPEDESC_INSENDTABLE ),
 
+	DEFINE_PRED_FIELD(m_bOwnerHasSecondWeapon, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
 	DEFINE_PRED_FIELD(m_bIsDualWielding, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
 	DEFINE_PRED_FIELD(m_bIsFiringLeft, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
 
@@ -3192,6 +3288,7 @@ BEGIN_PREDICTION_DATA( CBaseCombatWeapon )
 	DEFINE_FIELD( m_bReloadsSingly, FIELD_BOOLEAN ),
 	DEFINE_FIELD(m_bIsIronsighted, FIELD_BOOLEAN),
 	DEFINE_FIELD(m_flIronsightedTime, FIELD_FLOAT),
+	DEFINE_FIELD(m_bOwnerHasSecondWeapon, FIELD_BOOLEAN),
 	DEFINE_FIELD(m_bIsDualWielding, FIELD_BOOLEAN),
 	DEFINE_FIELD(m_bIsFiringLeft, FIELD_BOOLEAN),
 	DEFINE_FIELD( m_bRemoveable, FIELD_BOOLEAN ),
@@ -3257,6 +3354,7 @@ BEGIN_DATADESC( CBaseCombatWeapon )
 	DEFINE_FIELD( m_bReloadsSingly, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_bIsIronsighted, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_flIronsightedTime, FIELD_FLOAT ),
+	DEFINE_FIELD(m_bOwnerHasSecondWeapon, FIELD_BOOLEAN),
 	DEFINE_FIELD(m_bIsDualWielding, FIELD_BOOLEAN),
 	DEFINE_FIELD(m_bIsFiringLeft, FIELD_BOOLEAN),
 	DEFINE_FIELD( m_iSubType, FIELD_INTEGER ),
@@ -3429,6 +3527,7 @@ BEGIN_NETWORK_TABLE_NOBASE( CBaseCombatWeapon, DT_LocalWeaponData )
 	SendPropBool( SENDINFO( m_bIsIronsighted ) ),
 	SendPropFloat( SENDINFO( m_flIronsightedTime ) ),
 
+	SendPropBool(SENDINFO(m_bOwnerHasSecondWeapon)),
 	SendPropBool(SENDINFO(m_bIsDualWielding)),
 	SendPropBool(SENDINFO(m_bIsFiringLeft)),
 
@@ -3449,6 +3548,7 @@ BEGIN_NETWORK_TABLE_NOBASE( CBaseCombatWeapon, DT_LocalWeaponData )
 	RecvPropInt(RECVINFO(m_bIsIronsighted), 0, RecvProxy_ToggleSights), //note: RecvPropBool is actually RecvPropInt (see its implementation), but we need a proxy
 	RecvPropFloat(RECVINFO(m_flIronsightedTime)),
 
+	RecvPropBool(RECVINFO(m_bOwnerHasSecondWeapon)),
 	RecvPropBool(RECVINFO(m_bIsDualWielding)),
 	RecvPropBool(RECVINFO(m_bIsFiringLeft)),
 

@@ -7395,11 +7395,21 @@ extern ConVar sv_player_katana;
 //-----------------------------------------------------------------------------
 // Purpose: Create and give the named item to the player. Then return it.
 //-----------------------------------------------------------------------------
-CBaseEntity	*CBasePlayer::GiveNamedItem( const char *pszName, int iSubType, bool isReward)
+CBaseEntity* CBasePlayer::GiveNamedItem(const char* pszName, int iSubType, bool isReward)
 {
 	// If I already own this type don't create one
-	if ( Weapon_OwnsThisType(pszName, iSubType) )
+
+	CBaseCombatWeapon *pWeaponOwned = Weapon_OwnsThisType(pszName, iSubType);
+
+	if (pWeaponOwned)
+	{
+		if (pWeaponOwned->IsDualWieldable() && !pWeaponOwned->m_bOwnerHasSecondWeapon)
+		{
+			pWeaponOwned->m_bOwnerHasSecondWeapon = true;
+		}
+
 		return NULL;
+	}
 
 	KeyValues* pInfo = CMapInfo::GetMapInfoData();
 	if (Q_stristr(pszName, "weapon_grapple") && (!sv_player_grapple.GetBool() || (pInfo != NULL && !pInfo->GetBool("CanGrapple", true))))
@@ -8290,7 +8300,7 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 
 		return true;
 	}
-	else if (stricmp(cmd, "+ironsight") == 0)
+	/*else if (stricmp(cmd, "+ironsight") == 0)
 	{
 		CBaseCombatWeapon *pWeapon = GetActiveWeapon();
 		if (pWeapon != NULL)
@@ -8303,6 +8313,20 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 		CBaseCombatWeapon *pWeapon = GetActiveWeapon();
 		if (pWeapon != NULL)
 			pWeapon->DisableIronsights();
+
+		return true;
+	}*/
+	else if (stricmp(cmd, "toggle_dualwield") == 0)
+	{
+		CBaseCombatWeapon* pWeapon = GetActiveWeapon();
+
+		if (pWeapon != NULL)
+		{
+			if (pWeapon->CanDualWield())
+			{
+				pWeapon->m_bIsDualWielding = !pWeapon->m_bIsDualWielding;
+			}
+		}
 
 		return true;
 	}
@@ -8615,16 +8639,24 @@ bool CBasePlayer::BumpWeapon( CBaseCombatWeapon *pWeapon )
 	// ----------------------------------------
 	// If I already have it just take the ammo
 	// ----------------------------------------
-	if (Weapon_OwnsThisType( pWeapon->GetClassname(), pWeapon->GetSubType())) 
+
+	CBaseCombatWeapon* pWeaponOwned = Weapon_OwnsThisType(pWeapon->GetClassname(), pWeapon->GetSubType());
+
+	if (pWeaponOwned)
 	{
-		if( Weapon_EquipAmmoOnly( pWeapon ) )
+		if (pWeaponOwned->IsDualWieldable() && !pWeaponOwned->m_bOwnerHasSecondWeapon)
+		{
+			pWeaponOwned->m_bOwnerHasSecondWeapon = true;
+		}
+
+		if (Weapon_EquipAmmoOnly(pWeapon))
 		{
 			// Only remove me if I have no ammo left
-			if ( pWeapon->HasPrimaryAmmo() )
+			if (pWeapon->HasPrimaryAmmo())
 				return false;
 
 			pWeapon->CheckRespawn();
-			UTIL_Remove( pWeapon );
+			UTIL_Remove(pWeapon);
 			return true;
 		}
 		else

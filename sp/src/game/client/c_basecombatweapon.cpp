@@ -35,6 +35,24 @@ CON_COMMAND(toggle_ironsight, "")
 	engine->ServerCmd("toggle_ironsight"); //forward to server
 }
 
+CON_COMMAND(toggle_dualwield, "")
+{
+	CBasePlayer* pPlayer = C_BasePlayer::GetLocalPlayer();
+	if (pPlayer == NULL)
+		return;
+
+	CBaseCombatWeapon* pWeapon = pPlayer->GetActiveWeapon();
+	if (pWeapon == NULL)
+		return;
+
+	if (!pWeapon->CanDualWield())
+		return;
+
+	pWeapon->m_bIsDualWielding = !pWeapon->m_bIsDualWielding;
+
+	engine->ServerCmd("toggle_dualwield"); //forward to server
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: Gets the local client's active weapon, if any.
 //-----------------------------------------------------------------------------
