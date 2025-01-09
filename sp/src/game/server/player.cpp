@@ -8325,6 +8325,8 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 			if (pWeapon->CanDualWield())
 			{
 				pWeapon->m_bIsDualWielding = !pWeapon->m_bIsDualWielding;
+				//reload the model and play the deploy anim.
+				pWeapon->Deploy();
 			}
 		}
 

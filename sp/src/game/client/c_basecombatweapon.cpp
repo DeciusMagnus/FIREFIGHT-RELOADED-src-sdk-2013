@@ -45,12 +45,14 @@ CON_COMMAND(toggle_dualwield, "")
 	if (pWeapon == NULL)
 		return;
 
-	if (!pWeapon->CanDualWield())
-		return;
+	if (pWeapon->CanDualWield())
+	{
+		pWeapon->m_bIsDualWielding = !pWeapon->m_bIsDualWielding;
+		//reload the model and play the deploy anim.
+		pWeapon->Deploy();
 
-	pWeapon->m_bIsDualWielding = !pWeapon->m_bIsDualWielding;
-
-	engine->ServerCmd("toggle_dualwield"); //forward to server
+		engine->ServerCmd("toggle_dualwield"); //forward to server
+	}
 }
 
 //-----------------------------------------------------------------------------

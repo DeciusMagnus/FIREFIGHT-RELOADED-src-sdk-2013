@@ -668,6 +668,7 @@ public:
 	CNetworkVar( int, m_iViewModelIndex );
 	CNetworkVar(int, m_iViewModelDualIndex);
 	CNetworkVar( int, m_iWorldModelIndex );
+	CNetworkVar(int, m_iWorldModelDualIndex);
 	// Sounds
 	float					m_flNextEmptySoundTime;				// delay on empty sound playing
 

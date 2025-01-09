@@ -4082,10 +4082,22 @@ void CHL2_Player::SetAnimation(PLAYER_ANIM playerAnim)
 
 	Activity idealActivity = ACT_HL2MP_RUN;
 
+	CBaseCombatWeapon* pWeapon = GetActiveWeapon();
+	bool hasWeapons = (HasWeapons() && pWeapon);
+
 	if (playerAnim == PLAYER_JUMP)
 	{
-		if (HasWeapons())
-			idealActivity = ACT_HL2MP_JUMP;
+		if (hasWeapons)
+		{
+			if (pWeapon->IsDualWielding())
+			{
+				idealActivity = ACT_FR_DUALWIELD_JUMP;
+			}
+			else
+			{
+				idealActivity = ACT_HL2MP_JUMP;
+			}
+		}
 		else
 			idealActivity = ACT_JUMP;
 	}
@@ -4108,16 +4120,44 @@ void CHL2_Player::SetAnimation(PLAYER_ANIM playerAnim)
 		}
 		else
 		{
-			idealActivity = ACT_HL2MP_GESTURE_RANGE_ATTACK;
+			if (hasWeapons)
+			{
+				if (pWeapon->IsDualWielding())
+				{
+					idealActivity = ACT_FR_DUALWIELD_GESTURE_RANGE_ATTACK;
+				}
+				else
+				{
+					idealActivity = ACT_HL2MP_GESTURE_RANGE_ATTACK;
+				}
+			}
+			else
+			{
+				idealActivity = ACT_HL2MP_GESTURE_RANGE_ATTACK;
+			}
 		}
 	}
 	else if (playerAnim == PLAYER_RELOAD)
 	{
-		idealActivity = ACT_HL2MP_GESTURE_RELOAD;
+		if (hasWeapons)
+		{
+			if (pWeapon->IsDualWielding())
+			{
+				idealActivity = ACT_FR_DUALWIELD_GESTURE_RELOAD;
+			}
+			else
+			{
+				idealActivity = ACT_HL2MP_GESTURE_RELOAD;
+			}
+		}
+		else
+		{
+			idealActivity = ACT_HL2MP_GESTURE_RELOAD;
+		}
 	}
 	else if (playerAnim == PLAYER_IDLE || playerAnim == PLAYER_WALK)
 	{
-		if (!(GetFlags() & FL_ONGROUND) && (GetActivity() == ACT_HL2MP_JUMP || GetActivity() == ACT_JUMP))    // Still jumping
+		if (!(GetFlags() & FL_ONGROUND) && (GetActivity() == ACT_HL2MP_JUMP || GetActivity() == ACT_FR_DUALWIELD_JUMP || GetActivity() == ACT_JUMP))    // Still jumping
 		{
 			idealActivity = GetActivity();
 		}
@@ -4125,15 +4165,33 @@ void CHL2_Player::SetAnimation(PLAYER_ANIM playerAnim)
 		{
 			if (speed == 0)
 			{
-				if (HasWeapons())
-					idealActivity = ACT_HL2MP_IDLE;
+				if (hasWeapons)
+				{
+					if (pWeapon->IsDualWielding())
+					{
+						idealActivity = ACT_FR_DUALWIELD_IDLE;
+					}
+					else
+					{
+						idealActivity = ACT_HL2MP_IDLE;
+					}
+				}
 				else
 					idealActivity = ACT_IDLE;
 			}
 			else
 			{
-				if (HasWeapons())
-					idealActivity = ACT_HL2MP_RUN;
+				if (hasWeapons)
+				{
+					if (pWeapon->IsDualWielding())
+					{
+						idealActivity = ACT_FR_DUALWIELD_RUN;
+					}
+					else
+					{
+						idealActivity = ACT_HL2MP_RUN;
+					}
+				}
 				else
 					idealActivity = ACT_RUN;
 			}
@@ -4144,15 +4202,33 @@ void CHL2_Player::SetAnimation(PLAYER_ANIM playerAnim)
 			{
 				if (speed > 0)
 				{
-					if (HasWeapons())
-						idealActivity = ACT_HL2MP_WALK_CROUCH;
+					if (hasWeapons)
+					{
+						if (pWeapon->IsDualWielding())
+						{
+							idealActivity = ACT_FR_DUALWIELD_CROUCH_WALK;
+						}
+						else
+						{
+							idealActivity = ACT_HL2MP_WALK_CROUCH;
+						}
+					}
 					else
 						idealActivity = ACT_WALK_CROUCH;
 				}
 				else
 				{
-					if (HasWeapons())
-						idealActivity = ACT_HL2MP_IDLE_CROUCH;
+					if (hasWeapons)
+					{
+						if (pWeapon->IsDualWielding())
+						{
+							idealActivity = ACT_FR_DUALWIELD_CROUCH_IDLE;
+						}
+						else
+						{
+							idealActivity = ACT_HL2MP_IDLE_CROUCH;
+						}
+					}
 					else
 						idealActivity = ACT_COVER_LOW;
 				}
@@ -4161,22 +4237,38 @@ void CHL2_Player::SetAnimation(PLAYER_ANIM playerAnim)
 			{
 				if (speed > 0)
 				{
+					if (hasWeapons)
 					{
-						if (HasWeapons())
-						idealActivity = ACT_HL2MP_RUN;
+						if (pWeapon->IsDualWielding())
+						{
+							idealActivity = ACT_FR_DUALWIELD_RUN;
+						}
 						else
 						{
-							if (speed > HL2_WALK_SPEED + 20.0f)
-								idealActivity = ACT_RUN;
-							else
-								idealActivity = ACT_WALK;
+							idealActivity = ACT_HL2MP_RUN;
 						}
+					}
+					else
+					{
+						if (speed > HL2_WALK_SPEED + 20.0f)
+							idealActivity = ACT_RUN;
+						else
+							idealActivity = ACT_WALK;
 					}
 				}
 				else
 				{
-					if (HasWeapons())
-						idealActivity = ACT_HL2MP_IDLE;
+					if (hasWeapons)
+					{
+						if (pWeapon->IsDualWielding())
+						{
+							idealActivity = ACT_FR_DUALWIELD_IDLE;
+						}
+						else
+						{
+							idealActivity = ACT_HL2MP_IDLE;
+						}
+					}
 					else
 						idealActivity = ACT_IDLE;
 				}
@@ -4191,7 +4283,7 @@ void CHL2_Player::SetAnimation(PLAYER_ANIM playerAnim)
 		idealActivity = ACT_COVER_LOW;
 	}
 
-	if (idealActivity == ACT_HL2MP_GESTURE_RANGE_ATTACK)
+	if (idealActivity == ACT_HL2MP_GESTURE_RANGE_ATTACK || idealActivity == ACT_FR_DUALWIELD_GESTURE_RANGE_ATTACK)
 	{
 		RestartGesture(Weapon_TranslateActivity(idealActivity));
 
@@ -4200,7 +4292,7 @@ void CHL2_Player::SetAnimation(PLAYER_ANIM playerAnim)
 
 		return;
 	}
-	else if (idealActivity == ACT_HL2MP_GESTURE_RELOAD)
+	else if (idealActivity == ACT_HL2MP_GESTURE_RELOAD || idealActivity == ACT_FR_DUALWIELD_GESTURE_RELOAD)
 	{
 		RestartGesture(Weapon_TranslateActivity(idealActivity));
 		return;

@@ -351,6 +351,7 @@ void CBaseCombatWeapon::Precache(void)
 		m_iViewModelIndex = 0;
 		m_iWorldModelIndex = 0;
 		m_iViewModelDualIndex = 0;
+		m_iWorldModelDualIndex = 0;
 		if (GetViewModel() && GetViewModel()[0])
 		{
 			m_iViewModelIndex = CBaseEntity::PrecacheModel(GetViewModel());
@@ -371,6 +372,18 @@ void CBaseCombatWeapon::Precache(void)
 		if (GetWorldModel() && GetWorldModel()[0])
 		{
 			m_iWorldModelIndex = CBaseEntity::PrecacheModel(GetWorldModel());
+
+			//since dual wieldable models are handled by GetViewModel, i will have to precache those manually.
+
+			if (IsDualWieldable())
+			{
+				const char* dualWieldModel2 = GetWpnData().szWorldModelDualWield;
+
+				if (dualWieldModel2 && dualWieldModel2[0])
+				{
+					m_iWorldModelDualIndex = CBaseEntity::PrecacheModel(dualWieldModel2);
+				}
+			}
 		}
 
 		// Precache sounds, too
@@ -434,7 +447,14 @@ const char *CBaseCombatWeapon::GetViewModel( int /*viewmodelindex = 0 -- this is
 //-----------------------------------------------------------------------------
 const char *CBaseCombatWeapon::GetWorldModel( void ) const
 {
-	return GetWpnData().szWorldModel;
+	if (IsDualWielding())
+	{
+		return GetWpnData().szWorldModelDualWield;
+	}
+	else
+	{
+		return GetWpnData().szWorldModel;
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -3250,6 +3270,7 @@ BEGIN_PREDICTION_DATA( CBaseCombatWeapon )
 	DEFINE_PRED_FIELD( m_iViewModelIndex, FIELD_INTEGER, FTYPEDESC_INSENDTABLE | FTYPEDESC_MODELINDEX ),
 	DEFINE_PRED_FIELD(m_iViewModelDualIndex, FIELD_INTEGER, FTYPEDESC_INSENDTABLE | FTYPEDESC_MODELINDEX),
 	DEFINE_PRED_FIELD( m_iWorldModelIndex, FIELD_INTEGER, FTYPEDESC_INSENDTABLE | FTYPEDESC_MODELINDEX ),
+	DEFINE_PRED_FIELD(m_iWorldModelDualIndex, FIELD_INTEGER, FTYPEDESC_INSENDTABLE | FTYPEDESC_MODELINDEX),
 	DEFINE_PRED_FIELD_TOL( m_flNextPrimaryAttack, FIELD_FLOAT, FTYPEDESC_INSENDTABLE, TD_MSECTOLERANCE ),	
 	DEFINE_PRED_FIELD_TOL( m_flNextSecondaryAttack, FIELD_FLOAT, FTYPEDESC_INSENDTABLE, TD_MSECTOLERANCE ),
 	DEFINE_PRED_FIELD_TOL( m_flTimeWeaponIdle, FIELD_FLOAT, FTYPEDESC_INSENDTABLE, TD_MSECTOLERANCE ),
@@ -3555,6 +3576,7 @@ BEGIN_NETWORK_TABLE(CBaseCombatWeapon, DT_BaseCombatWeapon)
 	SendPropModelIndex( SENDINFO(m_iViewModelIndex) ),
 	SendPropModelIndex(SENDINFO(m_iViewModelDualIndex) ),
 	SendPropModelIndex( SENDINFO(m_iWorldModelIndex) ),
+	SendPropModelIndex(SENDINFO(m_iWorldModelDualIndex)),
 	SendPropInt( SENDINFO(m_iState ), 8, SPROP_UNSIGNED ),
 	SendPropEHandle( SENDINFO(m_hOwner) ),
 #else
@@ -3563,6 +3585,7 @@ BEGIN_NETWORK_TABLE(CBaseCombatWeapon, DT_BaseCombatWeapon)
 	RecvPropInt( RECVINFO(m_iViewModelIndex)),
 	RecvPropInt(RECVINFO(m_iViewModelDualIndex)),
 	RecvPropInt( RECVINFO(m_iWorldModelIndex)),
+	RecvPropInt(RECVINFO(m_iWorldModelDualIndex)),
 	RecvPropInt( RECVINFO(m_iState )),
 	RecvPropEHandle( RECVINFO(m_hOwner ) ),
 #endif
