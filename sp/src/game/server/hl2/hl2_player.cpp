@@ -147,6 +147,8 @@ ConVar sv_player_katana("sv_player_katana", "1", FCVAR_ARCHIVE, "");
 
 ConVar sv_suitintro("sv_suitintro", "3", FCVAR_ARCHIVE);
 
+ConVar sv_ironsightvignette("sv_ironsightvignette", "1", FCVAR_ARCHIVE);
+
 #define	FLASH_DRAIN_TIME	 1.1111	// 100 units / 90 secs
 #define	FLASH_CHARGE_TIME	 50.0f	// 100 units / 2 secs
 //const char *szModelName = NULL;
@@ -2195,6 +2197,21 @@ void CHL2_Player::CheckIronsights(void)
 		else if (m_afButtonPressed & IN_IRONSIGHT)
 		{
 			pWeapon->EnableIronsights();
+		}
+
+		if (sv_ironsightvignette.GetBool())
+		{
+			if (!(m_nButtons & IN_ZOOM))
+			{
+				if (pWeapon->IsIronsighted())
+				{
+					m_HL2Local.m_bZooming = true;
+				}
+				else
+				{
+					m_HL2Local.m_bZooming = false;
+				}
+			}
 		}
 	}
 }

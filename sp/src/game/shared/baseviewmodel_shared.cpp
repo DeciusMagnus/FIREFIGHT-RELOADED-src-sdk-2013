@@ -400,7 +400,9 @@ void CBaseViewModel::CalcIronsights(Vector &pos, QAngle &ang)
 		(delta > 1.0f) ? 0.0f : 1.0f - delta; //reverse interpolation
 
 	if (exp <= 0.001f) //fully not ironsighted; save performance
+	{
 		return;
+	}
 
 	Vector newPos = pos;
 	QAngle newAng = ang;
@@ -483,7 +485,14 @@ void CBaseViewModel::CalcViewModelView( CBasePlayer *owner, const Vector& eyePos
 		g_ClientVirtualReality.OverrideViewModelTransform( vmorigin, vmangles, pWeapon && pWeapon->ShouldUseLargeViewModelVROverride() );
 	}
 
-	CalcIronsights(vmorigin, vmangles);
+	if (pWeapon != NULL)
+	{
+		if (pWeapon->HasIronsights())
+		{
+			CalcIronsights(vmorigin, vmangles);
+		}
+	}
+
 	CalcAdjustedView(vmorigin, vmangles);
 
 	SetLocalOrigin(vmorigin);

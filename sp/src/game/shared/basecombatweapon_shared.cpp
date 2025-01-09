@@ -1007,15 +1007,15 @@ extern ConVar fov_desired;
 
 void CBaseCombatWeapon::EnableIronsights()
 {
-
 #ifdef CLIENT_DLL
-	if (g_pGameRules->IsMultiplayer())
-	{
-		if( !prediction->IsFirstTimePredicted() )
-			return;
-	}
+	if (prediction->InPrediction() && !prediction->IsFirstTimePredicted())
+		return;
 #endif
-	if (!HasIronsights() || IsIronsighted())
+
+	if (!HasIronsights())
+		return;
+
+	if (IsIronsighted())
 		return;
 
 	CBasePlayer *pOwner = ToBasePlayer(GetOwner());
@@ -1052,13 +1052,14 @@ void CBaseCombatWeapon::EnableIronsights()
 void CBaseCombatWeapon::DisableIronsights()
 {
 #ifdef CLIENT_DLL
-	if (g_pGameRules->IsMultiplayer())
-	{
-		if (!prediction->IsFirstTimePredicted())
-			return;
-	}
+	if (prediction->InPrediction() && !prediction->IsFirstTimePredicted())
+		return;
 #endif
-	if (!HasIronsights() || !IsIronsighted())
+
+	if (!HasIronsights())
+		return;
+
+	if (!IsIronsighted())
 		return;
 
 	CBasePlayer *pOwner = ToBasePlayer(GetOwner());

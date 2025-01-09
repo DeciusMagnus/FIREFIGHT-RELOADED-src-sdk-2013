@@ -192,32 +192,47 @@ void CHudZoom::Paint( void )
 
 	surface()->DrawSetColor( col );
 	
+	bool displayCircle = true;
+	CBaseCombatWeapon* pWeapon = pPlayer->GetActiveWeapon();
+
+	if (pWeapon)
+	{
+		if (pWeapon->IsIronsighted())
+		{
+			displayCircle = false;
+		}
+	}
+
 	// draw zoom circles
 	float fX, fY;
 	bool bBehindCamera = false;
 	CHudCrosshair::GetDrawPosition( &fX, &fY, &bBehindCamera );
 	if( bBehindCamera )
 		return;
+
 	int xCrosshair = (int)fX;
 	int yCrosshair = (int)fY;
 	int wide, tall;
-	GetSize( wide, tall );
+	GetSize(wide, tall);
 
-	surface()->DrawOutlinedCircle( xCrosshair, yCrosshair, m_flCircle1Radius * scale, 48);
-	surface()->DrawOutlinedCircle( xCrosshair, yCrosshair, m_flCircle2Radius * scale, 64);
-
-	// draw dashed lines
-	int dashCount = 2;
-	int ypos = yCrosshair - m_flDashHeight / 2.f;
-	float fGap = m_flDashGap * MAX(scale,0.1f);
-	int dashMax = Max(fX, (float)wide - fX ) / fGap;
-	while ( dashCount < dashMax )
+	if (displayCircle)
 	{
-		int xpos = (int)(fX - fGap * dashCount + 0.5f);
-		surface()->DrawFilledRect(xpos, ypos, xpos + 1, ypos + m_flDashHeight);
-		xpos = (int)(fX + fGap * dashCount + 0.5f);
-		surface()->DrawFilledRect(xpos, ypos, xpos + 1, ypos + m_flDashHeight);
-		dashCount++;
+		surface()->DrawOutlinedCircle(xCrosshair, yCrosshair, m_flCircle1Radius * scale, 48);
+		surface()->DrawOutlinedCircle(xCrosshair, yCrosshair, m_flCircle2Radius * scale, 64);
+
+		// draw dashed lines
+		int dashCount = 2;
+		int ypos = yCrosshair - m_flDashHeight / 2.f;
+		float fGap = m_flDashGap * MAX(scale, 0.1f);
+		int dashMax = Max(fX, (float)wide - fX) / fGap;
+		while (dashCount < dashMax)
+		{
+			int xpos = (int)(fX - fGap * dashCount + 0.5f);
+			surface()->DrawFilledRect(xpos, ypos, xpos + 1, ypos + m_flDashHeight);
+			xpos = (int)(fX + fGap * dashCount + 0.5f);
+			surface()->DrawFilledRect(xpos, ypos, xpos + 1, ypos + m_flDashHeight);
+			dashCount++;
+		}
 	}
 
 	// draw the darkened edges, with a rotated texture in the four corners
