@@ -19,7 +19,7 @@ $texturegroup skinfamilies
 	{ "combinesoldiersheet_zombie"  }
 	{ "combinesoldiersheet_zombie_prison" }
     { "combinesoldiersheet_zombie_shotgunner" }
-    { "combinesoldiersheet_zombie_elite" }
+    { "combinesoldiersheet_zombie_elite_giblimb" }
     { "combinesoldiersheet_zombie_ace" }
 }
 
