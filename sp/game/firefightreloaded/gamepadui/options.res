@@ -2647,6 +2647,19 @@
 				}
 			}
             
+            "IronsightVignette"
+			{
+				"text"			"#GameUI_IronsightVignette"
+				"type"			"wheelywheel"
+				"convar"		"sv_ironsightvignette"
+
+				"options"
+				{
+					"0"		"#gameui_disabled"
+					"1"		"#gameui_enabled"
+				}
+			}
+            
             "Crosshair"
 			{
 				"text"			"#GameUI_Crosshair"

@@ -682,6 +682,7 @@
             "GameUI_PLRMuzzleSmoke": "Player Muzzle Smoke",
             "GameUI_SMG1GrenadeGlassPassthrough": "SMG1 Grenade Glass Passthrough",
             "GameUI_CrossbowGlassPassthrough": "Enhanced Crossbow Glass Passthrough",
+            "GameUI_IronsightVignette": "Vignette effect when using ironsights",
             "FIREFIGHTRELOADED_KILL20COMBINE_NAME": "The Rookie",
             "FIREFIGHTRELOADED_KILL20COMBINE_DESC": "Kill 20 Combine Soldiers/Civil Protection overall.",
             "FIREFIGHTRELOADED_KILL20COMBINE_ACHIEVED": "ACHIEVEMENT UNLOCKED:\nThe Rookie\nKill 20 Combine Soldiers/Civil Protection overall.",

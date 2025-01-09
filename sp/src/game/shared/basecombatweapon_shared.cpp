@@ -3476,18 +3476,6 @@ REGISTER_SEND_PROXY_NON_MODIFIED_POINTER( SendProxy_SendNonLocalWeaponDataTable 
 
 #endif
 
-#ifdef CLIENT_DLL
-void RecvProxy_ToggleSights( const CRecvProxyData* pData, void* pStruct, void* pOut )
-{
-	CBaseCombatWeapon *pWeapon = (CBaseCombatWeapon*)pStruct;
-	if (pData->m_Value.m_Int)
-		pWeapon->EnableIronsights();
-	else
-		pWeapon->DisableIronsights();
-}
-#endif // CLIENT_DLL
-
-
 #if PREDICTION_ERROR_CHECK_LEVEL > 1
 #define SendPropTime SendPropFloat
 #define RecvPropTime RecvPropFloat
@@ -3546,7 +3534,7 @@ BEGIN_NETWORK_TABLE_NOBASE( CBaseCombatWeapon, DT_LocalWeaponData )
 	RecvPropInt( RECVINFO(m_iPrimaryAmmoType )),
 	RecvPropInt( RECVINFO(m_iSecondaryAmmoType )),
 
-	RecvPropInt(RECVINFO(m_bIsIronsighted), 0, RecvProxy_ToggleSights), //note: RecvPropBool is actually RecvPropInt (see its implementation), but we need a proxy
+	RecvPropBool(RECVINFO(m_bIsIronsighted)),
 	RecvPropFloat(RECVINFO(m_flIronsightedTime)),
 
 	RecvPropBool(RECVINFO(m_bOwnerHasSecondWeapon)),
