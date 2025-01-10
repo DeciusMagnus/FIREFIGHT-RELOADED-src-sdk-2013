@@ -706,7 +706,7 @@ void CFMODMusicSystem::PlaySong()
 	}
 
 	const char* szSound = GetFMODManager()->GetFullPathToSound(m_sCurSong.Path);
-	CFMODManager::CheckError(GetFMODManager()->GetSystem()->createSound(szSound, FMOD_DEFAULT | FMOD_CREATESTREAM | FMOD_ACCURATETIME | FMOD_IGNORETAGS | FMOD_LOWMEM, 0, &m_pSong));
+	CFMODManager::CheckError(GetFMODManager()->GetSystem()->createSound(szSound, FMOD_DEFAULT | FMOD_CREATESTREAM | FMOD_ACCURATETIME | FMOD_IGNORETAGS | FMOD_MPEGSEARCH | FMOD_LOWMEM, 0, &m_pSong));
 	CFMODManager::CheckError(GetFMODManager()->GetSystem()->playSound(m_pSong, GetFMODManager()->GetChannelGroup(CHANNELGROUP_MUSIC), true, &m_pChannel));
 
 	if (m_pChannel)
