@@ -349,7 +349,7 @@ bool CWeaponXM1014::Reload( void )
 	SendWeaponAnim( ACT_VM_RELOAD );
 
 	pOwner->m_flNextAttack = gpGlobals->curtime;
-	m_flNextPrimaryAttack = gpGlobals->curtime + SequenceDuration();
+	m_flNextPrimaryAttack = gpGlobals->curtime + 0.6f; //SequenceDuration();
 
 	return true;
 }

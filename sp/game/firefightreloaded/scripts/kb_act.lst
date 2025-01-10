@@ -4,6 +4,7 @@
 "+kick"					"#FIREFIGHTRELOADED_Kick"
 "+ironsight"			"#FIREFIGHTRELOADED_Hold_Ironsight"
 "toggle_ironsight"		"#FIREFIGHTRELOADED_Toggle_Ironsight"
+"toggle_dualwield"      "#FIREFIGHTRELOADED_Toggle_DualWielding"
 "gamepadui_openstore"	"#FIREFIGHTRELOADED_OpenStore"
 "buymenu"				"#FIREFIGHTRELOADED_OpenStore_Legacy"
 "+grapple"			"#FIREFIGHTRELOADED_UseGrappleHook"
