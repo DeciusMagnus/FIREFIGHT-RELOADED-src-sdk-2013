@@ -2683,6 +2683,18 @@ void CBaseCombatWeapon::OnPickupDualWield(void)
 		DisplayDualWieldHudHint();
 	}
 
+	CBasePlayer* pPlayer = ToBasePlayer(pOwner);
+
+	if (pPlayer)
+	{
+		CSingleUserRecipientFilter user(pPlayer);
+		user.MakeReliable();
+
+		UserMessageBegin(user, "ItemPickup");
+		WRITE_STRING("dualies");
+		MessageEnd();
+	}
+
 	m_OnPlayerPickup.FireOutput(pOwner, this);
 
 	pOwner->EmitSound("Player.PickupWeapon");

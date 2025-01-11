@@ -541,5 +541,10 @@
 				"customxyoffset"	"1"
 				"y_offset"		"5"
 		}
+        "dualies"
+		{
+				"font"		"WeaponIconsKillFeed3"
+				"character"	"s"
+		}
 	}	
 }
