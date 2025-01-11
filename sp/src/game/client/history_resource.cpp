@@ -99,8 +99,12 @@ void CHudHistoryResource::AddToHistory( C_BaseCombatWeapon *weapon )
 	{
 		if ( m_PickupHistory[i].iId == iId )
 		{
-			// it's already in list
-			return;
+			//check if it's dual wieldable
+			if (!weapon->CouldDualWield())
+			{
+				// it's already in list
+				return;
+			}
 		}
 	}
 	

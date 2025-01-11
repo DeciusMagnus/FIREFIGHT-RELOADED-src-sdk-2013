@@ -340,6 +340,9 @@ public:
 
 	virtual bool			IsWeaponZoomed() { return false; }		// Is this weapon in its 'zoomed in' mode?
 
+	virtual	void			ToggleDualWield(void);
+	virtual	void			OnPickupDualWield(void);
+
 	// Reloading
 	virtual	void			CheckReload( void );
 	virtual void			FinishReload( void );
@@ -458,6 +461,7 @@ public:
 	virtual bool			IsDualWieldable(void) const;
 	virtual bool			IsDualWielding(void) const;
 	virtual bool			CanDualWield(void) const;
+	virtual bool			CouldDualWield(void) const;
 	Vector					GetIronsightPositionOffset(void) const;
 	QAngle					GetIronsightAngleOffset(void) const;
 	float					GetIronsightFOVOffset(void) const;
@@ -747,8 +751,8 @@ private:
 
 	// Outputs
 protected:
-	COutputEvent			m_OnPlayerUse;		// Fired when the player uses the weapon.
 	COutputEvent			m_OnPlayerPickup;	// Fired when the player picks up the weapon.
+	COutputEvent			m_OnPlayerUse;		// Fired when the player uses the weapon.
 	COutputEvent			m_OnNPCPickup;		// Fired when an NPC picks up the weapon.
 	COutputEvent			m_OnCacheInteraction;	// For awarding lambda cache achievements in HL2 on 360. See .FGD file for details 
 

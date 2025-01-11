@@ -35,30 +35,6 @@ CON_COMMAND(toggle_ironsight, "")
 	engine->ServerCmd("toggle_ironsight"); //forward to server
 }
 
-/*CON_COMMAND(toggle_dualwield, "")
-{
-	CBasePlayer* pPlayer = C_BasePlayer::GetLocalPlayer();
-	if (pPlayer == NULL)
-		return;
-
-	CBaseCombatWeapon* pWeapon = pPlayer->GetActiveWeapon();
-	if (pWeapon == NULL)
-		return;
-
-	if (pWeapon->CanDualWield())
-	{
-		//if (pWeapon->IsIronsighted())
-			//pWeapon->DisableIronsights();
-
-		//pWeapon->m_bIsDualWielding = !pWeapon->m_bIsDualWielding;
-		//reload the model and play the deploy anim.
-		//pWeapon->Equip(pPlayer);
-		//pWeapon->Deploy();
-
-		engine->ServerCmd("toggle_dualwield"); //forward to server
-	}
-}*/
-
 //-----------------------------------------------------------------------------
 // Purpose: Gets the local client's active weapon, if any.
 //-----------------------------------------------------------------------------
@@ -143,11 +119,15 @@ void C_BaseCombatWeapon::OnRestore()
 
 int C_BaseCombatWeapon::GetWorldModelIndex( void )
 {
+	C_BaseCombatCharacter* pOwner = GetOwner();
+
+	bool ownerIsAlive = (pOwner && pOwner->IsAlive());
+
 	if ( GameRules() )
 	{
 		const char *pBaseName = modelinfo->GetModelName( modelinfo->GetModel( m_iWorldModelIndex ) );
 
-		if (IsDualWielding())
+		if (ownerIsAlive && IsDualWielding())
 		{
 			pBaseName = modelinfo->GetModelName(modelinfo->GetModel(m_iWorldModelDualIndex));
 		}
@@ -162,7 +142,7 @@ int C_BaseCombatWeapon::GetWorldModelIndex( void )
 
 	int index = m_iWorldModelIndex;
 
-	if (IsDualWielding())
+	if (ownerIsAlive && IsDualWielding())
 	{
 		index = m_iWorldModelDualIndex;
 	}

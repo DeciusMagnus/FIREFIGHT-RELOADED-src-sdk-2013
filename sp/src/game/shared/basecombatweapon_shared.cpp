@@ -38,7 +38,8 @@
 #endif
 
 #include "firefightreloaded/cleanup_manager.h"
-
+#else
+#include "weapon_selection.h"
 #endif
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -427,6 +428,11 @@ bool CBaseCombatWeapon::CanDualWield(void) const
 	return (IsDualWieldable() && m_bOwnerHasSecondWeapon);
 }
 
+bool CBaseCombatWeapon::CouldDualWield(void) const
+{
+	return (IsDualWieldable() && !m_bOwnerHasSecondWeapon);
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -491,7 +497,15 @@ int CBaseCombatWeapon::GetMaxClip1( void ) const
 		return iModMaxClipOverride;
 #endif
 
-	return GetWpnData().iMaxClip1;
+	if (IsDualWielding())
+	{
+		int doubleAmmo = GetWpnData().iMaxClip1 * 2;
+		return doubleAmmo;
+	}
+	else
+	{
+		return GetWpnData().iMaxClip1;
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -878,9 +892,8 @@ void CBaseCombatWeapon::Drop( const Vector &vecVelocity )
 	//turn off dual wielding when the owner tells us to.
 	if (IsDualWielding())
 	{
-		m_bIsDualWielding = false;
+		ToggleDualWield();
 		m_bOwnerHasSecondWeapon = false;
-		SetModel(GetWorldModel());
 	}
 
 	// Once somebody drops a gun, it's fair game for removal when/if
@@ -1863,6 +1876,12 @@ bool CBaseCombatWeapon::ReloadOrSwitchWeapons( void )
 		if (IsIronsighted())
 			DisableIronsights();
 
+		//we're out of ammo. switch off dual wield.
+		if (IsDualWielding())
+		{
+			ToggleDualWield();
+		}
+
 		if ( ( (GetWeaponFlags() & ITEM_FLAG_NOAUTOSWITCHEMPTY) == false ) && ( g_pGameRules->SwitchToNextBestWeapon( pOwner, this ) ) )
 		{
 			m_flNextPrimaryAttack = gpGlobals->curtime + 0.3;
@@ -2584,6 +2603,81 @@ void CBaseCombatWeapon::StopWeaponSound( WeaponSound_t sound_type )
 			StopSound( entindex(), shootsound );
 		}
 	}
+}
+
+void CBaseCombatWeapon::ToggleDualWield(void)
+{
+	CBaseCombatCharacter* pOwner = GetOwner();
+	if (!pOwner)
+		return;
+
+#if !defined( CLIENT_DLL )
+
+	bool hasEnoughAmmo = false;
+
+	//total ammo count in the player's inventory, including what's in the mag.
+	int ammoCount = pOwner->GetAmmoCount(m_iPrimaryAmmoType) + Clip1();
+	int doubleAmmo = GetWpnData().iMaxClip1 * 2;
+
+	//make sure we can realistically give the player that ammo.
+	if (ammoCount > 0 && ammoCount >= doubleAmmo)
+	{
+		hasEnoughAmmo = true;
+	}
+
+	if (CanDualWield())
+	{
+		if (!m_bIsDualWielding && !hasEnoughAmmo)
+		{
+			return;
+		}
+
+		if (IsIronsighted())
+			DisableIronsights();
+
+		m_bIsDualWielding = !m_bIsDualWielding;
+		//reload the model and play the deploy anim.
+		Equip(pOwner);
+		Deploy();
+
+		//give our extra ammo back when applicable
+		if (!m_bIsDualWielding)
+		{
+			if (Clip1() >= doubleAmmo)
+			{
+				pOwner->GiveAmmo(GetMaxClip1(), m_iPrimaryAmmoType);
+			}
+			else if (Clip1() > GetMaxClip1())
+			{
+				int differenceCount = Clip1() - GetMaxClip1();
+				pOwner->GiveAmmo(differenceCount, m_iPrimaryAmmoType);
+			}
+		}
+
+		//reload the gun with the new ammo amount.
+		DefaultReload(GetMaxClip1(), GetMaxClip2(), ACT_INVALID);
+
+		//make NPCs say "OH SHIT !!!!!!" when we whip dualies out
+		CSoundEnt::InsertSound(SOUND_DANGER, GetAbsOrigin(), 300, 1.0f, pOwner);
+	}
+#endif
+}
+
+void CBaseCombatWeapon::OnPickupDualWield(void)
+{
+	CBaseCombatCharacter* pOwner = GetOwner();
+	if (!pOwner)
+		return;
+
+#if !defined( CLIENT_DLL )
+	m_bOwnerHasSecondWeapon = true;
+
+	DisplayDualWieldHudHint();
+
+	m_OnPlayerPickup.FireOutput(pOwner, this);
+
+	pOwner->EmitSound("Player.PickupWeapon");
+#endif
 }
 
 //-----------------------------------------------------------------------------

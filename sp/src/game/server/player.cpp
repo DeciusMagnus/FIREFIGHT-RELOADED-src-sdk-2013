@@ -1269,7 +1269,7 @@ bool GiveNewWeapon(CBasePlayer* pPlayer, const char* pClassname)
 	}
 	else
 	{
-		if (pOwnedWeapon->IsDualWieldable() && !pOwnedWeapon->m_bOwnerHasSecondWeapon)
+		if (pOwnedWeapon->CouldDualWield())
 		{
 			return true;
 		}
@@ -7410,10 +7410,10 @@ CBaseEntity* CBasePlayer::GiveNamedItem(const char* pszName, int iSubType, bool 
 
 	if (pWeaponOwned)
 	{
-		if (enableDualWieldingCheck && pWeaponOwned->IsDualWieldable() && !pWeaponOwned->m_bOwnerHasSecondWeapon)
+		if (enableDualWieldingCheck && pWeaponOwned->CouldDualWield())
 		{
 			Msg("Player already owns %s. Enabling Dual-Wield mode.\n", pszName);
-			pWeaponOwned->m_bOwnerHasSecondWeapon = true;
+			pWeaponOwned->OnPickupDualWield();
 		}
 
 		return NULL;
@@ -8330,19 +8330,7 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 
 		if (pWeapon != NULL)
 		{
-			if (pWeapon->CanDualWield())
-			{
-				if (pWeapon->IsIronsighted())
-					pWeapon->DisableIronsights();
-
-				pWeapon->m_bIsDualWielding = !pWeapon->m_bIsDualWielding;
-				//reload the model and play the deploy anim.
-				pWeapon->Equip(this);
-				pWeapon->Deploy();
-
-				//make NPCs say "OH SHIT !!!!!!" when we whip dualies out
-				CSoundEnt::InsertSound(SOUND_DANGER, GetAbsOrigin(), 300, 1.0f, this);
-			}
+			pWeapon->ToggleDualWield();
 		}
 
 		return true;
@@ -8383,7 +8371,7 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 			CBaseCombatWeapon* pWeapon = (CBaseCombatWeapon*)pOwnedItem;
 			if (pWeapon)
 			{
-				if (pWeapon->IsDualWieldable() && !pWeapon->m_bOwnerHasSecondWeapon)
+				if (pWeapon->CouldDualWield())
 				{
 					engine->ClientCommand(edict(), "confirm_purchase %i", moneyAmount);
 				}
@@ -8688,11 +8676,9 @@ bool CBasePlayer::BumpWeapon( CBaseCombatWeapon *pWeapon )
 
 	if (pWeaponOwned)
 	{
-		if (pWeaponOwned->IsDualWieldable() && !pWeaponOwned->m_bOwnerHasSecondWeapon)
+		if (pWeaponOwned->CouldDualWield())
 		{
-			pWeaponOwned->m_bOwnerHasSecondWeapon = true;
-
-			UTIL_HudHintText(this, "#Valve_Hud_DualWield");
+			pWeaponOwned->OnPickupDualWield();
 
 			//give ammo then delete after dual wielding.
 			Weapon_EquipAmmoOnly(pWeapon);
