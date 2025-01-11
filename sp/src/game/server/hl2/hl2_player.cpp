@@ -4124,7 +4124,14 @@ void CHL2_Player::SetAnimation(PLAYER_ANIM playerAnim)
 			{
 				if (pWeapon->IsDualWielding())
 				{
-					idealActivity = ACT_FR_DUALWIELD_GESTURE_RANGE_ATTACK;
+					if (pWeapon->m_bIsFiringLeft)
+					{
+						idealActivity = ACT_FR_DUALWIELD_GESTURE_RANGE_ATTACK_L;
+					}
+					else
+					{
+						idealActivity = ACT_FR_DUALWIELD_GESTURE_RANGE_ATTACK_R;
+					}
 				}
 				else
 				{
@@ -4283,7 +4290,7 @@ void CHL2_Player::SetAnimation(PLAYER_ANIM playerAnim)
 		idealActivity = ACT_COVER_LOW;
 	}
 
-	if (idealActivity == ACT_HL2MP_GESTURE_RANGE_ATTACK || idealActivity == ACT_FR_DUALWIELD_GESTURE_RANGE_ATTACK)
+	if (idealActivity == ACT_HL2MP_GESTURE_RANGE_ATTACK || idealActivity == ACT_FR_DUALWIELD_GESTURE_RANGE_ATTACK_L || idealActivity == ACT_FR_DUALWIELD_GESTURE_RANGE_ATTACK_R)
 	{
 		RestartGesture(Weapon_TranslateActivity(idealActivity));
 

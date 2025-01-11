@@ -3938,6 +3938,22 @@ void C_BaseAnimating::FireEvent( const Vector& origin, const QAngle& angles, int
 		}
 		break;
 
+	case CL_EVENT_EJECTBRASS2:
+		if (m_Attachments.Count() > 0)
+		{
+			if (MainViewOrigin().DistToSqr(GetAbsOrigin()) < (256 * 256))
+			{
+				Vector brassAttachOrigin;
+				QAngle brassAttachAngles;
+
+				if (GetAttachment(3, brassAttachOrigin, brassAttachAngles))
+				{
+					tempents->EjectBrass(brassAttachOrigin, brassAttachAngles, GetAbsAngles(), atoi(options));
+				}
+			}
+		}
+		break;
+
 	case AE_MUZZLEFLASH:
 		{
 			// Send out the effect for a player
