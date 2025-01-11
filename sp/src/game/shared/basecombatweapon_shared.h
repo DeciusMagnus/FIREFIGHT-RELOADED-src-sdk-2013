@@ -671,6 +671,7 @@ public:
 	CNetworkVar(bool, m_bOwnerHasSecondWeapon);
 	CNetworkVar(bool, m_bIsDualWielding);
 	CNetworkVar(bool, m_bIsFiringLeft);
+	CNetworkVar(bool, m_bWeaponControlsDualWield);
 
 	// Weapon art
 	CNetworkVar( int, m_iViewModelIndex );

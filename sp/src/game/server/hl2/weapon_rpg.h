@@ -182,11 +182,15 @@ public:
 	void	Precache( void );
 
 	void	PrimaryAttack( void );
+	void	LeftHandAttack(void);
 	virtual float GetFireRate( void ) { return 1; };
 	void	ItemPostFrame( void );
 
+	void	ToggleDualWield(void);
+
 	void	Activate( void );
 	void	DecrementAmmo( CBaseCombatCharacter *pOwner );
+	bool	ReloadOrSwitchWeapons(void);
 
 	bool	Deploy( void );
 	bool	Holster( CBaseCombatWeapon *pSwitchingTo = NULL );

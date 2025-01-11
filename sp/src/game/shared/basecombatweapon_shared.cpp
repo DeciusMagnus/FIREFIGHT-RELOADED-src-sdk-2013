@@ -497,7 +497,7 @@ int CBaseCombatWeapon::GetMaxClip1( void ) const
 		return iModMaxClipOverride;
 #endif
 
-	if (IsDualWielding())
+	if (IsDualWielding() && GetWpnData().iMaxClip1 > 0)
 	{
 		int doubleAmmo = GetWpnData().iMaxClip1 * 2;
 		return doubleAmmo;
@@ -1379,7 +1379,7 @@ bool CBaseCombatWeapon::ShouldDisplayDualWieldHUDHint()
 	if (m_iDualWieldHudHintCount >= WEAPON_RELOAD_HUD_HINT_COUNT)
 		return false;
 
-	if (CanDualWield())
+	if (!IsDualWielding())
 	{
 		return true;
 	}
@@ -2352,7 +2352,7 @@ void CBaseCombatWeapon::ItemPostFrame( void )
 	{
 		// Clip empty? Or out of ammo on a no-clip weapon?
 		if ( !IsMeleeWeapon() &&  
-			(( UsesClipsForAmmo1() && m_iClip1 <= 0) || ( !UsesClipsForAmmo1() && pOwner->GetAmmoCount(m_iPrimaryAmmoType)<=0 )) )
+			(( !UsesClipsForAmmo1() && pOwner->GetAmmoCount(m_iPrimaryAmmoType)<=0 ) || (UsesClipsForAmmo1() && m_iClip1 <= 0)) )
 		{
 			HandleFireOnEmpty();
 		}
@@ -2379,6 +2379,11 @@ void CBaseCombatWeapon::ItemPostFrame( void )
 
 			if (IsDualWielding())
 			{
+				if (!m_bWeaponControlsDualWield)
+				{
+					m_bIsFiringLeft = !m_bIsFiringLeft;
+				}
+
 				DualWieldAttack();
 			}
 			else
@@ -2614,15 +2619,26 @@ void CBaseCombatWeapon::ToggleDualWield(void)
 #if !defined( CLIENT_DLL )
 
 	bool hasEnoughAmmo = false;
-
-	//total ammo count in the player's inventory, including what's in the mag.
-	int ammoCount = pOwner->GetAmmoCount(m_iPrimaryAmmoType) + Clip1();
 	int doubleAmmo = GetWpnData().iMaxClip1 * 2;
 
-	//make sure we can realistically give the player that ammo.
-	if (ammoCount > 0 && ammoCount >= doubleAmmo)
+	if (UsesClipsForAmmo1())
 	{
-		hasEnoughAmmo = true;
+		//total ammo count in the player's inventory, including what's in the mag.
+		int ammoCount = pOwner->GetAmmoCount(m_iPrimaryAmmoType) + Clip1();
+
+		//make sure we can realistically give the player that ammo.
+		if (ammoCount > 0 && ammoCount >= doubleAmmo)
+		{
+			hasEnoughAmmo = true;
+		}
+	}
+	else
+	{
+		int ammoCount = pOwner->GetAmmoCount(m_iPrimaryAmmoType);
+		if (ammoCount > 0)
+		{
+			hasEnoughAmmo = true;
+		}
 	}
 
 	if (CanDualWield())
@@ -2678,9 +2694,25 @@ void CBaseCombatWeapon::OnPickupDualWield(void)
 #if !defined( CLIENT_DLL )
 	m_bOwnerHasSecondWeapon = true;
 
-	if (pOwner->GetActiveWeapon() && pOwner->GetActiveWeapon() == this)
+	if (GlobalEntity_GetState("weapon_hidehints") == GLOBAL_OFF)
 	{
-		DisplayDualWieldHudHint();
+		if (pOwner->GetActiveWeapon())
+		{
+			if (pOwner->GetActiveWeapon() == this)
+			{
+				DisplayDualWieldHudHint();
+			}
+			else
+			{
+				CFmtStr hint;
+				hint.sprintf("#Valve_Hud_DualWield_Pickup_%s", GetClassname());
+				UTIL_HudHintText(GetOwner(), hint.Access());
+
+				m_iDualWieldHudHintCount++;
+				m_bDualWieldHudHintDisplayed = true;
+				m_flHudHintMinDisplayTime = gpGlobals->curtime + MIN_HUDHINT_DISPLAY_TIME;
+			}
+		}
 	}
 
 	CBasePlayer* pPlayer = ToBasePlayer(pOwner);
@@ -3147,12 +3179,10 @@ void CBaseCombatWeapon::DualWieldAttack()
 	if (m_bIsFiringLeft)
 	{
 		LeftHandAttack();
-		m_bIsFiringLeft = false;
 	}
 	else
 	{
 		PrimaryAttack();
-		m_bIsFiringLeft = true;
 	}
 }
 
@@ -3469,6 +3499,7 @@ BEGIN_PREDICTION_DATA( CBaseCombatWeapon )
 	DEFINE_PRED_FIELD(m_bOwnerHasSecondWeapon, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
 	DEFINE_PRED_FIELD(m_bIsDualWielding, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
 	DEFINE_PRED_FIELD(m_bIsFiringLeft, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
+	DEFINE_PRED_FIELD(m_bWeaponControlsDualWield, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
 
 	DEFINE_PRED_FIELD(m_bIsIronsighted, FIELD_BOOLEAN, FTYPEDESC_INSENDTABLE),
 	DEFINE_PRED_FIELD(m_flIronsightedTime, FIELD_FLOAT, FTYPEDESC_INSENDTABLE),
@@ -3499,6 +3530,7 @@ BEGIN_PREDICTION_DATA( CBaseCombatWeapon )
 	DEFINE_FIELD(m_bOwnerHasSecondWeapon, FIELD_BOOLEAN),
 	DEFINE_FIELD(m_bIsDualWielding, FIELD_BOOLEAN),
 	DEFINE_FIELD(m_bIsFiringLeft, FIELD_BOOLEAN),
+	DEFINE_FIELD(m_bWeaponControlsDualWield, FIELD_BOOLEAN),
 	DEFINE_FIELD( m_bRemoveable, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_iPrimaryAmmoCount, FIELD_INTEGER ),
 	DEFINE_FIELD( m_iSecondaryAmmoCount, FIELD_INTEGER ),
@@ -3565,6 +3597,7 @@ BEGIN_DATADESC( CBaseCombatWeapon )
 	DEFINE_FIELD(m_bOwnerHasSecondWeapon, FIELD_BOOLEAN),
 	DEFINE_FIELD(m_bIsDualWielding, FIELD_BOOLEAN),
 	DEFINE_FIELD(m_bIsFiringLeft, FIELD_BOOLEAN),
+	DEFINE_FIELD(m_bWeaponControlsDualWield, FIELD_BOOLEAN),
 	DEFINE_FIELD( m_iSubType, FIELD_INTEGER ),
  	DEFINE_FIELD( m_bRemoveable, FIELD_BOOLEAN ),
 
@@ -3728,6 +3761,7 @@ BEGIN_NETWORK_TABLE_NOBASE( CBaseCombatWeapon, DT_LocalWeaponData )
 	SendPropBool(SENDINFO(m_bOwnerHasSecondWeapon)),
 	SendPropBool(SENDINFO(m_bIsDualWielding)),
 	SendPropBool(SENDINFO(m_bIsFiringLeft)),
+	SendPropBool(SENDINFO(m_bWeaponControlsDualWield)),
 
 	SendPropInt( SENDINFO( m_nViewModelIndex ), VIEWMODEL_INDEX_BITS, SPROP_UNSIGNED ),
 
@@ -3749,6 +3783,8 @@ BEGIN_NETWORK_TABLE_NOBASE( CBaseCombatWeapon, DT_LocalWeaponData )
 	RecvPropBool(RECVINFO(m_bOwnerHasSecondWeapon)),
 	RecvPropBool(RECVINFO(m_bIsDualWielding)),
 	RecvPropBool(RECVINFO(m_bIsFiringLeft)),
+
+	RecvPropBool(RECVINFO(m_bWeaponControlsDualWield)),
 
 	RecvPropInt( RECVINFO( m_nViewModelIndex ) ),
 

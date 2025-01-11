@@ -1417,6 +1417,16 @@ acttable_t	CWeaponRPG::m_acttable[] =
 	{ ACT_HL2MP_GESTURE_RANGE_ATTACK,		ACT_HL2MP_GESTURE_RANGE_ATTACK_RPG,		false },
 	{ ACT_HL2MP_GESTURE_RELOAD,		ACT_HL2MP_GESTURE_RELOAD_RPG,	false },
 	{ ACT_HL2MP_JUMP,				ACT_HL2MP_JUMP_RPG,				false },
+
+	{ ACT_FR_DUALWIELD_IDLE,				ACT_HL2MP_IDLE_RPG2,			false },
+	{ ACT_FR_DUALWIELD_RUN,					ACT_HL2MP_RUN_RPG2,			false },
+	{ ACT_FR_DUALWIELD_CROUCH_WALK, 		ACT_HL2MP_WALK_CROUCH_RPG2,	false },
+	{ ACT_FR_DUALWIELD_CROUCH_IDLE,			ACT_HL2MP_IDLE_CROUCH_RPG2,	false },
+	{ ACT_FR_DUALWIELD_GESTURE_RANGE_ATTACK_L,		ACT_HL2MP_GESTURE_RANGE_ATTACK_RPG2_L,		false },
+	{ ACT_FR_DUALWIELD_GESTURE_RANGE_ATTACK_R,		ACT_HL2MP_GESTURE_RANGE_ATTACK_RPG2_R,		false },
+	{ ACT_FR_DUALWIELD_JUMP,				ACT_HL2MP_JUMP_RPG2,			false },
+	{ ACT_FR_DUALWIELD_GESTURE_RELOAD,				ACT_HL2MP_GESTURE_RELOAD_RPG,		false },
+
 	{ ACT_RANGE_ATTACK1,			ACT_RANGE_ATTACK_RPG,			false },
 };
 
@@ -1431,6 +1441,8 @@ CWeaponRPG::CWeaponRPG()
 	m_bInitialStateUpdate= false;
 	m_bHideGuiding = false;
 	m_bGuiding = false;
+
+	m_bWeaponControlsDualWield = true;
 
 	m_fMinRange1 = m_fMinRange2 = 40*12;
 	m_fMaxRange1 = m_fMaxRange2 = 500*12;
@@ -1567,6 +1579,12 @@ void CWeaponRPG::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatChara
 	}
 }
 
+void CWeaponRPG::ToggleDualWield(void)
+{
+	StopGuiding();
+	BaseClass::ToggleDualWield();
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -1637,10 +1655,12 @@ void CWeaponRPG::PrimaryAttack( void )
 
 	DecrementAmmo( GetOwner() );
 
+	m_bIsFiringLeft = true;
+
 	// Register a muzzleflash for the AI
 	pOwner->SetMuzzleFlashTime( gpGlobals->curtime + 0.5 );
 
-	SendWeaponAnim( ACT_VM_PRIMARYATTACK );
+	SendWeaponAnim(GetPrimaryAttackActivity());
 	WeaponSound( SINGLE );
 
 	pOwner->RumbleEffect( RUMBLE_SHOTGUN_SINGLE, 0, RUMBLE_FLAG_RESTART );
@@ -1678,6 +1698,138 @@ void CWeaponRPG::PrimaryAttack( void )
 			}
 		}
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CWeaponRPG::LeftHandAttack(void)
+{
+	// Can't have an active missile out
+	if (m_hMissile != NULL)
+		return;
+
+	// Can't be reloading
+	if (GetActivity() == ACT_VM_RELOAD)
+		return;
+
+	Vector vecOrigin;
+	Vector vecForward;
+
+	m_flNextPrimaryAttack = gpGlobals->curtime + 0.5f;
+
+	CBasePlayer* pOwner = ToBasePlayer(GetOwner());
+
+	if (pOwner == NULL)
+		return;
+
+	Vector	vForward, vRight, vUp;
+
+	pOwner->EyeVectors(&vForward, &vRight, &vUp);
+
+	Vector	muzzlePoint = pOwner->Weapon_ShootPosition() + vForward * 12.0f + vRight * -6.0f + vUp * -3.0f;
+
+	QAngle vecAngles;
+	VectorAngles(vForward, vecAngles);
+	m_hMissile = CMissile::Create(muzzlePoint, vecAngles, GetOwner()->edict());
+
+	m_hMissile->m_hOwner = this;
+
+	// If the shot is clear to the player, give the missile a grace period
+	trace_t	tr;
+	Vector vecEye = pOwner->EyePosition();
+	UTIL_TraceLine(vecEye, vecEye + vForward * 128, MASK_SHOT, this, COLLISION_GROUP_NONE, &tr);
+	if (tr.fraction == 1.0)
+	{
+		m_hMissile->SetGracePeriod(0.3);
+	}
+
+	DecrementAmmo(GetOwner());
+
+	m_bIsFiringLeft = false;
+
+	// Register a muzzleflash for the AI
+	pOwner->SetMuzzleFlashTime(gpGlobals->curtime + 0.5);
+
+	SendWeaponAnim(GetPrimaryAttackLActivity());
+	WeaponSound(SINGLE);
+
+	pOwner->RumbleEffect(RUMBLE_SHOTGUN_SINGLE, 0, RUMBLE_FLAG_RESTART);
+
+	m_iPrimaryAttacks++;
+	gamestats->Event_WeaponFired(pOwner, true, GetClassname());
+
+	CSoundEnt::InsertSound(SOUND_COMBAT, GetAbsOrigin(), 1000, 0.2, GetOwner(), SOUNDENT_CHANNEL_WEAPON);
+
+	// Check to see if we should trigger any RPG firing triggers
+	int iCount = g_hWeaponFireTriggers.Count();
+	for (int i = 0; i < iCount; i++)
+	{
+		if (g_hWeaponFireTriggers[i]->IsTouching(pOwner))
+		{
+			if (FClassnameIs(g_hWeaponFireTriggers[i], "trigger_rpgfire"))
+			{
+				g_hWeaponFireTriggers[i]->ActivateMultiTrigger(pOwner);
+			}
+		}
+	}
+
+	if (hl2_episodic.GetBool())
+	{
+		CAI_BaseNPC** ppAIs = g_AI_Manager.AccessAIs();
+		int nAIs = g_AI_Manager.NumAIs();
+
+		string_t iszStriderClassname = AllocPooledString("npc_strider");
+
+		for (int i = 0; i < nAIs; i++)
+		{
+			if (ppAIs[i]->m_iClassname == iszStriderClassname)
+			{
+				ppAIs[i]->DispatchInteraction(g_interactionPlayerLaunchedRPG, NULL, m_hMissile);
+			}
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: override that keeps dual wielding on when lowering.
+//-----------------------------------------------------------------------------
+bool CWeaponRPG::ReloadOrSwitchWeapons(void)
+{
+	CBasePlayer* pOwner = ToBasePlayer(GetOwner());
+	Assert(pOwner);
+
+	m_bFireOnEmpty = false;
+
+	// If we don't have any ammo, switch to the next best weapon
+	if (!HasAnyAmmo() && m_flNextPrimaryAttack < gpGlobals->curtime && m_flNextSecondaryAttack < gpGlobals->curtime)
+	{
+		// weapon isn't useable, switch.
+		if (IsIronsighted())
+			DisableIronsights();
+
+		if (((GetWeaponFlags() & ITEM_FLAG_NOAUTOSWITCHEMPTY) == false) && (g_pGameRules->SwitchToNextBestWeapon(pOwner, this)))
+		{
+			m_flNextPrimaryAttack = gpGlobals->curtime + 0.3;
+			return true;
+		}
+	}
+	else
+	{
+		// Weapon is useable. Reload if empty and weapon has waited as long as it has to after firing
+		if (UsesClipsForAmmo1() && !AutoFiresFullClip() &&
+			(m_iClip1 == 0) &&
+			(GetWeaponFlags() & ITEM_FLAG_NOAUTORELOAD) == false &&
+			m_flNextPrimaryAttack < gpGlobals->curtime &&
+			m_flNextSecondaryAttack < gpGlobals->curtime)
+		{
+			// if we're successfully reloading, we're done
+			if (Reload())
+				return true;
+		}
+	}
+
+	return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -1741,36 +1893,39 @@ void CWeaponRPG::ItemPostFrame( void )
 	if ( pPlayer == NULL )
 		return;
 
-	//If we're pulling the weapon out for the first time, wait to draw the laser
-	/*
-	if ( ( m_bInitialStateUpdate ) && ( GetActivity() != ACT_VM_DRAW ) )
+	if (!IsDualWielding())
 	{
-		StartGuiding();
-		m_bInitialStateUpdate = false;
-	}
-	*/
+		//If we're pulling the weapon out for the first time, wait to draw the laser
+		/*
+		if ( ( m_bInitialStateUpdate ) && ( GetActivity() != ACT_VM_DRAW ) )
+		{
+			StartGuiding();
+			m_bInitialStateUpdate = false;
+		}
+		*/
 
-	// Supress our guiding effects if we're lowered
-	if ( GetIdealActivity() == ACT_VM_IDLE_LOWERED || GetIdealActivity() == ACT_VM_RELOAD )
-	{
-		SuppressGuiding();
-	}
-	else
-	{
-		SuppressGuiding( false );
-	}
+		// Supress our guiding effects if we're lowered
+		if (GetIdealActivity() == ACT_VM_IDLE_LOWERED || GetIdealActivity() == ACT_VM_RELOAD)
+		{
+			SuppressGuiding();
+		}
+		else
+		{
+			SuppressGuiding(false);
+		}
 
-	//Player has toggled guidance state
-	//Adrian: Players are not allowed to remove the laser guide in single player anymore, bye!
-	//Bitl: OBJECTION!
-	if (pPlayer->m_afButtonPressed & IN_ATTACK2)
-	{
-		ToggleGuiding();
-	}
+		//Player has toggled guidance state
+		//Adrian: Players are not allowed to remove the laser guide in single player anymore, bye!
+		//Bitl: OBJECTION!
+		if (pPlayer->m_afButtonPressed & IN_ATTACK2)
+		{
+			ToggleGuiding();
+		}
 
-	//Move the laser
-	UpdateLaserPosition();
-	UpdateLaserEffects();
+		//Move the laser
+		UpdateLaserPosition();
+		UpdateLaserEffects();
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -2029,7 +2184,10 @@ bool CWeaponRPG::Reload( void )
 
 	WeaponSound( RELOAD );
 	
-	SendWeaponAnim( ACT_VM_RELOAD );
+	if (!IsDualWielding())
+	{
+		SendWeaponAnim(ACT_VM_RELOAD);
+	}
 
 	return true;
 }

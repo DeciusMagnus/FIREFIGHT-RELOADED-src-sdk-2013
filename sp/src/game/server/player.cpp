@@ -1271,6 +1271,7 @@ bool GiveNewWeapon(CBasePlayer* pPlayer, const char* pClassname)
 	{
 		if (pOwnedWeapon->CouldDualWield())
 		{
+			pOwnedWeapon->OnPickupDualWield();
 			return true;
 		}
 
@@ -6304,7 +6305,7 @@ void CBasePlayer::LoadLoadoutFile(const char* kvName, bool savetoLoadout)
 
 			if (ConvertedString)
 			{
-				GiveNamedItem(ConvertedString, 0, false, false);
+				GiveNamedItem(ConvertedString, 0, false);
 				if (!gaveWeapons)
 				{
 					gaveWeapons = true;
@@ -6345,7 +6346,7 @@ void CBasePlayer::LoadLoadoutFile(const char* kvName, bool savetoLoadout)
 
 				if (ConvertedString)
 				{
-					GiveNamedItem(ConvertedString, 0, false, false);
+					GiveNamedItem(ConvertedString, 0, false);
 				}
 			}
 		}
@@ -6362,7 +6363,7 @@ void CBasePlayer::LoadLoadoutFile(const char* kvName, bool savetoLoadout)
 
 				if (ConvertedString)
 				{
-					GiveNamedItem(ConvertedString, 0, false, false);
+					GiveNamedItem(ConvertedString, 0, false);
 				}
 			}
 		}
@@ -6378,7 +6379,7 @@ void CBasePlayer::LoadLoadoutFile(const char* kvName, bool savetoLoadout)
 
 				if (ConvertedString)
 				{
-					GiveNamedItem(ConvertedString, 0, false, false);
+					GiveNamedItem(ConvertedString, 0, false);
 				}
 			}
 		}
@@ -8373,6 +8374,8 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 			{
 				if (pWeapon->CouldDualWield())
 				{
+					//this enables the dual wielding of the weapon.
+					pWeapon->OnPickupDualWield();
 					engine->ClientCommand(edict(), "confirm_purchase %i", moneyAmount);
 				}
 				else

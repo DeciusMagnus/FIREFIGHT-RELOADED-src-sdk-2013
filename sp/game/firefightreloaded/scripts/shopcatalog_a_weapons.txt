@@ -78,7 +78,7 @@
 	{
 		"name"	"RPG"
 		"price"	"3500"
-		"limit"	"1"
+		"limit"	"2"
 		"command"	"item weapon_rpg 0"
 	}
 	"12"
@@ -148,7 +148,7 @@
 	{
 		"name"	"Pistol"
 		"price"	"500"
-		"limit"	"1"
+		"limit"	"2"
 		"command"	"item weapon_pistol 0"
 	}
 	"22"

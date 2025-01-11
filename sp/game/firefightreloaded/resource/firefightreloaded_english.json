@@ -501,6 +501,8 @@
             "Valve_Hint_Alt_Weapon_Knife": "%+attack2% THROW KNIFE",
             "Valve_Hint_Alt_Weapon_Katana": "KILLS WITH THE KATANA DURING BULLETTIME WILL INCREASE YOUR SPEED AND HEALTH",
             "Valve_Hud_DualWield": "%toggle_dualwield% TO DUAL-WIELD WEAPON",
+            "Valve_Hud_DualWield_Pickup_Weapon_Pistol": "%invnext% SWITCH TO PISTOL %toggle_dualwield% TO DUAL-WIELD PISTOL",
+            "Valve_Hud_DualWield_Pickup_Weapon_RPG": "%invnext% SWITCH TO RPG %toggle_dualwield% TO DUAL-WIELD RPG",
             "valve_hint_warning_Weapon_Railgun": "%+reload% BATTERY AT CRITICAL LEVELS\nSTABLIZE BATTERY AND CHARGE SUIT\nTO PREVENT AN EXPLOSION",
             "Valve_Hint_Store": "%gamepadui_openstore% OPEN THE STORE %+grapple% USE THE GRAPPLING BEAM",
             "Valve_Hint_Boss_Start": "%+grapple% TO GRAPPLE ONTO THE LEDGE",

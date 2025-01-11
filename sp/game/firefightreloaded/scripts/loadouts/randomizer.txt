@@ -195,4 +195,19 @@
 		"ammotype"	"Flechette"
 		"ammonum"	"999"
 	}
+	//for dualies
+	"31"
+	{
+		"randomizermode"	"1"
+		"weapon"	"weapon_pistol"
+		"ammotype"	"Pistol"
+		"ammonum"	"999"
+	}
+	"32"
+	{
+		"randomizermode"	"1"
+		"weapon"	"weapon_rpg"
+		"ammotype"	"rpg_round"
+		"ammonum"	"999"
+	}
 }
