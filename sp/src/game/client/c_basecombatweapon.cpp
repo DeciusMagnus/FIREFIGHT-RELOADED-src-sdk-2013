@@ -35,7 +35,7 @@ CON_COMMAND(toggle_ironsight, "")
 	engine->ServerCmd("toggle_ironsight"); //forward to server
 }
 
-CON_COMMAND(toggle_dualwield, "")
+/*CON_COMMAND(toggle_dualwield, "")
 {
 	CBasePlayer* pPlayer = C_BasePlayer::GetLocalPlayer();
 	if (pPlayer == NULL)
@@ -47,13 +47,17 @@ CON_COMMAND(toggle_dualwield, "")
 
 	if (pWeapon->CanDualWield())
 	{
-		pWeapon->m_bIsDualWielding = !pWeapon->m_bIsDualWielding;
+		//if (pWeapon->IsIronsighted())
+			//pWeapon->DisableIronsights();
+
+		//pWeapon->m_bIsDualWielding = !pWeapon->m_bIsDualWielding;
 		//reload the model and play the deploy anim.
-		pWeapon->Deploy();
+		//pWeapon->Equip(pPlayer);
+		//pWeapon->Deploy();
 
 		engine->ServerCmd("toggle_dualwield"); //forward to server
 	}
-}
+}*/
 
 //-----------------------------------------------------------------------------
 // Purpose: Gets the local client's active weapon, if any.
@@ -142,6 +146,12 @@ int C_BaseCombatWeapon::GetWorldModelIndex( void )
 	if ( GameRules() )
 	{
 		const char *pBaseName = modelinfo->GetModelName( modelinfo->GetModel( m_iWorldModelIndex ) );
+
+		if (IsDualWielding())
+		{
+			pBaseName = modelinfo->GetModelName(modelinfo->GetModel(m_iWorldModelDualIndex));
+		}
+
 		const char *pTranslatedName = GameRules()->TranslateEffectForVisionFilter( "weapons", pBaseName );
 
 		if ( pTranslatedName != pBaseName )
@@ -150,7 +160,14 @@ int C_BaseCombatWeapon::GetWorldModelIndex( void )
 		}
 	}
 
-	return m_iWorldModelIndex;
+	int index = m_iWorldModelIndex;
+
+	if (IsDualWielding())
+	{
+		index = m_iWorldModelDualIndex;
+	}
+
+	return index;
 }
 
 //-----------------------------------------------------------------------------
@@ -434,7 +451,7 @@ bool C_BaseCombatWeapon::GetShootPosition( Vector &vOrigin, QAngle &vAngles )
 //-----------------------------------------------------------------------------
 bool C_BaseCombatWeapon::ShouldDraw( void )
 {
-	if ( m_iWorldModelIndex == 0 )
+	if ( m_iWorldModelIndex == 0 || IsDualWielding() && m_iWorldModelDualIndex == 0)
 		return false;
 
 	// FIXME: All weapons with owners are set to transmit in CBaseCombatWeapon::UpdateTransmitState,

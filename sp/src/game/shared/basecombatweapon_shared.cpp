@@ -875,6 +875,14 @@ void CBaseCombatWeapon::Drop( const Vector &vecVelocity )
 {
 #if !defined( CLIENT_DLL )
 
+	//turn off dual wielding when the owner tells us to.
+	if (IsDualWielding())
+	{
+		m_bIsDualWielding = false;
+		m_bOwnerHasSecondWeapon = false;
+		SetModel(GetWorldModel());
+	}
+
 	// Once somebody drops a gun, it's fair game for removal when/if
 	// a game_weapon_manager does a cleanup on surplus weapons in the
 	// world.
@@ -1012,6 +1020,9 @@ bool CBaseCombatWeapon::IsIronsighted()
 
 void CBaseCombatWeapon::ToggleIronsights()
 {
+	if (IsDualWielding())
+		return;
+
 	if (!HasIronsights())
 		return;
 
@@ -1031,6 +1042,9 @@ void CBaseCombatWeapon::EnableIronsights()
 	if (prediction->InPrediction() && !prediction->IsFirstTimePredicted())
 		return;
 #endif
+
+	if (IsDualWielding())
+		return;
 
 	if (!HasIronsights())
 		return;
@@ -1075,6 +1089,9 @@ void CBaseCombatWeapon::DisableIronsights()
 	if (prediction->InPrediction() && !prediction->IsFirstTimePredicted())
 		return;
 #endif
+
+	if (IsDualWielding())
+		return;
 
 	if (!HasIronsights())
 		return;
@@ -1340,6 +1357,48 @@ void CBaseCombatWeapon::RescindStoreHudHint()
 #endif//CLIENT_DLL
 }
 
+//---------------------------------------------------------
+// It's OK for base classes to override this completely 
+// without calling up. (sjb)
+//---------------------------------------------------------
+bool CBaseCombatWeapon::ShouldDisplayDualWieldHUDHint()
+{
+	if (m_iDualWieldHudHintCount >= WEAPON_RELOAD_HUD_HINT_COUNT)
+		return false;
+
+	if (CanDualWield())
+	{
+		return true;
+	}
+
+	return false;
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+void CBaseCombatWeapon::DisplayDualWieldHudHint()
+{
+#if !defined( CLIENT_DLL )
+	UTIL_HudHintText(GetOwner(), "#Valve_Hud_DualWield");
+	m_iDualWieldHudHintCount++;
+	m_bDualWieldHudHintDisplayed = true;
+	m_flHudHintMinDisplayTime = gpGlobals->curtime + MIN_HUDHINT_DISPLAY_TIME;
+#endif//CLIENT_DLL
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+void CBaseCombatWeapon::RescindDualWieldHudHint()
+{
+#if !defined( CLIENT_DLL )
+	Assert(m_bDualWieldHudHintDisplayed);
+
+	UTIL_HudHintText(GetOwner(), "");
+	--m_iDualWieldHudHintCount;
+	m_bDualWieldHudHintDisplayed = false;
+#endif//CLIENT_DLL
+}
+
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 void CBaseCombatWeapon::DisplayStandardHudHint()
@@ -1423,6 +1482,7 @@ void CBaseCombatWeapon::Equip( CBaseCombatCharacter *pOwner )
 
 	if ( pOwner->IsPlayer() )
 	{
+		//kill any player animations.
 		SetWeaponVisible(true);
 		SetModel( GetViewModel() );
 	}
@@ -1884,6 +1944,7 @@ bool CBaseCombatWeapon::DefaultDeploy( char *szViewModel, char *szWeaponModel, i
 	m_bAltFireHudHintDisplayed = false;
 	m_bReloadHudHintDisplayed = false;
 	m_bStoreHudHintDisplayed = false;
+	m_bDualWieldHudHintDisplayed = false;
 	m_flHudHintPollTime = gpGlobals->curtime + 5.0f;
 	
 	WeaponSound( DEPLOY );
@@ -1987,6 +2048,9 @@ bool CBaseCombatWeapon::Holster( CBaseCombatWeapon *pSwitchingTo )
 
 			if (m_bStoreHudHintDisplayed)
 				RescindStoreHudHint();
+
+			if (m_bDualWieldHudHintDisplayed)
+				RescindDualWieldHudHint();
 
 			if (m_bStandardHudHintDisplayed)
 				RescindStandardHudHint();
@@ -2119,7 +2183,7 @@ void CBaseCombatWeapon::ItemPreFrame( void )
 			// display the hint, and the player is not standing still, try to show a hud hint.
 			// If the player IS standing still, assume they could change away from this weapon at
 			// any second.
-			if ((!m_bAltFireHudHintDisplayed || !m_bReloadHudHintDisplayed || !m_bStoreHudHintDisplayed || !m_bStandardHudHintDisplayed) && gpGlobals->curtime > m_flHudHintMinDisplayTime && gpGlobals->curtime > m_flHudHintPollTime && GetOwner() && GetOwner()->IsPlayer())
+			if ((!m_bAltFireHudHintDisplayed || !m_bReloadHudHintDisplayed || !m_bStoreHudHintDisplayed || !m_bDualWieldHudHintDisplayed || !m_bStandardHudHintDisplayed) && gpGlobals->curtime > m_flHudHintMinDisplayTime && gpGlobals->curtime > m_flHudHintPollTime && GetOwner() && GetOwner()->IsPlayer())
 			{
 				CBasePlayer* pPlayer = (CBasePlayer*)(GetOwner());
 
@@ -2138,6 +2202,10 @@ void CBaseCombatWeapon::ItemPreFrame( void )
 					else if (ShouldDisplayStoreHUDHint())
 					{
 						DisplayStoreHudHint();
+					}
+					else if (ShouldDisplayDualWieldHUDHint())
+					{
+						DisplayDualWieldHudHint();
 					}
 					else
 					{
@@ -2290,7 +2358,7 @@ void CBaseCombatWeapon::ItemPostFrame( void )
 				 m_flNextPrimaryAttack = gpGlobals->curtime;
 			}
 
-			if (CanDualWield())
+			if (IsDualWielding())
 			{
 				DualWieldAttack();
 			}
@@ -2896,7 +2964,7 @@ void CBaseCombatWeapon::PrimaryAttack( void )
 	{
 		if (g_fr_plr_muzzlesmoke.GetBool())
 		{
-			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle");
 		}
 	}
 
@@ -2958,7 +3026,7 @@ void CBaseCombatWeapon::PrimaryAttack( void )
 
 void CBaseCombatWeapon::DualWieldAttack()
 {
-	if (!CanDualWield())
+	if (!IsDualWielding())
 		return;
 
 	if (m_bIsFiringLeft)
@@ -2975,7 +3043,7 @@ void CBaseCombatWeapon::DualWieldAttack()
 
 void CBaseCombatWeapon::LeftHandAttack()
 {
-	if (!CanDualWield())
+	if (!IsDualWielding())
 		return;
 
 	// If my clip is empty (and I use clips) start reload
@@ -3004,7 +3072,7 @@ void CBaseCombatWeapon::LeftHandAttack()
 	{
 		if (g_fr_plr_muzzlesmoke.GetBool())
 		{
-			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle1", true);
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle1");
 		}
 	}
 
@@ -3397,9 +3465,11 @@ BEGIN_DATADESC( CBaseCombatWeapon )
 	DEFINE_FIELD( m_iReloadHudHintCount,	FIELD_INTEGER ),
 	DEFINE_FIELD( m_iAltFireHudHintCount,	FIELD_INTEGER ),
 	DEFINE_FIELD(m_iStoreHudHintCount, FIELD_INTEGER),
+	DEFINE_FIELD(m_iDualWieldHudHintCount, FIELD_INTEGER),
 	DEFINE_FIELD( m_bReloadHudHintDisplayed, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_bAltFireHudHintDisplayed, FIELD_BOOLEAN ),
 	DEFINE_FIELD(m_bStoreHudHintDisplayed, FIELD_BOOLEAN),
+	DEFINE_FIELD(m_bDualWieldHudHintDisplayed, FIELD_BOOLEAN),
 	DEFINE_FIELD( m_flHudHintPollTime, FIELD_TIME ),
 	DEFINE_FIELD( m_flHudHintMinDisplayTime, FIELD_TIME ),
 

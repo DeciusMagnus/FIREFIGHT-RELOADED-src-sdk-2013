@@ -229,7 +229,7 @@ void CWeaponOICW::FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, Vector& 
 	{
 		if (g_fr_npc_muzzlesmoke.GetBool())
 		{
-			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle");
 		}
 	}
 
@@ -354,7 +354,7 @@ void CWeaponOICW::PrimaryAttack(void)
 	{
 		if (g_fr_plr_muzzlesmoke.GetBool())
 		{
-			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle");
 		}
 	}
     

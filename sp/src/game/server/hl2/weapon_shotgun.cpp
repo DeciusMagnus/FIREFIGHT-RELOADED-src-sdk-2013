@@ -232,7 +232,7 @@ void CWeaponShotgun::FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, bool 
 	{
 		if (g_fr_npc_muzzlesmoke.GetBool())
 		{
-			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle");
 		}
 	}
 
@@ -664,7 +664,7 @@ void CWeaponShotgun::PrimaryAttack( void )
 	{
 		if (g_fr_plr_muzzlesmoke.GetBool())
 		{
-			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle");
 		}
 	}
 
@@ -762,7 +762,7 @@ void CWeaponShotgun::SecondaryAttack( void )
 	{
 		if (g_fr_plr_muzzlesmoke.GetBool())
 		{
-			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle");
 		}
 	}
 

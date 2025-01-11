@@ -217,7 +217,7 @@ void CWeaponMP5::FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, Vector& v
 	{
 		if (g_fr_npc_muzzlesmoke.GetBool())
 		{
-			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle");
 		}
 	}
 
@@ -402,7 +402,7 @@ void CWeaponMP5::FireModeLogic(int burstsize, float firerate, int firemode)
 	{
 		if (g_fr_plr_muzzlesmoke.GetBool())
 		{
-			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle");
 		}
 	}
 

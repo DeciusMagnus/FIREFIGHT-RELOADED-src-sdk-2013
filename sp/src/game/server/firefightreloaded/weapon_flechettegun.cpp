@@ -238,11 +238,11 @@ void CWeaponFlechetteGun::FireNPCPrimaryAttack(CBaseCombatCharacter* pOperator, 
 	{
 		if (g_fr_npc_muzzlesmoke.GetBool())
 		{
-			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle");
 		}
 	}
 
-	DispatchParticleEffect("hunter_muzzle_flash", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+	DispatchParticleEffect("hunter_muzzle_flash", PATTACH_POINT_FOLLOW, this, "muzzle");
 
 	// Dispatch the elight	
 	CEffectData data;

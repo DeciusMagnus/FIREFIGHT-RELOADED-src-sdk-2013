@@ -226,7 +226,7 @@ void CWeaponSniperRifle::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCom
 			{
 				if (g_fr_npc_muzzlesmoke.GetBool())
 				{
-					DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+					DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle");
 				}
 			}
 
@@ -289,7 +289,7 @@ void CWeaponSniperRifle::PrimaryAttack( void )
 	{
 		if (g_fr_plr_muzzlesmoke.GetBool())
 		{
-			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle");
 		}
 	}
 

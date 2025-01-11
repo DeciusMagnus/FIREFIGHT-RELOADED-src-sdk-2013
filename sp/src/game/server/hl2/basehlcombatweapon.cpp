@@ -115,7 +115,7 @@ void CHLMachineGun::PrimaryAttack( void )
 	{
 		if (g_fr_plr_muzzlesmoke.GetBool())
 		{
-			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
+			DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle");
 		}
 	}
 
@@ -369,7 +369,7 @@ void CHLSelectFireMachineGun::PrimaryAttack( void )
 		{
 			if (g_fr_plr_muzzlesmoke.GetBool())
 			{
-				DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pOwner->GetViewModel(), "muzzle", true);
+				DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pOwner->GetViewModel(), "muzzle");
 			}
 		}
 		gamestats->Event_WeaponFired( pOwner, true, GetClassname() );

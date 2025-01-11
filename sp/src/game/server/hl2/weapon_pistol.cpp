@@ -50,6 +50,7 @@ public:
 	void	ItemPreFrame( void );
 	void	ItemBusyFrame( void );
 	void	PrimaryAttack( void );
+	void	LeftHandAttack(void);
 	void	AddViewKick( void );
 	void	DryFire( void );
 	void	Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator );
@@ -58,6 +59,7 @@ public:
 
 	int		CapabilitiesGet( void ) { return bits_CAP_WEAPON_RANGE_ATTACK1; }
 	Activity	GetPrimaryAttackActivity( void );
+	Activity	GetPrimaryAttackLActivity(void);
 
 	virtual bool Reload( void );
 
@@ -186,6 +188,16 @@ acttable_t	CWeaponPistol::m_acttable[] =
 	{ ACT_HL2MP_GESTURE_RANGE_ATTACK,		ACT_HL2MP_GESTURE_RANGE_ATTACK_PISTOL,		false },
 	{ ACT_HL2MP_GESTURE_RELOAD,				ACT_HL2MP_GESTURE_RELOAD_PISTOL,		false },
 	{ ACT_HL2MP_JUMP,				ACT_HL2MP_JUMP_PISTOL,			false },
+
+	{ ACT_FR_DUALWIELD_IDLE,				ACT_HL2MP_IDLE_PISTOL2,			false },
+	{ ACT_FR_DUALWIELD_RUN,					ACT_HL2MP_RUN_PISTOL2,			false },
+	{ ACT_FR_DUALWIELD_CROUCH_WALK, 		ACT_HL2MP_WALK_CROUCH_PISTOL2,	false },
+	{ ACT_FR_DUALWIELD_CROUCH_IDLE,			ACT_HL2MP_IDLE_CROUCH_PISTOL2,	false },
+	{ ACT_FR_DUALWIELD_GESTURE_RANGE_ATTACK_L,		ACT_HL2MP_GESTURE_RANGE_ATTACK_PISTOL2_L,		false },
+	{ ACT_FR_DUALWIELD_GESTURE_RANGE_ATTACK_R,		ACT_HL2MP_GESTURE_RANGE_ATTACK_PISTOL2_R,		false },
+	{ ACT_FR_DUALWIELD_JUMP,				ACT_HL2MP_JUMP_PISTOL2,			false },
+	{ ACT_FR_DUALWIELD_GESTURE_RELOAD,				ACT_HL2MP_GESTURE_RELOAD_PISTOL2,		false },
+
 	{ ACT_RANGE_ATTACK1,			ACT_RANGE_ATTACK_PISTOL,		false },
 };
 
@@ -244,7 +256,7 @@ void CWeaponPistol::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCh
 			{
 				if (g_fr_npc_muzzlesmoke.GetBool())
 				{
-					DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle", true);
+					DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, this, "muzzle");
 				}
 			}
 
@@ -271,7 +283,22 @@ float CWeaponPistol::GetFireRate(void)
 void CWeaponPistol::DryFire( void )
 {
 	WeaponSound( EMPTY );
-	SendWeaponAnim( ACT_VM_DRYFIRE );
+
+	if (IsDualWielding())
+	{
+		if (m_bIsFiringLeft)
+		{
+			SendWeaponAnim(ACT_VM_DRYFIRE_LEFT);
+		}
+		else
+		{
+			SendWeaponAnim(ACT_VM_DRYFIRE);
+		}
+	}
+	else
+	{
+		SendWeaponAnim(ACT_VM_DRYFIRE);
+	}
 	
 	m_flSoonestPrimaryAttack	= gpGlobals->curtime + PISTOL_FASTEST_DRY_REFIRE_TIME;
 	m_flNextPrimaryAttack		= gpGlobals->curtime + SequenceDuration();
@@ -322,7 +349,7 @@ void CWeaponPistol::PrimaryAttack( void )
 
 		m_iClip1--;
 
-		SendWeaponAnim(ACT_VM_PRIMARYATTACK);
+		SendWeaponAnim(GetPrimaryAttackActivity());
 		pOwner->m_flNextAttack = gpGlobals->curtime + GetFireRate();
 
 		CFlare* pFlare = CFlare::Create(pOwner->Weapon_ShootPosition(), pOwner->EyeAngles(), pOwner, FLARE_DURATION);
@@ -347,6 +374,75 @@ void CWeaponPistol::PrimaryAttack( void )
 
 	m_iPrimaryAttacks++;
 	gamestats->Event_WeaponFired( pOwner, true, GetClassname() );
+}
+
+void CWeaponPistol::LeftHandAttack(void)
+{
+	if ((gpGlobals->curtime - m_flLastAttackTime) > 0.5f)
+	{
+		m_nNumShotsFired = 0;
+	}
+	else
+	{
+		m_nNumShotsFired++;
+	}
+
+	m_flLastAttackTime = gpGlobals->curtime;
+
+	m_flSoonestPrimaryAttack = gpGlobals->curtime + PISTOL_FASTEST_REFIRE_TIME;
+
+	CSoundEnt::InsertSound(SOUND_COMBAT, GetAbsOrigin(), SOUNDENT_VOLUME_PISTOL, 0.2, GetOwner());
+
+	CBasePlayer* pOwner = ToBasePlayer(GetOwner());
+
+	if (pOwner == NULL)
+		return;
+
+	if (pOwner)
+	{
+		// Each time the player fires the pistol, reset the view punch. This prevents
+		// the aim from 'drifting off' when the player fires very quickly. This may
+		// not be the ideal way to achieve this, but it's cheap and it works, which is
+		// great for a feature we're evaluating. (sjb)
+		pOwner->ViewPunchReset();
+	}
+
+	if (m_iFireMode == 1)
+	{
+		if (m_iClip1 <= 0)
+		{
+			SendWeaponAnim(ACT_VM_DRYFIRE_LEFT);
+			pOwner->m_flNextAttack = gpGlobals->curtime + SequenceDuration();
+			return;
+		}
+
+		m_iClip1--;
+
+		SendWeaponAnim(GetPrimaryAttackLActivity());
+		pOwner->m_flNextAttack = gpGlobals->curtime + GetFireRate();
+
+		CFlare* pFlare = CFlare::Create(pOwner->Weapon_ShootPosition(), pOwner->EyeAngles(), pOwner, FLARE_DURATION);
+
+		if (pFlare == NULL)
+			return;
+
+		Vector forward;
+		pOwner->EyeVectors(&forward);
+
+		pFlare->SetAbsVelocity(forward * 1500);
+
+		WeaponSound(SPECIAL3);
+	}
+	else
+	{
+		BaseClass::LeftHandAttack();
+	}
+
+	// Add an accuracy penalty which can move past our maximum penalty time if we're really spastic
+	m_flAccuracyPenalty += PISTOL_ACCURACY_SHOT_PENALTY_TIME;
+
+	m_iPrimaryAttacks++;
+	gamestats->Event_WeaponFired(pOwner, true, GetClassname());
 }
 
 //-----------------------------------------------------------------------------
@@ -448,16 +544,50 @@ void CWeaponPistol::ItemPostFrame( void )
 //-----------------------------------------------------------------------------
 Activity CWeaponPistol::GetPrimaryAttackActivity( void )
 {
-	if ( m_nNumShotsFired < 1 )
-		return ACT_VM_PRIMARYATTACK;
+	if (IsDualWielding())
+	{
+		if (m_nNumShotsFired < 1)
+			return ACT_VM_PRIMARYATTACK_R;
 
-	if ( m_nNumShotsFired < 2 )
-		return ACT_VM_RECOIL1;
+		if (m_nNumShotsFired < 2)
+			return ACT_VM_PRIMARYATTACK_R_RECOIL1;
 
-	if ( m_nNumShotsFired < 3 )
-		return ACT_VM_RECOIL2;
+		if (m_nNumShotsFired < 3)
+			return ACT_VM_PRIMARYATTACK_R_RECOIL2;
 
-	return ACT_VM_RECOIL3;
+		return ACT_VM_PRIMARYATTACK_R_RECOIL3;
+	}
+	else
+	{
+		if (m_nNumShotsFired < 1)
+			return ACT_VM_PRIMARYATTACK;
+
+		if (m_nNumShotsFired < 2)
+			return ACT_VM_RECOIL1;
+
+		if (m_nNumShotsFired < 3)
+			return ACT_VM_RECOIL2;
+
+		return ACT_VM_RECOIL3;
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+// Output : int
+//-----------------------------------------------------------------------------
+Activity CWeaponPistol::GetPrimaryAttackLActivity(void)
+{
+	if (m_nNumShotsFired < 1)
+		return ACT_VM_PRIMARYATTACK_L;
+
+	if (m_nNumShotsFired < 2)
+		return ACT_VM_PRIMARYATTACK_L_RECOIL1;
+
+	if (m_nNumShotsFired < 3)
+		return ACT_VM_PRIMARYATTACK_L_RECOIL2;
+
+	return ACT_VM_PRIMARYATTACK_L_RECOIL3;
 }
 
 //-----------------------------------------------------------------------------

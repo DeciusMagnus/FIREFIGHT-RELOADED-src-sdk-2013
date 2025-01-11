@@ -274,6 +274,10 @@ public:
 	virtual void			DisplayStoreHudHint();
 	virtual void			RescindStoreHudHint(); ///< undisplay the hud hint and pretend it never showed.
 
+	virtual bool			ShouldDisplayDualWieldHUDHint();
+	virtual void			DisplayDualWieldHudHint();
+	virtual void			RescindDualWieldHudHint(); ///< undisplay the hud hint and pretend it never showed.
+
 	virtual void			DisplayStandardHudHint();
 	virtual void			RescindStandardHudHint(); ///< undisplay the hud hint and pretend it never showed.
 
@@ -724,10 +728,12 @@ public:
 	int						m_iAltFireHudHintCount;		// How many times has this weapon displayed its alt-fire HUD hint?
 	int						m_iReloadHudHintCount;		// How many times has this weapon displayed its reload HUD hint?
 	int						m_iStoreHudHintCount;		// How many times has this weapon displayed its store HUD hint?
+	int						m_iDualWieldHudHintCount;		// How many times has this weapon displayed its store HUD hint?
 	int						m_iStandardHudHintCount;		// How many times has this weapon displayed its store HUD hint?
 	bool					m_bAltFireHudHintDisplayed;	// Have we displayed an alt-fire HUD hint since this weapon was deployed?
 	bool					m_bReloadHudHintDisplayed;	// Have we displayed a reload HUD hint since this weapon was deployed?
 	bool					m_bStoreHudHintDisplayed;	// Have we displayed a store HUD hint since this weapon was deployed?
+	bool					m_bDualWieldHudHintDisplayed;	// Have we displayed a store HUD hint since this weapon was deployed?
 	bool					m_bStandardHudHintDisplayed;	// Have we displayed a store HUD hint since this weapon was deployed?
 	float					m_flHudHintPollTime;	// When to poll the weapon again for whether it should display a hud hint.
 	float					m_flHudHintMinDisplayTime; // if the hint is squelched before this, reset my counter so we'll display it again.

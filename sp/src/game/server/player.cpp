@@ -1237,7 +1237,9 @@ bool GiveAmmoForWeapon(CBasePlayer* pPlayer, const char* pParentClassname, bool 
 
 bool GiveNewWeapon(CBasePlayer* pPlayer, const char* pClassname)
 {
-	if (!pPlayer->Weapon_OwnsThisType(pClassname))
+	CBaseCombatWeapon* pOwnedWeapon = pPlayer->Weapon_OwnsThisType(pClassname);
+
+	if (!pOwnedWeapon)
 	{
 		CBaseEntity *item = pPlayer->GiveNamedItem(pClassname, 0, true);
 		if (item != NULL)
@@ -1267,6 +1269,11 @@ bool GiveNewWeapon(CBasePlayer* pPlayer, const char* pClassname)
 	}
 	else
 	{
+		if (pOwnedWeapon->IsDualWieldable() && !pOwnedWeapon->m_bOwnerHasSecondWeapon)
+		{
+			return true;
+		}
+
 		return false;
 	}
 }
@@ -7405,6 +7412,7 @@ CBaseEntity* CBasePlayer::GiveNamedItem(const char* pszName, int iSubType, bool 
 	{
 		if (pWeaponOwned->IsDualWieldable() && !pWeaponOwned->m_bOwnerHasSecondWeapon)
 		{
+			Msg("Player already owns %s. Enabling Dual-Wield mode.\n", pszName);
 			pWeaponOwned->m_bOwnerHasSecondWeapon = true;
 		}
 
@@ -8324,9 +8332,16 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 		{
 			if (pWeapon->CanDualWield())
 			{
+				if (pWeapon->IsIronsighted())
+					pWeapon->DisableIronsights();
+
 				pWeapon->m_bIsDualWielding = !pWeapon->m_bIsDualWielding;
 				//reload the model and play the deploy anim.
+				pWeapon->Equip(this);
 				pWeapon->Deploy();
+
+				//make NPCs say "OH SHIT !!!!!!" when we whip dualies out
+				CSoundEnt::InsertSound(SOUND_DANGER, GetAbsOrigin(), 300, 1.0f, this);
 			}
 		}
 
@@ -8360,17 +8375,44 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 		int canGetMultiple = atoi(args[2]);
 		int moneyAmount = atoi(args[3]);
 
-		if (HasNamedPlayerItem(args[1]) && canGetMultiple == 0)
+		CBaseEntity* pOwnedItem = HasNamedPlayerItem(args[1]);
+
+		if (pOwnedItem && canGetMultiple == 0)
 		{
-			if (sv_store_denynotifications.GetBool())
+			//proceed with the purchase if we are dual wielding
+			CBaseCombatWeapon* pWeapon = (CBaseCombatWeapon*)pOwnedItem;
+			if (pWeapon)
 			{
-				CFmtStr hint;
-				hint.sprintf("#Valve_StoreBuyDenyAlreadyHasItem");
-				ShowLevelMessage(hint.Access());
+				if (pWeapon->IsDualWieldable() && !pWeapon->m_bOwnerHasSecondWeapon)
+				{
+					engine->ClientCommand(edict(), "confirm_purchase %i", moneyAmount);
+				}
+				else
+				{
+					if (sv_store_denynotifications.GetBool())
+					{
+						CFmtStr hint;
+						hint.sprintf("#Valve_StoreBuyDenyAlreadyHasItem");
+						ShowLevelMessage(hint.Access());
+					}
+					if (sv_store_denysounds.GetBool())
+					{
+						EmitSound("Store.InsufficientFunds");
+					}
+				}
 			}
-			if (sv_store_denysounds.GetBool())
+			else
 			{
-				EmitSound("Store.InsufficientFunds");
+				if (sv_store_denynotifications.GetBool())
+				{
+					CFmtStr hint;
+					hint.sprintf("#Valve_StoreBuyDenyAlreadyHasItem");
+					ShowLevelMessage(hint.Access());
+				}
+				if (sv_store_denysounds.GetBool())
+				{
+					EmitSound("Store.InsufficientFunds");
+				}
 			}
 		}
 		else
@@ -8649,6 +8691,14 @@ bool CBasePlayer::BumpWeapon( CBaseCombatWeapon *pWeapon )
 		if (pWeaponOwned->IsDualWieldable() && !pWeaponOwned->m_bOwnerHasSecondWeapon)
 		{
 			pWeaponOwned->m_bOwnerHasSecondWeapon = true;
+
+			UTIL_HudHintText(this, "#Valve_Hud_DualWield");
+
+			//give ammo then delete after dual wielding.
+			Weapon_EquipAmmoOnly(pWeapon);
+			pWeapon->CheckRespawn();
+			UTIL_Remove(pWeapon);
+			return true;
 		}
 
 		if (Weapon_EquipAmmoOnly(pWeapon))

@@ -2096,8 +2096,8 @@ void CWeaponCustom::PrimaryAttack(void)
 					{
 						if (g_fr_plr_muzzlesmoke.GetBool())
 						{
-							DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
-							DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle2", true);
+							DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle");
+							DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle2");
 						}
 					}
 				}
@@ -2110,7 +2110,7 @@ void CWeaponCustom::PrimaryAttack(void)
 						{
 							if (g_fr_plr_muzzlesmoke.GetBool())
 							{
-								DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
+								DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle");
 							}
 						}
 						bFlip = true;
@@ -2122,7 +2122,7 @@ void CWeaponCustom::PrimaryAttack(void)
 						{
 							if (g_fr_plr_muzzlesmoke.GetBool())
 							{
-								DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle2", true);
+								DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle2");
 							}
 						}
 						bFlip = false;
@@ -2137,7 +2137,7 @@ void CWeaponCustom::PrimaryAttack(void)
 				{
 					if (g_fr_plr_muzzlesmoke.GetBool())
 					{
-						DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
+						DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle");
 					}
 				}
 			}
@@ -2376,8 +2376,8 @@ void CWeaponCustom::SecondaryAttack( void )
 					{
 						if (g_fr_plr_muzzlesmoke.GetBool())
 						{
-							DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
-							DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle2", true);
+							DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle");
+							DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle2");
 						}
 					}
 				}
@@ -2390,7 +2390,7 @@ void CWeaponCustom::SecondaryAttack( void )
 				{
 					if (g_fr_plr_muzzlesmoke.GetBool())
 					{
-						DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle", true);
+						DispatchParticleEffect("weapon_muzzle_smoke", PATTACH_POINT_FOLLOW, pPlayer->GetViewModel(), "muzzle");
 					}
 				}
 			}
