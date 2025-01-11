@@ -2290,7 +2290,7 @@ void CBaseCombatWeapon::ItemPostFrame( void )
 				 m_flNextPrimaryAttack = gpGlobals->curtime;
 			}
 
-			if (IsDualWielding())
+			if (CanDualWield())
 			{
 				DualWieldAttack();
 			}
@@ -2958,7 +2958,7 @@ void CBaseCombatWeapon::PrimaryAttack( void )
 
 void CBaseCombatWeapon::DualWieldAttack()
 {
-	if (!IsDualWielding())
+	if (!CanDualWield())
 		return;
 
 	if (m_bIsFiringLeft)
@@ -2975,6 +2975,9 @@ void CBaseCombatWeapon::DualWieldAttack()
 
 void CBaseCombatWeapon::LeftHandAttack()
 {
+	if (!CanDualWield())
+		return;
+
 	// If my clip is empty (and I use clips) start reload
 	if (UsesClipsForAmmo1() && !m_iClip1)
 	{
