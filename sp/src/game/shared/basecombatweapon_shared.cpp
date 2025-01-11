@@ -2629,6 +2629,7 @@ void CBaseCombatWeapon::ToggleDualWield(void)
 	{
 		if (!m_bIsDualWielding && !hasEnoughAmmo)
 		{
+			pOwner->EmitSound("Player.DenyWeaponSelection");
 			return;
 		}
 
@@ -2643,14 +2644,17 @@ void CBaseCombatWeapon::ToggleDualWield(void)
 		//give our extra ammo back when applicable
 		if (!m_bIsDualWielding)
 		{
-			if (Clip1() >= doubleAmmo)
+			if (UsesClipsForAmmo1())
 			{
-				pOwner->GiveAmmo(GetMaxClip1(), m_iPrimaryAmmoType);
-			}
-			else if (Clip1() > GetMaxClip1())
-			{
-				int differenceCount = Clip1() - GetMaxClip1();
-				pOwner->GiveAmmo(differenceCount, m_iPrimaryAmmoType);
+				if (Clip1() >= doubleAmmo)
+				{
+					pOwner->GiveAmmo(GetMaxClip1(), m_iPrimaryAmmoType);
+				}
+				else if (Clip1() > GetMaxClip1())
+				{
+					int differenceCount = Clip1() - GetMaxClip1();
+					pOwner->GiveAmmo(differenceCount, m_iPrimaryAmmoType);
+				}
 			}
 		}
 
@@ -2659,6 +2663,8 @@ void CBaseCombatWeapon::ToggleDualWield(void)
 
 		//make NPCs say "OH SHIT !!!!!!" when we whip dualies out
 		CSoundEnt::InsertSound(SOUND_DANGER, GetAbsOrigin(), 300, 1.0f, pOwner);
+
+		pOwner->EmitSound("Player.WeaponSelected");
 	}
 #endif
 }
@@ -2672,7 +2678,10 @@ void CBaseCombatWeapon::OnPickupDualWield(void)
 #if !defined( CLIENT_DLL )
 	m_bOwnerHasSecondWeapon = true;
 
-	DisplayDualWieldHudHint();
+	if (pOwner->GetActiveWeapon() && pOwner->GetActiveWeapon() == this)
+	{
+		DisplayDualWieldHudHint();
+	}
 
 	m_OnPlayerPickup.FireOutput(pOwner, this);
 
@@ -2696,7 +2705,7 @@ bool CBaseCombatWeapon::DefaultReload( int iClipSize1, int iClipSize2, int iActi
 	bool bReload = false;
 
 	// If you don't have clips, then don't try to reload them.
-	if ( UsesClipsForAmmo1() )
+	if (UsesClipsForAmmo1())
 	{
 		// need to reload primary clip?
 		int primary	= MIN(iClipSize1 - m_iClip1, pOwner->GetAmmoCount(m_iPrimaryAmmoType));
