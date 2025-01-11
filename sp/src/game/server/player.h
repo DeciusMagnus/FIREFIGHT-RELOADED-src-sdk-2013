@@ -565,7 +565,7 @@ public:
 	virtual void 			SelectItem( const char *pstr, int iSubType = 0 );
 	void					ItemPreFrame( void );
 	virtual void			ItemPostFrame( void );
-	virtual CBaseEntity		*GiveNamedItem( const char *szName, int iSubType = 0, bool isReward = false );
+	virtual CBaseEntity		*GiveNamedItem( const char *szName, int iSubType = 0, bool isReward = false, bool enableDualWieldingCheck = true );
 	void					EnableControl(bool fControl);
 	virtual void			CheckTrainUpdate( void );
 	void					AbortReload( void );

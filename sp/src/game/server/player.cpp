@@ -6304,7 +6304,7 @@ void CBasePlayer::LoadLoadoutFile(const char* kvName, bool savetoLoadout)
 
 			if (ConvertedString)
 			{
-				GiveNamedItem(ConvertedString);
+				GiveNamedItem(ConvertedString, 0, false, false);
 				if (!gaveWeapons)
 				{
 					gaveWeapons = true;
@@ -6345,7 +6345,7 @@ void CBasePlayer::LoadLoadoutFile(const char* kvName, bool savetoLoadout)
 
 				if (ConvertedString)
 				{
-					GiveNamedItem(ConvertedString);
+					GiveNamedItem(ConvertedString, 0, false, false);
 				}
 			}
 		}
@@ -6362,7 +6362,7 @@ void CBasePlayer::LoadLoadoutFile(const char* kvName, bool savetoLoadout)
 
 				if (ConvertedString)
 				{
-					GiveNamedItem(ConvertedString);
+					GiveNamedItem(ConvertedString, 0, false, false);
 				}
 			}
 		}
@@ -6378,7 +6378,7 @@ void CBasePlayer::LoadLoadoutFile(const char* kvName, bool savetoLoadout)
 
 				if (ConvertedString)
 				{
-					GiveNamedItem(ConvertedString);
+					GiveNamedItem(ConvertedString, 0, false, false);
 				}
 			}
 		}
@@ -7402,7 +7402,7 @@ extern ConVar sv_player_katana;
 //-----------------------------------------------------------------------------
 // Purpose: Create and give the named item to the player. Then return it.
 //-----------------------------------------------------------------------------
-CBaseEntity* CBasePlayer::GiveNamedItem(const char* pszName, int iSubType, bool isReward)
+CBaseEntity* CBasePlayer::GiveNamedItem(const char* pszName, int iSubType, bool isReward, bool enableDualWieldingCheck)
 {
 	// If I already own this type don't create one
 
@@ -7410,7 +7410,7 @@ CBaseEntity* CBasePlayer::GiveNamedItem(const char* pszName, int iSubType, bool 
 
 	if (pWeaponOwned)
 	{
-		if (pWeaponOwned->IsDualWieldable() && !pWeaponOwned->m_bOwnerHasSecondWeapon)
+		if (enableDualWieldingCheck && pWeaponOwned->IsDualWieldable() && !pWeaponOwned->m_bOwnerHasSecondWeapon)
 		{
 			Msg("Player already owns %s. Enabling Dual-Wield mode.\n", pszName);
 			pWeaponOwned->m_bOwnerHasSecondWeapon = true;
