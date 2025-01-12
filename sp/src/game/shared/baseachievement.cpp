@@ -387,13 +387,19 @@ void CBaseAchievement::AwardAchievement()
 	if ( IsAchieved() )
 		return;
 
-	/*
-	CAchievementNotificationPanel *pPanel = new CAchievementNotificationPanel("AchievementNotification");
-	if (pPanel)
+	//show the panel
+	IGameEvent* event = gameeventmanager->CreateEvent("achievement_event");
+	if (event)
 	{
-		pPanel->AddNotification(GetName(), ACHIEVEMENT_LOCALIZED_NAME_FROM_STR(GetName()), g_pVGuiLocalize->Find("#GameUI_Achievement_Unlocked"));
+		event->SetString("achievement_name", GetName());
+		event->SetInt("cur_val", m_iCount);
+		event->SetInt("max_val", m_iGoal);
+#ifdef GAME_DLL
+		gameeventmanager->FireEvent(event);
+#else
+		gameeventmanager->FireEventClientSide(event);
+#endif
 	}
-	*/
 
 	m_pAchievementMgr->AwardAchievement( m_iAchievementID );
 }
@@ -478,43 +484,18 @@ void CBaseAchievement::ShowProgressNotification()
 	if ( !ShouldShowProgressNotification() )
 		return;
 
-#ifdef CLIENT_DLL
-	CAchievementNotificationPanel *pPanel = new CAchievementNotificationPanel("AchievementNotification");
-	if (pPanel)
+	IGameEvent* event = gameeventmanager->CreateEvent("achievement_event");
+	if (event)
 	{
-		int iCur = GetCount();
-		int iMax = GetGoal();
-		wchar_t szFmt[128] = L"";
-		wchar_t szText[512] = L"";
-		wchar_t szNumFound[16] = L"";
-		wchar_t szNumTotal[16] = L"";
-		_snwprintf(szNumFound, ARRAYSIZE(szNumFound), L"%i", iCur);
-		_snwprintf(szNumTotal, ARRAYSIZE(szNumTotal), L"%i", iMax);
-
-		const wchar_t *pchFmt = g_pVGuiLocalize->Find("#GameUI_Achievement_Progress_Fmt");
-		if (!pchFmt || !pchFmt[0])
-			return;
-		Q_wcsncpy(szFmt, pchFmt, sizeof(szFmt));
-
-		g_pVGuiLocalize->ConstructString(szText, sizeof(szText), szFmt, 3, ACHIEVEMENT_LOCALIZED_NAME_FROM_STR(GetName()), szNumFound, szNumTotal);
-		pPanel->AddNotification(GetName(), ACHIEVEMENT_LOCALIZED_NAME_FROM_STR(GetName()), szText);
-	}
-#endif	
-
-	/*
-	IGameEvent *event = gameeventmanager->CreateEvent( "achievement_event" );
-	if ( event )
-	{
-		event->SetString( "achievement_name", GetName() );
-		event->SetInt( "cur_val", m_iCount );
-		event->SetInt( "max_val", m_iGoal );
+		event->SetString("achievement_name", GetName());
+		event->SetInt("cur_val", m_iCount);
+		event->SetInt("max_val", m_iGoal);
 #ifdef GAME_DLL
-		gameeventmanager->FireEvent( event );
+		gameeventmanager->FireEvent(event);
 #else
-		gameeventmanager->FireEventClientSide( event );
+		gameeventmanager->FireEventClientSide(event);
 #endif
 	}
-	*/
 }
 
 //-----------------------------------------------------------------------------

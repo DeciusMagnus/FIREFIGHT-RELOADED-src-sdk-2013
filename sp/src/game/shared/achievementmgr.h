@@ -73,9 +73,6 @@ public:
 	void LoadGlobalState();
 	void SaveGlobalStateIfDirty( bool bAsync = false );
 	void EnsureGlobalStateLoaded();
-#ifdef GAME_DLL
-	void ShowAchievementMessage(CBaseEntity *pEntity, const char *pMessage);
-#endif
 	void AwardAchievement( int iAchievementID );
 	void UpdateAchievement( int iAchievementID, int nData );
 	void PreRestoreSavedGame();

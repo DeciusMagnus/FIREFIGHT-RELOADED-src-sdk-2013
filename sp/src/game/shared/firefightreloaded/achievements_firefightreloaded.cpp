@@ -56,6 +56,9 @@ CAchievementMgr AchievementMgr;
 #define ACHIEVEMENT_FIREFIGHTRELOADED_COMPLETEDBOSSFIGHT		185
 #define ACHIEVEMENT_FIREFIGHTRELOADED_COMPLETEDTUTORIAL		186
 
+#define DECLARE_FR_MAP_EVENT_ACHIEVEMENT( achievementID, achievementName, iPointValue, iHidden )					\
+	DECLARE_MAP_EVENT_ACHIEVEMENT_( achievementID, achievementName, "firefightreloaded", iPointValue, iHidden )
+
 class CAchievementKill20CombineSoldier : public CBaseAchievement
 {
 protected:
@@ -85,9 +88,7 @@ protected:
 		}
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return false; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKill20CombineSoldier, ACHIEVEMENT_FIREFIGHTRELOADED_KILL20COMBINE, "FIREFIGHTRELOADED_KILL20COMBINE", 5);
 
@@ -120,9 +121,7 @@ protected:
 		}
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return false; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKill50CombineSoldier, ACHIEVEMENT_FIREFIGHTRELOADED_KILL50COMBINE, "FIREFIGHTRELOADED_KILL50COMBINE", 10);
 
@@ -155,9 +154,7 @@ protected:
 		}
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return true; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKill100CombineSoldier, ACHIEVEMENT_FIREFIGHTRELOADED_KILL100COMBINE, "FIREFIGHTRELOADED_KILL100COMBINE", 15);
 
@@ -176,9 +173,8 @@ protected:
 		SetGoal(20);
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return false; }
-#endif
+
 };
 DECLARE_ACHIEVEMENT(CAchievementKill20Hunters, ACHIEVEMENT_FIREFIGHTRELOADED_KILL20HUNTERS, "FIREFIGHTRELOADED_KILL20HUNTERS", 10);
 
@@ -197,9 +193,7 @@ protected:
 		SetGoal(50);
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return false; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKill50Hunters, ACHIEVEMENT_FIREFIGHTRELOADED_KILL50HUNTERS, "FIREFIGHTRELOADED_KILL50HUNTERS", 15);
 
@@ -218,9 +212,7 @@ protected:
 		SetGoal(100);
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return true; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKill100Hunters, ACHIEVEMENT_FIREFIGHTRELOADED_KILL100HUNTERS, "FIREFIGHTRELOADED_KILL100HUNTERS", 20);
 
@@ -272,9 +264,7 @@ protected:
 		}
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return true; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKill100Enemies, ACHIEVEMENT_FIREFIGHTRELOADED_KILL100ENEMIES, "FIREFIGHTRELOADED_KILL100ENEMIES", 10);
 
@@ -292,9 +282,7 @@ protected:
 		SetGoal(1000);
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return true; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKillThousandEnemies, ACHIEVEMENT_FIREFIGHTRELOADED_KILLTHOUSANDENEMIES, "FIREFIGHTRELOADED_KILLTHOUSANDENEMIES", 25);
 
@@ -347,9 +335,7 @@ protected:
 		}
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return true; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKill10HuntersWithFlechette, ACHIEVEMENT_FIREFIGHTRELOADED_KILL10HUNTERSWITHFLECHETTE, "FIREFIGHTRELOADED_KILL10HUNTERSWITHFLECHETTE", 20);
 
@@ -398,9 +384,7 @@ protected:
 		}
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return false; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKill20Antlion, ACHIEVEMENT_FIREFIGHTRELOADED_KILL20ANTLIONS, "FIREFIGHTRELOADED_KILL20ANTLIONS", 5);
 
@@ -429,9 +413,7 @@ protected:
 		}
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return false; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKill50Antlion, ACHIEVEMENT_FIREFIGHTRELOADED_KILL50ANTLIONS, "FIREFIGHTRELOADED_KILL50ANTLIONS", 10);
 
@@ -460,9 +442,7 @@ protected:
 		}
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return true; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKill100Antlion, ACHIEVEMENT_FIREFIGHTRELOADED_KILL100ANTLIONS, "FIREFIGHTRELOADED_KILL100ANTLIONS", 15);
 
@@ -489,9 +469,7 @@ protected:
 		}
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return false; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKill20AntlionGuard, ACHIEVEMENT_FIREFIGHTRELOADED_KILL20ANTLIONGUARDS, "FIREFIGHTRELOADED_KILL20ANTLIONGUARDS", 10);
 
@@ -518,9 +496,7 @@ protected:
 		}
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return false; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKill50AntlionGuard, ACHIEVEMENT_FIREFIGHTRELOADED_KILL50ANTLIONGUARDS, "FIREFIGHTRELOADED_KILL50ANTLIONGUARDS", 15);
 
@@ -547,9 +523,7 @@ protected:
 		}
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return true; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKill100AntlionGuard, ACHIEVEMENT_FIREFIGHTRELOADED_KILL100ANTLIONGUARDS, "FIREFIGHTRELOADED_KILL100ANTLIONGUARDS", 20);
 
@@ -580,9 +554,7 @@ protected:
 		}
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return false; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKill20Zombies, ACHIEVEMENT_FIREFIGHTRELOADED_KILL20ZOMBIES, "FIREFIGHTRELOADED_KILL20ZOMBIES", 5);
 
@@ -613,9 +585,7 @@ protected:
 		}
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return false; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKill50Zombies, ACHIEVEMENT_FIREFIGHTRELOADED_KILL50ZOMBIES, "FIREFIGHTRELOADED_KILL50ZOMBIES", 10);
 
@@ -646,9 +616,7 @@ protected:
 		}
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return true; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKill100Zombies, ACHIEVEMENT_FIREFIGHTRELOADED_KILL100ZOMBIES, "FIREFIGHTRELOADED_KILL100ZOMBIES", 15);
 
@@ -676,9 +644,7 @@ protected:
 		}
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return false; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKill20Headcrabs, ACHIEVEMENT_FIREFIGHTRELOADED_KILL20HEADCRABS, "FIREFIGHTRELOADED_KILL20HEADCRABS", 5);
 
@@ -706,9 +672,7 @@ protected:
 		}
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return false; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKill50Headcrabs, ACHIEVEMENT_FIREFIGHTRELOADED_KILL50HEADCRABS, "FIREFIGHTRELOADED_KILL50HEADCRABS", 10);
 
@@ -736,9 +700,7 @@ protected:
 		}
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return true; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKill100Headcrabs, ACHIEVEMENT_FIREFIGHTRELOADED_KILL100HEADCRABS, "FIREFIGHTRELOADED_KILL100HEADCRABS", 15);
 
@@ -768,9 +730,7 @@ protected:
 		}
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return false; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKill20XenCreatures, ACHIEVEMENT_FIREFIGHTRELOADED_KILL20XENCREATURES, "FIREFIGHTRELOADED_KILL20XENCREATURES", 5);
 
@@ -800,9 +760,7 @@ protected:
 		}
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return false; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKill50XenCreatures, ACHIEVEMENT_FIREFIGHTRELOADED_KILL50XENCREATURES, "FIREFIGHTRELOADED_KILL50XENCREATURES", 10);
 
@@ -832,9 +790,7 @@ protected:
 		}
 	}
 
-#ifndef MOD_VER
 	virtual bool ShouldShowProgressNotification() { return true; }
-#endif
 };
 DECLARE_ACHIEVEMENT(CAchievementKill100XenCreatures, ACHIEVEMENT_FIREFIGHTRELOADED_KILL100XENCREATURES, "FIREFIGHTRELOADED_KILL100XENCREATURES", 15);
 
@@ -848,6 +804,8 @@ protected:
 		SetGameDirFilter("firefightreloaded");
 		SetGoal(10);
 	}
+
+	virtual bool ShouldShowProgressNotification() { return true; }
 };
 DECLARE_ACHIEVEMENT(CAchievementKill10EnemiesWithGrenades, ACHIEVEMENT_FIREFIGHTRELOADED_KILL10ENEMIESWITHGRENADE, "FIREFIGHTRELOADED_KILL10ENEMIESWITHGRENADE", 35);
 
@@ -881,6 +839,8 @@ protected:
 	{
 		CheckIncrementCount();
 	}
+
+	virtual bool ShouldShowProgressNotification() { return true; }
 };
 DECLARE_ACHIEVEMENT(CAchievementKill10EnemiesZeroBullets, ACHIEVEMENT_FIREFIGHTRELOADED_KILL10ENEMIESZEROBULLETS, "FIREFIGHTRELOADED_KILL10ENEMIESZEROBULLETS", 20);
 
@@ -913,6 +873,8 @@ protected:
 	{
 		CheckIncrementCount();
 	}
+
+	virtual bool ShouldShowProgressNotification() { return true; }
 };
 DECLARE_ACHIEVEMENT(CAchievementKill20EnemiesNoDamage, ACHIEVEMENT_FIREFIGHTRELOADED_KILL20ENEMIESNODAMAGE, "FIREFIGHTRELOADED_KILL20ENEMIESNODAMAGE", 25);
 
@@ -935,6 +897,8 @@ protected:
 			IncrementCount();
 		}
 	}
+
+	virtual bool ShouldShowProgressNotification() { return true; }
 };
 DECLARE_ACHIEVEMENT(CAchievementKill10EnemiesAtLowHealth, ACHIEVEMENT_FIREFIGHTRELOADED_KILL10ENEMIESATLOWHEALTH, "FIREFIGHTRELOADED_KILL10ENEMIESATLOWHEALTH", 15);
 
@@ -977,6 +941,8 @@ protected:
 			}
 		}
 	}
+
+	virtual bool ShouldShowProgressNotification() { return true; }
 };
 DECLARE_ACHIEVEMENT(CAchievementKill100EnemiesOnDeath, ACHIEVEMENT_FIREFIGHTRELOADED_KILL100ENEMIESONDEATH, "FIREFIGHTRELOADED_KILL100ENEMIESONDEATH", 20);
 
@@ -1005,11 +971,10 @@ protected:
 			}
 		}
 	}
+
+	virtual bool ShouldShowProgressNotification() { return true; }
 };
 DECLARE_ACHIEVEMENT(CAchievementKill10EnemiesWithOwnGrenade, ACHIEVEMENT_FIREFIGHTRELOADED_KILL10ENEMIESWITHOWNGRENADE, "FIREFIGHTRELOADED_KILL10ENEMIESWITHOWNGRENADE", 35);
-
-#define DECLARE_FR_MAP_EVENT_ACHIEVEMENT( achievementID, achievementName, iPointValue, iHidden )					\
-	DECLARE_MAP_EVENT_ACHIEVEMENT_( achievementID, achievementName, "firefightreloaded", iPointValue, iHidden )
 
 DECLARE_FR_MAP_EVENT_ACHIEVEMENT(ACHIEVEMENT_FIREFIGHTRELOADED_COMPLETEDBOSSFIGHT, "FIREFIGHTRELOADED_COMPLETEDBOSSFIGHT", 50, false);
 DECLARE_FR_MAP_EVENT_ACHIEVEMENT(ACHIEVEMENT_FIREFIGHTRELOADED_COMPLETEDTUTORIAL, "FIREFIGHTRELOADED_COMPLETEDTUTORIAL", 50, false);

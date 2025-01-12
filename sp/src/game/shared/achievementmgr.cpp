@@ -49,8 +49,6 @@
 
 ConVar	cc_achievement_debug( "achievement_debug", "0", FCVAR_CHEAT | FCVAR_REPLICATED, "Turn on achievement debug msgs." );
 
-ConVar	achievement_showlegacymsgs( "achievement_showlegacymsgs", "0", FCVAR_REPLICATED|FCVAR_ARCHIVE);
-
 #ifdef CSTRIKE_DLL
 //=============================================================================
 // HPE_BEGIN:
@@ -320,8 +318,6 @@ bool CAchievementMgr::Init()
 	ListenForGameEvent( "game_init" );
 #else
 	ListenForGameEvent( "player_death" );
-	ListenForGameEvent("player_death_npc");
-	ListenForGameEvent("npc_death");
 	ListenForGameEvent( "player_stats_updated" );
 	usermessages->HookMessage( "AchievementEvent", MsgFunc_AchievementEvent );
 #endif // CLIENT_DLL
@@ -447,6 +443,7 @@ void CAchievementMgr::FrameUpdatePostEntityThink()
 //-----------------------------------------------------------------------------
 void CAchievementMgr::Update( float frametime )
 {
+/*
 #ifdef CLIENT_DLL
 	if ( !sv_cheats )
 	{
@@ -454,7 +451,7 @@ void CAchievementMgr::Update( float frametime )
 	}
 #endif
 
-/*
+
 #ifndef _DEBUG
 	// keep track if cheats have ever been turned on during this level
 	if ( !WereCheatsEverOn() )
@@ -644,11 +641,7 @@ void CAchievementMgr::DownloadUserData()
 		if ( steamapicontext->SteamUserStats() )
 		{
 			// request stat download; will get called back at OnUserStatsReceived when complete
-			bool bReqStats = steamapicontext->SteamUserStats()->RequestCurrentStats();
-			if (!bReqStats)
-			{
-				DevMsg("SteamUserStats::RequestCurrentStats() - Cannot aquire stats from Steam.");
-			}
+			steamapicontext->SteamUserStats()->RequestCurrentStats();
 		}
 #endif
 	}
@@ -899,22 +892,6 @@ void CAchievementMgr::SaveGlobalStateIfDirty( bool bAsync )
 	}
 }
 
-
-#ifdef GAME_DLL
-void CAchievementMgr::ShowAchievementMessage(CBaseEntity *pEntity, const char *pMessage)
-{
-	if (!pEntity)
-		return;
-
-	CSingleUserRecipientFilter user((CBasePlayer *)pEntity);
-	user.MakeReliable();
-	UserMessageBegin(user, "AchievementHintText");
-	WRITE_BYTE(1);	// one string
-	WRITE_STRING(pMessage);
-	MessageEnd();
-}
-#endif
-
 //-----------------------------------------------------------------------------
 // Purpose: awards specified achievement
 //-----------------------------------------------------------------------------
@@ -953,13 +930,6 @@ void CAchievementMgr::AwardAchievement( int iAchievementID )
 	
 	if (!pEntity)
 		return;
-
-	if (achievement_showlegacymsgs.GetBool())
-	{
-		CFmtStr hint;
-		hint.sprintf("#%s_ACHIEVED", pAchievement->GetName());
-		ShowAchievementMessage(pEntity, hint.Access());
-	}
 
 	pEntity->AddXP(pAchievement->GetPointValue() * pEntity->m_iExpBoostMult);
 	pEntity->AddMoney(pAchievement->GetPointValue() * pEntity->m_iKashBoostMult);
@@ -1150,11 +1120,10 @@ bool CAchievementMgr::CheckAchievementsEnabled()
 	return true;
 #endif
 
-	/*
 	if ( IsPC() )
 	{
 		// Don't award achievements if cheats are turned on.  
-		if (WereCheatsEverOn())
+		if ( WereCheatsEverOn() )
 		{
 #ifndef NO_STEAM
 			// Cheats get turned on automatically if you run with -dev which many people do internally, so allow cheats if developer is turned on and we're not running
@@ -1167,7 +1136,6 @@ bool CAchievementMgr::CheckAchievementsEnabled()
 #endif
 		}
 	}
-	*/
 
 	return true;
 }
@@ -1498,23 +1466,11 @@ void CAchievementMgr::FireGameEvent( IGameEvent *event )
 #endif // GAME_DLL
 	}
 #ifdef CLIENT_DLL
-	else if (0 == Q_strcmp(name, "npc_death"))
-	{
-		CBaseEntity* pVictim = ClientEntityList().GetEnt(event->GetInt("userid"));
-		CBaseEntity* pAttacker = ClientEntityList().GetEnt(event->GetInt("attacker"));
-		OnKillEvent(pVictim, pAttacker, NULL, event);
-	}
 	else if ( 0 == Q_strcmp( name, "player_death" ) )
 	{
 		CBaseEntity *pVictim = ClientEntityList().GetEnt( engine->GetPlayerForUserID( event->GetInt("userid") ) );
 		CBaseEntity *pAttacker = ClientEntityList().GetEnt( engine->GetPlayerForUserID( event->GetInt("attacker") ) );
 		OnKillEvent( pVictim, pAttacker, NULL, event );
-	}
-	else if (0 == Q_strcmp(name, "player_death_npc"))
-	{
-		CBaseEntity* pVictim = ClientEntityList().GetEnt(engine->GetPlayerForUserID(event->GetInt("userid")));
-		CBaseEntity* pAttacker = ClientEntityList().GetEnt(event->GetInt("attacker"));
-		OnKillEvent(pVictim, pAttacker, NULL, event);
 	}
 	else if ( 0 == Q_strcmp( name, "localplayer_changeclass" ) )
 	{
@@ -1954,26 +1910,6 @@ void CAchievementMgr::UpdateStateFromSteam_Internal()
 	}
 #endif
 }
-
-#ifdef GAME_DLL
-#if defined(_DEBUG) || defined(STAGING_ONLY) || DEBUG_ACHIEVEMENTS_IN_RELEASE
-CON_COMMAND( achievement_hud_debug, "Debug the Achievement HUD")
-{
-	CAchievementMgr *pAchievementMgr = dynamic_cast<CAchievementMgr *>( engine->GetAchievementMgr() );
-	if ( !pAchievementMgr )
-		return;
-
-	CBasePlayer *pEntity = UTIL_GetLocalPlayer();
-
-	if (!pEntity)
-		return;
-
-	CFmtStr hint;
-	hint.sprintf("TESTING..1..2..3!");
-	pAchievementMgr->ShowAchievementMessage(pEntity, hint.Access());
-}
-#endif
-#endif
 
 #ifdef CLIENT_DLL
 
