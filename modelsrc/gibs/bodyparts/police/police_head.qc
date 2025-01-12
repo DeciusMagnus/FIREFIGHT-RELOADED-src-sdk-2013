@@ -31,7 +31,7 @@ $sequence "idle" {
 	fps 30
 }
 
-$collisionmodel "police_head_physics.smd"
+$collisionmodel "police_head_reference.smd"
 {
 	$mass 2
 	$inertia 1

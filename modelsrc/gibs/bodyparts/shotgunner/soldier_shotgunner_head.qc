@@ -31,7 +31,7 @@ $sequence "idle" {
 	fps 30
 }
 
-$collisionmodel "soldier_shotgunner_head_physics.smd"
+$collisionmodel "soldier_shotgunner_head_soldier_head_reference.smd"
 {
 	$mass 2
 	$inertia 1
