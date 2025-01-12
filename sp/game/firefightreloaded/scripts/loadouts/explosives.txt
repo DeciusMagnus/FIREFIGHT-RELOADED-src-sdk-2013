@@ -42,4 +42,15 @@
 		"ammotype"	"Flechette"
 		"ammonum"	"96"
 	}
+	//dualies
+	"7"
+	{
+		"weapon"	"weapon_rpg"
+		"ammotype"	"rpg_round"
+		"ammonum"	"100"
+	}
+	"8"
+	{
+		"weapon"	"weapon_physcannon"
+	}
 }

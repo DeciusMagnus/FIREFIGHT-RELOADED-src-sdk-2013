@@ -28,4 +28,8 @@
 		"ammotype"	"Sniper"
 		"ammonum"	"50"
 	}
+	"5"
+	{
+		"weapon"	"weapon_physcannon"
+	}
 }

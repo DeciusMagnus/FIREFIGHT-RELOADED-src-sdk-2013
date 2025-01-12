@@ -22,4 +22,8 @@
 		"ammotype"	"GaussEnergy"
 		"ammonum"	"100"
 	}
+	"4"
+	{
+		"weapon"	"weapon_physcannon"
+	}
 }
