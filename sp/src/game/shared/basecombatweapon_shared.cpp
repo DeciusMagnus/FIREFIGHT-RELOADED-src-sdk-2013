@@ -1379,7 +1379,7 @@ bool CBaseCombatWeapon::ShouldDisplayDualWieldHUDHint()
 	if (m_iDualWieldHudHintCount >= WEAPON_RELOAD_HUD_HINT_COUNT)
 		return false;
 
-	if (!IsDualWielding())
+	if (CanDualWield() && !IsDualWielding())
 	{
 		return true;
 	}

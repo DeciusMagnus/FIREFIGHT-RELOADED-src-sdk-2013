@@ -100,6 +100,7 @@ ConVar sk_hunter_flechette_explode_radius( "sk_hunter_flechette_explode_radius",
 
 ConVar sk_hunter_dmg_plr_flechette("sk_hunter_dmg_plr_flechette", "4.0");
 ConVar sk_hunter_flechette_explode_dmg_plr("sk_hunter_flechette_explode_dmg_plr", "12.0");
+ConVar sk_hunter_dmg_plr_flechette_againsthunters("sk_hunter_dmg_plr_flechette_againsthunters", "4.0");
 
 ConVar hunter_flechette_explode_delay( "hunter_flechette_explode_delay", "2.5" );
 ConVar hunter_flechette_delay( "hunter_flechette_delay", "0.1" );
@@ -730,6 +731,12 @@ void CHunterFlechette::FlechetteTouch( CBaseEntity *pOther )
 		if (GetOwnerEntity() && GetOwnerEntity()->IsPlayer())
 		{
 			flDamage = sk_hunter_dmg_plr_flechette.GetFloat();
+
+			CNPC_Hunter* pHunter = (CNPC_Hunter*)(pOther);
+			if (pHunter)
+			{
+				flDamage = sk_hunter_dmg_plr_flechette_againsthunters.GetFloat();
+			}
 		}
 
 		CBreakable *pBreak = dynamic_cast <CBreakable *>(pOther);
