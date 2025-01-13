@@ -906,10 +906,13 @@ void CNPCMakerFirefight::MakeNPC()
 
 	DispatchActivate(pent);
 
-	if (m_ChildTargetName != NULL_STRING)
+	if (!(FClassnameIs(pent, "npc_playerbot") || FClassnameIs(pent, "npc_playerbot_enemy")))
 	{
-		// if I have a netname (overloaded), give the child NPC that name as a targetname
-		pent->SetName(m_ChildTargetName);
+		if (m_ChildTargetName != NULL_STRING)
+		{
+			// if I have a netname (overloaded), give the child NPC that name as a targetname
+			pent->SetName(m_ChildTargetName);
+		}
 	}
 
 	if (entry->npcAttributePreset > 0)

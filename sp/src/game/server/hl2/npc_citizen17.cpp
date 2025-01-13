@@ -797,7 +797,6 @@ void CNPC_Citizen::Spawn()
 		//replace with sk_player_bot_health
 		SetHealth(sk_player_bot_health.GetInt());
 		SetMaxHealth(sk_player_bot_health.GetInt());
-		SetName(MAKE_STRING(NewNameSelection()));
 	}
 
 	// Are we on a train? Used in trainstation to have NPCs on trains.
@@ -848,7 +847,10 @@ void CNPC_Citizen::Spawn()
 
 	m_flTimePlayerStare = FLT_MAX;
 
-	AddEFlags( EFL_NO_DISSOLVE | EFL_NO_MEGAPHYSCANNON_RAGDOLL | EFL_NO_PHYSCANNON_INTERACTION );
+	if (!HasSpawnFlags(SF_CITIZEN_ENEMY))
+	{
+		AddEFlags(EFL_NO_DISSOLVE | EFL_NO_MEGAPHYSCANNON_RAGDOLL | EFL_NO_PHYSCANNON_INTERACTION);
+	}
 
 	NPCInit();
 
@@ -859,6 +861,11 @@ void CNPC_Citizen::Spawn()
 
 	// Use render bounds instead of human hull for guys sitting in chairs, etc.
 	m_ActBusyBehavior.SetUseRenderBounds( HasSpawnFlags( SF_CITIZEN_USE_RENDER_BOUNDS ) );
+
+	if (HasSpawnFlags(SF_CITIZEN_USE_PLAYERBOT_AI))
+	{
+		SetName(MAKE_STRING(NewNameSelection()));
+	}
 }
 
 //-----------------------------------------------------------------------------
