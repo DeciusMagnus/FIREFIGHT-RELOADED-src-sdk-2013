@@ -903,6 +903,36 @@
 					"1"		"#gameui_enabled"
 				}
 			}
+            
+            "SpawnerDifficultyAdjust"
+			{
+				"text"			"#GameUI_SpawnerDifficultyAdjust"
+				"type"			"wheelywheel"
+				"convar"		"sk_spawner_difficultyadjust"
+                "advanced"		"1"
+                "hidden"		"1"
+
+				"options"
+				{
+					"0"		"#gameui_disabled"
+					"1"		"#gameui_enabled"
+				}
+			}
+            
+            "SpawnerDeckAdjust"
+			{
+				"text"			"#GameUI_SpawnerDeckAdjust"
+				"type"			"slideyslide"
+				"convar"		"sk_spawner_deckadjustfactor"
+				"advanced"		"1"
+                "hidden"		"1"
+
+				"min"			"1"
+				"max"			"3"
+				"step"			"0.1"
+
+				"textprecision" "2"
+			}
 			
 			"SpawnRareEnemies"
 			{

@@ -599,6 +599,7 @@ BEGIN_DATADESC( CBasePlayer )
 
 	DEFINE_FIELD( m_iFrags, FIELD_INTEGER ),
 	DEFINE_FIELD( m_iDeaths, FIELD_INTEGER ),
+	DEFINE_FIELD(m_iKillstreak, FIELD_INTEGER),
 	DEFINE_FIELD( m_bAllowInstantSpawn, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_flNextDecalTime, FIELD_TIME ),
 	//DEFINE_AUTO_ARRAY( m_szTeamName, FIELD_STRING ), // mp
@@ -2829,6 +2830,8 @@ void CBasePlayer::Event_Killed( const CTakeDamageInfo &info )
 	m_flDeathTime = gpGlobals->curtime;
 
 	ClearLastKnownArea();
+
+	m_iKillstreak = 0;
 
 	if (m_bHardcore && !g_pGameRules->IsMultiplayer())
 	{

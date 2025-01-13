@@ -999,6 +999,8 @@ public:
 	int m_iHealthRegenBoostMult;
 	int	m_rgMaxUpgrades[FIREFIGHT_UPGRADE_MAX];
 
+	int	m_iKillstreak;
+
 	// Used by gamemovement to check if the entity is stuck.
 	int m_StuckLast;
 

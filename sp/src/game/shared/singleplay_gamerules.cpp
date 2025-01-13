@@ -31,17 +31,17 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-ConVar sk_money_multiplier1("sk_money_multiplier1", "4");
-ConVar sk_money_multiplier2("sk_money_multiplier2", "4");
+ConVar sk_money_multiplier1("sk_money_multiplier1", "1");
+ConVar sk_money_multiplier2("sk_money_multiplier2", "2");
 ConVar sk_money_multiplier3("sk_money_multiplier3", "3");
-ConVar sk_money_multiplier4("sk_money_multiplier4", "2");
-ConVar sk_money_multiplier5("sk_money_multiplier5", "1");
+ConVar sk_money_multiplier4("sk_money_multiplier4", "4");
+ConVar sk_money_multiplier5("sk_money_multiplier5", "5");
 
-ConVar sk_exp_multiplier1("sk_exp_multiplier1", "4");
-ConVar sk_exp_multiplier2("sk_exp_multiplier2", "4");
+ConVar sk_exp_multiplier1("sk_exp_multiplier1", "1");
+ConVar sk_exp_multiplier2("sk_exp_multiplier2", "2");
 ConVar sk_exp_multiplier3("sk_exp_multiplier3", "3");
-ConVar sk_exp_multiplier4("sk_exp_multiplier4", "2");
-ConVar sk_exp_multiplier5("sk_exp_multiplier5", "1");
+ConVar sk_exp_multiplier4("sk_exp_multiplier4", "4");
+ConVar sk_exp_multiplier5("sk_exp_multiplier5", "5");
 
 ConVar sv_killingspree("sv_killingspree", "1", FCVAR_ARCHIVE);
 
@@ -707,63 +707,41 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 			{
 				if (pVictim->m_isRareEntity)
 				{
-					switch (GetSkillLevel())
-					{
-					case SKILL_EASY:
-						moneyReward += 6 * sk_money_multiplier1.GetInt();
-						xpReward += 10 * sk_exp_multiplier1.GetInt();
-						break;
-
-					case SKILL_MEDIUM:
-						moneyReward += 6 * sk_money_multiplier2.GetInt();
-						xpReward += 10 * sk_exp_multiplier2.GetInt();
-						break;
-
-					case SKILL_HARD:
-						moneyReward += 6 * sk_money_multiplier3.GetInt();
-						xpReward += 10 * sk_exp_multiplier3.GetInt();
-						break;
-
-					case SKILL_VERYHARD:
-						moneyReward += 6 * sk_money_multiplier4.GetInt();
-						xpReward += 10 * sk_exp_multiplier4.GetInt();
-						break;
-
-					case SKILL_NIGHTMARE:
-						moneyReward += 6 * sk_money_multiplier5.GetInt();
-						xpReward += 10 * sk_exp_multiplier5.GetInt();
-						break;
-					}
+					moneyReward += 6;
+					xpReward += 10;
 				}
 				else
 				{
-					switch (GetSkillLevel())
-					{
-					case SKILL_EASY:
-						moneyReward += 4 * sk_money_multiplier1.GetInt();
-						xpReward += 6 * sk_exp_multiplier1.GetInt();
-						break;
+					moneyReward += 4;
+					xpReward += 6;
+				}
 
-					case SKILL_MEDIUM:
-						moneyReward += 4 * sk_money_multiplier2.GetInt();
-						xpReward += 6 * sk_exp_multiplier2.GetInt();
-						break;
+				switch (GetSkillLevel())
+				{
+				case SKILL_EASY:
+					moneyReward *= sk_money_multiplier1.GetInt();
+					xpReward *= sk_exp_multiplier1.GetInt();
+					break;
 
-					case SKILL_HARD:
-						moneyReward += 4 * sk_money_multiplier3.GetInt();
-						xpReward += 6 * sk_exp_multiplier3.GetInt();
-						break;
+				case SKILL_MEDIUM:
+					moneyReward *= sk_money_multiplier2.GetInt();
+					xpReward *= sk_exp_multiplier2.GetInt();
+					break;
 
-					case SKILL_VERYHARD:
-						moneyReward += 4 * sk_money_multiplier4.GetInt();
-						xpReward += 6 * sk_exp_multiplier4.GetInt();
-						break;
+				case SKILL_HARD:
+					moneyReward *= sk_money_multiplier3.GetInt();
+					xpReward *= sk_exp_multiplier3.GetInt();
+					break;
 
-					case SKILL_NIGHTMARE:
-						moneyReward += 4 * sk_money_multiplier5.GetInt();
-						xpReward += 6 * sk_exp_multiplier5.GetInt();
-						break;
-					}
+				case SKILL_VERYHARD:
+					moneyReward *= sk_money_multiplier4.GetInt();
+					xpReward *= sk_exp_multiplier4.GetInt();
+					break;
+
+				case SKILL_NIGHTMARE:
+					moneyReward *= sk_money_multiplier5.GetInt();
+					xpReward *= sk_exp_multiplier5.GetInt();
+					break;
 				}
 
 				pEntity->IncrementFragCount(IPointsForKillEntity(pEntity, pVictim));
@@ -786,11 +764,11 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 				//make it so the katana hit multiplier shows up.
 				if (sv_killingspree.GetBool() && !isInBullettime)
 				{
-					int m_iKillsInSpree = pEntity->FragCount();
+					pEntity->m_iKillstreak++;
 
 					CFmtStr hint;
 
-					switch (m_iKillsInSpree)
+					switch (pEntity->m_iKillstreak)
 					{
 						case KILLING_SPREE_AMOUNT:
 							hint.sprintf("#Valve_Hud_KILLINGSPREE");
@@ -865,7 +843,7 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 					xpReward += 50;
 				}
 
-				CAI_BaseNPC* pNPC = (CAI_BaseNPC*)pEntity;
+				CAI_BaseNPC* pNPC = (CAI_BaseNPC*)pVictim;
 
 				if (pNPC && pNPC->m_bDecapitated)
 				{
@@ -908,6 +886,11 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 
 				moneyReward *= pEntity->m_iKashBoostMult;
 				xpReward *= pEntity->m_iExpBoostMult;
+
+				int killMult = (pEntity->FragCount() * 0.06) + 1;
+
+				moneyReward *= killMult;
+				xpReward *= killMult;
 
 				if (g_fr_economy.GetBool())
 				{

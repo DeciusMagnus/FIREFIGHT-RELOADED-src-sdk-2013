@@ -64,6 +64,7 @@ public:
 
 	DECLARE_DATADESC();
 	
+	float		m_flInitialSpawnFrequency;		// delay (in secs) between spawns
 	float		m_flSpawnFrequency;		// delay (in secs) between spawns
 	float		m_flLastLargeNPCSpawn;		// delay (in secs) between spawns
 	int			m_nRareNPCRarity;		// Sets the rarity of rare NPCs

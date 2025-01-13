@@ -41,6 +41,9 @@ ConVar sk_spawner_fps_control("sk_spawner_fps_control", "1", FCVAR_ARCHIVE, "All
 ConVar sk_spawner_max_distance("sk_spawner_max_distance", "3072", FCVAR_ARCHIVE, "If the spawner is this far away from the players, it might be considered to be disabled.");
 ConVar sk_spawner_max_distance_override_factor("sk_spawner_max_distance_override_factor", "0.4", FCVAR_ARCHIVE, "The amount to multiply by if we have a set value in sk_spawner_max_distance.");
 ConVar sk_spawner_min_fps("sk_spawner_min_fps", "10", FCVAR_ARCHIVE, "The minimum FPS to disable spawners due to lag.");
+ConVar sk_spawner_difficultyadjust("sk_spawner_difficultyadjust", "1", FCVAR_CHEAT);
+ConVar sk_spawner_deckadjustfactor("sk_spawner_deckadjustfactor", "1.3", FCVAR_CHEAT);
+
 ConVar debug_spawner_info("debug_spawner_info", "0", FCVAR_CHEAT);
 ConVar debug_spawner_disable("debug_spawner_disable", "0", FCVAR_CHEAT);
 
@@ -109,6 +112,7 @@ BEGIN_DATADESC(CNPCMakerFirefight)
 	DEFINE_KEYFIELD( m_nMaxLiveRareNPCs, FIELD_INTEGER, "MaxLiveRareNPCs" ),
 	DEFINE_KEYFIELD( m_nRareNPCRarity, FIELD_INTEGER, "RareNPCRarity" ),
 
+	DEFINE_FIELD(	m_flInitialSpawnFrequency,	FIELD_FLOAT),
 	DEFINE_FIELD(	m_nLiveChildren,	FIELD_INTEGER),
 	DEFINE_FIELD(	m_nLiveRareNPCs,		FIELD_INTEGER ),
 	DEFINE_FIELD(	m_flLastLargeNPCSpawn,	FIELD_TIME),
@@ -183,7 +187,8 @@ void CNPCMakerFirefight::Precache(void)
 	float setSpawnTime = useMapDefinedSpawnTimes ? TIME_SETBYHAMMER : g_npcLoader->m_Settings.spawnTime;
 	if (setSpawnTime > 0)
 	{
-		m_flSpawnFrequency = setSpawnTime;
+		m_flInitialSpawnFrequency = setSpawnTime;
+		m_flSpawnFrequency = m_flInitialSpawnFrequency;
 	}
 	else
 	{
@@ -200,27 +205,51 @@ void CNPCMakerFirefight::Precache(void)
 //-----------------------------------------------------------------------------
 void CNPCMakerFirefight::MakerThink(void)
 {
-	if (m_flSpawnFrequency <= 0)
+	float spawnFreq = TIME_SETBYHAMMER;
+
+	KeyValues* pInfo = CMapInfo::GetMapInfoData();
+
+	if (pInfo != NULL)
 	{
-		m_flSpawnFrequency = 5;
-	}
-	else
-	{
-		if (m_bUsingMapSpawnTime)
+		int timeAdd = pInfo->GetInt("MapSpawnTimeOverride", TIME_SETBYHAMMER);
+
+		if (timeAdd > 0)
 		{
-			KeyValues* pInfo = CMapInfo::GetMapInfoData();
+			spawnFreq = m_flInitialSpawnFrequency + timeAdd;
 
-			if (pInfo != NULL)
+			if (UTIL_IsSteamDeck())
 			{
-				int steamDeckTimeAdd = pInfo->GetInt("DeckMapSpawnTimeOverride", TIME_SETBYHAMMER);
+				spawnFreq = spawnFreq * sk_spawner_deckadjustfactor.GetFloat();
+			}
+		}
+	}
 
-				if (UTIL_IsSteamDeck() && steamDeckTimeAdd > 0)
+	if (spawnFreq == TIME_SETBYHAMMER)
+	{
+		if (m_flSpawnFrequency <= 0 && m_flInitialSpawnFrequency <= 0)
+		{
+			spawnFreq = sk_initialspawnertime.GetFloat();
+		}
+		else
+		{
+			if (m_bUsingMapSpawnTime)
+			{
+				if (UTIL_IsSteamDeck())
 				{
-					m_flSpawnFrequency = m_flSpawnFrequency + steamDeckTimeAdd;
+					spawnFreq = m_flInitialSpawnFrequency * sk_spawner_deckadjustfactor.GetFloat();
 				}
 			}
 		}
 	}
+
+	if (sk_spawner_difficultyadjust.GetBool())
+	{
+		int skill = g_pGameRules->GetSkillLevel();
+		int skillMultiplier = (4 - skill);
+		spawnFreq = spawnFreq * ((skill <= SKILL_VERYHARD) ? skillMultiplier : 1);
+	}
+
+	m_flSpawnFrequency = spawnFreq;
 
 	SetNextThink(gpGlobals->curtime + m_flSpawnFrequency);
 

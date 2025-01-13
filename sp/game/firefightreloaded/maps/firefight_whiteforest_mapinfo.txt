@@ -1,4 +1,5 @@
 "firefight_whiteforest"
 {
 	"HideFromPlayerOverride"	"0"
+	"MapSpawnTimeOverride"	"5"
 }
