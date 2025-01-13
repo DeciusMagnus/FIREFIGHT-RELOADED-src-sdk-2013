@@ -159,6 +159,7 @@ void CNPCMakerFirefight::Spawn(void)
 	{
 		SetThink(&CNPCMakerFirefight::MakerThink);
 		SetNextThink(gpGlobals->curtime + sk_initialspawnertime.GetFloat());
+		AdjustSpawnTime();
 	}
 	else
 	{
@@ -200,12 +201,18 @@ void CNPCMakerFirefight::Precache(void)
 		UTIL_PrecacheOther(g_Weapons[i]);
 }
 
-//-----------------------------------------------------------------------------
-// Purpose: Creates a new NPC every so often.
-//-----------------------------------------------------------------------------
-void CNPCMakerFirefight::MakerThink(void)
+void CNPCMakerFirefight::AdjustSpawnTime(void)
 {
 	float spawnFreq = TIME_SETBYHAMMER;
+
+	if (m_flInitialSpawnFrequency > 0)
+	{
+		spawnFreq = m_flInitialSpawnFrequency;
+	}
+	else
+	{
+		spawnFreq = sk_initialspawnertime.GetFloat();
+	}
 
 	KeyValues* pInfo = CMapInfo::GetMapInfoData();
 
@@ -223,21 +230,13 @@ void CNPCMakerFirefight::MakerThink(void)
 			}
 		}
 	}
-
-	if (spawnFreq == TIME_SETBYHAMMER)
+	else
 	{
-		if (m_flSpawnFrequency <= 0 && m_flInitialSpawnFrequency <= 0)
+		if (m_bUsingMapSpawnTime)
 		{
-			spawnFreq = sk_initialspawnertime.GetFloat();
-		}
-		else
-		{
-			if (m_bUsingMapSpawnTime)
+			if (UTIL_IsSteamDeck())
 			{
-				if (UTIL_IsSteamDeck())
-				{
-					spawnFreq = m_flInitialSpawnFrequency * sk_spawner_deckadjustfactor.GetFloat();
-				}
+				spawnFreq = m_flInitialSpawnFrequency * sk_spawner_deckadjustfactor.GetFloat();
 			}
 		}
 	}
@@ -250,7 +249,14 @@ void CNPCMakerFirefight::MakerThink(void)
 	}
 
 	m_flSpawnFrequency = spawnFreq;
+	DevMsg("m_flSpawnFrequency = %f\n", m_flSpawnFrequency);
+}
 
+//-----------------------------------------------------------------------------
+// Purpose: Creates a new NPC every so often.
+//-----------------------------------------------------------------------------
+void CNPCMakerFirefight::MakerThink(void)
+{
 	SetNextThink(gpGlobals->curtime + m_flSpawnFrequency);
 
 	//rare npcs will be handled by the spawnlist
@@ -976,6 +982,7 @@ void CNPCMakerFirefight::Enable(void)
 	m_bDisabled = false;
 	SetThink(&CNPCMakerFirefight::MakerThink);
 	SetNextThink( gpGlobals->curtime );
+	AdjustSpawnTime();
 }
 
 
