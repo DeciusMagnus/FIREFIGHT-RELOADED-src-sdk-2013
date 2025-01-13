@@ -215,7 +215,7 @@ void CNPCMakerFirefight::MakerThink(void)
 
 		if (timeAdd > 0)
 		{
-			spawnFreq = m_flInitialSpawnFrequency + timeAdd;
+			spawnFreq = timeAdd;
 
 			if (UTIL_IsSteamDeck())
 			{
