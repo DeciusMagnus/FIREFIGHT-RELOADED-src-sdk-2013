@@ -177,6 +177,13 @@
                 				"customxyoffset"	"1"
 				"y_offset"		"-13"
 		}
+		"weapon_rpg"
+		{
+				"font"		"AmmoIconsKillFeed"
+				"character"	"x"
+                				"customxyoffset"	"1"
+				"y_offset"		"-13"
+		}
 		"npc_killerscanner"
 		{
 				"font"		"WeaponIconsKillFeed"

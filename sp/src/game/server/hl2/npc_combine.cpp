@@ -425,7 +425,10 @@ int CNPC_Combine::OnTakeDamage_Alive(const CTakeDamageInfo& inputInfo)
 
 	if (info.GetInflictor())
 	{
-		if (FClassnameIs(info.GetInflictor(), "prop_physics") || FClassnameIs(info.GetInflictor(), "prop_physics_multiplayer"))
+		if (FClassnameIs(info.GetInflictor(), "prop_physics") || 
+			FClassnameIs(info.GetInflictor(), "prop_physics_multiplayer") ||
+			FClassnameIs(info.GetInflictor(), "npc_manhack") || 
+			FClassnameIs(info.GetInflictor(), "npc_manhack_friendly"))
 		{
 			if (info.GetDamageType() & DMG_SLASH || info.GetDamageType() & DMG_SNIPER)
 			{

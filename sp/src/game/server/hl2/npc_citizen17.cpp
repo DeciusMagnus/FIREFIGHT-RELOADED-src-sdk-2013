@@ -53,6 +53,7 @@ extern ConVar sk_healthvial;
 const int MAX_PLAYER_SQUAD = 4;
 
 ConVar	sk_citizen_health				( "sk_citizen_health",					"0");
+ConVar	sk_citizen_enemy_health			("sk_citizen_enemy_health", "0");
 ConVar	sk_player_bot_health			("sk_player_bot_health", "0");
 ConVar	sk_citizen_heal_player			( "sk_citizen_heal_player",				"25");
 ConVar	sk_citizen_heal_player_delay	( "sk_citizen_heal_player_delay",		"25");
@@ -128,94 +129,6 @@ static ConVar npc_playerbot_talk("npc_playerbot_talk", "1", FCVAR_ARCHIVE);
 #define DebuggingCommanderMode() (ai_citizen_debug_commander.GetBool() && (m_debugOverlays & OVERLAY_NPC_SELECTED_BIT))
 
 extern ConVar npc_create_attributewildcard;
-
-//------------------------------------------------------------------------------
-// Purpose: Create an NPC of the given type
-//------------------------------------------------------------------------------
-CON_COMMAND_F(npc_create_playerbot, "Creates an npc_playerbot/citizen of the given type where the player is looking (if the given NPC can actually stand at that location).\n\tArguments: {npc_class_name} {npc_attribute_preset} {entity_name}", FCVAR_CHEAT)
-{
-	MDLCACHE_CRITICAL_SECTION();
-
-	bool allowPrecache = CBaseEntity::IsPrecacheAllowed();
-	CBaseEntity::SetAllowPrecache(true);
-
-	// Try to create entity
-	CNPC_Citizen* baseNPC = dynamic_cast<CNPC_Citizen*>(CreateEntityByName("npc_citizen"));
-	if (baseNPC)
-	{
-		baseNPC->AddSpawnFlags(SF_CITIZEN_USE_PLAYERBOT_AI);
-
-		baseNPC->Precache();
-
-		if (args.ArgC() == 3)
-		{
-			baseNPC->SetName(AllocPooledString(args[2]));
-		}
-
-		baseNPC->m_bDisableInitAttributes = true;
-
-		DispatchSpawn(baseNPC);
-
-		if (args.ArgC() >= 2)
-		{
-			if (npc_create_attributewildcard.GetBool())
-			{
-				baseNPC->GiveWildcardAttributes(atoi(args[1]));
-			}
-			else
-			{
-				baseNPC->GiveAttributes(atoi(args[1]));
-			}
-		}
-
-		if (!baseNPC->IsGlowEffectActive() && !baseNPC->m_denyOutlines)
-		{
-			Vector allyColor = Vector(26, 77, 153);
-			baseNPC->m_bImportantOutline = true;
-			baseNPC->GiveOutline(allyColor);
-		}
-
-		// Now attempt to drop into the world
-		CBasePlayer* pPlayer = UTIL_GetCommandClient();
-		trace_t tr;
-		Vector forward;
-		pPlayer->EyeVectors(&forward);
-		AI_TraceLine(pPlayer->EyePosition(),
-			pPlayer->EyePosition() + forward * MAX_TRACE_LENGTH, MASK_NPCSOLID,
-			pPlayer, COLLISION_GROUP_NONE, &tr);
-		if (tr.fraction != 1.0)
-		{
-			if (baseNPC->CapabilitiesGet() & bits_CAP_MOVE_FLY)
-			{
-				Vector pos = tr.endpos - forward * 36;
-				baseNPC->Teleport(&pos, NULL, NULL);
-			}
-			else
-			{
-				// Raise the end position a little up off the floor, place the npc and drop him down
-				tr.endpos.z += 12;
-				baseNPC->Teleport(&tr.endpos, NULL, NULL);
-				UTIL_DropToFloor(baseNPC, MASK_NPCSOLID);
-			}
-
-			// Now check that this is a valid location for the new npc to be
-			Vector	vUpBit = baseNPC->GetAbsOrigin();
-			vUpBit.z += 1;
-
-			AI_TraceHull(baseNPC->GetAbsOrigin(), vUpBit, baseNPC->GetHullMins(), baseNPC->GetHullMaxs(),
-				MASK_NPCSOLID, baseNPC, COLLISION_GROUP_NONE, &tr);
-			if (tr.startsolid || (tr.fraction < 1.0))
-			{
-				baseNPC->SUB_Remove();
-				DevMsg("Can't create playerbot. Bad Position!\n");
-				NDebugOverlay::Box(baseNPC->GetAbsOrigin(), baseNPC->GetHullMins(), baseNPC->GetHullMaxs(), 255, 0, 0, 0, 0);
-			}
-		}
-
-		baseNPC->Activate();
-	}
-	CBaseEntity::SetAllowPrecache(allowPrecache);
-}
 
 //-----------------------------------------------------------------------------
 // Citizen expressions for the citizen expression types
@@ -614,6 +527,9 @@ int	ACT_CIT_STARTLED;		// Startled by sneaky scanner
 //---------------------------------------------------------
 
 LINK_ENTITY_TO_CLASS( npc_citizen, CNPC_Citizen );
+LINK_ENTITY_TO_CLASS( npc_citizen_enemy, CNPC_Citizen );
+LINK_ENTITY_TO_CLASS( npc_playerbot, CNPC_Citizen );
+LINK_ENTITY_TO_CLASS(npc_playerbot_enemy, CNPC_Citizen);
 
 //---------------------------------------------------------
 
@@ -790,10 +706,56 @@ void CNPC_Citizen::PrecacheAllOfType( CitizenType_t type )
 	}
 }
 
+CUtlVector<string_t> m_botScriptNames;
+
+void LoadBotNames(void)
+{
+	m_botScriptNames.RemoveAll();
+
+	KeyValues* pKV = new KeyValues("BotNames");
+	if (pKV->LoadFromFile(filesystem, "scripts/bot_names.txt", "GAME"))
+	{
+		FOR_EACH_VALUE(pKV, pSubData)
+		{
+			if (FStrEq(pSubData->GetString(), ""))
+				continue;
+
+			string_t iName = AllocPooledString(pSubData->GetString());
+			if (m_botScriptNames.Find(iName) == m_botScriptNames.InvalidIndex())
+				m_botScriptNames[m_botScriptNames.AddToTail()] = iName;
+		}
+	}
+
+	pKV->deleteThis();
+}
+
+const char* NewNameSelection(void)
+{
+	if (m_botScriptNames.Count() == 0)
+		return "MISSINGNO";
+
+	int nPoneNames = m_botScriptNames.Count();
+	int randomChoice = rand() % nPoneNames;
+	string_t iszName = m_botScriptNames[randomChoice];
+	const char* pszName = STRING(iszName);
+
+	return pszName;
+}
+
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 void CNPC_Citizen::Spawn()
 {
+	if (FClassnameIs(this, "npc_playerbot") || FClassnameIs(this, "npc_playerbot_enemy"))
+	{
+		AddSpawnFlags(SF_CITIZEN_USE_PLAYERBOT_AI);
+	}
+
+	if (FClassnameIs(this, "npc_citizen_enemy") || FClassnameIs(this, "npc_playerbot_enemy"))
+	{
+		AddSpawnFlags(SF_CITIZEN_ENEMY);
+	}
+
 	BaseClass::Spawn();
 
 #ifdef _XBOX
@@ -818,14 +780,24 @@ void CNPC_Citizen::Spawn()
 	//m_bShouldPatrol = true;
 	if (!HasSpawnFlags(SF_CITIZEN_USE_PLAYERBOT_AI))
 	{
-		SetHealth(sk_citizen_health.GetInt());
-		SetMaxHealth(sk_citizen_health.GetInt());
+		if (HasSpawnFlags(SF_CITIZEN_ENEMY))
+		{
+			SetHealth(sk_citizen_enemy_health.GetInt());
+			SetMaxHealth(sk_citizen_enemy_health.GetInt());
+		}
+		else
+		{
+			SetHealth(sk_citizen_health.GetInt());
+			SetMaxHealth(sk_citizen_health.GetInt());
+		}
 	}
 	else
 	{
+		LoadBotNames();
 		//replace with sk_player_bot_health
 		SetHealth(sk_player_bot_health.GetInt());
 		SetMaxHealth(sk_player_bot_health.GetInt());
+		SetName(MAKE_STRING(NewNameSelection()));
 	}
 
 	// Are we on a train? Used in trainstation to have NPCs on trains.
@@ -1469,6 +1441,9 @@ string_t CNPC_Citizen::GetModelName() const
 //-----------------------------------------------------------------------------
 Class_T	CNPC_Citizen::Classify()
 {
+	if (HasSpawnFlags(SF_CITIZEN_ENEMY))
+		return CLASS_HUMAN_MILITARY;
+
 	if (HasSpawnFlags(SF_CITIZEN_USE_PLAYERBOT_AI))
 		return CLASS_PLAYER_NPC;
 
@@ -1598,6 +1573,9 @@ void CNPC_Citizen::GatherConditions()
 			m_flTimePlayerStare = FLT_MAX;
 			return;
 		}
+
+		if (!ShouldHealTarget(pPlayer, true))
+			return;
 
 		float flDistSqr = ( GetAbsOrigin() - pPlayer->GetAbsOrigin() ).Length2DSqr();
 		float flStareDist = sk_citizen_player_stare_dist.GetFloat();
@@ -1833,6 +1811,11 @@ int CNPC_Citizen::SelectSchedule()
 		// to something else, and now we need to figure out a better system.
 		Assert( GetMoveParent() && FClassnameIs( GetMoveParent(), "func_tracktrain" ) );
 		return SCHED_CITIZEN_SIT_ON_TRAIN;
+	}
+
+	if (m_NPCState == NPC_STATE_IDLE || m_NPCState == NPC_STATE_ALERT)
+	{
+		return SCHED_PATROL_WALK_LOOP;
 	}
 	
 	return BaseClass::SelectSchedule();
@@ -2898,6 +2881,11 @@ bool CNPC_Citizen::IsCommandable()
 //-----------------------------------------------------------------------------
 bool CNPC_Citizen::IsPlayerAlly( CBasePlayer *pPlayer )											
 { 
+	if (HasSpawnFlags(SF_CITIZEN_ENEMY))
+	{
+		return false;
+	}
+
 	if ( Classify() == CLASS_CITIZEN_PASSIVE && GlobalEntity_GetState("gordon_precriminal") == GLOBAL_ON )
 	{
 		// Robin: Citizens use friendly speech semaphore in trainstation
@@ -3985,9 +3973,9 @@ bool CNPC_Citizen::CanHeal()
 //-----------------------------------------------------------------------------
 bool CNPC_Citizen::ShouldHealTarget( CBaseEntity *pTarget, bool bActiveUse )
 {
-	Disposition_t disposition;
+	Disposition_t disposition = IRelationType(pTarget);
 	
-	if ( !pTarget && ( ( disposition = IRelationType( pTarget ) ) != D_LI && disposition != D_NU ) )
+	if ( !pTarget && ( disposition != D_LI && disposition != D_NU ))
 		return false;
 
 	// Don't heal if I'm in the middle of talking

@@ -25,6 +25,7 @@
 	#include "tier3/tier3.h"
 	#include "vgui/ILocalize.h"
 	#include "hl2/hl2_player.h"
+	#include "filesystem.h"
 
 #endif
 
@@ -56,6 +57,8 @@ ConVar sv_weapon_respawn_time("sv_weapon_respawn_time", "180", FCVAR_ARCHIVE);
 
 ConVar sv_player_dropweaponsondeath("sv_player_dropweaponsondeath", "1", FCVAR_ARCHIVE);
 ConVar sv_player_autoaimcrosshair("sv_player_autoaimcrosshair", "0", FCVAR_ARCHIVE);
+
+ConVar sv_killog_shownpcnames("sv_killog_shownpcnames", "0", FCVAR_ARCHIVE);
 
 extern ConVar sv_player_voice;
 extern ConVar sv_player_voice_kill_freq;
@@ -695,6 +698,8 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 		//starting to not like allies getting reported on the kill log since it gives the player free exp without doing anything.
 		if (!Q_stricmp(pInflictor->GetClassname(), "npc_citizen") || 
 			!Q_stricmp(pKiller->GetClassname(), "npc_citizen") || 
+			!Q_stricmp(pInflictor->GetClassname(), "npc_playerbot") ||
+			!Q_stricmp(pKiller->GetClassname(), "npc_playerbot") ||
 			!Q_stricmp(pInflictor->GetClassname(), "npc_vortigaunt") ||
 			!Q_stricmp(pKiller->GetClassname(), "npc_vortigaunt"))
 		{
@@ -1117,27 +1122,59 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 		const char* fullEntityClassname = entityClassname;
 		bool useLocalization = true;
 
-		CAI_BaseNPC *pNPC = pVictim->MyNPCPointer();
-		if (pNPC && pNPC->m_pAttributes != NULL)
-		{
-			const char* presetName = pNPC->m_pAttributes->GetString("name", "NULL");
+		bool isPlayerbot = (FClassnameIs(pVictim, "npc_playerbot") || FClassnameIs(pVictim, "npc_playerbot_enemy"));
 
-			if (Q_strnicmp(presetName, "NULL", 11) != 0)
+		if (!isPlayerbot)
+		{
+			CAI_BaseNPC* pNPC = pVictim->MyNPCPointer();
+			if (pNPC)
+			{
+				if (pNPC->m_pAttributes != NULL)
+				{
+					const char* presetName = pNPC->m_pAttributes->GetString("name", "NULL");
+
+					if (Q_strnicmp(presetName, "NULL", 11) != 0)
+					{
+						useLocalization = false;
+						fullEntityClassname = presetName;
+					}
+					else
+					{
+						if (pNPC->m_pAttributes->presetNum > 0)
+						{
+							if (pNPC->m_pAttributes->wildcard)
+							{
+								entityClassname = "npc_any";
+							}
+
+							fullEntityClassname = CFmtStr("%s_%i", entityClassname, pNPC->m_pAttributes->presetNum);
+						}
+					}
+				}
+				else
+				{
+					if (sv_killog_shownpcnames.GetBool())
+					{
+						string_t npcEntName = pNPC->GetEntityName();
+
+						if (npcEntName != NULL_STRING)
+						{
+							useLocalization = false;
+							fullEntityClassname = npcEntName.ToCStr();
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			//playerbots set their own entity names.
+			string_t pVictimEntName = pVictim->GetEntityName();
+
+			if (pVictimEntName != NULL_STRING)
 			{
 				useLocalization = false;
-				fullEntityClassname = presetName;
-			}
-			else 
-			{
-				if (pNPC->m_pAttributes->presetNum > 0)
-				{
-					if (pNPC->m_pAttributes->wildcard)
-					{
-						entityClassname = "npc_any";
-					}
-
-					fullEntityClassname = CFmtStr("%s_%i", entityClassname, pNPC->m_pAttributes->presetNum);
-				}
+				fullEntityClassname = pVictimEntName.ToCStr();
 			}
 		}
 

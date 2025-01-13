@@ -29,6 +29,7 @@ public:
 
 	void Spawn( void );
 	void Precache(void);
+	bool CheckSpawnlist(void);
 	virtual int	ObjectCaps( void ) { return BaseClass::ObjectCaps() & ~FCAP_ACROSS_TRANSITION; }
 	void AdjustSpawnTime(void);
 	void MakerThink( void );

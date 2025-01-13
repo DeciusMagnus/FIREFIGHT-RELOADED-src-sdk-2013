@@ -1838,6 +1838,21 @@
 				}
 			}
             
+            "ShowNPCNames"
+			{
+				"text"			"#GameUI_ShowNPCNames"
+				"type"			"wheelywheel"
+				"convar"		"sv_killog_shownpcnames"
+                "advanced"		"1"
+                "hidden"		"1"
+
+				"options"
+				{
+					"0"		"#gameui_disabled"
+					"1"		"#gameui_enabled"
+				}
+			}
+            
             "PlayerDropWeaponsOnDeath"
 			{
 				"text"			"#GameUI_PlayerDropWeaponsOnDeath"

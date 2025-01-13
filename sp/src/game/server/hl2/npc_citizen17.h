@@ -34,6 +34,7 @@ struct SquadCandidate_t;
 #define SF_CITIZEN_RANDOM_HEAD_FEMALE ( 1 << 23 )//8388608
 #define SF_CITIZEN_USE_RENDER_BOUNDS ( 1 << 24 )//16777216
 #define SF_CITIZEN_USE_PLAYERBOT_AI ( 1 << 25 )//33554432
+#define SF_CITIZEN_ENEMY ( 1 << 26 )//67108864
 
 //-------------------------------------
 // Animation events

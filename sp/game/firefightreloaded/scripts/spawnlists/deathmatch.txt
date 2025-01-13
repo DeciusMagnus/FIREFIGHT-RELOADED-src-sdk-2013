@@ -1,0 +1,20 @@
+//#Spawnlist
+//WARNING: DO NOT REMOVE THESE TOP COMMENTS.
+//FABRICATOR REQUIRES THE FIRST COMMENT TO LOAD THIS FILE.
+
+"deathmatch"
+{
+	"settings"
+	{
+		"spawntime"	"3"
+		"spawntime_steamdeck"	"5"
+	}
+	"1"
+	{
+		"classname"	"npc_playerbot_enemy"
+	}
+	"2"
+	{
+		"classname"	"npc_playerbot"
+	}
+}

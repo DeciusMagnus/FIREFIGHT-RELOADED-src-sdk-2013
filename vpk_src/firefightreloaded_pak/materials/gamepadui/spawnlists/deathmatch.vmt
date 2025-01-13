@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	"$baseTexture" "gamepadui\spawnlists\deathmatch"
+	"$vertexalpha" "1"
+}

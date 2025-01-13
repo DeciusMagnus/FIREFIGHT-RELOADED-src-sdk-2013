@@ -208,7 +208,6 @@ private:
 	int m_iLeftHandAttachment;
 	int m_iRightHandAttachment;
 	bool				m_bStopLoopingSounds;
-	bool	m_fIsEnemy;
 
 public:
 	DECLARE_DATADESC();

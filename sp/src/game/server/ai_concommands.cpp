@@ -608,7 +608,13 @@ CON_COMMAND_F_COMPLETION(npc_create, "Creates an NPC of the given type where the
 	CAI_BaseNPC *baseNPC = dynamic_cast< CAI_BaseNPC * >(CreateEntityByName(pszClassName));
 	if (baseNPC)
 	{
-		baseNPC->KeyValue("additionalequipment", npc_create_equipment_cvar.GetString());
+		bool isPlayerbot = (FClassnameIs(baseNPC, "npc_playerbot") || FClassnameIs(baseNPC, "npc_playerbot_enemy"));
+
+		if (!isPlayerbot)
+		{
+			baseNPC->KeyValue("additionalequipment", npc_create_equipment_cvar.GetString());
+		}
+
 		baseNPC->Precache();
 
 		if ( args.ArgC() == 4 )

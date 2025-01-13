@@ -73,6 +73,20 @@ static int g_HGruntWeapons[] =
 	WEAPON_HGRUNT_SHOTGUN_FRAG
 };
 
+//citizen weapons should be weapons that are considered "normal" for them to carry. No railguns.
+const char* g_charCitizenWeapons[] =
+{
+	"weapon_smg1",
+	"weapon_ar2",
+	"weapon_mp5",
+	"weapon_oicw",
+	"weapon_rpg",
+	"weapon_shotgun",
+	"weapon_pistol",
+	"weapon_crowbar",
+	"weapon_xm1014"
+};
+
 //precache list
 static const char* g_Weapons[] =
 {
@@ -83,7 +97,9 @@ static const char* g_Weapons[] =
 	"weapon_stunstick",
 	"weapon_crowbar",
 	"weapon_oicw",
-	"weapon_mp5"
+	"weapon_mp5",
+	"weapon_rpg",
+	"weapon_xm1014"
 };
 
 CRandNPCLoader* g_npcLoader;
@@ -168,6 +184,25 @@ void CNPCMakerFirefight::Spawn(void)
 	}
 }
 
+bool CNPCMakerFirefight::CheckSpawnlist(void)
+{
+	if (g_npcLoader == nullptr)
+	{
+		g_npcLoader = new CRandNPCLoader;
+
+		if (g_npcLoader)
+		{
+			if (!g_npcLoader->Load())
+			{
+				Warning("npc_maker_firefight: No spawnlist detected. Spawners will be non-functional.\n");
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: Precache the target NPC
 //-----------------------------------------------------------------------------
@@ -175,17 +210,17 @@ void CNPCMakerFirefight::Precache(void)
 {
 	BaseClass::Precache();
 
-	if (g_npcLoader == nullptr)
-	{
-		g_npcLoader = new CRandNPCLoader;
-		AssertFatal(g_npcLoader != nullptr);
-		AssertFatal(g_npcLoader->Load());
-	}
-
 	KeyValues* pInfo = CMapInfo::GetMapInfoData();
 	bool useMapDefinedSpawnTimes = (pInfo != NULL) ? pInfo->GetBool("UseMapSpawnTimes") : false;
 
-	float setSpawnTime = useMapDefinedSpawnTimes ? TIME_SETBYHAMMER : g_npcLoader->m_Settings.spawnTime;
+	float spawnTime = TIME_SETBYHAMMER;
+
+	if (CheckSpawnlist())
+	{
+		spawnTime = g_npcLoader->m_Settings.spawnTime;
+	}
+
+	float setSpawnTime = useMapDefinedSpawnTimes ? TIME_SETBYHAMMER : spawnTime;
 	if (setSpawnTime > 0)
 	{
 		m_flInitialSpawnFrequency = setSpawnTime;
@@ -365,6 +400,9 @@ float PlayerDistance(CBaseEntity* pEntity, CBaseEntity* pPlayer)
 //-----------------------------------------------------------------------------
 bool CNPCMakerFirefight::CanMakeNPC(bool bIgnoreSolidEntities)
 {
+	if (g_npcLoader == nullptr)
+		return false;
+
 	if (debug_spawner_disable.GetBool())
 		return false;
 
@@ -632,11 +670,6 @@ void CNPCMakerFirefight::MakeNPC()
 
 	const char* pRandomName = entry->classname;
 
-	if (Q_stristr(pRandomName, "npc_playerbot"))
-	{
-		pRandomName = "npc_citizen";
-	}
-
 	CAI_BaseNPC* pent = (CAI_BaseNPC*)CreateEntityByName(pRandomName);
 
 	if (!pent)
@@ -715,6 +748,13 @@ void CNPCMakerFirefight::MakeNPC()
 			int randomChoiceSoldier = random->RandomInt(0, nWeaponsSoldier - 1);
 			equip = g_CombineSoldierWeapons[randomChoiceSoldier];
 		}
+		else if (Q_stristr(pRandomName, "npc_citizen") ||
+			Q_stristr(pRandomName, "npc_citizen_enemy"))
+		{
+			int nWeaponsCitizen = ARRAYSIZE(g_charCitizenWeapons);
+			int randomChoiceCitizen = random->RandomInt(0, nWeaponsCitizen - 1);
+			equip = g_charCitizenWeapons[randomChoiceCitizen];
+		}
 		else if (Q_stristr(pRandomName, "npc_hgrunt") ||
 			Q_stristr(pRandomName, "npc_hgrunt_friendly") ||
 			Q_stristr(pRandomName, "npc_hgrunt_robot") ||
@@ -783,9 +823,17 @@ void CNPCMakerFirefight::MakeNPC()
 		pent->m_spawnEquipment = MAKE_STRING(equip);
 	}
 
-	if (Q_stristr(pRandomName, "npc_citizen"))
+	if (Q_stristr(pRandomName, "npc_citizen") ||
+		Q_stristr(pRandomName, "npc_citizen_enemy"))
 	{
-		pent->AddSpawnFlags(SF_CITIZEN_USE_PLAYERBOT_AI);
+		pent->AddSpawnFlags(SF_CITIZEN_RANDOM_HEAD);
+
+		CNPC_Citizen* pCit = dynamic_cast<CNPC_Citizen*>(pent);
+		if (pCit)
+		{
+			int randType = random->RandomInt(CT_DOWNTRODDEN, CT_REBEL);
+			pCit->m_Type = (CitizenType_t)randType;
+		}
 	}
 	else if (Q_stristr(pRandomName, "npc_strider"))
 	{
@@ -856,32 +904,6 @@ void CNPCMakerFirefight::MakeNPC()
 		}
 	}
 
-	if (pent->Classify() == CLASS_PLAYER_ALLY ||
-		pent->Classify() == CLASS_PLAYER_ALLY_VITAL ||
-		pent->Classify() == CLASS_VORTIGAUNT ||
-		pent->Classify() == CLASS_PLAYER_NPC ||
-		(pent->Classify() == CLASS_ANTLION &&
-			GlobalEntity_GetState("antlion_allied") == GLOBAL_ON && g_pGameRules->GetGamemode() != FIREFIGHT_PRIMARY_ANTLIONASSAULT))
-	{
-		if (!g_fr_lonewolf.GetBool())
-		{
-			//alert all players.
-			AllyAlert();
-		}
-		else
-		{
-			UTIL_Remove(pent);
-			return;
-		}
-
-		if (!pent->IsGlowEffectActive() && !pent->m_denyOutlines)
-		{
-			Vector allyColor = Vector(26, 77, 153);
-			pent->m_bImportantOutline = true;
-			pent->GiveOutline(allyColor);
-		}
-	}
-
 	DispatchActivate(pent);
 
 	if (m_ChildTargetName != NULL_STRING)
@@ -901,6 +923,32 @@ void CNPCMakerFirefight::MakeNPC()
 		{
 			pent->m_pAttributes = LoadPresetFile(pent->GetClassname(), entry->npcAttributePreset);
 			pent->LoadInitAttributes();
+		}
+	}
+
+	if (pent->Classify() == CLASS_PLAYER_ALLY ||
+		pent->Classify() == CLASS_PLAYER_ALLY_VITAL ||
+		pent->Classify() == CLASS_VORTIGAUNT ||
+		pent->Classify() == CLASS_PLAYER_NPC ||
+		(pent->Classify() == CLASS_ANTLION &&
+			GlobalEntity_GetState("antlion_allied") == GLOBAL_ON && g_pGameRules->GetGamemode() != FIREFIGHT_PRIMARY_ANTLIONASSAULT))
+	{
+		if (!pent->IsGlowEffectActive() && !pent->m_denyOutlines)
+		{
+			Vector allyColor = Vector(26, 77, 153);
+			pent->m_bImportantOutline = true;
+			pent->GiveOutline(allyColor);
+		}
+
+		if (!g_fr_lonewolf.GetBool())
+		{
+			//alert all players.
+			AllyAlert();
+		}
+		else
+		{
+			UTIL_Remove(pent);
+			return;
 		}
 	}
 

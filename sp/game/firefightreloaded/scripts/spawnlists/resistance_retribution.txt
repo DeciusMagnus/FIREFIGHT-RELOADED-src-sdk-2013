@@ -1,0 +1,11 @@
+//#Spawnlist
+//WARNING: DO NOT REMOVE THESE TOP COMMENTS.
+//FABRICATOR REQUIRES THE FIRST COMMENT TO LOAD THIS FILE.
+
+"resistance_retribution"
+{
+	"1"
+	{
+		"classname"	"npc_citizen_enemy"
+	}
+}

@@ -345,7 +345,7 @@ int CGameRules::GetGamemode()
 
 const char* CGameRules::GetGamemodeName()
 {
-	const char* gamemodeName = "";
+	const char* gamemodeName = "none";
 
 	if (GetGamemode() == FIREFIGHT_PRIMARY_COMBINEFIREFIGHT)
 	{
@@ -373,7 +373,7 @@ const char* CGameRules::GetGamemodeName()
 
 const char* CGameRules::GetGamemodeName_ServerBrowser()
 {
-	const char* gamemodeName = "";
+	const char* gamemodeName = "N/A";
 
 	if (GetGamemode() == FIREFIGHT_PRIMARY_COMBINEFIREFIGHT)
 	{

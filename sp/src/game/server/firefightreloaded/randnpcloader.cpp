@@ -21,7 +21,10 @@ void dumpspawnlist_cb()
 	extern CRandNPCLoader* g_npcLoader;
 
 	if (!g_npcLoader)
+	{
+		Warning("No spawnlist found.\n");
 		return;
+	}
 
 	ConMsg("m_Settings.spawnTime: %f\n", g_npcLoader->m_Settings.spawnTime);
 	for ( auto& iter : g_npcLoader->m_Entries )
@@ -66,6 +69,7 @@ bool CRandNPCLoader::Load()
 {
 	bool gamemodeMode = true;
 	const char* gamemodeName = g_pGameRules->GetGamemodeName();
+	const char* gamemodeNameSB = g_pGameRules->GetGamemodeName_ServerBrowser();
 
 	if (gamemodeName == NULL || strlen(gamemodeName) == 0 ||
 		(!g_pGameRules->bSkipFuncCheck && !g_fr_spawneroldfunctionality.GetBool()))
@@ -84,7 +88,7 @@ bool CRandNPCLoader::Load()
 		pKV = new KeyValues(gamemodeName);
 		if (pKV->LoadFromFile(filesystem, szScriptPath))
 		{
-			DevMsg("CRandNPCLoader: Spawnlist for %s loaded.\n", gamemodeName);
+			Msg("CRandNPCLoader: Spawnlist for '%s' loaded.\n", gamemodeNameSB);
 		}
 		else
 		{
@@ -100,7 +104,7 @@ bool CRandNPCLoader::Load()
 		pKV = new KeyValues(mapName);
 		if (pKV->LoadFromFile(filesystem, szMapScriptPath))
 		{
-			DevMsg("CRandNPCLoader: Spawnlist for %s loaded.\n", mapName);
+			Msg("CRandNPCLoader: Spawnlist for '%s' loaded.\n", mapName);
 		}
 		else
 		{
@@ -111,15 +115,24 @@ bool CRandNPCLoader::Load()
 	if (failed)
 	{
 		pKV = new KeyValues("Spawnlist");
-		DevWarning("CRandNPCLoader: Failed to load %s spawnlist! File may not exist. Using default spawn list...\n", gamemodeName);
-		if (pKV->LoadFromFile(filesystem, sk_spawner_defaultspawnlist.GetString()))
+		const char* userSpecified = sk_spawner_defaultspawnlist.GetString();
+		Warning("CRandNPCLoader: Failed to load '%s' spawnlist! File may not exist. Using user-specified default spawn list...\n", gamemodeNameSB);
+		if (pKV->LoadFromFile(filesystem, userSpecified))
 		{
-			DevMsg("CRandNPCLoader: User-specified default spawnlist loaded.\n");
+			Msg("CRandNPCLoader: '%s' loaded.\n", userSpecified);
 		}
 		else
 		{
-			DevWarning("CRandNPCLoader: Failed to load default spawnlist! File may not exist. Spawners will not function properly.\n");
-			return false;
+			Warning("CRandNPCLoader: Failed to load '%s'! File may not exist. Using default spawn list...\n", userSpecified);
+			if (pKV->LoadFromFile(filesystem, "scripts/spawnlists/default.txt"))
+			{
+				Msg("CRandNPCLoader: Default spawnlist loaded.\n");
+			}
+			else
+			{
+				Warning("CRandNPCLoader: Failed to load default spawnlist! File may not exist. Spawners will not function properly.\n");
+				return false;
+			}
 		}
 	}
 

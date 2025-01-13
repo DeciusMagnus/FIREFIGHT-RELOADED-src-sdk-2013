@@ -679,7 +679,7 @@ int CNPC_Vortigaunt_HL2::GetSoundInterests ( void)
 //-----------------------------------------------------------------------------
 Class_T	CNPC_Vortigaunt_HL2::Classify ( void )
 {
-	if (m_fIsEnemy)
+	if (HasSpawnFlags(SF_VORTIGAUNT_HL2_ENEMY))
 		return CLASS_VORTIGAUNT_ENEMY;
 
 	return CLASS_VORTIGAUNT;
@@ -1220,16 +1220,11 @@ void CNPC_Vortigaunt_HL2::Spawn()
 		AddSpawnFlags(SF_VORTIGAUNT_HL2_ENEMY);
 	}
 
-	if (HasSpawnFlags(SF_VORTIGAUNT_HL2_ENEMY))
-	{
-		m_fIsEnemy = true;
-	}
-
 	// Allow multiple models (for slaves), but default to vortigaunt_hl2.mdl
 	char *szModel = (char *)STRING( GetModelName() );
 	if (!szModel || !*szModel)
 	{
-		if (m_fIsEnemy)
+		if (HasSpawnFlags(SF_VORTIGAUNT_HL2_ENEMY))
 		{
 			szModel = "models/vortigaunt_hl2_slave.mdl";
 		}
