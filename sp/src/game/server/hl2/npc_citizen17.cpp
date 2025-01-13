@@ -1574,6 +1574,9 @@ void CNPC_Citizen::GatherConditions()
 			return;
 		}
 
+		if (HasSpawnFlags(SF_CITIZEN_ENEMY) && pPlayer)
+			return;
+
 		if (!ShouldHealTarget(pPlayer, true))
 			return;
 
@@ -1633,6 +1636,9 @@ void CNPC_Citizen::PredictPlayerPush()
 	if ( !bHadPlayerPush && HasCondition( COND_PLAYER_PUSHING ) && 
 		 pPlayer->FInViewCone( this ) && CanHeal() )
 	{
+		if (HasSpawnFlags(SF_CITIZEN_ENEMY) && pPlayer)
+			return;
+
 		if ( ShouldHealTarget( pPlayer, true ) )
 		{
 			ClearCondition( COND_PLAYER_PUSHING );
@@ -3984,6 +3990,9 @@ bool CNPC_Citizen::ShouldHealTarget( CBaseEntity *pTarget, bool bActiveUse )
 
 	bool bTargetIsPlayer = pTarget->IsPlayer();
 
+	if (HasSpawnFlags(SF_CITIZEN_ENEMY) && bTargetIsPlayer)
+		return false;
+
 	// Don't heal or give ammo to targets in vehicles
 	CBaseCombatCharacter *pCCTarget = pTarget->MyCombatCharacterPointer();
 	if ( pCCTarget != NULL && pCCTarget->IsInAVehicle() )
@@ -4162,6 +4171,11 @@ void CNPC_Citizen::Heal()
 
 	CBaseEntity *pTarget = GetTarget();
 
+	bool bTargetIsPlayer = pTarget->IsPlayer();
+
+	if (HasSpawnFlags(SF_CITIZEN_ENEMY) && bTargetIsPlayer)
+		return;
+
 	Vector target = pTarget->GetAbsOrigin() - GetAbsOrigin();
 	if ( target.Length() > HEAL_TARGET_RANGE * 2 )
 		return;
@@ -4174,7 +4188,7 @@ void CNPC_Citizen::Heal()
 		float timeFullHeal;
 		float timeRecharge;
 		float maximumHealAmount;
-		if ( pTarget->IsPlayer() )
+		if (bTargetIsPlayer)
 		{
 			timeFullHeal 		= m_flPlayerHealTime;
 			timeRecharge 		= sk_citizen_heal_player_delay.GetFloat();
@@ -4198,7 +4212,7 @@ void CNPC_Citizen::Heal()
 		
 		if ( healAmt > 0 )
 		{
-			if ( pTarget->IsPlayer() && npc_citizen_medic_emit_sound.GetBool() )
+			if (bTargetIsPlayer && npc_citizen_medic_emit_sound.GetBool() )
 			{
 				CPASAttenuationFilter filter( pTarget, "HealthKit.Touch" );
 				EmitSound( filter, pTarget->entindex(), "HealthKit.Touch" );
@@ -4212,7 +4226,7 @@ void CNPC_Citizen::Heal()
 	if ( IsAmmoResupplier() )
 	{
 		// Non-players don't use ammo
-		if ( pTarget->IsPlayer() )
+		if (bTargetIsPlayer)
 		{
 			int iAmmoType = GetAmmoDef()->Index( STRING(m_iszAmmoSupply) );
 			if ( iAmmoType == -1 )
