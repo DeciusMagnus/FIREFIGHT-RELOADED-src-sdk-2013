@@ -690,24 +690,22 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 		// Find the killer & the scorer
 		CBaseEntity *pInflictor = info.GetInflictor();
 		CBaseEntity *pKiller = info.GetAttacker();
+
 		CBasePlayer *pEntity = GetDeathScorer(pKiller, pInflictor, pVictim);
 
 		int moneyReward = 0;
 		int xpReward = 0;
-
-		//starting to not like allies getting reported on the kill log since it gives the player free exp without doing anything.
-		if (!Q_stricmp(pInflictor->GetClassname(), "npc_citizen") || 
-			!Q_stricmp(pKiller->GetClassname(), "npc_citizen") || 
-			!Q_stricmp(pInflictor->GetClassname(), "npc_playerbot") ||
-			!Q_stricmp(pKiller->GetClassname(), "npc_playerbot") ||
-			!Q_stricmp(pInflictor->GetClassname(), "npc_vortigaunt") ||
-			!Q_stricmp(pKiller->GetClassname(), "npc_vortigaunt"))
-		{
-			return;
-		}
 		
 		if (pEntity)
 		{
+			//starting to not like allies getting reported on the kill log since it gives the player free exp without doing anything.
+			if (FClassnameIs(pInflictor, "npc_citizen") ||
+				FClassnameIs(pInflictor, "npc_playerbot") ||
+				FClassnameIs(pInflictor, "npc_vortigaunt"))
+			{
+				return;
+			}
+
 			if (pEntity->GetDefaultRelationshipDisposition(pVictim->Classify()) == D_HT)
 			{
 				if (pVictim->m_isRareEntity)
@@ -1042,6 +1040,15 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 		// Find the killer & the scorer
 		CBaseEntity* pInflictor = info.GetInflictor();
 		CBaseEntity* pKiller = info.GetAttacker();
+
+		if (FClassnameIs(pInflictor, "npc_hornet") ||
+			FClassnameIs(pKiller, "npc_hornet") ||
+			FClassnameIs(pVictim, "npc_hornet"))
+			return;
+
+		if (pInflictor == pVictim || pKiller == pVictim)
+			return;
+
 		if (pKiller->IsPlayer())
 		{
 			CBasePlayer* pScorer = GetDeathScorer(pKiller, pInflictor, pVictim);
@@ -1108,6 +1115,47 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 				event->SetInt("customkill", info.GetDamageCustom());
 				event->SetInt("xpreward", xpReward);
 				event->SetInt("moneyreward", moneyReward);
+				event->SetInt("priority", 7);	// HLTV event priority, not transmitted
+				event->SetString("weapon", killer_weapon_name);
+				gameeventmanager->FireEvent(event);
+			}
+		}
+		else
+		{
+			CAI_BaseNPC* pNPC = pKiller->MyNPCPointer();
+
+			if (pNPC)
+			{
+				if (pNPC->GetActiveWeapon())
+				{
+					killer_weapon_name = pNPC->GetActiveWeapon()->GetClassname();
+				}
+				else if (pInflictor)
+				{
+					killer_weapon_name = STRING(pInflictor->m_iClassname);  // it's just that easy
+				}
+				else
+				{
+					killer_weapon_name = STRING(pKiller->m_iClassname);
+				}
+			}
+			else
+			{
+				return;
+			}
+
+			NpcName att_name;
+			GetNPCName(att_name, pKiller);
+
+			NpcName vic_name;
+			GetNPCName(vic_name, pVictim);
+
+			IGameEvent* event = gameeventmanager->CreateEvent("npc_death_npc");
+			if (event)
+			{
+				event->SetString("attacker", att_name);
+				event->SetString("victimname", vic_name);
+				event->SetInt("customkill", info.GetDamageCustom());
 				event->SetInt("priority", 7);	// HLTV event priority, not transmitted
 				event->SetString("weapon", killer_weapon_name);
 				gameeventmanager->FireEvent(event);

@@ -98,6 +98,7 @@ public:
 	// TraceAttack
 	virtual void TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator );
 
+	bool		BecomeRagdoll(const CTakeDamageInfo& info, const Vector& forceVector);
 	const char* GetGibModel(appendage_t appendage);
 	bool		CorpseGib(const CTakeDamageInfo& info);
 	bool		CorpseDecapitate(const CTakeDamageInfo& info);

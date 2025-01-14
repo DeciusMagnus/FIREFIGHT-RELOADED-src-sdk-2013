@@ -119,6 +119,7 @@ void CHudDeathNotice::Init(void)
 	ListenForGameEvent("player_death");
 	ListenForGameEvent("npc_death");
 	ListenForGameEvent("player_death_npc");
+	ListenForGameEvent("npc_death_npc");
 }
 
 //-----------------------------------------------------------------------------
@@ -519,6 +520,75 @@ void CHudDeathNotice::FireGameEvent(IGameEvent* event)
 		// Make a new death notice
 		DeathNoticeItem deathMsg;
 		deathMsg.Victim.iEntIndex = victim;
+		Q_strncpy(deathMsg.Killer.szName, killer_name, MAX_PLAYER_NAME_LENGTH);
+		Q_strncpy(deathMsg.Victim.szName, victim_name, MAX_PLAYER_NAME_LENGTH);
+		deathMsg.flDisplayTime = gpGlobals->curtime + hud_deathnotice_time.GetFloat();
+		deathMsg.iSuicide = (FStrEq(killer_name, victim_name));
+
+		// Try and find the death identifier in the icon list
+		// Can't find it, so use the default skull & crossbones icon
+		deathMsg.iconDeath = gHUD.GetIcon(killedwith);
+
+		if (!deathMsg.iconDeath || deathMsg.iSuicide)
+		{
+			// Can't find it, so use the default skull & crossbones icon
+			deathMsg.iconDeath = m_icon;
+		}
+
+		// Add it to our list of death notices
+		m_DeathNotices.AddToTail(deathMsg);
+
+		const char* prunedVictName = deathMsg.Victim.szName;
+		if (strncmp(prunedVictName, "#fr_npc_", 8) == 0)
+		{
+			prunedVictName += 8;
+		}
+
+		const char* prunedKillName = deathMsg.Killer.szName;
+		if (strncmp(prunedKillName, "#fr_npc_", 8) == 0)
+		{
+			prunedKillName += 8;
+		}
+
+		char sDeathMsg[512];
+
+		// Record the death notice in the console
+		if (deathMsg.iSuicide)
+		{
+			Q_snprintf(sDeathMsg, sizeof(sDeathMsg), "%s suicided.", prunedVictName);
+		}
+		else
+		{
+			Q_snprintf(sDeathMsg, sizeof(sDeathMsg), "%s killed %s with %s.", prunedKillName, prunedVictName, killedwith);
+		}
+
+		Msg("%s\n", sDeathMsg);
+	}
+	else if (Q_strcmp(type, "npc_death_npc") == 0)
+	{
+		const char* killer = event->GetString("attacker");
+		const char* victim = event->GetString("victimname");
+		const char* killedwith = event->GetString("weapon");
+
+		// Do we have too many death messages in the queue?
+		if (m_DeathNotices.Count() > 0 &&
+			m_DeathNotices.Count() >= (int)m_flMaxDeathNotices)
+		{
+			// Remove the oldest one in the queue, which will always be the first
+			m_DeathNotices.Remove(0);
+		}
+
+		// Get the names of the players
+		const char* killer_name = killer;
+		const char* victim_name = victim;
+
+		if (!killer_name)
+			killer_name = "";
+		if (!victim_name)
+			victim_name = "";
+
+		// Make a new death notice
+		DeathNoticeItem deathMsg;
 		Q_strncpy(deathMsg.Killer.szName, killer_name, MAX_PLAYER_NAME_LENGTH);
 		Q_strncpy(deathMsg.Victim.szName, victim_name, MAX_PLAYER_NAME_LENGTH);
 		deathMsg.flDisplayTime = gpGlobals->curtime + hud_deathnotice_time.GetFloat();

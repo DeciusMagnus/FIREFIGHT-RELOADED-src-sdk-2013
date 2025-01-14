@@ -1853,6 +1853,21 @@
 				}
 			}
             
+            "NPCvNPCKills"
+			{
+				"text"			"#GameUI_NPCvNPCKills"
+				"type"			"wheelywheel"
+				"convar"		"ai_allow_npcvnpc_killlog"
+                "advanced"		"1"
+                "hidden"		"1"
+
+				"options"
+				{
+					"0"		"#gameui_disabled"
+					"1"		"#gameui_enabled"
+				}
+			}
+            
             "PlayerDropWeaponsOnDeath"
 			{
 				"text"			"#GameUI_PlayerDropWeaponsOnDeath"

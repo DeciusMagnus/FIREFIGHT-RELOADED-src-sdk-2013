@@ -2513,9 +2513,16 @@ int CNPC_RollerMine::OnTakeDamage( const CTakeDamageInfo &info )
 			}
 		}
 
-		if (info.GetAttacker()->IsPlayer())
+		if (m_bCanSendNPCvNPCDeathNotice)
 		{
 			((CSingleplayRules*)GameRules())->NPCKilled(this, info);
+		}
+		else
+		{
+			if (info.GetAttacker()->IsPlayer())
+			{
+				((CSingleplayRules*)GameRules())->NPCKilled(this, info);
+			}
 		}
 
 		SetThink(&CNPC_RollerMine::PreDetonate);

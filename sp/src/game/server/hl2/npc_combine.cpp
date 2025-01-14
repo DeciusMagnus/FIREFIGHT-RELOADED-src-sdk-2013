@@ -31,6 +31,8 @@
 #include "npc_headcrab.h"
 #include <gib.h>
 #include "firefightreloaded/npc_combineace.h"
+#include "ammodef.h"
+#include "physics_prop_ragdoll.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -425,28 +427,34 @@ int CNPC_Combine::OnTakeDamage_Alive(const CTakeDamageInfo& inputInfo)
 
 	if (info.GetInflictor())
 	{
-		if (FClassnameIs(info.GetInflictor(), "prop_physics") || 
-			FClassnameIs(info.GetInflictor(), "prop_physics_multiplayer") ||
-			FClassnameIs(info.GetInflictor(), "npc_manhack") || 
-			FClassnameIs(info.GetInflictor(), "npc_manhack_friendly"))
+		bool isManhack = (FClassnameIs(info.GetInflictor(), "npc_manhack") ||
+			FClassnameIs(info.GetInflictor(), "npc_manhack_friendly") ||
+			FClassnameIs(info.GetInflictor(), "npc_manhack_weapon"));
+
+		if (isManhack)
 		{
-			if (info.GetDamageType() & DMG_SLASH || info.GetDamageType() & DMG_SNIPER)
+			float flFactor = 0.0f;
+
+			if (info.GetInflictor()->VPhysicsGetObject())
+			{
+				Vector vel;
+				info.GetInflictor()->VPhysicsGetObject()->GetVelocity(&vel, NULL);
+				float flSpeed = vel.Length();
+				flFactor = flSpeed / 500.0f;
+				flFactor = clamp(flFactor, 0.0f, 2.0f);
+			}
+
+			if (flFactor >= 1.65f)
 			{
 				CorpseDecapitate(info);
 			}
 		}
-		else
+		else if (FClassnameIs(info.GetInflictor(), "prop_physics") ||
+			FClassnameIs(info.GetInflictor(), "prop_physics_multiplayer"))
 		{
-			switch (LastHitGroup())
+			if (info.GetDamageType() & DMG_SLASH)
 			{
-				case HITGROUP_HEAD:
-				{
-					if (info.GetDamageType() & DMG_SLASH || info.GetDamageType() & DMG_SNIPER)
-					{
-						CorpseDecapitate(info);
-					}
-					break;
-				}
+				CorpseDecapitate(info);
 			}
 		}
 	}
@@ -517,7 +525,6 @@ bool CNPC_Combine::CorpseDecapitate(const CTakeDamageInfo& info)
 				m_pAttributes->SwitchEntityColor( this, "new_color" );
 			}
 
-			DispatchParticleEffect( "smod_blood_decap_r", PATTACH_POINT_FOLLOW, this, "bloodspurt", true );
 			SpawnBlood( GetAbsOrigin(), g_vecAttackDir, BloodColor(), info.GetDamage() );
 			CBaseEntity* pHeadGib = CGib::SpawnSpecificSingleGib( this, 150, 450, GetGibModel( APPENDAGE_HEAD ), 6 );
 
@@ -544,6 +551,26 @@ bool CNPC_Combine::CorpseDecapitate(const CTakeDamageInfo& info)
 	}
 
 	return false;
+}
+
+bool CNPC_Combine::BecomeRagdoll(const CTakeDamageInfo& info, const Vector& forceVector)
+{
+	if (m_bDecapitated)
+	{
+		CTakeDamageInfo newinfo = info;
+		newinfo.SetDamageForce(forceVector);
+
+		//FIXME: This is fairly leafy to be here, but time is short!
+		CBaseEntity* pRagdoll = CreateServerRagdoll(this, m_nForceBone, newinfo, COLLISION_GROUP_INTERACTIVE_DEBRIS, true);
+		FixupBurningServerRagdoll(pRagdoll);
+		PhysSetEntityGameFlags(pRagdoll, FVPHYSICS_NO_SELF_COLLISIONS);
+		DispatchParticleEffect("smod_blood_decap_r", PATTACH_POINT_FOLLOW, pRagdoll, "bloodspurt", true);
+		RemoveDeferred();
+
+		return true;
+	}
+
+	return BaseClass::BecomeRagdoll(info, forceVector);
 }
 
 Vector GetRagForce(Vector vecDamageDir)
@@ -2004,18 +2031,21 @@ int CNPC_Combine::SelectCombatSchedule()
 			if (HasCondition(COND_SEE_ENEMY))
 			{
 				AnnounceEnemyType(pEnemy);
+
+				if (CanGrenadeEnemy() && OccupyStrategySlot(SQUAD_SLOT_GRENADE1))
+				{
+					return SCHED_RANGE_ATTACK2;
+				}
 			}
 
-			int randAttack = random->RandomInt(0, 8);
+			if (HasCondition(COND_CAN_RANGE_ATTACK1) && OccupyStrategySlot(SQUAD_SLOT_ATTACK1))
+			{
+				// Start suppressing if someone isn't firing already (SLOT_ATTACK1). This means
+				// I'm the guy who spotted the enemy, I should react immediately.
+				return SCHED_COMBINE_SUPPRESS;
+			}
 
-			if (randAttack < 6)
-			{
-				return SCHED_TAKE_COVER_FROM_ENEMY;
-			}
-			else
-			{
-				return SCHED_RUN_FROM_ENEMY;
-			}
+			return SCHED_TAKE_COVER_FROM_ENEMY;
 		}
 	}
 
@@ -2038,11 +2068,19 @@ int CNPC_Combine::SelectCombatSchedule()
 	if (IsAce() && randReload < 30)
 	{
 		// We never actually run out of ammo, just need to refill the clip
-		if (GetActiveWeapon() && (GetActiveWeapon()->UsesClipsForAmmo1() || GetActiveWeapon()->UsesClipsForAmmo2()))
+		if (GetActiveWeapon())
 		{
 			GetActiveWeapon()->WeaponSound(RELOAD_NPC);
-			GetActiveWeapon()->m_iClip1 = GetActiveWeapon()->GetMaxClip1();
-			GetActiveWeapon()->m_iClip2 = GetActiveWeapon()->GetMaxClip2();
+
+			if (GetActiveWeapon()->UsesClipsForAmmo1())
+			{
+				GetActiveWeapon()->m_iClip1 = GetActiveWeapon()->GetMaxClip1();
+			}
+				
+			if (GetActiveWeapon()->UsesClipsForAmmo2())
+			{
+				GetActiveWeapon()->m_iClip2 = GetActiveWeapon()->GetMaxClip2();
+			}
 		}
 		ClearCondition(COND_LOW_PRIMARY_AMMO);
 		ClearCondition(COND_NO_PRIMARY_AMMO);
@@ -2219,14 +2257,6 @@ int CNPC_Combine::SelectSchedule( void )
 	if ( nSched != SCHED_NONE )
 		return nSched;
 
-	if (IsAce() && !m_hForcedGrenadeTarget)
-	{
-		if ((GetEnemy() && !(HasCondition(COND_ENEMY_OCCLUDED) || HasCondition(COND_LOST_ENEMY))))
-		{
-			m_hForcedGrenadeTarget = GetEnemy();
-		}
-	}
-
 	if ( m_hForcedGrenadeTarget )
 	{
 		if ( m_flNextGrenadeCheck < gpGlobals->curtime )
@@ -2235,50 +2265,11 @@ int CNPC_Combine::SelectSchedule( void )
 
 			if (IsElite() || IsAce())
 			{
-				//aces don't care about workplace safety
-				if (IsAce())
+				if (FVisible(m_hForcedGrenadeTarget))
 				{
-					if (gpGlobals->curtime > m_flNextAltFireTime)
-					{
-						m_vecAltFireTarget = vecTarget;
-						m_hForcedGrenadeTarget = NULL;
-						if (g_pGameRules->IsSkillLevel(SKILL_HARD))
-							DelayAltFireAttack(random->RandomFloat(2, 5));// wait a random amount of time before shooting again
-						else if (g_pGameRules->IsSkillLevel(SKILL_VERYHARD))
-							DelayAltFireAttack(random->RandomFloat(2, 4));// wait a random amount of time before shooting again
-						else if (g_pGameRules->IsSkillLevel(SKILL_NIGHTMARE))
-							DelayAltFireAttack(random->RandomFloat(2, 3));// wait a random amount of time before shooting again
-						else
-							DelayAltFireAttack(6);// wait six seconds before even looking again to see if a grenade can be thrown.
-						return SCHED_COMBINE_AR2_ALTFIRE;
-					}
-					else
-					{
-						// If we can, throw a grenade at the target. 
-						// Ignore grenade count / distance / etc
-						if (CheckCanThrowGrenade(vecTarget))
-						{
-							if (g_pGameRules->IsSkillLevel(SKILL_HARD))
-								m_flNextGrenadeCheck = gpGlobals->curtime + random->RandomFloat(2, 5);// wait a random amount of time before shooting again
-							else if (g_pGameRules->IsSkillLevel(SKILL_VERYHARD))
-								m_flNextGrenadeCheck = gpGlobals->curtime + random->RandomFloat(2, 4);// wait a random amount of time before shooting again
-							else if (g_pGameRules->IsSkillLevel(SKILL_NIGHTMARE))
-								m_flNextGrenadeCheck = gpGlobals->curtime + random->RandomFloat(2, 3);// wait a random amount of time before shooting again
-							else
-								m_flNextGrenadeCheck = gpGlobals->curtime + 6;// wait six seconds before even looking again to see if a grenade can be thrown.
-							m_hForcedGrenadeTarget = NULL;
-							return SCHED_COMBINE_FORCED_GRENADE_THROW;
-						}
-					}
-				}
-				else
-				{
-					if (FVisible(m_hForcedGrenadeTarget))
-					{
-						m_vecAltFireTarget = vecTarget;
-						m_hForcedGrenadeTarget = NULL;
-						return SCHED_COMBINE_AR2_ALTFIRE;
-					}
+					m_vecAltFireTarget = vecTarget;
+					m_hForcedGrenadeTarget = NULL;
+					return SCHED_COMBINE_AR2_ALTFIRE;
 				}
 			}
 			else
@@ -2473,7 +2464,7 @@ bool CNPC_Combine::ShouldChargePlayer()
 {
 	//allow us to charge at all enemies. Do it randomly on lower difficulties.
 	int randCharge = (g_pGameRules->GetSkillLevel() >= SKILL_VERYHARD) ? 3 : RandomInt(1, 3);
-	return (g_pGameRules->GetSkillLevel() > SKILL_EASY) && GetEnemy() != nullptr && (randCharge == 3);
+	return GetEnemy() != nullptr && (IsAce() || (g_pGameRules->GetSkillLevel() > SKILL_EASY) && (randCharge == 3));
 }
 
 //-----------------------------------------------------------------------------
@@ -2496,7 +2487,7 @@ int CNPC_Combine::SelectScheduleAttack()
 
 	// If I'm fighting a combine turret (it's been hacked to attack me), I can't really
 	// hurt it with bullets, so become grenade happy.
-	if ( GetEnemy() && GetEnemy()->Classify() == CLASS_COMBINE && FClassnameIs(GetEnemy(), "npc_turret_floor") )
+	if ( GetEnemy() && FClassnameIs(GetEnemy(), "npc_turret_floor") )
 	{
 		// Don't do this until I've been fighting the turret for a few seconds
 		float flTimeAtFirstHand = GetEnemies()->TimeAtFirstHand(GetEnemy());
@@ -2736,7 +2727,7 @@ int CNPC_Combine::TranslateSchedule( int scheduleType )
 			// always assume standing
 			// Stand();
 
-			if( CanAltFireEnemy(true) && OccupyStrategySlot(SQUAD_SLOT_SPECIAL_ATTACK) )
+			if( CanAltFireEnemy(true) && OccupyStrategySlot(SQUAD_SLOT_SPECIAL_ATTACK))
 			{
 				// If an elite in the squad could fire a combine ball at the player's last known position,
 				// do so!
@@ -3020,8 +3011,16 @@ void CNPC_Combine::HandleAnimEvent( animevent_t *pEvent )
 			if (GetActiveWeapon() && (GetActiveWeapon()->UsesClipsForAmmo1() || GetActiveWeapon()->UsesClipsForAmmo2()))
 			{
 				GetActiveWeapon()->WeaponSound( RELOAD_NPC );
-				GetActiveWeapon()->m_iClip1 = GetActiveWeapon()->GetMaxClip1(); 
-				GetActiveWeapon()->m_iClip2 = GetActiveWeapon()->GetMaxClip2();  
+
+				if (GetActiveWeapon()->UsesClipsForAmmo1())
+				{
+					GetActiveWeapon()->m_iClip1 = GetActiveWeapon()->GetMaxClip1();
+				}
+
+				if (GetActiveWeapon()->UsesClipsForAmmo2())
+				{
+					GetActiveWeapon()->m_iClip2 = GetActiveWeapon()->GetMaxClip2();
+				}
 			}
 			ClearCondition(COND_LOW_PRIMARY_AMMO);
 			ClearCondition(COND_NO_PRIMARY_AMMO);
@@ -3595,8 +3594,8 @@ bool CNPC_Combine::CanAltFireEnemy( bool bUseFreeKnowledge )
 	if (!IsElite() && !IsAce())
 		return false;
 
-	if (GetActiveWeapon() && !GetActiveWeapon()->HasSecondaryAmmo())
-		return false;
+	//if (GetActiveWeapon() && !GetActiveWeapon()->HasSecondaryAmmo())
+		//return false;
 
 	if (!IsAce() && IsCrouching())
 		return false;
@@ -3670,7 +3669,7 @@ bool CNPC_Combine::CanAltFireEnemy( bool bUseFreeKnowledge )
 //-----------------------------------------------------------------------------
 bool CNPC_Combine::CanGrenadeEnemy( bool bUseFreeKnowledge )
 {
-	if( IsElite() || IsAce())
+	if( IsElite() && !IsAce())
 		return false;
 
 	CBaseEntity *pEnemy = GetEnemy();
@@ -3705,9 +3704,6 @@ bool CNPC_Combine::CanGrenadeEnemy( bool bUseFreeKnowledge )
 //-----------------------------------------------------------------------------
 int CNPC_Combine::MeleeAttack1Conditions ( float flDot, float flDist )
 {
-	if (IsAce())
-		return COND_NONE;
-
 	if (flDist > 100)
 	{
 		return COND_NONE; // COND_TOO_FAR_TO_ATTACK;
@@ -3987,7 +3983,7 @@ bool CNPC_Combine::HandleInteraction(int interactionType, void *data, CBaseComba
 	if ( interactionType == g_interactionTurretStillStanding )
 	{
 		// A turret that I've kicked recently is still standing 5 seconds later. 
-		if ( sourceEnt == GetEnemy() && !IsAce())
+		if ( sourceEnt == GetEnemy())
 		{
 			// It's still my enemy. Time to grenade it.
 			Vector forward, up;

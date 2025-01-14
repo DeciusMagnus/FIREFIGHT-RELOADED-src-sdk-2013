@@ -6,8 +6,8 @@
 {
     "settings"
     {
-        "spawntime"		"16"
-        "spawntime_steamdeck"	"24"
+        "spawntime"		"6"
+        "spawntime_steamdeck"	"10"
     }
     //COMMON
     "1"

@@ -95,6 +95,7 @@ public:
 	void			Precache( void );
 	void			Activate();
 
+	bool					BecomeRagdoll(const CTakeDamageInfo& info, const Vector& forceVector);
 	virtual const char*		GetGibModel(appendage_t appendage);
 	virtual bool			CorpseGib(const CTakeDamageInfo& info);
 	virtual bool			CorpseDecapitate(const CTakeDamageInfo& info);

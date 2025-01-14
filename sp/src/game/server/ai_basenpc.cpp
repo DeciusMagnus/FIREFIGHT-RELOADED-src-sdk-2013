@@ -223,6 +223,9 @@ ConVar	ai_reaction_delay_idle( "ai_reaction_delay_idle","0.3" );
 ConVar	ai_reaction_delay_alert( "ai_reaction_delay_alert", "0.1" );
 
 ConVar ai_strong_optimizations( "ai_strong_optimizations", ( IsX360() ) ? "1" : "0" );
+
+ConVar ai_allow_npcvnpc_killlog("ai_allow_npcvnpc_killlog", "1", FCVAR_ARCHIVE);
+
 bool AIStrongOpt( void )
 {
 	return ai_strong_optimizations.GetBool();
@@ -663,6 +666,14 @@ void CAI_BaseNPC::Event_Killed( const CTakeDamageInfo &info )
 		return;
 	}
 
+	CTakeDamageInfo new_info(info);
+	new_info.SetAttacker(pAttacker);
+
+	if (m_bCanSendNPCvNPCDeathNotice)
+	{
+		((CSingleplayRules*)GameRules())->NPCKilled(this, new_info);
+	}
+
 	CNPC_Citizen* pCitizen = dynamic_cast<CNPC_Citizen*>(pAttacker);
 	if ( pCitizen != NULL )
 	{
@@ -682,9 +693,11 @@ void CAI_BaseNPC::Event_Killed( const CTakeDamageInfo &info )
 	
 	if (pAttacker->IsPlayer())
 	{
-		CTakeDamageInfo new_info( info );
-		new_info.SetAttacker( pAttacker );
-		((CSingleplayRules*)GameRules())->NPCKilled(this, new_info);
+		if (!m_bCanSendNPCvNPCDeathNotice)
+		{
+			new_info.SetAttacker(pAttacker);
+			((CSingleplayRules*)GameRules())->NPCKilled(this, new_info);
+		}
 
 		if (GlobalEntity_GetState("player_inbossbattle") == GLOBAL_OFF && sk_gotoboss_ondronekill.GetBool())
 		{
@@ -11159,6 +11172,7 @@ BEGIN_DATADESC( CAI_BaseNPC )
 	DEFINE_FIELD( m_flTimeLastMovement,			FIELD_TIME ),
 	DEFINE_KEYFIELD(m_spawnEquipment,			FIELD_STRING, "additionalequipment" ),
   	DEFINE_FIELD( m_fNoDamageDecal,			FIELD_BOOLEAN ),
+	DEFINE_FIELD(m_bCanSendNPCvNPCDeathNotice, FIELD_BOOLEAN),
   	DEFINE_FIELD( m_hStoredPathTarget,			FIELD_EHANDLE ),
 	DEFINE_FIELD( m_vecStoredPathGoal,		FIELD_POSITION_VECTOR ),
 	DEFINE_FIELD( m_nStoredPathType,			FIELD_INTEGER ),
@@ -11856,6 +11870,8 @@ CAI_BaseNPC::CAI_BaseNPC(void)
 	m_bHintGroupNavLimiting		= false;
 
 	m_fNoDamageDecal			= false;
+
+	m_bCanSendNPCvNPCDeathNotice = ai_allow_npcvnpc_killlog.GetBool();
 
 	SetInAScript( false );
 

@@ -1083,6 +1083,29 @@ bool CNPC_BaseZombie::IsChopped( const CTakeDamageInfo &info )
 	if (info.GetDamageType() & DMG_NEVERGIB)
 		return false;
 
+	bool isManhack = (FClassnameIs(info.GetInflictor(), "npc_manhack") ||
+		FClassnameIs(info.GetInflictor(), "npc_manhack_friendly") ||
+		FClassnameIs(info.GetInflictor(), "npc_manhack_weapon"));
+
+	if (isManhack)
+	{
+		float flFactor = 0.0f;
+
+		if (info.GetInflictor()->VPhysicsGetObject())
+		{
+			Vector vel;
+			info.GetInflictor()->VPhysicsGetObject()->GetVelocity(&vel, NULL);
+			float flSpeed = vel.Length();
+			flFactor = flSpeed / 500.0f;
+			flFactor = clamp(flFactor, 0.0f, 2.0f);
+		}
+
+		if (flFactor >= 1.65f)
+		{
+			return true;
+		}
+	}
+
 	if (info.GetDamageType() & DMG_SLASH)
 		return true;
 

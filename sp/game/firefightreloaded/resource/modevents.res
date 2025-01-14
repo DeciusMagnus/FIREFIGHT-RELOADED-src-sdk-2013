@@ -60,4 +60,11 @@
 		"attacker"	"string"	 	// user ID who killed
 		"weapon"	"string" 	// weapon name killed used 
 	}
+    
+    "npc_death_npc"				// a game event, name may be 32 charaters long
+	{
+		"victimname" "string"   // user ID who died				
+		"attacker"	"string"	 // user ID who killed
+		"weapon"	"string" 	// weapon name killed used 
+	}
 }

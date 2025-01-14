@@ -1907,6 +1907,8 @@ public:
 
 	bool				m_fNoDamageDecal;
 
+	bool				m_bCanSendNPCvNPCDeathNotice;
+
 	EHANDLE				m_hStoredPathTarget;		// For TASK_SET_GOAL
 	Vector				m_vecStoredPathGoal;		//
 	GoalType_t			m_nStoredPathType;			// 

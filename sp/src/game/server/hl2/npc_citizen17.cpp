@@ -726,6 +726,8 @@ void LoadBotNames(void)
 		}
 	}
 
+	//KeyValuesDumpAsDevMsg(pKV, 1);
+
 	pKV->deleteThis();
 }
 
@@ -825,6 +827,8 @@ void CNPC_Citizen::Spawn()
 	m_iszOriginalSquad = m_SquadName;
 
 	m_flNextHealthSearchTime = gpGlobals->curtime;
+
+	m_bCanSendNPCvNPCDeathNotice = true;
 
 	if (HasSpawnFlags(SF_CITIZEN_USE_PLAYERBOT_AI))
 	{

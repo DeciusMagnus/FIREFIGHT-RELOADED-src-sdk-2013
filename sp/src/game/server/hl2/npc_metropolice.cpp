@@ -21,6 +21,7 @@
 #include "hl2_gamerules.h"
 #include "gib.h"
 #include "weapon_physcannon.h"
+#include "physics_prop_ragdoll.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -4091,7 +4092,7 @@ bool CNPC_MetroPolice::CorpseDecapitate(const CTakeDamageInfo& info)
 				m_pAttributes->SwitchEntityColor( this, "new_color" );
 			}
 
-			DispatchParticleEffect( "smod_headshot_r", PATTACH_POINT_FOLLOW, this, "bloodspurt", true );
+			DispatchParticleEffect("smod_headshot_r", PATTACH_POINT_FOLLOW, this, "bloodspurt", true);
 			SpawnBlood( GetAbsOrigin(), g_vecAttackDir, BloodColor(), info.GetDamage() );
 			CGib::SpawnSpecificStickyGibs( this, 6, 150, 450, "models/gibs/pgib_p3.mdl", 6 );
 			CGib::SpawnSpecificStickyGibs( this, 6, 150, 450, "models/gibs/pgib_p4.mdl", 6 );
@@ -4118,7 +4119,6 @@ bool CNPC_MetroPolice::CorpseDecapitate(const CTakeDamageInfo& info)
 				m_pAttributes->SwitchEntityColor( this, "new_color" );
 			}
 
-			DispatchParticleEffect( "smod_blood_decap_r", PATTACH_POINT_FOLLOW, this, "bloodspurt", true );
 			SpawnBlood( GetAbsOrigin(), g_vecAttackDir, BloodColor(), info.GetDamage() );
 			CBaseEntity* pHeadGib = CGib::SpawnSpecificSingleGib( this, 150, 450, GetGibModel( APPENDAGE_HEAD ), 6 );
 
@@ -4145,6 +4145,26 @@ bool CNPC_MetroPolice::CorpseDecapitate(const CTakeDamageInfo& info)
 	}
 
 	return false;
+}
+
+bool CNPC_MetroPolice::BecomeRagdoll(const CTakeDamageInfo& info, const Vector& forceVector)
+{
+	if (m_bDecapitated)
+	{
+		CTakeDamageInfo newinfo = info;
+		newinfo.SetDamageForce(forceVector);
+
+		//FIXME: This is fairly leafy to be here, but time is short!
+		CBaseEntity* pRagdoll = CreateServerRagdoll(this, m_nForceBone, newinfo, COLLISION_GROUP_INTERACTIVE_DEBRIS, true);
+		FixupBurningServerRagdoll(pRagdoll);
+		PhysSetEntityGameFlags(pRagdoll, FVPHYSICS_NO_SELF_COLLISIONS);
+		DispatchParticleEffect("smod_blood_decap_r", PATTACH_POINT_FOLLOW, pRagdoll, "bloodspurt", true);
+		RemoveDeferred();
+
+		return true;
+	}
+
+	return BaseClass::BecomeRagdoll(info, forceVector);
 }
 
 Vector RagForce(Vector vecDamageDir)
@@ -5379,28 +5399,34 @@ int CNPC_MetroPolice::OnTakeDamage_Alive( const CTakeDamageInfo &inputInfo )
 
 	if (info.GetInflictor())
 	{
-		if (FClassnameIs(info.GetInflictor(), "prop_physics") ||
-			FClassnameIs(info.GetInflictor(), "prop_physics_multiplayer") ||
-			FClassnameIs(info.GetInflictor(), "npc_manhack") ||
-			FClassnameIs(info.GetInflictor(), "npc_manhack_friendly"))
+		bool isManhack = (FClassnameIs(info.GetInflictor(), "npc_manhack") ||
+			FClassnameIs(info.GetInflictor(), "npc_manhack_friendly") ||
+			FClassnameIs(info.GetInflictor(), "npc_manhack_weapon"));
+
+		if (isManhack)
 		{
-			if (info.GetDamageType() & DMG_SLASH || info.GetDamageType() & DMG_SNIPER)
+			float flFactor = 0.0f;
+
+			if (info.GetInflictor()->VPhysicsGetObject())
+			{
+				Vector vel;
+				info.GetInflictor()->VPhysicsGetObject()->GetVelocity(&vel, NULL);
+				float flSpeed = vel.Length();
+				flFactor = flSpeed / 500.0f;
+				flFactor = clamp(flFactor, 0.0f, 2.0f);
+			}
+
+			if (flFactor >= 1.65f)
 			{
 				CorpseDecapitate(info);
 			}
 		}
-		else
+		else if (FClassnameIs(info.GetInflictor(), "prop_physics") ||
+			FClassnameIs(info.GetInflictor(), "prop_physics_multiplayer"))
 		{
-			switch (LastHitGroup())
+			if (info.GetDamageType() & DMG_SLASH)
 			{
-				case HITGROUP_HEAD:
-				{
-					if (info.GetDamageType() & DMG_SLASH || info.GetDamageType() & DMG_SNIPER)
-					{
-						CorpseDecapitate(info);
-					}
-					break;
-				}
+				CorpseDecapitate(info);
 			}
 		}
 	}

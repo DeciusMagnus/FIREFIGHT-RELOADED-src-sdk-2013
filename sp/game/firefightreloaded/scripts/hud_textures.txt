@@ -254,6 +254,11 @@
 				"font"		"WeaponIconsKillFeed"
 				"character"	"9"
 		}
+		"prop_ragdoll"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"9"
+		}
 		"weapon_striderbuster"
 		{
 				"font"		"WeaponIconsKillFeed"
