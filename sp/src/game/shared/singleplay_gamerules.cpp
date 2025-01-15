@@ -32,17 +32,11 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-ConVar sk_money_multiplier1("sk_money_multiplier1", "1");
-ConVar sk_money_multiplier2("sk_money_multiplier2", "2");
-ConVar sk_money_multiplier3("sk_money_multiplier3", "3");
-ConVar sk_money_multiplier4("sk_money_multiplier4", "4");
-ConVar sk_money_multiplier5("sk_money_multiplier5", "5");
-
-ConVar sk_exp_multiplier1("sk_exp_multiplier1", "1");
-ConVar sk_exp_multiplier2("sk_exp_multiplier2", "2");
-ConVar sk_exp_multiplier3("sk_exp_multiplier3", "3");
-ConVar sk_exp_multiplier4("sk_exp_multiplier4", "4");
-ConVar sk_exp_multiplier5("sk_exp_multiplier5", "5");
+ConVar sk_multiplier1("sk_multiplier1", "1");
+ConVar sk_multiplier2("sk_multiplier2", "2");
+ConVar sk_multiplier3("sk_multiplier3", "3");
+ConVar sk_multiplier4("sk_multiplier4", "4");
+ConVar sk_multiplier5("sk_multiplier5", "5");
 
 ConVar sv_killingspree("sv_killingspree", "1", FCVAR_ARCHIVE);
 
@@ -721,30 +715,30 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 
 				switch (GetSkillLevel())
 				{
-				case SKILL_EASY:
-					moneyReward *= sk_money_multiplier1.GetInt();
-					xpReward *= sk_exp_multiplier1.GetInt();
-					break;
+					case SKILL_EASY:
+						moneyReward *= sk_multiplier1.GetInt();
+						xpReward *= sk_multiplier1.GetInt();
+						break;
 
-				case SKILL_MEDIUM:
-					moneyReward *= sk_money_multiplier2.GetInt();
-					xpReward *= sk_exp_multiplier2.GetInt();
-					break;
+					case SKILL_MEDIUM:
+						moneyReward *= sk_multiplier2.GetInt();
+						xpReward *= sk_multiplier2.GetInt();
+						break;
 
-				case SKILL_HARD:
-					moneyReward *= sk_money_multiplier3.GetInt();
-					xpReward *= sk_exp_multiplier3.GetInt();
-					break;
+					case SKILL_HARD:
+						moneyReward *= sk_multiplier3.GetInt();
+						xpReward *= sk_multiplier3.GetInt();
+						break;
 
-				case SKILL_VERYHARD:
-					moneyReward *= sk_money_multiplier4.GetInt();
-					xpReward *= sk_exp_multiplier4.GetInt();
-					break;
+					case SKILL_VERYHARD:
+						moneyReward *= sk_multiplier4.GetInt();
+						xpReward *= sk_multiplier4.GetInt();
+						break;
 
-				case SKILL_NIGHTMARE:
-					moneyReward *= sk_money_multiplier5.GetInt();
-					xpReward *= sk_exp_multiplier5.GetInt();
-					break;
+					case SKILL_NIGHTMARE:
+						moneyReward *= sk_multiplier5.GetInt();
+						xpReward *= sk_multiplier5.GetInt();
+						break;
 				}
 
 				pEntity->IncrementFragCount(IPointsForKillEntity(pEntity, pVictim));
@@ -890,7 +884,30 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 				moneyReward *= pEntity->m_iKashBoostMult;
 				xpReward *= pEntity->m_iExpBoostMult;
 
-				int killMult = (pEntity->FragCount() * 0.06) + 1;
+				int killMult = 1;
+
+				switch (GetSkillLevel())
+				{
+					case SKILL_EASY:
+						killMult = (pEntity->FragCount() * (sk_multiplier1.GetInt() / 100)) + 1;
+						break;
+
+					case SKILL_MEDIUM:
+						killMult = (pEntity->FragCount() * (sk_multiplier2.GetInt() / 100)) + 1;
+						break;
+
+					case SKILL_HARD:
+						killMult = (pEntity->FragCount() * (sk_multiplier3.GetInt() / 100)) + 1;
+						break;
+
+					case SKILL_VERYHARD:
+						killMult = (pEntity->FragCount() * (sk_multiplier4.GetInt() / 100)) + 1;
+						break;
+
+					case SKILL_NIGHTMARE:
+						killMult = (pEntity->FragCount() * (sk_multiplier5.GetInt() / 100)) + 1;
+						break;
+				}
 
 				moneyReward *= killMult;
 				xpReward *= killMult;
@@ -993,9 +1010,6 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 		}
 		else if (pKiller->IsNPC())
 		{
-			NpcName killer_name;
-			GetNPCName(killer_name, pKiller);
-
 			CAI_BaseNPC *pNPC = pKiller->MyNPCPointer();
 
 			if (pNPC)
@@ -1018,6 +1032,9 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 				killer_weapon_name = STRING(pKiller->m_iClassname);
 			}
 
+			NpcName killer_name;
+			GetNPCName(killer_name, pKiller);
+
 			IGameEvent* event = gameeventmanager->CreateEvent("player_death_npc");
 			if (event)
 			{
@@ -1031,6 +1048,14 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 		}
 	}
 
+	bool CheckIfAlliedOrNeutral(CBaseCombatCharacter* pBCC1, CBaseCombatCharacter* pBCC2)
+	{
+		bool areAllied = (pBCC2->IRelationType(pBCC1) == D_LI || pBCC1->IRelationType(pBCC2) == D_LI);
+		bool areNeutral = (pBCC2->IRelationType(pBCC1) == D_NU || pBCC1->IRelationType(pBCC2) == D_NU);
+
+		return (areAllied || areNeutral);
+	}
+
 	void CSingleplayRules::DeathNoticeNPC(CBaseEntity* pVictim, const CTakeDamageInfo& info, int xpReward, int moneyReward)
 	{
 		// Work out what killed the player, and send a message to all clients about it
@@ -1040,14 +1065,6 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 		// Find the killer & the scorer
 		CBaseEntity* pInflictor = info.GetInflictor();
 		CBaseEntity* pKiller = info.GetAttacker();
-
-		if (FClassnameIs(pInflictor, "npc_hornet") ||
-			FClassnameIs(pKiller, "npc_hornet") ||
-			FClassnameIs(pVictim, "npc_hornet"))
-			return;
-
-		if (pInflictor == pVictim || pKiller == pVictim)
-			return;
 
 		if (pKiller->IsPlayer())
 		{
@@ -1122,21 +1139,42 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 		}
 		else
 		{
-			CAI_BaseNPC* pNPC = pKiller->MyNPCPointer();
+			CAI_BaseNPC* pNPCKiller = pKiller->MyNPCPointer();
+			CAI_BaseNPC* pNPCInflictor = pInflictor->MyNPCPointer();
+			CAI_BaseNPC* pNPCVictim = pVictim->MyNPCPointer();
 
-			if (pNPC)
+			if (pNPCVictim)
 			{
-				if (pNPC->GetActiveWeapon())
+				if (pNPCInflictor)
 				{
-					killer_weapon_name = pNPC->GetActiveWeapon()->GetClassname();
-				}
-				else if (pInflictor)
-				{
-					killer_weapon_name = STRING(pInflictor->m_iClassname);  // it's just that easy
+					if (pNPCInflictor == pNPCVictim)
+						return;
+
+					if (pNPCInflictor->GetClassname() == pNPCVictim->GetClassname())
+						return;
+
+					if (CheckIfAlliedOrNeutral(pNPCInflictor, pNPCVictim))
+						return;
 				}
 				else
 				{
-					killer_weapon_name = STRING(pKiller->m_iClassname);
+					return;
+				}
+
+				if (pNPCKiller)
+				{
+					if (pNPCKiller == pNPCVictim)
+						return;
+
+					if (pNPCKiller->GetClassname() == pNPCVictim->GetClassname())
+						return;
+
+					if (CheckIfAlliedOrNeutral(pNPCKiller, pNPCVictim))
+						return;
+				}
+				else
+				{
+					return;
 				}
 			}
 			else
@@ -1144,11 +1182,24 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 				return;
 			}
 
+			if (pNPCKiller->GetActiveWeapon())
+			{
+				killer_weapon_name = pNPCKiller->GetActiveWeapon()->GetClassname();
+			}
+			else if (pNPCInflictor)
+			{
+				killer_weapon_name = STRING(pNPCInflictor->m_iClassname);  // it's just that easy
+			}
+			else
+			{
+				killer_weapon_name = STRING(pNPCKiller->m_iClassname);
+			}
+
 			NpcName att_name;
-			GetNPCName(att_name, pKiller);
+			GetNPCName(att_name, pNPCKiller);
 
 			NpcName vic_name;
-			GetNPCName(vic_name, pVictim);
+			GetNPCName(vic_name, pNPCVictim);
 
 			IGameEvent* event = gameeventmanager->CreateEvent("npc_death_npc");
 			if (event)

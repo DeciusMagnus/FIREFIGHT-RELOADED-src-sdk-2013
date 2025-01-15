@@ -1459,7 +1459,6 @@ CBaseEntity *CNPC_Advisor::PickThrowable( bool bRequireInView )
 	// pick a random candidate.
 	int nRandomIndex = random->RandomInt( 0, numCandidates - 1 );
 	return m_physicsObjects[candidates[nRandomIndex]];
-
 }
 
 /*! \TODO
@@ -1687,7 +1686,6 @@ void CNPC_Advisor::AddToThrownObjects(CBaseEntity *pEnt)
 
 	m_haRecentlyThrownObjects[oldestThrownObject] = pEnt;
 	m_flaRecentlyThrownObjectTimes[oldestThrownObject] = gpGlobals->curtime;
-
 }
 
 

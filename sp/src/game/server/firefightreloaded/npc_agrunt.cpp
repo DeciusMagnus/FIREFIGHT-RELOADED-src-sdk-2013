@@ -113,6 +113,8 @@ void CHornet::Spawn( void )
 	SetNextThink( gpGlobals->curtime + 0.1f );
 	ResetSequenceInfo();
 
+	m_bCanSendNPCvNPCDeathNotice = false;
+
 	m_vecEnemyLKP = vec3_origin;
 }
 
