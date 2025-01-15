@@ -1380,7 +1380,7 @@ void CHL2_Player::KickAttack(void)
 					return;
 				}
 
-				CBaseEntity* Victim = CheckTraceHullAttack(Weapon_ShootPosition(), vecEnd, Vector(-16, -16, -16), Vector(16, 16, 16), KickDamageFlightBoost, (DMG_CLUB), KickThrowForceMult, true);
+				CBaseEntity* Victim = CheckTraceHullAttack(Weapon_ShootPosition(), vecEnd, Vector(-16, -16, -16), Vector(16, 16, 16), KickDamageFlightBoost, (DMG_CLUB | DMG_BLAST | DMG_NEVERGIB), KickThrowForceMult, true);
 				if (Victim && Victim->IsNPC())
 				{
 					//don't kick striders, only deliver damage.
@@ -1405,6 +1405,7 @@ void CHL2_Player::KickAttack(void)
 
 						FireBullets(info);
 					}
+
 					EmitSound("HL2Player.kick_body");
 					return;
 				}

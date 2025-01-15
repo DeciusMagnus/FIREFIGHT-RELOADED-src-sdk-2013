@@ -1808,9 +1808,13 @@ bool CWeaponRPG::ReloadOrSwitchWeapons(void)
 		if (IsIronsighted())
 			DisableIronsights();
 
+
 		if (((GetWeaponFlags() & ITEM_FLAG_NOAUTOSWITCHEMPTY) == false) && (g_pGameRules->SwitchToNextBestWeapon(pOwner, this)))
 		{
-			m_flNextPrimaryAttack = gpGlobals->curtime + 0.3;
+			if (!IsDualWielding())
+			{
+				m_flNextPrimaryAttack = gpGlobals->curtime + 0.3;
+			}
 			return true;
 		}
 	}
@@ -1997,6 +2001,11 @@ bool CWeaponRPG::IsGuiding( void )
 bool CWeaponRPG::Deploy( void )
 {
 	m_bInitialStateUpdate = true;
+
+	if (IsDualWielding())
+	{
+		m_flNextPrimaryAttack = gpGlobals->curtime;
+	}
 
 	return BaseClass::Deploy();
 }

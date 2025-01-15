@@ -34,7 +34,7 @@
 
 ConVar sk_initialspawnertime("sk_initialspawnertime", "5", FCVAR_CHEAT);
 ConVar sk_spawnrareenemies("sk_spawnrareenemies", "1", FCVAR_ARCHIVE);
-ConVar sk_spawnerhidefromplayer("sk_spawnerhidefromplayer", "1", FCVAR_ARCHIVE);
+ConVar sk_spawnerhidefromplayer("sk_spawnerhidefromplayer", "0", FCVAR_ARCHIVE);
 ConVar sk_spawner_npc_ragdoll_fade("sk_spawner_npc_ragdoll_fade", "1", FCVAR_ARCHIVE);
 ConVar sk_spawner_largenpc_spawndelay("sk_spawner_largenpc_spawntime", "300", FCVAR_CHEAT);
 ConVar sk_spawner_fps_control("sk_spawner_fps_control", "1", FCVAR_ARCHIVE, "Allow spawners to disable themselves based on framerate.");
@@ -279,8 +279,8 @@ void CNPCMakerFirefight::AdjustSpawnTime(void)
 	if (sk_spawner_difficultyadjust.GetBool())
 	{
 		int skill = g_pGameRules->GetSkillLevel();
-		int skillMultiplier = (4 - skill);
-		spawnFreq = spawnFreq * ((skill <= SKILL_VERYHARD) ? skillMultiplier : 1);
+		int skillMultiplier = (3 - skill);
+		spawnFreq = spawnFreq * ((skill <= SKILL_HARD) ? skillMultiplier : 1);
 	}
 
 	m_flSpawnFrequency = spawnFreq;

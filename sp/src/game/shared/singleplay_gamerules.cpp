@@ -1143,11 +1143,14 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 			CAI_BaseNPC* pNPCInflictor = pInflictor->MyNPCPointer();
 			CAI_BaseNPC* pNPCVictim = pVictim->MyNPCPointer();
 
+			//playerbots are allowed to have suicide notifs.
+			bool isPlayerbot = (FClassnameIs(pVictim, "npc_playerbot") || FClassnameIs(pVictim, "npc_playerbot_enemy"));
+
 			if (pNPCVictim)
 			{
 				if (pNPCInflictor)
 				{
-					if (pNPCInflictor == pNPCVictim)
+					if (pNPCInflictor == pNPCVictim && !isPlayerbot)
 						return;
 
 					if (pNPCInflictor->GetClassname() == pNPCVictim->GetClassname())
@@ -1163,7 +1166,7 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 
 				if (pNPCKiller)
 				{
-					if (pNPCKiller == pNPCVictim)
+					if (pNPCKiller == pNPCVictim && !isPlayerbot)
 						return;
 
 					if (pNPCKiller->GetClassname() == pNPCVictim->GetClassname())
