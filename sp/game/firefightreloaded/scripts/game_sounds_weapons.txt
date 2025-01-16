@@ -2082,3 +2082,16 @@
 	"soundlevel"		"SNDLVL_NORM"
 	"wave"		")weapons/grenade_launcher/grenadeother/grenade_launcher_actionclosed.wav"
 }
+
+"GrenadeLauncher.GrenadeCollide"
+{
+	"channel"	"CHAN_STATIC"
+	"volume"	"1"
+	"soundlevel"	"SNDLVL_74dB"
+	"rndwave"
+	{
+		"wave"		"weapons/grenade_impact.wav"
+		"wave"		"weapons/grenade_impact2.wav"
+		"wave"		"weapons/grenade_impact3.wav"
+	}
+}
