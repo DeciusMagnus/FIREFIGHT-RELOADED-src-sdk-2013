@@ -17,6 +17,8 @@
 #include "basegrenade_shared.h"
 
 #define	MAX_AR2_NO_COLLIDE_TIME 0.2
+#define	MAX_M79_NO_COLLIDE_TIME 0.35
+#define M79_GRENADE_VELOCITY 200
 
 class SmokeTrail;
 class CWeaponAR2;
@@ -42,6 +44,7 @@ public:
 	void		GlassCollide(CBaseEntity* pOther);
     
     bool        m_bM79Variant;
+	bool        m_bPlayedSound;
 
 public:
 	void EXPORT				Detonate(void);

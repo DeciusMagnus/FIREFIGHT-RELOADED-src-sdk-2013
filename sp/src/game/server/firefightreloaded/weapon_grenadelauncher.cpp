@@ -24,8 +24,6 @@
 extern ConVar sk_plr_dmg_m79_grenade;
 extern ConVar sk_npc_dmg_m79_grenade;
 
-#define M79_GRENADE_VELOCITY 200
-
 class CWeaponGrenadeLauncher : public CBaseHLCombatWeapon
 {
 	DECLARE_DATADESC();

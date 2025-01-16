@@ -67,7 +67,7 @@ void CGrenadeAR2::Spawn( void )
 {
 	Precache( );
 	SetSolid( SOLID_BBOX );
-	SetMoveType( MOVETYPE_FLYGRAVITY, MOVECOLLIDE_FLY_BOUNCE );
+	SetMoveType(MOVETYPE_FLYGRAVITY, MOVECOLLIDE_FLY_BOUNCE);
 
 	// Hits everything but debris
 	SetCollisionGroup( COLLISION_GROUP_PROJECTILE );
@@ -139,9 +139,10 @@ void CGrenadeAR2::Spawn( void )
 	m_iHealth		= 1;
 	m_vecVelocity	= vec3_origin;
 	m_bTouched		= false;
+	m_bPlayedSound = false;
 
-	SetGravity( UTIL_ScaleForGravity( 400 ) );	// use a lower gravity for grenades to make them easier to see
-	SetFriction( 0.8 );
+	SetGravity(UTIL_ScaleForGravity(400));	// use a lower gravity for grenades to make them easier to see
+	SetFriction(0.8);
 	SetSequence( 0 );
 
 	m_fDangerRadius = 100;
@@ -187,10 +188,21 @@ void CGrenadeAR2::GrenadeAR2Think( void )
 
 	if (!m_bIsLive)
 	{
-		// Go live after a short delay
-		if (m_fSpawnTime + MAX_AR2_NO_COLLIDE_TIME < gpGlobals->curtime)
+		if (m_bM79Variant)
 		{
-			m_bIsLive = true;
+			// Go live after a short delay
+			if (m_fSpawnTime + MAX_M79_NO_COLLIDE_TIME < gpGlobals->curtime)
+			{
+				m_bIsLive = true;
+			}
+		}
+		else
+		{
+			// Go live after a short delay
+			if (m_fSpawnTime + MAX_AR2_NO_COLLIDE_TIME < gpGlobals->curtime)
+			{
+				m_bIsLive = true;
+			}
 		}
 	}
 	
@@ -318,6 +330,15 @@ void CGrenadeAR2::GrenadeAR2Touch( CBaseEntity *pOther )
 			m_bIsLive = true;
 			Detonate();
 		}
+
+		if (m_bM79Variant)
+		{
+			if (!m_bPlayedSound)
+			{
+				EmitSound("GrenadeLauncher.GrenadeCollide");
+				m_bPlayedSound = true;
+			}
+		}
 	}
 }
 
@@ -379,6 +400,7 @@ void CGrenadeAR2::Precache( void )
     if (m_bM79Variant)
     {
 		PrecacheModel("models/Weapons/w_he_grenade.mdl");
+		PrecacheScriptSound("GrenadeLauncher.GrenadeCollide");
     }
     else
     {
