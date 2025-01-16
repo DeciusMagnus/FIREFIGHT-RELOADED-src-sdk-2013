@@ -262,6 +262,13 @@ void CGrenadeAR2::GlassCollide(CBaseEntity* pOther)
 	pOther->DispatchTraceAttack(info, forward, &tr);
 	ApplyMultiDamage();
 	m_vecVelocity = GetAbsVelocity();
+
+	PlayCoolDingCollideSound();
+
+	if (!m_bIsLive)
+	{
+		m_bIsLive = true;
+	}
 }
 
 void CGrenadeAR2::GrenadeAR2Touch( CBaseEntity *pOther )
@@ -276,11 +283,6 @@ void CGrenadeAR2::GrenadeAR2Touch( CBaseEntity *pOther )
 		if (pOther->GetCollisionGroup() == COLLISION_GROUP_BREAKABLE_GLASS)
 		{
 			GlassCollide(pOther);
-
-			if (!m_bIsLive)
-			{
-				m_bIsLive = true;
-			}
 			return;
 		}
 
@@ -290,11 +292,6 @@ void CGrenadeAR2::GrenadeAR2Touch( CBaseEntity *pOther )
 			if (pOtherEntity && (pOtherEntity->GetMaterialType() == matGlass || pOtherEntity->GetMaterialType() == matWeb))
 			{
 				GlassCollide(pOther);
-
-				if (!m_bIsLive)
-				{
-					m_bIsLive = true;
-				}
 				return;
 			}
 		}
@@ -305,11 +302,6 @@ void CGrenadeAR2::GrenadeAR2Touch( CBaseEntity *pOther )
 			if (pOtherEntity && (pOtherEntity->GetMaterialType() == matGlass || pOtherEntity->GetMaterialType() == matWeb))
 			{
 				GlassCollide(pOther);
-
-				if (!m_bIsLive)
-				{
-					m_bIsLive = true;
-				}
 				return;
 			}
 		}
@@ -331,14 +323,19 @@ void CGrenadeAR2::GrenadeAR2Touch( CBaseEntity *pOther )
 			Detonate();
 		}
 
-		if (m_bM79Variant)
-		{
-			if (!m_bPlayedSound)
-			{
-				EmitSound("GrenadeLauncher.GrenadeCollide");
-				m_bPlayedSound = true;
-			}
-		}
+		PlayCoolDingCollideSound();
+	}
+}
+
+void CGrenadeAR2::PlayCoolDingCollideSound()
+{
+	if (!m_bM79Variant)
+		return;
+
+	if (!m_bPlayedSound)
+	{
+		EmitSound("GrenadeLauncher.GrenadeCollide");
+		m_bPlayedSound = true;
 	}
 }
 

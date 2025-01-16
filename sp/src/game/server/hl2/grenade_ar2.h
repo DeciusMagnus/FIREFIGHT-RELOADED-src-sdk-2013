@@ -42,6 +42,7 @@ public:
 	void		Event_Killed( const CTakeDamageInfo &info );
 
 	void		GlassCollide(CBaseEntity* pOther);
+	void		PlayCoolDingCollideSound();
     
     bool        m_bM79Variant;
 	bool        m_bPlayedSound;
