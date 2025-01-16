@@ -147,4 +147,11 @@
 		"ammotype"	"Flechette"
 		"ammonum"	"120"
 	}
+	"25"
+	{
+		"weapon"	"weapon_grenadelauncher"
+		"ammotype"	"M79_Grenade"
+		"ammonum"	"30"
+	}
+
 }

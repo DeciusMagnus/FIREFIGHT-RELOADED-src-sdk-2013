@@ -214,4 +214,11 @@
 		"ammotype"	"rpg_round"
 		"ammonum"	"999"
 	}
+	"34"
+	{
+		"randomizermode"	"1"
+		"weapon"	"weapon_grenadelauncher"
+		"ammotype"	"M79_Grenade"
+		"ammonum"	"999"
+	}
 }

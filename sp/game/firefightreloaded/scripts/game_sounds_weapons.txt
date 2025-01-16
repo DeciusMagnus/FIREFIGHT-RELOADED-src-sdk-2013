@@ -2030,3 +2030,55 @@
 
 	"wave"			"weapons/DEagle/de_deploy.wav"
 }
+
+//GRENADA
+"GrenadeLauncher.Fire"
+{
+	"channel"		"CHAN_WEAPON"
+	"soundlevel"		"SNDLVL_TALKING"
+	"volume"		"0.80"
+	"wave"		")weapons/grenade_launcher/grenadefire/grenade_launcher_fire_1.wav"
+}
+
+"GrenadeLauncher.Explode"
+{
+	"channel"		"CHAN_WEAPON"
+	"soundlevel"		"SNDLVL_GUNFIRE"
+	"wave"		")weapons/grenade_launcher/grenadefire/grenade_launcher_explode_2.wav"
+}
+
+"GrenadeLauncher.Deploy"
+{
+	"channel"		"CHAN_ITEM"
+	"soundlevel"		"SNDLVL_NORM"
+	"volume"		"0.80,0.77"
+	"wave"		")weapons/grenade_launcher/grenadeother/grenade_launcher_deploy_1.wav"
+}
+
+"GrenadeLauncher.LatchOpen"
+{
+	"channel"		"CHAN_ITEM"
+	"soundlevel"		"SNDLVL_NORM"
+	"wave"		")weapons/grenade_launcher/grenadeother/grenade_launcher_latchopen.wav"
+}
+
+"GrenadeLauncher.ShellOut"
+{
+	"channel"		"CHAN_ITEM"
+	"soundlevel"		"SNDLVL_NORM"
+	"wave"		")weapons/grenade_launcher/grenadeother/grenade_launcher_shellout.wav"
+}
+
+"GrenadeLauncher.ShellIn"
+{
+	"channel"		"CHAN_ITEM"
+	"soundlevel"		"SNDLVL_NORM"
+	"wave"		")weapons/grenade_launcher/grenadeother/grenade_launcher_shellin.wav"
+}
+
+"GrenadeLauncher.ActionClosed"
+{
+	"channel"		"CHAN_ITEM"
+	"soundlevel"		"SNDLVL_NORM"
+	"wave"		")weapons/grenade_launcher/grenadeother/grenade_launcher_actionclosed.wav"
+}

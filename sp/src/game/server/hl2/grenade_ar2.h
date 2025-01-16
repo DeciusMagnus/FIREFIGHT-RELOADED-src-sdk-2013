@@ -40,6 +40,8 @@ public:
 	void		Event_Killed( const CTakeDamageInfo &info );
 
 	void		GlassCollide(CBaseEntity* pOther);
+    
+    bool        m_bM79Variant;
 
 public:
 	void EXPORT				Detonate(void);

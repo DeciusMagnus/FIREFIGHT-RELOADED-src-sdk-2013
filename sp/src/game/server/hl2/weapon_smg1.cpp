@@ -21,7 +21,8 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-extern ConVar    sk_plr_dmg_smg1_grenade;	
+extern ConVar    sk_plr_dmg_smg1_grenade;
+extern ConVar	sk_npc_dmg_smg1_grenade;
 
 class CWeaponSMG1 : public CHLSelectFireMachineGun
 {
@@ -259,7 +260,8 @@ void CWeaponSMG1::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatChar
 			//vecShootDir = npc->GetShootEnemyDir( vecShootOrigin );
 
 			//Checks if it can fire the grenade
-			WeaponRangeAttack2Condition();
+			if (WeaponRangeAttack2Condition() == COND_NONE)
+				return;
 
 			Vector vecThrow = m_vecTossVelocity;
 
@@ -280,7 +282,7 @@ void CWeaponSMG1::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatChar
 
 			pGrenade->SetGravity(0.5); // lower gravity since grenade is aerodynamic and engine doesn't know it.
 
-			pGrenade->SetDamage(sk_plr_dmg_smg1_grenade.GetFloat());
+			pGrenade->SetDamage(sk_npc_dmg_smg1_grenade.GetFloat());
 
 			if (g_pGameRules->IsSkillLevel(SKILL_HARD))
 			{

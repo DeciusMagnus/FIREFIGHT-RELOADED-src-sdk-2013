@@ -62,33 +62,40 @@
 	}
 	"9"
 	{
+		"name"	"#GameUI_Store_Buy_GrenadeLauncher"
+		"item_type"	"5"
+		"min_level"	"5"
+		"weapon_classname"	"weapon_grenadelauncher"
+	}
+	"10"
+	{
 		"name"	"#GameUI_Store_Buy_SniperRifle"
 		"item_type"	"5"
 		"min_level"	"1"
 		"weapon_classname"	"weapon_sniper_rifle"
 	}
-	"10"
+	"11"
 	{
 		"name"	"#GameUI_Store_Buy_M249Para"
 		"item_type"	"5"
 		"min_level"	"5"
 		"weapon_classname"	"weapon_m249para"
 	}
-	"11"
+	"12"
 	{
 		"name"	"#GameUI_Store_Buy_Gauss"
 		"item_type"	"5"
 		"min_level"	"7"
 		"weapon_classname"	"weapon_gauss"
 	}
-	"12"
+	"13"
 	{
 		"name"	"#GameUI_Store_Buy_Katana"
 		"item_type"	"5"
 		"min_level"	"10"
 		"weapon_classname"	"weapon_katana"
 	}
-	"13"
+	"14"
 	{
 		"name"	"#GameUI_Bugbait"
 		"item_type"	"5"
@@ -96,7 +103,7 @@
 		"unlocks_in_lone_wolf"	"0"
 		"weapon_classname"	"weapon_bugbait"
 	}
-	"14"
+	"15"
 	{
 		"name"	"#GameUI_Store_Buy_Knife"
 		"item_type"	"5"
@@ -104,35 +111,35 @@
 		"weapon_classname"	"weapon_knife"
 		"unlocks_in_iron_kick"	"1"
 	}
-	"15"
+	"16"
 	{
 		"name"	"#GameUI_Store_Buy_Railgun"
 		"item_type"	"5"
 		"min_level"	"8"
 		"weapon_classname"	"weapon_railgun"
 	}
-	"16"
+	"17"
 	{
 		"name"	"#GameUI_Store_Buy_OICW"
 		"item_type"	"5"
 		"min_level"	"4"
 		"weapon_classname"	"weapon_oicw"
 	}
-	"17"
+	"18"
 	{
 		"name"	"#GameUI_Store_Buy_Alyxgun"
 		"item_type"	"5"
 		"min_level"	"8"
 		"weapon_classname"	"weapon_alyxgun"
 	}
-	"18"
+	"19"
 	{
 		"name"	"#GameUI_Store_Buy_Turret"
 		"item_type"	"5"
 		"min_level"	"6"
 		"weapon_classname"	"weapon_turret"
 	}
-	"19"
+	"20"
 	{
 		"name"	"#GameUI_Store_Buy_Manhack"
 		"item_type"	"6"

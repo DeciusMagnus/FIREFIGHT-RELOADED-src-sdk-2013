@@ -246,6 +246,10 @@ ConVar    sk_npc_dmg_assassinsmg("sk_npc_dmg_assassinsmg", "0", FCVAR_REPLICATED
 
 ConVar    sk_npc_dmg_killerscanner("sk_npc_dmg_killerscanner", "0", FCVAR_REPLICATED);
 
+ConVar	sk_plr_dmg_m79_grenade("sk_plr_dmg_m79_grenade", "0", FCVAR_REPLICATED);
+ConVar	sk_npc_dmg_m79_grenade("sk_npc_dmg_m79_grenade", "0", FCVAR_REPLICATED);
+ConVar	sk_max_m79_grenade("sk_max_m79_grenade", "0", FCVAR_REPLICATED);
+
 // Gunship & Dropship cannons
 ConVar	sk_npc_dmg_gunship			( "sk_npc_dmg_gunship", "0", FCVAR_REPLICATED);
 ConVar	sk_npc_dmg_gunship_to_plr	( "sk_npc_dmg_gunship_to_plr", "0", FCVAR_REPLICATED);
@@ -1881,6 +1885,7 @@ CAmmoDef *GetAmmoDef()
 		def.AddAmmoType("turret", DMG_GENERIC, TRACER_NONE, 0, 0, "sk_max_turret", 0, 0, BULLET_IMPULSE(200, 1225), 0, 'r');
 		def.AddAmmoType("manhack", DMG_GENERIC, TRACER_NONE, 0, 0, "sk_max_manhack", 0, 0, BULLET_IMPULSE(200, 1225), 0, 'r');
 		def.AddAmmoType("Flechette", DMG_GENERIC, TRACER_NONE, 0, 0, "sk_max_flechette", 0, 0, BULLET_IMPULSE(200, 1225), 0, 'r');
+		def.AddAmmoType("M79_Grenade", DMG_BURN | DMG_ALWAYSGIB | DMG_BLAST, TRACER_NONE, "sk_plr_dmg_m79_grenade", "sk_npc_dmg_m79_grenade", "sk_max_m79_grenade", 0, 0, 't');
 		//CUSTOM AMMO TYPES HERE.
 		def.AddAmmoType("CustomBullet1_Normal", DMG_BULLET, TRACER_LINE_AND_WHIZ, "sk_plr_dmg_custom_normal", "sk_npc_dmg_custom_normal", "sk_max_custom_normal", BULLET_IMPULSE(800, 5000), 0);
 		def.AddAmmoType("CustomBullet2_NormalBurn", DMG_BULLET | DMG_BURN, TRACER_LINE_AND_WHIZ, "sk_plr_dmg_custom_normal", "sk_npc_dmg_custom_normal", "sk_max_custom_normal", BULLET_IMPULSE(800, 5000), 0);

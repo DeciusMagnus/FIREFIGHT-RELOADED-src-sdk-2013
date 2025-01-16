@@ -40,7 +40,7 @@
 	{
 		"weapon"	"weapon_flechettegun"
 		"ammotype"	"Flechette"
-		"ammonum"	"96"
+		"ammonum"	"100"
 	}
 	//dualies
 	"7"
@@ -50,6 +50,12 @@
 		"ammonum"	"100"
 	}
 	"8"
+	{
+		"weapon"	"weapon_grenadelauncher"
+		"ammotype"	"M79_Grenade"
+		"ammonum"	"100"
+	}
+	"9"
 	{
 		"weapon"	"weapon_physcannon"
 	}

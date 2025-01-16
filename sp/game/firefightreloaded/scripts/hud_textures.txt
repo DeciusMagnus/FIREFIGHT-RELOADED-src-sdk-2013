@@ -309,6 +309,11 @@
 				"font"		"WeaponIconsKillFeed"
 				"character"	"7"
 		}
+		"weapon_grenadelauncher"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"7"
+		}
 		"weapon_stunstick"
 		{
 				"font"		"WeaponIconsKillFeed"

@@ -873,6 +873,39 @@ public:
 };
 LINK_ENTITY_TO_CLASS(item_ammo_gauss, CItem_BoxGauss);
 
+// ========================================================================
+//	>> M79_Grenade
+// ========================================================================
+class CItem_M79_Grenade : public CItem
+{
+public:
+	DECLARE_CLASS(CItem_M79_Grenade, CItem);
+
+	void Spawn(void)
+	{
+		Precache();
+		SetModel("models/Weapons/w_he_grenade.mdl");
+		BaseClass::Spawn();
+	}
+	void Precache(void)
+	{
+		PrecacheModel("models/Weapons/w_he_grenade.mdl");
+	}
+	bool MyTouch(CBasePlayer* pPlayer)
+	{
+		if (ITEM_GiveAmmo(pPlayer, SIZE_AMMO_SMG1_GRENADE, "M79_Grenade"))
+		{
+			if (g_pGameRules->ItemShouldRespawn(this) == GR_ITEM_RESPAWN_NO)
+			{
+				UTIL_Remove(this);
+			}
+			return true;
+		}
+		return false;
+	}
+};
+LINK_ENTITY_TO_CLASS(item_m79_grenade, CItem_M79_Grenade);
+
 //custom ammo stuff
 
 class CItem_BoxCustomNormal : public CItem

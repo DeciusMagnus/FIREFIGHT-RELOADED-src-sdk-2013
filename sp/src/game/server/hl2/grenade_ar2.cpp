@@ -35,7 +35,12 @@ extern ConVar    sk_plr_dmg_smg1_grenade;
 extern ConVar    sk_npc_dmg_smg1_grenade;
 extern ConVar    sk_max_smg1_grenade;
 
+extern ConVar    sk_plr_dmg_m79_grenade;
+extern ConVar    sk_npc_dmg_m79_grenade;
+extern ConVar    sk_max_m79_grenade;
+
 ConVar	  sk_smg1_grenade_radius		( "sk_smg1_grenade_radius","0");
+ConVar	  sk_m79_grenade_radius		    ( "sk_m79_grenade_radius","0");
 
 ConVar	  smg1_grenade_glass_passthrough	("smg1_grenade_glass_passthrough", "1", FCVAR_ARCHIVE);
 
@@ -48,6 +53,7 @@ BEGIN_DATADESC( CGrenadeAR2 )
 	DEFINE_FIELD( m_fDangerRadius, FIELD_FLOAT ),
 	DEFINE_FIELD(m_vecVelocity, FIELD_VECTOR),
 	DEFINE_FIELD(m_bTouched, FIELD_BOOLEAN),
+    DEFINE_FIELD(m_bM79Variant, FIELD_BOOLEAN),
 
 	// Function pointers
 	DEFINE_ENTITYFUNC( GrenadeAR2Touch ),
@@ -66,7 +72,14 @@ void CGrenadeAR2::Spawn( void )
 	// Hits everything but debris
 	SetCollisionGroup( COLLISION_GROUP_PROJECTILE );
 
-	SetModel( "models/Weapons/ar2_grenade.mdl");
+    if (m_bM79Variant)
+    {
+		SetModel("models/Weapons/w_he_grenade.mdl");
+    }
+    else
+    {
+        SetModel( "models/Weapons/ar2_grenade.mdl");
+    }
 	UTIL_SetSize(this, Vector(-3, -3, -3), Vector(3, 3, 3));
 //	UTIL_SetSize(this, Vector(0, 0, 0), Vector(0, 0, 0));
 
@@ -77,16 +90,52 @@ void CGrenadeAR2::Spawn( void )
 
 	if( GetOwnerEntity() && GetOwnerEntity()->IsPlayer() )
 	{
-		m_flDamage = sk_plr_dmg_smg1_grenade.GetFloat();
+        if (m_bM79Variant)
+        {
+			m_flDamage = sk_plr_dmg_m79_grenade.GetFloat();
+        }
+        else
+        {
+            m_flDamage = sk_plr_dmg_smg1_grenade.GetFloat();
+        }
 	}
 	else
 	{
-		m_flDamage = sk_npc_dmg_smg1_grenade.GetFloat();
+        if (m_bM79Variant)
+        {
+			m_flDamage = sk_plr_dmg_m79_grenade.GetFloat();
+        }
+        else
+        {
+            m_flDamage = sk_npc_dmg_smg1_grenade.GetFloat();
+        }
 	}
-
-	m_DmgRadius		= sk_smg1_grenade_radius.GetFloat();
+    
+    if (m_bM79Variant)
+    {
+		if (GetOwnerEntity() && GetOwnerEntity()->IsPlayer())
+		{
+			m_DmgRadius = sk_m79_grenade_radius.GetFloat();
+		}
+		else
+		{
+			m_DmgRadius = sk_smg1_grenade_radius.GetFloat();
+		}
+    }
+    else
+    {
+        m_DmgRadius	= sk_smg1_grenade_radius.GetFloat();
+    }
+    
 	m_takedamage	= DAMAGE_YES;
-	m_bIsLive		= true;
+    if (m_bM79Variant)
+    {
+       m_bIsLive		= false;
+    }
+    else
+    {
+        m_bIsLive		= true;
+    }
 	m_iHealth		= 1;
 	m_vecVelocity	= vec3_origin;
 	m_bTouched		= false;
@@ -141,7 +190,7 @@ void CGrenadeAR2::GrenadeAR2Think( void )
 		// Go live after a short delay
 		if (m_fSpawnTime + MAX_AR2_NO_COLLIDE_TIME < gpGlobals->curtime)
 		{
-			m_bIsLive  = true;
+			m_bIsLive = true;
 		}
 	}
 	
@@ -165,12 +214,19 @@ void CGrenadeAR2::GrenadeAR2Think( void )
 		}
 	}
 
-	// The old way of making danger sounds would scare the crap out of EVERYONE between you and where the grenade
-	// was going to hit. The radius of the danger sound now 'blossoms' over the grenade's lifetime, making it seem
-	// dangerous to a larger area downrange than it does from where it was fired.
-	if( m_fDangerRadius <= AR2_GRENADE_MAX_DANGER_RADIUS )
+	if (!m_bM79Variant)
 	{
-		m_fDangerRadius += ( AR2_GRENADE_MAX_DANGER_RADIUS * 0.05 );
+		// The old way of making danger sounds would scare the crap out of EVERYONE between you and where the grenade
+		// was going to hit. The radius of the danger sound now 'blossoms' over the grenade's lifetime, making it seem
+		// dangerous to a larger area downrange than it does from where it was fired.
+		if (m_fDangerRadius <= AR2_GRENADE_MAX_DANGER_RADIUS)
+		{
+			m_fDangerRadius += (AR2_GRENADE_MAX_DANGER_RADIUS * 0.05);
+		}
+	}
+	else
+	{
+		m_fDangerRadius = AR2_GRENADE_MAX_DANGER_RADIUS;
 	}
 
 	CSoundEnt::InsertSound( SOUND_DANGER, GetAbsOrigin() + GetAbsVelocity() * 0.5, m_fDangerRadius, 0.2, this, SOUNDENT_CHANNEL_REPEATED_DANGER );
@@ -208,6 +264,11 @@ void CGrenadeAR2::GrenadeAR2Touch( CBaseEntity *pOther )
 		if (pOther->GetCollisionGroup() == COLLISION_GROUP_BREAKABLE_GLASS)
 		{
 			GlassCollide(pOther);
+
+			if (!m_bIsLive)
+			{
+				m_bIsLive = true;
+			}
 			return;
 		}
 
@@ -217,6 +278,11 @@ void CGrenadeAR2::GrenadeAR2Touch( CBaseEntity *pOther )
 			if (pOtherEntity && (pOtherEntity->GetMaterialType() == matGlass || pOtherEntity->GetMaterialType() == matWeb))
 			{
 				GlassCollide(pOther);
+
+				if (!m_bIsLive)
+				{
+					m_bIsLive = true;
+				}
 				return;
 			}
 		}
@@ -227,6 +293,11 @@ void CGrenadeAR2::GrenadeAR2Touch( CBaseEntity *pOther )
 			if (pOtherEntity && (pOtherEntity->GetMaterialType() == matGlass || pOtherEntity->GetMaterialType() == matWeb))
 			{
 				GlassCollide(pOther);
+
+				if (!m_bIsLive)
+				{
+					m_bIsLive = true;
+				}
 				return;
 			}
 		}
@@ -305,9 +376,15 @@ void CGrenadeAR2::Detonate(void)
 
 void CGrenadeAR2::Precache( void )
 {
-	PrecacheModel("models/Weapons/ar2_grenade.mdl"); 
+    if (m_bM79Variant)
+    {
+		PrecacheModel("models/Weapons/w_he_grenade.mdl");
+    }
+    else
+    {
+        PrecacheModel("models/Weapons/ar2_grenade.mdl");
+    }    
 }
-
 
 CGrenadeAR2::CGrenadeAR2(void)
 {

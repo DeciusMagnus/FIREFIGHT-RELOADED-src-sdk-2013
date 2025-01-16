@@ -102,6 +102,8 @@
 	" "	"CreditsOutroText"
 	"Devteam53 and ChalkyMalky for the Zombine Texture base."	"CreditsOutroText"
 	" "	"CreditsOutroText"
+	"GeneralEcchi for their HEV arms on L4D2 rig."	"CreditsOutroText"
+	" "	"CreditsOutroText"
 	"Code Credits:"	"CreditsOutroText"
 	" "	"CreditsOutroText"
 	"Sirmasters from BSNOOCH, for making the Mapadd, Kick,"	"CreditsOutroText"

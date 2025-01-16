@@ -24,77 +24,83 @@
 	}
 	"4"
 	{
+		"name"	"GrenadeLauncherGrenade"
+		"price"	"250"
+		"command"	"ammo M79_Grenade 1"
+	}
+	"5"
+	{
 		"name"	"MP5Ammo"
 		"price"	"10"
 		"command"	"ammo MP5Ammo 30"
 	}
-	"5"
+	"6"
 	{
 		"name"	"357Ammo"
 		"price"	"40"
 		"command"	"ammo 357 20"
 	}
-	"6"
+	"7"
 	{
 		"name"	"AR2Ammo"
 		"price"	"15"
 		"command"	"ammo AR2 20"
 	}
-	"7"
+	"8"
 	{
 		"name"	"AR2DarkEnergyBall"
 		"price"	"250"
 		"command"	"ammo AR2AltFire 1"
 	}
-	"8"
+	"9"
 	{
 		"name"	"CrossbowAmmo"
 		"price"	"55"
 		"command"	"ammo XBowBolt 20"
 	}
-	"9"
+	"10"
 	{
 		"name"	"ShotgunAmmo"
 		"price"	"25"
 		"command"	"ammo Buckshot 20"
 	}
-	"10"
+	"11"
 	{
 		"name"	"RPGAmmo"
 		"price"	"250"
 		"command"	"ammo RPG_Round 1"
 	}
-	"11"
+	"12"
 	{
 		"name"	"SniperRifleAmmo"
 		"price"	"85"
 		"command"	"ammo Sniper 15"
 	}
-	"12"
+	"13"
 	{
 		"name"	"M249ParaAmmo"
 		"price"	"65"
 		"command"	"ammo M249 120"
 	}
-	"13"
+	"14"
 	{
 		"name"	"GaussAmmo"
 		"price"	"200"
 		"command"	"ammo GaussEnergy 30"
 	}
-	"14"
+	"15"
 	{
 		"name"	"RailgunAmmo"
 		"price"	"800"
 		"command"	"ammo Railgun 25"
 	}
-	"15"
+	"16"
 	{
 		"name"	"OICWAmmo"
 		"price"	"30"
 		"command"	"ammo 556Round 60"
 	}
-	"16"
+	"17"
 	{
 		"name"	"AlyxgunAmmo"
 		"price"	"25"
