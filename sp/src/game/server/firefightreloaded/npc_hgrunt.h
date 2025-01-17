@@ -12,6 +12,21 @@
 
 #include    "ai_basenpc.h"
 #include    "ai_squad.h"
+#include	"ai_behavior_follow.h"
+#include	"ai_moveprobe.h"
+#include	"ai_senses.h"
+#include	"ai_speech.h"
+#include	"ai_task.h"
+#include	"ai_default.h"
+#include	"ai_schedule.h"
+#include	"ai_hull.h"
+#include	"ai_baseactor.h"
+#include	"ai_waypoint.h"
+#include	"ai_link.h"
+#include	"ai_hint.h"
+#include	"ai_squadslot.h"
+#include	"ai_squad.h"
+#include	"ai_tacticalservices.h"
 
 #define SF_GRUNT_LEADER	( 1 << 5  )
 #define SF_GRUNT_FRIENDLY ( 1 << 6  )
@@ -123,12 +138,14 @@ enum eHGruntWeapons
 	WEAPON_HGRUNT_SHOTGUN_GL = (HGRUNT_SHOTGUN | HGRUNT_GRENADELAUNCHER),
 };
 
-class CHGrunt : public CAI_BaseNPC
+class CHGrunt : public CAI_BaseActor
 {
-	DECLARE_CLASS( CHGrunt, CAI_BaseNPC );
+	DECLARE_CLASS( CHGrunt, CAI_BaseActor);
 public:
 	void	Spawn( void );
 	void	BecomeFriendly(void);
+	bool	CreateBehaviors();
+	void	LoadInitAttributes();
     void	Precache( void );
     float	MaxYawSpeed( void );
 	Class_T	Classify(void);
@@ -193,6 +210,8 @@ public:
 	int		m_iAmmoType;
 	
 	int		m_iWeapons;
+
+	CAI_FollowBehavior			m_FollowBehavior;
     
     static const char *pGruntSentences[];
 	static const char* pRobotGruntSentences[];

@@ -1042,12 +1042,12 @@ void CHGrunt::Spawn()
 	// Innate range attack for kicking
 	CapabilitiesAdd(bits_CAP_INNATE_MELEE_ATTACK1 );
 
+	NPCInit();
+
 	if (HasSpawnFlags(SF_GRUNT_FRIENDLY))
 	{
 		BecomeFriendly();
 	}
-
-	NPCInit();
 			
 	m_fFirstEncounter	= true;// this is true when the grunt spawns, because he hasn't encountered an enemy yet.
 
@@ -1097,6 +1097,38 @@ void CHGrunt::BecomeFriendly()
 {
 	m_fIsFriendly = true;
 	CapabilitiesAdd(bits_CAP_NO_HIT_PLAYER | bits_CAP_FRIENDLY_DMG_IMMUNE);
+
+	//escort any player that's nearby
+	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+	if (pPlayer)
+	{
+		AI_FollowParams_t params;
+		params.formation = AIF_SIDEKICK;
+		m_FollowBehavior.SetParameters(params);
+		m_FollowBehavior.SetFollowTarget(pPlayer);
+	}
+}
+
+void CHGrunt::LoadInitAttributes()
+{
+	if (m_pAttributes != NULL)
+	{
+		if (m_pAttributes->GetBool("is_ally"))
+		{
+			AddSpawnFlags(SF_GRUNT_FRIENDLY);
+		}
+	}
+
+	BaseClass::LoadInitAttributes();
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+bool CHGrunt::CreateBehaviors()
+{
+	AddBehavior(&m_FollowBehavior);
+
+	return BaseClass::CreateBehaviors();
 }
 
 //=========================================================
@@ -1364,10 +1396,13 @@ int CHGrunt::SelectSchedule( void )
 		}
 	}
 
-	//If we are in idle, try to find the enemy by walking.
-	if (GetMoveType() != MOVETYPE_FLYGRAVITY && (m_NPCState == NPC_STATE_IDLE || m_NPCState == NPC_STATE_ALERT))
+	if (!BehaviorSelectSchedule())
 	{
-		return SCHED_PATROL_WALK_LOOP;
+		//If we are in idle, try to find the enemy by walking.
+		if (GetMoveType() != MOVETYPE_FLYGRAVITY && !m_fIsFriendly && (m_NPCState == NPC_STATE_IDLE || m_NPCState == NPC_STATE_ALERT))
+		{
+			return SCHED_PATROL_WALK_LOOP;
+		}
 	}
 
 	// grunts place HIGH priority on running away from danger sounds.
