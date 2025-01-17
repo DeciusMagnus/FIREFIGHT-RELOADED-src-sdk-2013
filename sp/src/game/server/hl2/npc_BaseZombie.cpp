@@ -928,47 +928,50 @@ int CNPC_BaseZombie::OnTakeDamage_Alive( const CTakeDamageInfo &inputInfo )
 			break;
 		}
 
-		if( ShouldBecomeTorso( info, flDamageThreshold ) )
+		if (!(info.GetDamageType() & DMG_NEVERGIB))
 		{
-			bool bHitByCombineCannon = (inputInfo.GetAmmoType() == GetAmmoDef()->Index("CombineHeavyCannon"));
-
-			if ( CanBecomeLiveTorso() )
+			if (ShouldBecomeTorso(info, flDamageThreshold))
 			{
-				if (!(info.GetDamageType() & (DMG_CLUB | DMG_DISSOLVE | DMG_NEVERGIB)))
+				bool bHitByCombineCannon = (inputInfo.GetAmmoType() == GetAmmoDef()->Index("CombineHeavyCannon"));
+
+				if (CanBecomeLiveTorso())
 				{
-					BecomeTorso(vec3_origin, inputInfo.GetDamageForce() * 0.50);
-					if (!(g_Language.GetInt() == LANGUAGE_GERMAN || UTIL_IsLowViolence()))
+					if (!(info.GetDamageType() & (DMG_CLUB | DMG_DISSOLVE)))
 					{
-						UTIL_BloodSpray(WorldSpaceCenter(), vec3_origin, BLOOD_COLOR_YELLOW, 13, FX_BLOODSPRAY_ALL);
-						DispatchParticleEffect("blood_zombie_split", GetAbsOrigin(), GetAbsAngles(), this);
+						BecomeTorso(vec3_origin, inputInfo.GetDamageForce() * 0.50);
+						if (!(g_Language.GetInt() == LANGUAGE_GERMAN || UTIL_IsLowViolence()))
+						{
+							UTIL_BloodSpray(WorldSpaceCenter(), vec3_origin, BLOOD_COLOR_YELLOW, 13, FX_BLOODSPRAY_ALL);
+							DispatchParticleEffect("blood_zombie_split", GetAbsOrigin(), GetAbsAngles(), this);
+						}
+					}
+
+					//why not uncomment this code!
+					if ((info.GetDamageType() & DMG_BLAST) && random->RandomInt(0, 1) == 0)
+					{
+						Ignite(5.0 + random->RandomFloat(0.0, 5.0));
+					}
+
+					// For Combine cannon impacts
+					if (hl2_episodic.GetBool())
+					{
+						if (bHitByCombineCannon)
+						{
+							// Catch on fire.
+							Ignite(5.0f + random->RandomFloat(0.0f, 5.0f));
+						}
+					}
+
+
+					if (flDamageThreshold >= 1.0)
+					{
+						m_iHealth = 0;
+						BecomeRagdollOnClient(info.GetDamageForce());
 					}
 				}
-
-				//why not uncomment this code!
-				if ( ( info.GetDamageType() & DMG_BLAST) && random->RandomInt( 0, 1 ) == 0 )
-				{
-					Ignite( 5.0 + random->RandomFloat( 0.0, 5.0 ) );
-				}
-
-				// For Combine cannon impacts
-				if ( hl2_episodic.GetBool() )
-				{
-					if ( bHitByCombineCannon )
-					{
-						// Catch on fire.
-						Ignite( 5.0f + random->RandomFloat( 0.0f, 5.0f ) );
-					}
-				}
-				
-
-				if (flDamageThreshold >= 1.0)
-				{
-					m_iHealth = 0;
-					BecomeRagdollOnClient( info.GetDamageForce() );
-				}
+				else if (random->RandomInt(1, 3) == 1)
+					DieChopped(info);
 			}
-			else if ( random->RandomInt(1, 3) == 1 )
-				DieChopped( info );
 		}
 	}
 

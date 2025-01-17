@@ -32,11 +32,17 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-ConVar sk_multiplier1("sk_multiplier1", "1");
-ConVar sk_multiplier2("sk_multiplier2", "2");
-ConVar sk_multiplier3("sk_multiplier3", "3");
-ConVar sk_multiplier4("sk_multiplier4", "4");
-ConVar sk_multiplier5("sk_multiplier5", "5");
+ConVar sk_killrewardinitial_multiplier1("sk_killrewardinitial_multiplier1", "1");
+ConVar sk_killrewardinitial_multiplier2("sk_killrewardinitial_multiplier2", "2");
+ConVar sk_killrewardinitial_multiplier3("sk_killrewardinitial_multiplier3", "3");
+ConVar sk_killrewardinitial_multiplier4("sk_killrewardinitial_multiplier4", "4");
+ConVar sk_killrewardinitial_multiplier5("sk_killrewardinitial_multiplier5", "5");
+
+ConVar sk_killrewardbonus_multiplier1("sk_killrewardbonus_multiplier1", "2");
+ConVar sk_killrewardbonus_multiplier2("sk_killrewardbonus_multiplier2", "3");
+ConVar sk_killrewardbonus_multiplier3("sk_killrewardbonus_multiplier3", "4");
+ConVar sk_killrewardbonus_multiplier4("sk_killrewardbonus_multiplier4", "5");
+ConVar sk_killrewardbonus_multiplier5("sk_killrewardbonus_multiplier5", "6");
 
 ConVar sv_killingspree("sv_killingspree", "1", FCVAR_ARCHIVE);
 
@@ -716,28 +722,28 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 				switch (GetSkillLevel())
 				{
 					case SKILL_EASY:
-						moneyReward *= sk_multiplier1.GetInt();
-						xpReward *= sk_multiplier1.GetInt();
+						moneyReward *= sk_killrewardinitial_multiplier1.GetInt();
+						xpReward *= sk_killrewardinitial_multiplier1.GetInt();
 						break;
 
 					case SKILL_MEDIUM:
-						moneyReward *= sk_multiplier2.GetInt();
-						xpReward *= sk_multiplier2.GetInt();
+						moneyReward *= sk_killrewardinitial_multiplier2.GetInt();
+						xpReward *= sk_killrewardinitial_multiplier2.GetInt();
 						break;
 
 					case SKILL_HARD:
-						moneyReward *= sk_multiplier3.GetInt();
-						xpReward *= sk_multiplier3.GetInt();
+						moneyReward *= sk_killrewardinitial_multiplier3.GetInt();
+						xpReward *= sk_killrewardinitial_multiplier3.GetInt();
 						break;
 
 					case SKILL_VERYHARD:
-						moneyReward *= sk_multiplier4.GetInt();
-						xpReward *= sk_multiplier4.GetInt();
+						moneyReward *= sk_killrewardinitial_multiplier4.GetInt();
+						xpReward *= sk_killrewardinitial_multiplier4.GetInt();
 						break;
 
 					case SKILL_NIGHTMARE:
-						moneyReward *= sk_multiplier5.GetInt();
-						xpReward *= sk_multiplier5.GetInt();
+						moneyReward *= sk_killrewardinitial_multiplier5.GetInt();
+						xpReward *= sk_killrewardinitial_multiplier5.GetInt();
 						break;
 				}
 
@@ -876,6 +882,11 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 						moneyReward += 50;
 						xpReward += 50;
 					}
+					else if (pWeapon->IsDualWielding())
+					{
+						moneyReward += 30;
+						xpReward += 30;
+					}
 				}
 
 				moneyReward += (pEntity->GetLevel() * 10);
@@ -889,23 +900,23 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 				switch (GetSkillLevel())
 				{
 					case SKILL_EASY:
-						killMult = (pEntity->FragCount() * (sk_multiplier1.GetInt() / 100)) + 1;
+						killMult = (pEntity->FragCount() * (sk_killrewardbonus_multiplier1.GetInt() / 100)) + 1;
 						break;
 
 					case SKILL_MEDIUM:
-						killMult = (pEntity->FragCount() * (sk_multiplier2.GetInt() / 100)) + 1;
+						killMult = (pEntity->FragCount() * (sk_killrewardbonus_multiplier2.GetInt() / 100)) + 1;
 						break;
 
 					case SKILL_HARD:
-						killMult = (pEntity->FragCount() * (sk_multiplier3.GetInt() / 100)) + 1;
+						killMult = (pEntity->FragCount() * (sk_killrewardbonus_multiplier3.GetInt() / 100)) + 1;
 						break;
 
 					case SKILL_VERYHARD:
-						killMult = (pEntity->FragCount() * (sk_multiplier4.GetInt() / 100)) + 1;
+						killMult = (pEntity->FragCount() * (sk_killrewardbonus_multiplier4.GetInt() / 100)) + 1;
 						break;
 
 					case SKILL_NIGHTMARE:
-						killMult = (pEntity->FragCount() * (sk_multiplier5.GetInt() / 100)) + 1;
+						killMult = (pEntity->FragCount() * (sk_killrewardbonus_multiplier5.GetInt() / 100)) + 1;
 						break;
 				}
 
