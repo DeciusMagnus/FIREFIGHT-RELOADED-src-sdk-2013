@@ -187,13 +187,13 @@ void CGrappleHook::HookTouch( CBaseEntity *pOther )
 	AngleVectors(GetAbsAngles(), &vForward);
 	VectorNormalize(vForward);
 
-	CEffectData	data;
+	//CEffectData	data;
 
-	trace_t	tr;
-	tr = BaseClass::GetTouchTrace();
-	data.m_vOrigin = tr.endpos;
-	data.m_vNormal = vForward;
-	data.m_nEntIndex = 0;
+	//trace_t	tr;
+	//tr = BaseClass::GetTouchTrace();
+	//data.m_vOrigin = tr.endpos;
+	//data.m_vNormal = vForward;
+	//data.m_nEntIndex = 0;
 
 	//	DispatchEffect( "Impact", data );
 
@@ -258,6 +258,7 @@ void CGrappleHook::HookedThink( void )
 	int temp_multiplier = -1;
 
 	m_hPlayer->SetGravity(0.0f);
+	m_hPlayer->SetFriction(0);
 	m_hPlayer->SetGroundEntity(NULL);
 	m_hPlayer->m_nWallRunState = WALLRUN_NOT;
 	m_hPlayer->StopWallRunSound();
@@ -512,7 +513,7 @@ void CWeaponGrapple::PrimaryAttack( void )
 		return;
 	}
 
-	if (tr.surface.flags & SURF_SKY)
+	if (tr.surface.flags & SURF_SKY || tr.IsDispSurface())
 	{
 		WeaponSound(EMPTY);
 		return;

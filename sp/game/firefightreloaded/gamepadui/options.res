@@ -2899,6 +2899,20 @@
 					"1"		"#gameui_enabled"
 				}
 			}
+            
+            "PlayerDamageFlash"
+			{
+				"text"			"#GameUI_PlayerDamageFlash"
+				"type"			"slideyslide"
+				"advanced"		"1"
+				"convar"		"sv_player_damageflash_time"
+
+				"min"			"0"
+				"max"			"3"
+				"step"			"0.1"
+
+				"textprecision" "2"
+			}
 
 			"DrawViewModel"
 			{

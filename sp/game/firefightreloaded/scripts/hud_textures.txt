@@ -294,6 +294,16 @@
 				"customxyoffset"	"1"
 				"y_offset"		"-13"
 		}
+		"weapon_manhackthrower"
+		{
+				"file"		"VGUI/basic2d_linear/ex_weaponicon_52_killicon"
+				"x"			"0"
+				"y"			"0"
+				"width"		"32"
+				"height"	"32"
+				"customxyoffset"	"1"
+				"y_offset"		"-13"
+		}
 		"kick"
 		{
 				"font"		"WeaponIconsKillFeed"

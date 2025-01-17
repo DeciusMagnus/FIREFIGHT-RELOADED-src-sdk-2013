@@ -1144,6 +1144,7 @@ protected:
 
 	CNetworkVar( float, m_flDeathTime );		// the time at which the player died  (used in PlayerDeathThink())
 	float					m_flDeathAnimTime;	// the time at which the player finished their death anim (used in PlayerDeathThink() and ShouldTransmit())
+	float					m_dEffPrev;
 
 	CNetworkVar( int, m_iObserverMode );	// if in spectator mode != 0
 	CNetworkVar( int,	m_iFOV );			// field of view

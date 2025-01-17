@@ -62,4 +62,20 @@
 			"weapon_oicw"	"5"
 		}
 	}
+    "6"
+	{
+		"classname"	"npc_metropolice_friendly"
+		"rare"	"1"
+		"preset"	"1"
+        "equipment"
+		{
+			"weapon_stunstick"	"3"
+			"weapon_pistol"	"5"
+			"weapon_smg1"	"5"
+			"weapon_shotgun"	"3"
+			"weapon_mp5"	"5"
+			"weapon_357"	"5"
+			"weapon_oicw"	"5"
+		}
+	}
 }

@@ -626,11 +626,6 @@ void CNPC_MetroPolice::Spawn( void )
 		AddSpawnFlags(SF_METROPOLICE_FRIENDLY);
 	}
 
-	if (HasSpawnFlags(SF_METROPOLICE_FRIENDLY))
-	{
-		BecomeFriendly();
-	}
-
 	Precache();
 
 #ifdef _XBOX
@@ -690,6 +685,11 @@ void CNPC_MetroPolice::Spawn( void )
 		SetDistLook( METROPOLICE_MID_RANGE_ATTACK_RANGE );
 	}
 
+	if (HasSpawnFlags(SF_METROPOLICE_FRIENDLY))
+	{
+		BecomeFriendly();
+	}
+
 	m_hManhack = NULL;
 
 	if ( GetActiveWeapon() )
@@ -725,7 +725,7 @@ void CNPC_MetroPolice::Spawn( void )
 	// Clear out spawnflag if we're missing the smg1
 	if( HasSpawnFlags( SF_METROPOLICE_ALWAYS_STITCH ) )
 	{
-		if ( !Weapon_OwnsThisType( "weapon_smg1" ) )
+		if ( !Weapon_OwnsThisType( "weapon_smg1" ) || !Weapon_OwnsThisType("weapon_ar2"))
 		{
 			//Warning( "Warning! Metrocop is trying to use the stitch behavior but he has no smg1!\n" );
 			RemoveSpawnFlags( SF_METROPOLICE_ALWAYS_STITCH );
@@ -780,6 +780,16 @@ void CNPC_MetroPolice::BecomeFriendly()
 {
 	m_bIsFriendly = true;
 	CapabilitiesAdd(bits_CAP_NO_HIT_PLAYER | bits_CAP_FRIENDLY_DMG_IMMUNE);
+
+	//escort any player that's nearby
+	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+	if (pPlayer)
+	{
+		AI_FollowParams_t params;
+		params.formation = AIF_SIDEKICK;
+		m_FollowBehavior.SetParameters(params);
+		m_FollowBehavior.SetFollowTarget(pPlayer);
+	}
 }
 
 void CNPC_MetroPolice::LoadInitAttributes()
@@ -799,7 +809,7 @@ void CNPC_MetroPolice::LoadInitAttributes()
 
 		if (m_pAttributes->GetBool("is_ally"))
 		{
-			BecomeFriendly();
+			AddSpawnFlags(SF_METROPOLICE_FRIENDLY);
 		}
 	}
 
@@ -4704,7 +4714,7 @@ int CNPC_MetroPolice::SelectSchedule( void )
 			break;
 
 		case NPC_STATE_COMBAT:
-			if (!IsEnemyInAnAirboat() || !Weapon_OwnsThisType( "weapon_smg1" ) )
+			if (!IsEnemyInAnAirboat() || (!Weapon_OwnsThisType( "weapon_smg1" ) || !Weapon_OwnsThisType("weapon_ar2")))
 			{
 				int nResult = SelectCombatSchedule();
 				if ( nResult != SCHED_NONE )
@@ -4806,7 +4816,7 @@ int CNPC_MetroPolice::TranslateSchedule( int scheduleType )
 			return SCHED_METROPOLICE_DRAW_PISTOL;
 		}
 
-		if( Weapon_OwnsThisType( "weapon_smg1" ) )
+		if( Weapon_OwnsThisType( "weapon_smg1" ) || Weapon_OwnsThisType("weapon_ar2"))
 		{
 			if ( IsEnemyInAnAirboat() )
 			{
@@ -5527,7 +5537,7 @@ WeaponProficiency_t CNPC_MetroPolice::CalcWeaponProficiency( CBaseCombatWeapon *
 		}
 	}
 
-	if( FClassnameIs( pWeapon, "weapon_smg1" ) )
+	if( FClassnameIs( pWeapon, "weapon_smg1" ) || FClassnameIs(pWeapon, "weapon_ar2"))
 	{
 		return WEAPON_PROFICIENCY_VERY_GOOD;
 	}

@@ -307,10 +307,25 @@ void CGrenadeAR2::GrenadeAR2Touch( CBaseEntity *pOther )
 		}
 	}
 
+	if (m_bM79Variant)
+	{
+		trace_t	tr;
+		tr = BaseClass::GetTouchTrace();
+		if (tr.IsDispSurface())
+		{
+			if (!m_bIsLive)
+			{
+				m_bIsLive = true;
+			}
+		}
+	}
+
 	// If I'm live go ahead and blow up
 	if (m_bIsLive)
 	{
 		Detonate();
+
+		PlayCoolDingCollideSound();
 	}
 	else
 	{

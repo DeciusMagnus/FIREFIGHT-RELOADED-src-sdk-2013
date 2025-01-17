@@ -305,11 +305,6 @@ void CNPC_Combine::Activate()
 //-----------------------------------------------------------------------------
 void CNPC_Combine::Spawn( void )
 {
-	if (HasSpawnFlags(SF_COMBINE_FRIENDLY))
-	{
-		BecomeFriendly();
-	}
-
 	SetHullType(HULL_HUMAN);
 	SetHullSizeNormal();
 
@@ -392,12 +387,27 @@ void CNPC_Combine::Spawn( void )
 	}
 
 	NPCInit();
+
+	if (HasSpawnFlags(SF_COMBINE_FRIENDLY))
+	{
+		BecomeFriendly();
+	}
 }
 
 void CNPC_Combine::BecomeFriendly()
 {
 	m_fIsFriendly = true;
 	CapabilitiesAdd(bits_CAP_NO_HIT_PLAYER | bits_CAP_FRIENDLY_DMG_IMMUNE);
+
+	//escort any player that's nearby
+	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+	if (pPlayer)
+	{
+		AI_FollowParams_t params;
+		params.formation = AIF_SIDEKICK;
+		m_FollowBehavior.SetParameters(params);
+		m_FollowBehavior.SetFollowTarget(pPlayer);
+	}
 }
 
 void CNPC_Combine::LoadInitAttributes()
@@ -406,7 +416,7 @@ void CNPC_Combine::LoadInitAttributes()
 	{
 		if (m_pAttributes->GetBool("is_ally"))
 		{
-			BecomeFriendly();
+			AddSpawnFlags(SF_COMBINE_FRIENDLY);
 		}
 	}
 

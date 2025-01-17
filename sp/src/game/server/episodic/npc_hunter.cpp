@@ -284,6 +284,8 @@ enum HunterProjectileTypes
 #define	HUNTER_FOLLOW_DISTANCE	2000.0f
 #define	HUNTER_FOLLOW_DISTANCE_SQR	(HUNTER_FOLLOW_DISTANCE * HUNTER_FOLLOW_DISTANCE)
 
+#define	HUNTER_FOLLOW_PLR_DISTANCE	500.0f
+
 #define HUNTER_RUNDOWN_SQUADDATA 0
 
 
@@ -1104,12 +1106,22 @@ public:
 
 	CNPC_Hunter *GetOuter() { return (CNPC_Hunter *)( BaseClass::GetOuter() ); }
 
-	void SetEscortTarget( CNPC_Strider *pLeader, bool fFinishCurSchedule = false );
-	CNPC_Strider * GetEscortTarget() { return (CNPC_Strider *)GetFollowTarget(); }
+	void SetEscortTarget( CBaseEntity *pLeader, bool fFinishCurSchedule = false );
+	CBaseEntity* GetEscortTarget() { return (CBaseEntity*)GetFollowTarget(); }
 
 	bool FarFromFollowTarget()
 	{ 
-		return ( GetFollowTarget() && (GetAbsOrigin() - GetFollowTarget()->GetAbsOrigin()).LengthSqr() > HUNTER_FOLLOW_DISTANCE_SQR ); 
+		if (!GetFollowTarget())
+			return false;
+
+		bool isFar = ((GetAbsOrigin() - GetFollowTarget()->GetAbsOrigin()).LengthSqr() > HUNTER_FOLLOW_DISTANCE_SQR);
+		
+		if (GetFollowTarget()->IsPlayer())
+		{
+			isFar = ((GetAbsOrigin() - GetFollowTarget()->GetAbsOrigin()).LengthSqr() > HUNTER_FOLLOW_PLR_DISTANCE);
+		}
+
+		return isFar;
 	}
 
 	void DrawDebugGeometryOverlays();
@@ -1421,7 +1433,7 @@ private:
 	void JostleVehicleThink();
 
 	void FollowStrider( const char *szStrider );
-	void FollowStrider( CNPC_Strider * pStrider );
+	void FollowStrider(CBaseEntity* pStrider );
 	int NumHuntersInMySquad();
 
 	bool CanPlantHere( const Vector &vecPos );
@@ -1828,6 +1840,13 @@ void CNPC_Hunter::BecomeFriendly()
 {
 	m_bIsFriendly = true;
 	CapabilitiesAdd(bits_CAP_NO_HIT_PLAYER | bits_CAP_FRIENDLY_DMG_IMMUNE);
+
+	//escort any player that's nearby
+	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
+	if (pPlayer)
+	{
+		FollowStrider(pPlayer);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1837,11 +1856,6 @@ void CNPC_Hunter::Spawn()
 	if (FClassnameIs(this, "npc_hunter_friendly"))
 	{
 		AddSpawnFlags(SF_HUNTER_FRIENDLY);
-	}
-
-	if (HasSpawnFlags(SF_HUNTER_FRIENDLY))
-	{
-		BecomeFriendly();
 	}
 
 	Precache();
@@ -1886,6 +1900,11 @@ void CNPC_Hunter::Spawn()
 	}
 
 	NPCInit();
+
+	if (HasSpawnFlags(SF_HUNTER_FRIENDLY))
+	{
+		BecomeFriendly();
+	}
 
 	m_bEnableSquadShootDelay = true;
 
@@ -2065,7 +2084,7 @@ void CNPC_Hunter::LoadInitAttributes()
 	{
 		if (m_pAttributes->GetBool("is_ally"))
 		{
-			BecomeFriendly();
+			AddSpawnFlags(SF_HUNTER_FRIENDLY);
 		}
 	}
 
@@ -4663,7 +4682,7 @@ void CNPC_Hunter::FollowStrider( const char *szStrider )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-void CNPC_Hunter::FollowStrider( CNPC_Strider * pStrider )
+void CNPC_Hunter::FollowStrider(CBaseEntity* pStrider )
 {
 	if ( !IsAlive() )
 	{
@@ -4689,7 +4708,7 @@ void CNPC_Hunter::FollowStrider( CNPC_Strider * pStrider )
 	}
 }
 
-void CAI_HunterEscortBehavior::SetEscortTarget( CNPC_Strider *pStrider, bool fFinishCurSchedule )
+void CAI_HunterEscortBehavior::SetEscortTarget(CBaseEntity*pStrider, bool fFinishCurSchedule )
 {
 	m_bEnabled = true;
 
@@ -6061,10 +6080,15 @@ void CNPC_Hunter::Event_Killed( const CTakeDamageInfo &info )
 	{
 		if ( AIGetNumFollowers( m_EscortBehavior.GetFollowTarget(), m_iClassname ) == 1 )
 		{
-			m_EscortBehavior.GetEscortTarget()->AlertSound();
-			if ( info.GetAttacker() && info.GetAttacker()->IsPlayer() )
+			CAI_BaseNPC* pNPC = m_EscortBehavior.GetEscortTarget()->MyNPCPointer();
+
+			if (pNPC)
 			{
-				m_EscortBehavior.GetEscortTarget()->UpdateEnemyMemory( UTIL_GetLocalPlayer(), UTIL_GetLocalPlayer()->GetAbsOrigin(), this );
+				pNPC->AlertSound();
+				if (info.GetAttacker() && info.GetAttacker()->IsPlayer())
+				{
+					pNPC->UpdateEnemyMemory(UTIL_GetLocalPlayer(), UTIL_GetLocalPlayer()->GetAbsOrigin(), this);
+				}
 			}
 		}
 	}
@@ -6504,7 +6528,7 @@ bool CNPC_Hunter::ShouldSeekTarget( CBaseEntity *pTargetEntity, bool bStriderBus
 			}
 			else if ( hunter_seek_thrown_striderbusters_tolerance.GetFloat() > 0.0 )
 			{
-				CNPC_Strider *pEscortTarget = m_EscortBehavior.GetEscortTarget();
+				CNPC_Strider *pEscortTarget = (CNPC_Strider*)m_EscortBehavior.GetEscortTarget();
 				if ( pEscortTarget && ( pEscortTarget->GetAbsOrigin() - pTargetEntity->GetAbsOrigin() ).LengthSqr() < Square( hunter_seek_thrown_striderbusters_tolerance.GetFloat() ) )
 				{
 					bSeek = true;
@@ -7298,12 +7322,22 @@ Activity CNPC_Hunter::GetDeathActivity()
 //-----------------------------------------------------------------------------
 void CAI_HunterEscortBehavior::OnDamage( const CTakeDamageInfo &info )
 {
-	if ( info.GetDamage() > 0 && info.GetAttacker()->IsPlayer() &&
+	if ( info.GetDamage() > 0 /*&& info.GetAttacker()->IsPlayer()*/ &&
 		GetFollowTarget() && ( AIGetNumFollowers( GetFollowTarget() ) > 1 ) &&
 		( GetOuter()->GetSquad()->GetSquadSoundWaitTime() <= gpGlobals->curtime ) ) // && !FarFromFollowTarget()
 	{
 		// Start the clock ticking. We'll return the the strider when the timer elapses.
-		m_flTimeEscortReturn = gpGlobals->curtime + random->RandomFloat( 15.0f, 25.0f );
+		if (GetFollowTarget()->IsPlayer())
+		{
+			m_flTimeEscortReturn = gpGlobals->curtime;
+		}
+		else
+		{
+			if (info.GetAttacker()->IsPlayer())
+			{
+				m_flTimeEscortReturn = gpGlobals->curtime + random->RandomFloat(15.0f, 25.0f);
+			}
+		}
 		GetOuter()->GetSquad()->SetSquadSoundWaitTime( m_flTimeEscortReturn + 1.0 ); // prevent others from breaking escort
 	}
 }
@@ -7370,11 +7404,23 @@ void CAI_HunterEscortBehavior::GatherConditions( void )
 
 	BaseClass::GatherConditions();
 
-	if ( GetEnemy() && GetEnemy()->IsPlayer() && HasCondition( COND_SEE_ENEMY ) )
+	if ( GetEnemy() && HasCondition( COND_SEE_ENEMY ) )
 	{
-		if ( GetOuter()->GetSquad()->GetSquadSoundWaitTime() <= gpGlobals->curtime && ((CBasePlayer *)GetEnemy())->IsInAVehicle() )
+		if ( GetOuter()->GetSquad()->GetSquadSoundWaitTime() <= gpGlobals->curtime)
 		{
-			m_flTimeEscortReturn = gpGlobals->curtime + random->RandomFloat( 15.0f, 25.0f );
+			// Start the clock ticking. We'll return the the strider when the timer elapses.
+			if (GetFollowTarget()->IsPlayer())
+			{
+				m_flTimeEscortReturn = gpGlobals->curtime;
+			}
+			else
+			{
+				if (GetEnemy()->IsPlayer() && ((CBasePlayer*)GetEnemy())->IsInAVehicle())
+				{
+					m_flTimeEscortReturn = gpGlobals->curtime + random->RandomFloat(15.0f, 25.0f);
+				}
+			}
+
 			GetOuter()->GetSquad()->SetSquadSoundWaitTime( m_flTimeEscortReturn + 1.0 ); // prevent others from breaking escort
 		}
 	}
@@ -7405,8 +7451,12 @@ bool CAI_HunterEscortBehavior::ShouldFollow()
 void CAI_HunterEscortBehavior::BeginScheduleSelection()
 {
 	BaseClass::BeginScheduleSelection();
-	Assert( m_SavedDistTooFar == GetOuter()->m_flDistTooFar );
-	GetOuter()->m_flDistTooFar *= 2;
+
+	Assert(m_SavedDistTooFar == GetOuter()->m_flDistTooFar);
+	if (GetOuter()->m_flDistTooFar < FLT_MAX)
+	{
+		GetOuter()->m_flDistTooFar *= 2;
+	}
 }	
 
 

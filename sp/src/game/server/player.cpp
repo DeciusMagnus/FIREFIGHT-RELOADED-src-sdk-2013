@@ -132,6 +132,8 @@ ConVar player_maxarmor("player_maxarmor", "500", FCVAR_REPLICATED | FCVAR_ARCHIV
 
 ConVar sv_autosave_levelup("sv_autosave_levelup", "1", FCVAR_ARCHIVE);
 
+ConVar sv_player_damageflash_time("sv_player_damageflash_time", "1.0", FCVAR_ARCHIVE);
+
 extern ConVar sv_maxunlag;
 extern ConVar sv_turbophysics;
 extern ConVar *sv_maxreplay;
@@ -587,6 +589,8 @@ BEGIN_DATADESC( CBasePlayer )
 	DEFINE_FIELD( m_fInitHUD, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_flDeathTime, FIELD_TIME ),
 	DEFINE_FIELD( m_flDeathAnimTime, FIELD_TIME ),
+
+	DEFINE_FIELD(m_dEffPrev, FIELD_TIME),
 
 	//DEFINE_FIELD( m_fGameHUDInitialized, FIELD_BOOLEAN ), // only used in multiplayer games
 	//DEFINE_FIELD( m_fWeapon, FIELD_BOOLEAN ),  // Don't restore, client needs reset
@@ -1179,12 +1183,8 @@ void CBasePlayer::LevelUp()
 
 		if (sv_autosave_levelup.GetBool() && !m_bHardcore)
 		{
-			CBaseEntity* pAutosave = CBaseEntity::Create("logic_autosave", vec3_origin, vec3_angle, NULL);
-			if (pAutosave)
-			{
-				g_EventQueue.AddEvent(pAutosave, "Save", 0.5, NULL, NULL);
-				g_EventQueue.AddEvent(pAutosave, "Kill", 0.6, NULL, NULL);
-			}
+			engine->ServerCommand("autosave\n");
+			UTIL_ShowMessage("GAMESAVED", this);
 		}
 
 		IGameEvent* event = gameeventmanager->CreateEvent("player_levelup");
@@ -1972,6 +1972,9 @@ void CBasePlayer::TraceAttack( const CTakeDamageInfo &inputInfo, const Vector &v
 //------------------------------------------------------------------------------
 void CBasePlayer::DamageEffect(float flDamage, int fDamageType)
 {
+	if (m_dEffPrev > gpGlobals->curtime)
+		return;
+
 	if (fDamageType & DMG_CRUSH)
 	{
 		//Red damage indicator
@@ -1989,6 +1992,7 @@ void CBasePlayer::DamageEffect(float flDamage, int fDamageType)
 		// If slash damage shoot some blood
 		color32 red = { 128, 0, 0, 128 };
 		UTIL_ScreenFade(this, red, 1.0f, 0.1f, FFADE_IN);
+
 		SpawnBlood(EyePosition(), g_vecAttackDir, BloodColor(), flDamage);
 	}
 	else if (fDamageType & DMG_PLASMA)
@@ -2016,11 +2020,14 @@ void CBasePlayer::DamageEffect(float flDamage, int fDamageType)
 	{
 		color32 red = { 128, 0, 0, 128 };
 		UTIL_ScreenFade(this, red, 1.0f, 0.1f, FFADE_IN);
+
 		if (sv_player_dmgsounds.GetBool())
 		{
 			EmitSound("Player.BulletDamage");
 		}
 	}
+
+	m_dEffPrev = gpGlobals->curtime + sv_player_damageflash_time.GetFloat();
 }
 
 /*
