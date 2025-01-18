@@ -2838,8 +2838,6 @@ void CBasePlayer::Event_Killed( const CTakeDamageInfo &info )
 
 	ClearLastKnownArea();
 
-	m_iKillstreak = 0;
-
 	if (m_bHardcore && !g_pGameRules->IsMultiplayer())
 	{
 		// Clear any screenfade
@@ -6516,6 +6514,12 @@ void CBasePlayer::Spawn( void )
 	m_bitsHUDDamage		= -1;
 	m_bitsDamageType	= 0;
 	m_afPhysicsFlags	= 0;
+
+	//reset killstreaks
+	if (m_iKillstreak > 0)
+	{
+		m_iKillstreak = 0;
+	}
 
 	m_idrownrestored = m_idrowndmg;
 

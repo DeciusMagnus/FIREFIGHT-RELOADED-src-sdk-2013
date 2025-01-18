@@ -38,9 +38,9 @@ ConVar sk_killrewardinitial_multiplier3("sk_killrewardinitial_multiplier3", "3")
 ConVar sk_killrewardinitial_multiplier4("sk_killrewardinitial_multiplier4", "4");
 ConVar sk_killrewardinitial_multiplier5("sk_killrewardinitial_multiplier5", "5");
 
-ConVar sk_killrewardbonus_multiplier1("sk_killrewardbonus_multiplier1", "2");
+ConVar sk_killrewardbonus_multiplier1("sk_killrewardbonus_multiplier1", "3");
 ConVar sk_killrewardbonus_multiplier2("sk_killrewardbonus_multiplier2", "3");
-ConVar sk_killrewardbonus_multiplier3("sk_killrewardbonus_multiplier3", "4");
+ConVar sk_killrewardbonus_multiplier3("sk_killrewardbonus_multiplier3", "5");
 ConVar sk_killrewardbonus_multiplier4("sk_killrewardbonus_multiplier4", "5");
 ConVar sk_killrewardbonus_multiplier5("sk_killrewardbonus_multiplier5", "6");
 
@@ -767,7 +767,7 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 				//make it so the katana hit multiplier shows up.
 				if (sv_killingspree.GetBool() && !isInBullettime)
 				{
-					pEntity->m_iKillstreak++;
+					++pEntity->m_iKillstreak;
 
 					CFmtStr hint;
 
