@@ -398,6 +398,15 @@ void CNPC_Combine::BecomeFriendly()
 {
 	m_fIsFriendly = true;
 	CapabilitiesAdd(bits_CAP_NO_HIT_PLAYER | bits_CAP_FRIENDLY_DMG_IMMUNE);
+}
+
+void CNPC_Combine::FriendlyEscortCheck()
+{
+	if (!m_fIsFriendly)
+		return;
+
+	if (m_FollowBehavior.GetFollowTarget())
+		return;
 
 	//escort any player that's nearby
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
@@ -780,6 +789,8 @@ void CNPC_Combine::PostNPCInit()
 //-----------------------------------------------------------------------------
 void CNPC_Combine::GatherConditions()
 {
+	FriendlyEscortCheck();
+
 	BaseClass::GatherConditions();
 
 	ClearCondition( COND_COMBINE_ATTACK_SLOT_AVAILABLE );

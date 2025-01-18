@@ -67,6 +67,7 @@
 #include "hl2/grenade_spit.h"
 #include "hl2/grenade_ar2.h"
 #include "gameweaponmanager.h"
+#include "firefightreloaded/mapinfo.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -1219,6 +1220,7 @@ public:
 
 	void			Precache();
 	void			BecomeFriendly();
+	void			FriendlyEscortCheck();
 	void			Spawn();
 	void			LoadInitAttributes();
 	void			PostNPCInit();
@@ -1831,6 +1833,16 @@ void CNPC_Hunter::Precache()
 	{
 		m_bInLargeOutdoorMap = true;
 	}
+
+	if (!m_bInLargeOutdoorMap)
+	{
+		KeyValues* pInfo = CMapInfo::GetMapInfoData();
+		if (pInfo != NULL && !pInfo->GetBool("Hunter_LargeOutdoorMap", true))
+		{
+			m_bInLargeOutdoorMap = true;
+		}
+	}
+
 	m_bIsLaughing = false;
 
 	BaseClass::Precache();
@@ -1840,6 +1852,15 @@ void CNPC_Hunter::BecomeFriendly()
 {
 	m_bIsFriendly = true;
 	CapabilitiesAdd(bits_CAP_NO_HIT_PLAYER | bits_CAP_FRIENDLY_DMG_IMMUNE);
+}
+
+void CNPC_Hunter::FriendlyEscortCheck()
+{
+	if (!m_bIsFriendly)
+		return;
+
+	if (m_EscortBehavior.GetFollowTarget())
+		return;
 
 	//escort any player that's nearby
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
@@ -2438,6 +2459,7 @@ void CNPC_Hunter::GatherConditions()
 {
 	GatherIndoorOutdoorConditions();
 	GatherChargeConditions();
+	FriendlyEscortCheck();
 
 	BaseClass::GatherConditions();
 

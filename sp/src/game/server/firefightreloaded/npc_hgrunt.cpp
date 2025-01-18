@@ -1097,6 +1097,15 @@ void CHGrunt::BecomeFriendly()
 {
 	m_fIsFriendly = true;
 	CapabilitiesAdd(bits_CAP_NO_HIT_PLAYER | bits_CAP_FRIENDLY_DMG_IMMUNE);
+}
+
+void CHGrunt::FriendlyEscortCheck()
+{
+	if (!m_fIsFriendly)
+		return;
+
+	if (m_FollowBehavior.GetFollowTarget())
+		return;
 
 	//escort any player that's nearby
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
@@ -1129,6 +1138,16 @@ bool CHGrunt::CreateBehaviors()
 	AddBehavior(&m_FollowBehavior);
 
 	return BaseClass::CreateBehaviors();
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CHGrunt::GatherConditions(void)
+{
+	FriendlyEscortCheck();
+
+	BaseClass::GatherConditions();
 }
 
 //=========================================================

@@ -780,6 +780,15 @@ void CNPC_MetroPolice::BecomeFriendly()
 {
 	m_bIsFriendly = true;
 	CapabilitiesAdd(bits_CAP_NO_HIT_PLAYER | bits_CAP_FRIENDLY_DMG_IMMUNE);
+}
+
+void CNPC_MetroPolice::FriendlyEscortCheck()
+{
+	if (!m_bIsFriendly)
+		return;
+
+	if (m_FollowBehavior.GetFollowTarget())
+		return;
 
 	//escort any player that's nearby
 	CBasePlayer* pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
@@ -5550,6 +5559,8 @@ WeaponProficiency_t CNPC_MetroPolice::CalcWeaponProficiency( CBaseCombatWeapon *
 //-----------------------------------------------------------------------------
 void CNPC_MetroPolice::GatherConditions( void )
 {
+	FriendlyEscortCheck();
+
 	BaseClass::GatherConditions();
 
 	if ( m_bPlayerTooClose == false )

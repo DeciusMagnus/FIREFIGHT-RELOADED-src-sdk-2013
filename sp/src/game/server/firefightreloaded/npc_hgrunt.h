@@ -144,7 +144,9 @@ class CHGrunt : public CAI_BaseActor
 public:
 	void	Spawn( void );
 	void	BecomeFriendly(void);
+	void	FriendlyEscortCheck();
 	bool	CreateBehaviors();
+	void	GatherConditions(void);
 	void	LoadInitAttributes();
     void	Precache( void );
     float	MaxYawSpeed( void );

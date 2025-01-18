@@ -91,6 +91,7 @@ public:
 
 	void			Spawn( void );
 	void			BecomeFriendly(void);
+	void			FriendlyEscortCheck();
 	void			LoadInitAttributes(void);
 	void			Precache( void );
 	void			Activate();

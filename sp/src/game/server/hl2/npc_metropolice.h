@@ -50,6 +50,7 @@ public:
 	bool CreateBehaviors();
 	void Spawn( void );
 	void BecomeFriendly(void);
+	void	FriendlyEscortCheck();
 	void LoadInitAttributes( void );
 	void Precache( void );
 
