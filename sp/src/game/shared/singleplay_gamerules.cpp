@@ -32,17 +32,17 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-ConVar sk_killrewardinitial_multiplier1("sk_killrewardinitial_multiplier1", "1");
-ConVar sk_killrewardinitial_multiplier2("sk_killrewardinitial_multiplier2", "2");
-ConVar sk_killrewardinitial_multiplier3("sk_killrewardinitial_multiplier3", "3");
-ConVar sk_killrewardinitial_multiplier4("sk_killrewardinitial_multiplier4", "4");
-ConVar sk_killrewardinitial_multiplier5("sk_killrewardinitial_multiplier5", "5");
+ConVar sk_killrewardinitial_multiplier1("sk_killrewardinitial_multiplier1", "1.5");
+ConVar sk_killrewardinitial_multiplier2("sk_killrewardinitial_multiplier2", "2.5");
+ConVar sk_killrewardinitial_multiplier3("sk_killrewardinitial_multiplier3", "3.5");
+ConVar sk_killrewardinitial_multiplier4("sk_killrewardinitial_multiplier4", "4.5");
+ConVar sk_killrewardinitial_multiplier5("sk_killrewardinitial_multiplier5", "5.5");
 
-ConVar sk_killrewardbonus_multiplier1("sk_killrewardbonus_multiplier1", "3");
-ConVar sk_killrewardbonus_multiplier2("sk_killrewardbonus_multiplier2", "3");
-ConVar sk_killrewardbonus_multiplier3("sk_killrewardbonus_multiplier3", "5");
-ConVar sk_killrewardbonus_multiplier4("sk_killrewardbonus_multiplier4", "5");
-ConVar sk_killrewardbonus_multiplier5("sk_killrewardbonus_multiplier5", "6");
+ConVar sk_killrewardbonus_multiplier1("sk_killrewardbonus_multiplier1", "3.5");
+ConVar sk_killrewardbonus_multiplier2("sk_killrewardbonus_multiplier2", "4.5");
+ConVar sk_killrewardbonus_multiplier3("sk_killrewardbonus_multiplier3", "5.5");
+ConVar sk_killrewardbonus_multiplier4("sk_killrewardbonus_multiplier4", "6");
+ConVar sk_killrewardbonus_multiplier5("sk_killrewardbonus_multiplier5", "6.5");
 
 ConVar sv_killingspree("sv_killingspree", "1", FCVAR_ARCHIVE);
 
@@ -719,33 +719,33 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 					xpReward += 6;
 				}
 
+				float initialmult = 0;
+
 				switch (GetSkillLevel())
 				{
 					case SKILL_EASY:
-						moneyReward *= sk_killrewardinitial_multiplier1.GetInt();
-						xpReward *= sk_killrewardinitial_multiplier1.GetInt();
+						initialmult = sk_killrewardinitial_multiplier1.GetFloat();
 						break;
 
 					case SKILL_MEDIUM:
-						moneyReward *= sk_killrewardinitial_multiplier2.GetInt();
-						xpReward *= sk_killrewardinitial_multiplier2.GetInt();
+						initialmult = sk_killrewardinitial_multiplier2.GetFloat();
 						break;
 
 					case SKILL_HARD:
-						moneyReward *= sk_killrewardinitial_multiplier3.GetInt();
-						xpReward *= sk_killrewardinitial_multiplier3.GetInt();
+						initialmult = sk_killrewardinitial_multiplier3.GetFloat();
 						break;
 
 					case SKILL_VERYHARD:
-						moneyReward *= sk_killrewardinitial_multiplier4.GetInt();
-						xpReward *= sk_killrewardinitial_multiplier4.GetInt();
+						initialmult = sk_killrewardinitial_multiplier4.GetFloat();
 						break;
 
 					case SKILL_NIGHTMARE:
-						moneyReward *= sk_killrewardinitial_multiplier5.GetInt();
-						xpReward *= sk_killrewardinitial_multiplier5.GetInt();
+						initialmult = sk_killrewardinitial_multiplier5.GetFloat();
 						break;
 				}
+
+				moneyReward *= initialmult;
+				xpReward *= initialmult;
 
 				pEntity->IncrementFragCount(IPointsForKillEntity(pEntity, pVictim));
 
@@ -770,59 +770,44 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 					++pEntity->m_iKillstreak;
 
 					CFmtStr hint;
+					bool showhint = true;
 
 					switch (pEntity->m_iKillstreak)
 					{
 						case KILLING_SPREE_AMOUNT:
 							hint.sprintf("#Valve_Hud_KILLINGSPREE");
-							pEntity->ShowLevelMessage(hint.Access());
-							moneyReward += 2;
-							xpReward += 3;
 							break;
 						case KILLING_FRENZY_AMOUNT:
 							hint.sprintf("#Valve_Hud_KILLINGFRENZY");
-							pEntity->ShowLevelMessage(hint.Access());
-							moneyReward += 4;
-							xpReward += 6;
 							break;
 						case OVERKILL_AMOUNT:
 							hint.sprintf("#Valve_Hud_OVERKILL");
-							pEntity->ShowLevelMessage(hint.Access());
-							moneyReward += 6;
-							xpReward += 9;
 							break;
 						case RAMPAGE_AMOUNT:
 							hint.sprintf("#Valve_Hud_RAMPAGE");
-							pEntity->ShowLevelMessage(hint.Access());
-							moneyReward += 8;
-							xpReward += 12;
 							break;
 						case UNSTOPPABLE_AMOUNT:
 							hint.sprintf("#Valve_Hud_UNSTOPPABLE");
-							pEntity->ShowLevelMessage(hint.Access());
-							moneyReward += 10;
-							xpReward += 15;
 							break;
 						case INCONCEIVABLE_AMOUNT:
 							hint.sprintf("#Valve_Hud_INCONCEIVABLE");
-							pEntity->ShowLevelMessage(hint.Access());
-							moneyReward += 12;
-							xpReward += 18;
 							break;
 						case INVINCIBLE_AMOUNT:
 							hint.sprintf("#Valve_Hud_INVINCIBLE");
-							pEntity->ShowLevelMessage(hint.Access());
-							moneyReward += 14;
-							xpReward += 21;
 							break;
 						case GODLIKE_AMOUNT:
 							hint.sprintf("#Valve_Hud_GODLIKE");
-							pEntity->ShowLevelMessage(hint.Access());
-							moneyReward += 16;
-							xpReward += 24;
 							break;
 						default:
+							showhint = false;
 							break;
+					}
+
+					if (showhint)
+					{
+						pEntity->ShowLevelMessage(hint.Access());
+						moneyReward += 16;
+						xpReward += 24;
 					}
 				}
 
@@ -895,28 +880,28 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 				moneyReward *= pEntity->m_iKashBoostMult;
 				xpReward *= pEntity->m_iExpBoostMult;
 
-				int killMult = 1;
+				float killMult = 0;
 
 				switch (GetSkillLevel())
 				{
 					case SKILL_EASY:
-						killMult = (pEntity->FragCount() * (sk_killrewardbonus_multiplier1.GetInt() / 100)) + 1;
+						killMult = (pEntity->FragCount() * (sk_killrewardbonus_multiplier1.GetFloat() / 100)) + 1;
 						break;
 
 					case SKILL_MEDIUM:
-						killMult = (pEntity->FragCount() * (sk_killrewardbonus_multiplier2.GetInt() / 100)) + 1;
+						killMult = (pEntity->FragCount() * (sk_killrewardbonus_multiplier2.GetFloat() / 100)) + 1;
 						break;
 
 					case SKILL_HARD:
-						killMult = (pEntity->FragCount() * (sk_killrewardbonus_multiplier3.GetInt() / 100)) + 1;
+						killMult = (pEntity->FragCount() * (sk_killrewardbonus_multiplier3.GetFloat() / 100)) + 1;
 						break;
 
 					case SKILL_VERYHARD:
-						killMult = (pEntity->FragCount() * (sk_killrewardbonus_multiplier4.GetInt() / 100)) + 1;
+						killMult = (pEntity->FragCount() * (sk_killrewardbonus_multiplier4.GetFloat() / 100)) + 1;
 						break;
 
 					case SKILL_NIGHTMARE:
-						killMult = (pEntity->FragCount() * (sk_killrewardbonus_multiplier5.GetInt() / 100)) + 1;
+						killMult = (pEntity->FragCount() * (sk_killrewardbonus_multiplier5.GetFloat() / 100)) + 1;
 						break;
 				}
 

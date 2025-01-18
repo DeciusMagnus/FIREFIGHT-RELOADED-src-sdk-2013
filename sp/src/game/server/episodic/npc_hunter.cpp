@@ -7409,7 +7409,7 @@ void CAI_HunterEscortBehavior::GatherConditions( void )
 		if ( GetOuter()->GetSquad()->GetSquadSoundWaitTime() <= gpGlobals->curtime)
 		{
 			// Start the clock ticking. We'll return the the strider when the timer elapses.
-			if (GetFollowTarget()->IsPlayer())
+			if (GetFollowTarget() && GetFollowTarget()->IsPlayer())
 			{
 				m_flTimeEscortReturn = gpGlobals->curtime;
 			}
