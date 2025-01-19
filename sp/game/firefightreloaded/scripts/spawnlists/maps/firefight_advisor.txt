@@ -4,11 +4,6 @@
 
 "firefight_advisor"
 {
-    "settings"
-    {
-        "spawntime"		"6"
-        "spawntime_steamdeck"	"10"
-    }
     //COMMON
     "1"
     {
