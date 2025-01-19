@@ -104,6 +104,8 @@
 	" "	"CreditsOutroText"
 	"GeneralEcchi for their HEV arms on L4D2 rig."	"CreditsOutroText"
 	" "	"CreditsOutroText"
+	"Mrfunreal for their lights.rad fix. "	"CreditsOutroText"
+	" "	"CreditsOutroText"
 	"Code Credits:"	"CreditsOutroText"
 	" "	"CreditsOutroText"
 	"Sirmasters from BSNOOCH, for making the Mapadd, Kick,"	"CreditsOutroText"
