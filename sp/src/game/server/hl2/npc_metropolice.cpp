@@ -2953,6 +2953,13 @@ void CNPC_MetroPolice::OnAnimEventStartDeployManhack( void )
 	if (m_bIsFriendly)
 	{
 		pManhack->AddSpawnFlags(SF_MANHACK_FRIENDLY);
+
+		if (IsGlowEffectActive())
+		{
+			Vector ownerColor = m_vOutlineColor;
+			pManhack->m_bImportantOutline = true;
+			pManhack->GiveOutline(ownerColor);
+		}
 	}
 
 	pManhack->Spawn();
