@@ -943,7 +943,15 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 
 		// Find the killer & the scorer
 		CBaseEntity* pInflictor = info.GetInflictor();
+
+		if (!pInflictor)
+			return;
+
 		CBaseEntity* pKiller = info.GetAttacker();
+
+		if (!pKiller)
+			return;
+
 		if (pKiller->IsPlayer())
 		{
 			CBasePlayer* pScorer = GetDeathScorer(pKiller, pInflictor, pVictim);
@@ -1060,7 +1068,14 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 
 		// Find the killer & the scorer
 		CBaseEntity* pInflictor = info.GetInflictor();
+
+		if (!pInflictor)
+			return;
+
 		CBaseEntity* pKiller = info.GetAttacker();
+
+		if (!pKiller)
+			return;
 
 		if (pKiller->IsPlayer())
 		{
