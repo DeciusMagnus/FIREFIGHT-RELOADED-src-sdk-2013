@@ -1170,31 +1170,40 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 		if (cl_discord_devbuild.GetBool())
 		{
 			discordPresence.largeImageKey = "fr_dev_large";
+		}
+		else
+		{
+			discordPresence.largeImageKey = "fr_large";
+		}
 
-			char verString[30];
-			if (g_pFullFileSystem->FileExists("version.txt"))
-			{
-				FileHandle_t fh = filesystem->Open("version.txt", "r", "MOD");
-				int file_len = filesystem->Size(fh);
-				char* GameInfo = new char[file_len + 1];
+		char verString[128];
+		if (g_pFullFileSystem->FileExists("version.txt"))
+		{
+			FileHandle_t fh = filesystem->Open("version.txt", "r", "MOD");
+			int file_len = filesystem->Size(fh);
+			char* GameInfo = new char[file_len + 1];
 
-				filesystem->Read((void*)GameInfo, file_len, fh);
-				GameInfo[file_len] = 0; // null terminator
+			filesystem->Read((void*)GameInfo, file_len, fh);
+			GameInfo[file_len] = 0; // null terminator
 
-				filesystem->Close(fh);
+			filesystem->Close(fh);
 
-				Q_snprintf(verString, sizeof(verString), "Version: %s", GameInfo + 8);
+			Q_snprintf(verString, sizeof(verString), "Version: %s", GameInfo + 8);
 
-				delete[] GameInfo;
-			}
+			delete[] GameInfo;
+		}
+
+		if (cl_discord_devbuild.GetBool())
+		{
 			char buffer[256];
 			sprintf(buffer, "%s | Hi!", verString);
 			discordPresence.largeImageText = buffer;
 		}
 		else
 		{
-			discordPresence.largeImageKey = "fr_large";
+			discordPresence.largeImageText = verString;
 		}
+
 		Discord_UpdatePresence(&discordPresence);
 	}
 #endif
