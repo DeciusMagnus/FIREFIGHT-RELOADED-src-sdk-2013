@@ -6,9 +6,9 @@
 {
 	"1"
 	{
-		"health"		"350"
+		"health"		"400"
 		"setmaxhealth"	"1"
-		"armor"		"350"
+		"armor"		"600"
 		"setmaxarmor"	"1"
 		"level"		"20"
 		"kash"		"6500"
@@ -77,12 +77,6 @@
 		"ammotype"	"Railgun"
 		"ammonum"	"150"
 	}
-	"13"
-	{
-		"weapon"	"weapon_gauss"
-		"ammotype"	"GaussEnergy"
-		"ammonum"	"150"
-	}
 	"14"
 	{
 		"weapon"	"weapon_shotgun"
@@ -101,18 +95,6 @@
 		"ammotype"	"Sniper"
 		"ammonum"	"50"
 	}
-	"17"
-	{
-		"weapon"	"weapon_slam"
-		"ammotype"	"slam"
-		"ammonum"	"50"
-	}
-	"18"
-	{
-		"weapon"	"weapon_m249para"
-		"ammotype"	"M249"
-		"ammonum"	"100"
-	}
 	"19"
 	{
 		"weapon"	"weapon_357"
@@ -128,24 +110,6 @@
 		"weapon"	"weapon_oicw"
 		"ammotype"	"556Round"
 		"ammonum"	"250"
-	}
-	"22"
-	{
-		"weapon"	"weapon_alyxgun"
-		"ammotype"	"Alyxgun"
-		"ammonum"	"180"
-	}
-	"23"
-	{
-		"weapon"	"weapon_xm1014"
-		"ammotype"	"Buckshot"
-		"ammonum"	"50"
-	}
-	"24"
-	{
-		"weapon"	"weapon_flechettegun"
-		"ammotype"	"Flechette"
-		"ammonum"	"120"
 	}
 	"25"
 	{

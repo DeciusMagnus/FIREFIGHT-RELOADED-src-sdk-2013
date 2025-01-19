@@ -43,6 +43,16 @@
                     "randomizer"            "#GameUI_LoadoutRandomizer"
                     "randomizer_hardcore"   "#GameUI_LoadoutRandomizerPermadeath"
                     "mapadd"		        "#FIREFIGHTRELOADED_ModMapping_Mapadd"
+                    "custom1"		        "#GameUI_Loadout_Custom1"
+                    "custom2"		        "#GameUI_Loadout_Custom2"
+                    "custom3"		        "#GameUI_Loadout_Custom3"
+                    "custom4"		        "#GameUI_Loadout_Custom4"
+                    "custom5"		        "#GameUI_Loadout_Custom5"
+                    "custom6"		        "#GameUI_Loadout_Custom6"
+                    "custom7"		        "#GameUI_Loadout_Custom7"
+                    "custom8"		        "#GameUI_Loadout_Custom8"
+                    "custom9"		        "#GameUI_Loadout_Custom9"
+                    "custom10"		        "#GameUI_Loadout_Custom10"
 				}
 			}
             
