@@ -9,6 +9,11 @@
 #include "steam/steam_api.h"
 #endif
 
+#include "vgui_controls/MessageBox.h"
+
+// memdbgon must be the last include file in a .cpp file!!!
+#include <tier0/memdbgon.h>
+
 CON_COMMAND( list_centities, "List all client entities." )
 {
 	for ( auto iter = ClientEntityList().FirstHandle(); iter.IsValid(); iter = ClientEntityList().NextHandle( iter ) )
@@ -71,8 +76,25 @@ CON_COMMAND(fr_version, "")
 	Msg(verString);
 }
 
+#ifdef _DEBUG
 CON_COMMAND(leaksun, "Sets fullbright to 1 and spams \"THE SUN IS LEAKING\" in the console repeatedly.")
 {
 	engine->ClientCmd("mat_fullbright 1\n");
 	Warning("THE SUN IS LEAKING.\nTHE SUN IS LEAKING.\nTHE SUN IS LEAKING.\nTHE SUN IS LEAKING.\nTHE SUN IS LEAKING.\nTHE SUN IS LEAKING.\nTHE SUN IS LEAKING.\nTHE SUN IS LEAKING.\nTHE SUN IS LEAKING.\nTHE SUN IS LEAKING.\nTHE SUN IS LEAKING.\n\n\n\n\n\n\nRestore the lighting with mat_fullbright 0\n");
 }
+
+void OpenMessageBox(const CCommand& args)
+{
+	vgui::MessageBox* pMessageBox = new vgui::MessageBox(args[1], args[2]);
+	pMessageBox->DoModal();
+}
+
+ConCommand show_messagebox("show_messagebox", OpenMessageBox);
+
+void OpenErrorBox(const CCommand& args)
+{
+	Error(args[1]);
+}
+
+ConCommand show_error("show_error", OpenErrorBox);
+#endif
