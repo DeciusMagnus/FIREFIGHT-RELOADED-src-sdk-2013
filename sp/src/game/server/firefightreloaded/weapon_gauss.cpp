@@ -217,7 +217,15 @@ void CWeaponGaussGun::ChargedFire( void )
 	else if ( pHit != NULL )
 	{
 		CTakeDamageInfo dmgInfo(this, pOwner, flDamage, DMG_SHOCK | DMG_ALWAYSGIB | DMG_CRUSH);
-		CalculateBulletDamageForce( &dmgInfo, m_iPrimaryAmmoType, aimDir, tr.endpos );
+		if (pHit->VPhysicsGetObject())
+		{
+			Vector vecFacing = pOwner->BodyDirection3D();
+			Vector vecThrow;
+			GetOwner()->GetVelocity(&vecThrow, NULL);
+			vecThrow += vecFacing * 1500;
+
+			pHit->ApplyAbsVelocityImpulse(vecThrow);
+		}
 
 		//Do direct damage to anything in our path
 		pHit->DispatchTraceAttack( dmgInfo, aimDir, &tr );
