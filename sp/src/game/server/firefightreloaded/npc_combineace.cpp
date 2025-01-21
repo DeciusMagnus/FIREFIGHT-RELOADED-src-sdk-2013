@@ -625,7 +625,7 @@ CTakeDamageInfo CNPC_CombineAce::BulletResistanceLogic(const CTakeDamageInfo& in
 		if (!(outputInfo.GetDamageType() & (DMG_GENERIC)))
 		{
 			//allow ourself to get launched by kick or explosives, but don't take a lot of damage.
-			if (info.GetDamageType() & DMG_BLAST || (info.GetDamageType() & DMG_CLUB && info.GetDamage() >= MIN_KICK_KNOCKBACK_DAMAGE))
+			if (info.GetDamageType() & DMG_BLAST /*|| (info.GetDamageType() & DMG_CLUB && info.GetDamage() >= MIN_KICK_KNOCKBACK_DAMAGE)*/)
 			{
 				Vector hitDirection, up;
 

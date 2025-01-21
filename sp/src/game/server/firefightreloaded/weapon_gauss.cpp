@@ -245,10 +245,16 @@ void CWeaponGaussGun::ChargedFire( void )
 
 	DrawBeam( startPos, tr.endpos, 9.6);
 
-	Vector	recoilForce = pOwner->BodyDirection2D() * -( flDamage * 10.0f );
-	recoilForce[2] += 128.0f;
+	//from the FR knockback code
+	//striders use MOVETYPE_FLY
+	if (pOwner->GetMoveType() != MOVETYPE_FLY)
+	{
+		Vector hitDirection, up;
+		pOwner->EyeVectors(&hitDirection, NULL, &up);
 
-	pOwner->ApplyAbsVelocityImpulse( recoilForce );
+		VectorNormalize(hitDirection);
+		pOwner->ApplyAbsVelocityImpulse(-(hitDirection * 400 + up * 150));
+	}
 
 	CPVSFilter filter( tr.endpos );
 	te->GaussExplosion( filter, 0.0f, tr.endpos, tr.plane.normal, 0 );
