@@ -21,21 +21,21 @@
 	"3"
 	{
 		"name"	"Knife"
-		"price"	"550"
+		"price"	"650"
 		"limit"	"1"
 		"command"	"item weapon_knife 0"
 	}
 	"4"
 	{
 		"name"	"FragGrenade"
-		"price"	"350"
+		"price"	"550"
 		"limit"	"5"
 		"command"	"item item_ammo_grenade 1"
 	}
 	"5"
 	{
 		"name"	"SLAM"
-		"price"	"375"
+		"price"	"575"
 		"limit"	"5"
 		"command"	"item item_slam_ammo 1"
 	}
@@ -77,21 +77,21 @@
 	"11"
 	{
 		"name"	"RPG"
-		"price"	"3500"
+		"price"	"4500"
 		"limit"	"2"
 		"command"	"item weapon_rpg 0"
 	}
 	"12"
 	{
 		"name"	"GrenadeLauncher"
-		"price"	"2500"
+		"price"	"3500"
 		"limit"	"1"
 		"command"	"item weapon_grenadelauncher 0"
 	}
 	"13"
 	{
 		"name"	"SniperRifle"
-		"price"	"2650"
+		"price"	"2500"
 		"limit"	"1"
 		"command"	"item weapon_sniper_rifle 0"
 	}

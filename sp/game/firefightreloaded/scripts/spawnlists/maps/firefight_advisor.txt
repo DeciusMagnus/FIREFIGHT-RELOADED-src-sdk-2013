@@ -4,6 +4,11 @@
 
 "firefight_advisor"
 {
+	"settings"
+	{
+		"spawntime"	"6"
+		"spawntime_steamdeck"	"10"
+	}
     //COMMON
     "1"
     {
@@ -126,4 +131,10 @@
         "preset"		"0"
         "rare"			"1"
     }
+    "17"
+	{
+		"classname"	    "npc_killerscanner"
+        "preset"		"0"
+        "rare"			"1"
+	}
 }

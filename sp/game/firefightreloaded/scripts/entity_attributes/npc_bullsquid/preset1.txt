@@ -7,6 +7,6 @@
 	"has_outlines"		"1"
 	"new_projectile"	"2"
 	"spit_size"		"4"
-	"outline_color"		"128 255 128"
+	"outline_color"		"0 255 0"
 	"persist"		"0"
 }

@@ -1378,20 +1378,20 @@ bool GivePerkForID(CBasePlayer* pPlayer, int perkID)
 			break;
 		case FIREFIGHT_PERK_HEALTHREGENERATIONRATE:
 		{
-			if (pPlayer->m_iPerkHealthRegen == 1)
+			if (pPlayer->m_bGotPerkHealthRegen && pPlayer->m_iPerkHealthRegen == 1)
 			{
 				float regenRateAdd = GivePerkAdjustValue(pPlayer, sv_regeneration.GetBool(), sv_fr_perks_healthregenerationrate_amount.GetFloat());
 				pPlayer->m_fRegenRate = pPlayer->m_fRegenRate + regenRateAdd;
-				pPlayer->m_bGotPerkHealthRegen = true;
 				unlocked = (regenRateAdd > 0);
 			}
 		}
 		break;
 		case FIREFIGHT_PERK_HEALTHREGENERATION:
-			if (pPlayer->m_iPerkHealthRegen == 0)
+			if (!pPlayer->m_bGotPerkHealthRegen && pPlayer->m_iPerkHealthRegen == 0)
 			{
 				//m_iPerkHealthRegen = 1 on non classic mode.
 				pPlayer->m_iPerkHealthRegen = GivePerk(pPlayer, sv_regeneration.GetBool());
+				pPlayer->m_bGotPerkHealthRegen = true;
 				unlocked = (pPlayer->m_iPerkHealthRegen > 0);
 			}
 			break;
@@ -1486,7 +1486,16 @@ bool CBasePlayer::GiveItemOfType(int itemType,
 			unlocked = GiveAmmoForWeapon(this, pWeaponClassname, isAmmoPrimary, ammoCount);
 			break;
 		case FR_PERK:
-			unlocked = GivePerkForID(this, perkID);
+			{
+				if (perkID == FIREFIGHT_PERK_HEALTHREGENERATION && !sv_fr_perks_healthregeneration_perkmode.GetBool())
+				{
+					unlocked = false;
+				}
+				else
+				{
+					unlocked = GivePerkForID(this, perkID);
+				}
+			}
 			break;
 		case FR_KASHBONUS:
 			unlocked = GiveKashBonus(this);
@@ -6567,6 +6576,7 @@ void CBasePlayer::Spawn( void )
 	if (giveHealthRegenonSpawn)
 	{
 		m_iPerkHealthRegen = 1;
+		m_bGotPerkHealthRegen = true;
 	}
 	else
 	{

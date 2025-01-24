@@ -695,6 +695,12 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 
 		int moneyReward = 0;
 		int xpReward = 0;
+
+		//fix hornets showing up.
+		if (FClassnameIs(pVictim, "npc_hornet") || (pKiller && FClassnameIs(pKiller, "npc_hornet")))
+		{
+			return;
+		}
 		
 		if (pEntity)
 		{
@@ -825,7 +831,8 @@ bool CSingleplayRules::Damage_ShouldNotBleed( int iDmgType )
 					(info.GetDamageType() & DMG_SHOCK) ||
 					(info.GetDamageType() & DMG_SNIPER) ||
 					(info.GetDamageType() & DMG_BUCKSHOT) ||
-					(info.GetDamageType() & DMG_ALWAYSGIB))
+					(info.GetDamageType() & DMG_ALWAYSGIB) || 
+					(info.GetDamageType() & DMG_DISSOLVE))
 				{
 					moneyReward += 50;
 					xpReward += 50;

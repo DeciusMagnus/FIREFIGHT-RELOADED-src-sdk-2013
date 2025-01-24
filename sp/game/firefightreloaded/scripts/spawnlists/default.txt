@@ -12,11 +12,13 @@
 	"1"
 	{
 		"classname"	"npc_metropolice"
+        "min_level"	"1"
 		"exp"	"15"
 	}
 	"2"
 	{
 		"classname"	"npc_headcrab"
+        "min_level"	"1"
 		"exp"	"15"
 		"rare"	"1"
 	}
