@@ -321,6 +321,22 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 		{
 			EmitSound( "Weapon_Crossbow.BoltHitWorld" );
 
+			//fix bolts colliding with each other
+			if (FClassnameIs(pOther, "crossbow_bolt"))
+			{
+				SetTouch(NULL);
+				SetThink(&CCrossbowBolt::SUB_Remove);
+				//NOW.
+				SetNextThink(gpGlobals->curtime);
+				UTIL_ImpactTrace(&tr, DMG_BULLET);
+				// Shoot some sparks
+				if (UTIL_PointContents(GetAbsOrigin()) != CONTENTS_WATER)
+				{
+					g_pEffects->Sparks(GetAbsOrigin());
+				}
+				return;
+			}
+
 			// if what we hit is static architecture, can stay around for a while.
 			Vector vecDir = GetAbsVelocity();
 			float speed = VectorNormalize( vecDir );
