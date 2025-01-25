@@ -1409,6 +1409,32 @@ acttable_t	CWeaponRPG::m_acttable[] =
 	{ ACT_RUN_CROUCH,				ACT_RUN_CROUCH_RPG,				true },
 	{ ACT_COVER_LOW,				ACT_COVER_LOW_RPG,				true },
 
+	{ ACT_WALK_RELAXED,				ACT_WALK_RPG,			false },//never aims
+	{ ACT_WALK_STIMULATED,			ACT_WALK_RPG,		false },
+	{ ACT_WALK_AGITATED,			ACT_WALK_RPG,				false },//always aims
+
+	{ ACT_RUN_RELAXED,				ACT_RUN_RPG,			false },//never aims
+	{ ACT_RUN_STIMULATED,			ACT_RUN_RPG,		false },
+	{ ACT_RUN_AGITATED,				ACT_RUN_RPG,				false },//always aims
+
+	{ ACT_IDLE_AIM_RELAXED,			ACT_IDLE_RPG_RELAXED,			false },//never aims	
+	{ ACT_IDLE_AIM_STIMULATED,		ACT_IDLE_ANGRY_RPG,	false },
+	{ ACT_IDLE_AIM_AGITATED,		ACT_IDLE_ANGRY_RPG,			false },//always aims
+
+	{ ACT_WALK_AIM_RELAXED,			ACT_WALK_RPG,			false },//never aims
+	{ ACT_WALK_AIM_STIMULATED,		ACT_WALK_RPG,	false },
+	{ ACT_WALK_AIM_AGITATED,		ACT_WALK_RPG,				false },//always aims
+
+	{ ACT_RUN_AIM_RELAXED,			ACT_RUN_RPG,			false },//never aims
+	{ ACT_RUN_AIM_STIMULATED,		ACT_RUN_RPG,	false },
+	{ ACT_RUN_AIM_AGITATED,			ACT_RUN_RPG,				false },//always aims
+
+	{ ACT_WALK_AIM,					ACT_WALK_RPG,				true },
+	{ ACT_WALK_CROUCH_AIM,			ACT_WALK_CROUCH_RPG,		true },
+	{ ACT_RUN_CROUCH_AIM,			ACT_RUN_CROUCH_RPG,		true },
+
+	{ ACT_RANGE_ATTACK1_LOW,		ACT_RANGE_ATTACK_RPG,		true },		// FIXME: hook to AR2 unique
+
 	//mp anims
 	{ ACT_HL2MP_IDLE,				ACT_HL2MP_IDLE_RPG,				false },
 	{ ACT_HL2MP_RUN,				ACT_HL2MP_RUN_RPG,				false },

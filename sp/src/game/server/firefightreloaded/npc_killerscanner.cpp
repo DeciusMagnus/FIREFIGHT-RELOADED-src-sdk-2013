@@ -89,6 +89,7 @@ public:
 	void		AdjustScannerVelocity();
 	void		MoveToAttack(float flInterval);
 	int			OnTakeDamage_Alive(const CTakeDamageInfo& info);
+	void		VPhysicsCollision(int index, gamevcollisionevent_t* pEvent);
 
 	void		PrescheduleThink();
 
@@ -297,6 +298,48 @@ char* CNPC_KillerScanner::GetScannerSoundPrefix(void)
 	return "NPC_KillerScanner";
 }
 
+#define SCANNER_SMASH_TIME	0.35		// How long after being thrown from a physcannon that a manhack is eligible to die from impact
+void CNPC_KillerScanner::VPhysicsCollision(int index, gamevcollisionevent_t* pEvent)
+{
+	CBaseEntity::VPhysicsCollision(index, pEvent);
+
+	CBasePlayer* pPlayer = HasPhysicsAttacker(SCANNER_SMASH_TIME);
+	if (pPlayer)
+	{
+		TakeDamageFromPhyscannon(pPlayer);
+		return;
+	}
+
+	//decided to remove the physcannon damage protection so the 
+	//player can slam the scanner against the wall
+
+	// It also can take physics damage from things thrown by the player.
+	int otherIndex = !index;
+	CBaseEntity* pHitEntity = pEvent->pEntities[otherIndex];
+	if (pHitEntity)
+	{
+		// It can take physics damage if it rams into a vehicle
+		if (pHitEntity->GetServerVehicle())
+		{
+			TakeDamageFromVehicle(index, pEvent);
+		}
+		else if (pHitEntity->HasPhysicsAttacker(0.5f))
+		{
+			// It also can take physics damage from things thrown by the player.
+			TakeDamageFromPhysicsImpact(index, pEvent);
+		}
+		else if (FClassnameIs(pHitEntity, "prop_combine_ball"))
+		{
+			// It also can take physics damage from a combine ball.
+			TakeDamageFromPhysicsImpact(index, pEvent);
+		}
+		else if (m_iHealth <= 0)
+		{
+			TakeDamageFromPhysicsImpact(index, pEvent);
+		}
+	}
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : Type - 
@@ -323,16 +366,20 @@ int CNPC_KillerScanner::SelectSchedule(void)
 	// Patrol if the enemy has vanished
 	if (GetEnemy())
 	{
-		if (HasCondition(COND_LOST_ENEMY))
-			return SCHED_KILLERSCANNER_HUNT;
-
 		if (m_nFlyMode == SCANNER_FLY_ATTACK)
 		{
 			//attack if the enemy is behind glass. we have other code that helps us determine if enemies are reachable. 
 			if (HasCondition(COND_SEE_ENEMY) ||
-				HasCondition(COND_HAVE_ENEMY_LOS) || 
-				HasCondition(COND_SCANNER_FLY_BLOCKED))
+				HasCondition(COND_HAVE_ENEMY_LOS))
 				return SCHED_SCANNER_ATTACK;
+
+			// Patrol if the enemy has vanished
+			if (HasCondition(COND_LOST_ENEMY))
+				return SCHED_SCANNER_PATROL;
+
+			// Chase via route if we're directly blocked
+			if (HasCondition(COND_SCANNER_FLY_BLOCKED))
+				return SCHED_KILLERSCANNER_HUNT;
 		}
 	}
 
@@ -1057,6 +1104,7 @@ AI_BEGIN_CUSTOM_NPC( npc_killerscanner, CNPC_KillerScanner )
 		"		COND_TOO_FAR_TO_ATTACK"
 		"		COND_NOT_FACING_ATTACK"
 		"		COND_SCANNER_GRABBED_BY_PHYSCANNON"
+		"		COND_LOST_ENEMY"
 	)
 
 	//=========================================================
@@ -1080,8 +1128,8 @@ AI_BEGIN_CUSTOM_NPC( npc_killerscanner, CNPC_KillerScanner )
 		"		COND_SCANNER_FLY_CLEAR"
 		"		COND_NEW_ENEMY"
 		"		COND_ENEMY_DEAD"
-		"		COND_LOST_ENEMY"
 		"		COND_SCANNER_GRABBED_BY_PHYSCANNON"
+		"		COND_ENEMY_OCCLUDED"
 	)
 
 AI_END_CUSTOM_NPC()

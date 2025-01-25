@@ -128,6 +128,12 @@ public:
 	void			InputSetFlightSpeed( inputdata_t &inputdata );
 	void			InputSetDistanceOverride( inputdata_t &inputdata );
 
+	// Take damage from being thrown by a physcannon 
+	void TakeDamageFromPhyscannon(CBasePlayer* pPlayer);
+
+	// Take damage from physics impacts
+	void TakeDamageFromPhysicsImpact(int index, gamevcollisionevent_t* pEvent);
+
 protected:
 	virtual char		*GetEngineSound( void ) { return NULL; }
 	void				PlayFlySound(void);
@@ -157,19 +163,13 @@ protected:
 	void				MoveToDivebomb(float flInterval);
 	void				BlendPhyscannonLaunchSpeed();
 
+	// Do we have a physics attacker?
+	CBasePlayer* HasPhysicsAttacker(float dt);
+
 private:
 	bool	GetGoalDirection( Vector *vOut );
 
 	void	StartSmokeTrail( void );
-
-	// Take damage from being thrown by a physcannon 
-	void TakeDamageFromPhyscannon( CBasePlayer *pPlayer );
-
-	// Take damage from physics impacts
-	void TakeDamageFromPhysicsImpact( int index, gamevcollisionevent_t *pEvent );
-
-	// Do we have a physics attacker?
-	CBasePlayer *HasPhysicsAttacker( float dt );
 
 	virtual void		StopLoopingSounds(void);
 

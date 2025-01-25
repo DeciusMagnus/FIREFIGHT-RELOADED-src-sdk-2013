@@ -13,6 +13,7 @@
 #include "IEffects.h"
 #include "explode.h"
 #include "ai_route.h"
+#include "world.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -434,7 +435,7 @@ void CNPC_BaseScanner::TakeDamageFromPhyscannon( CBasePlayer *pPlayer )
 {
 	CTakeDamageInfo info;
 	info.SetDamageType( DMG_CRUSH );
-	info.SetInflictor( this );
+	info.SetInflictor(GetWorldEntity());
 	info.SetAttacker( pPlayer );
 	info.SetDamagePosition( GetAbsOrigin() );
 	info.SetDamageForce( Vector( 1.0, 1.0, 1.0 ) );
@@ -574,7 +575,7 @@ void CNPC_BaseScanner::VPhysicsCollision( int index, gamevcollisionevent_t *pEve
 	BaseClass::VPhysicsCollision( index, pEvent );
 
 	// Take no impact damage while being carried.
-	if ( IsHeldByPhyscannon( ) )
+	if (IsHeldByPhyscannon())
 		return;
 
 	CBasePlayer *pPlayer = HasPhysicsAttacker( SCANNER_SMASH_TIME );

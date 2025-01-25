@@ -38,6 +38,7 @@
 #include "physics_prop_ragdoll.h"
 #include "soundent.h"
 #include "ammodef.h"
+#include "world.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -433,7 +434,7 @@ void CNPC_Manhack::TakeDamageFromPhyscannon( CBasePlayer *pPlayer )
 {
 	CTakeDamageInfo info;
 	info.SetDamageType( DMG_GENERIC );
-	info.SetInflictor( this );
+	info.SetInflictor(GetWorldEntity());
 	info.SetAttacker( pPlayer );
 	info.SetDamagePosition( GetAbsOrigin() );
 	info.SetDamageForce( Vector( 1.0, 1.0, 1.0 ) );

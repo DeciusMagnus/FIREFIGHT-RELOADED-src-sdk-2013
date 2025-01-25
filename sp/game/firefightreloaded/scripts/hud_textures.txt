@@ -219,6 +219,11 @@
 				"font"		"WeaponIconsKillFeed"
 				"character"	"9"
 		}
+		"worldspawn"
+		{
+				"font"		"WeaponIconsKillFeed"
+				"character"	"9"
+		}
 		"npc_houndeye"
 		{
 				"font"		"WeaponIconsKillFeed"
