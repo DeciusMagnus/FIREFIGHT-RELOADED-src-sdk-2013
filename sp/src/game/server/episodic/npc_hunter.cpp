@@ -1665,6 +1665,8 @@ BEGIN_DATADESC( CNPC_Hunter )
 	//DEFINE_FIELD( m_bMissLeft, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_bEnableUnplantedShooting, FIELD_BOOLEAN ),
 
+	DEFINE_FIELD(m_bIsFriendly, FIELD_BOOLEAN),
+
 	DEFINE_FIELD( m_nKillingDamageType, FIELD_INTEGER ),
 	DEFINE_FIELD( m_eDodgeActivity, FIELD_INTEGER ),
 	DEFINE_EMBEDDED( m_RundownDelay ),

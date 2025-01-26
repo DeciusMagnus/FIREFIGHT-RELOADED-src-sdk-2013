@@ -1212,6 +1212,9 @@ void GiveAmmoWeapon(CBasePlayer* pPlayer, const char* pClassname)
 
 bool GiveAmmoForWeapon(CBasePlayer* pPlayer, const char* pParentClassname, bool isAmmoPrimary, int num)
 {
+	if (pPlayer->m_iPerkInfiniteAmmo == 1)
+		return false;
+
 	CBaseCombatWeapon *pWeapon = pPlayer->Weapon_OwnsThisType(pParentClassname);
 
 	if (pWeapon)

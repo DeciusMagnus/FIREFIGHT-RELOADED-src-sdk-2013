@@ -133,6 +133,7 @@ BEGIN_DATADESC( CHGrunt )
 	DEFINE_FIELD( m_iClipSize, FIELD_INTEGER ),
 	DEFINE_FIELD( m_voicePitch, FIELD_INTEGER ),
 	DEFINE_FIELD( m_iSentence, FIELD_INTEGER ),
+	DEFINE_FIELD(m_fIsFriendly, FIELD_BOOLEAN),
 	DEFINE_KEYFIELD( m_iWeapons, FIELD_INTEGER, "weapons" ),
 	DEFINE_KEYFIELD( m_SquadName, FIELD_STRING, "netname" ),
     

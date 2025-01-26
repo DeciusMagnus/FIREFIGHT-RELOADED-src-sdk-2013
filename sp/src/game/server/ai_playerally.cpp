@@ -1446,6 +1446,9 @@ bool CAI_PlayerAlly::IsOkToSpeak( ConceptCategory_t category, bool fRespondingTo
 
 	if ( category != SPEECH_PRIORITY )
 	{
+		if (!GetExpresser())
+			return false;
+
 		// if someone else is talking, don't speak
 		if ( !GetExpresser()->SemaphoreIsAvailable( this ) )
 			return false;
@@ -1462,7 +1465,7 @@ bool CAI_PlayerAlly::IsOkToSpeak( ConceptCategory_t category, bool fRespondingTo
 		}
 
 		// Don't talk if we're too far from the player
-		CBaseEntity *pPlayer = AI_GetSinglePlayer();
+		CBaseEntity *pPlayer = UTIL_GetNearestPlayer(GetAbsOrigin());
 		if ( pPlayer )
 		{
 			float flDist = sv_npc_talker_maxdist.GetFloat();

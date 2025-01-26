@@ -65,8 +65,7 @@ public:
 	
 	virtual const Vector& GetBulletSpread( void )
 	{
-		static const Vector cone = VECTOR_CONE_4DEGREES;
-		static const Vector npccone = VECTOR_CONE_1DEGREES;
+		static const Vector cone = VECTOR_CONE_3DEGREES;
 		static const Vector zoomcone = VECTOR_CONE_1DEGREES;
 		if (IsWeaponZoomed())
 		{
@@ -75,7 +74,8 @@ public:
 
 		if (GetOwner() && GetOwner()->IsNPC())
 		{
-			return npccone;
+			//make it seem like npcs are zooming
+			return zoomcone;
 		}
 
 		return cone;

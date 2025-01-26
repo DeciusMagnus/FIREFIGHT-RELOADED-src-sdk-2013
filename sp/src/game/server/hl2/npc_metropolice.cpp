@@ -203,6 +203,8 @@ BEGIN_DATADESC( CNPC_MetroPolice )
 	DEFINE_FIELD( m_bSimpleCops, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_flLastHitYaw, FIELD_FLOAT ),
 
+	DEFINE_FIELD(m_bIsFriendly, FIELD_BOOLEAN),
+
 	DEFINE_FIELD( m_bPlayerTooClose,	FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_bKeepFacingPlayer,	FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_flChasePlayerTime,	FIELD_TIME ),

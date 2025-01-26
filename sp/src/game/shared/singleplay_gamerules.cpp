@@ -38,11 +38,11 @@ ConVar sk_killrewardinitial_multiplier3("sk_killrewardinitial_multiplier3", "3.5
 ConVar sk_killrewardinitial_multiplier4("sk_killrewardinitial_multiplier4", "4.5");
 ConVar sk_killrewardinitial_multiplier5("sk_killrewardinitial_multiplier5", "5.5");
 
-ConVar sk_killrewardbonus_multiplier1("sk_killrewardbonus_multiplier1", "3.5");
-ConVar sk_killrewardbonus_multiplier2("sk_killrewardbonus_multiplier2", "4.5");
-ConVar sk_killrewardbonus_multiplier3("sk_killrewardbonus_multiplier3", "5.5");
-ConVar sk_killrewardbonus_multiplier4("sk_killrewardbonus_multiplier4", "6");
-ConVar sk_killrewardbonus_multiplier5("sk_killrewardbonus_multiplier5", "6.5");
+ConVar sk_killrewardbonus_multiplier1("sk_killrewardbonus_multiplier1", "1.5");
+ConVar sk_killrewardbonus_multiplier2("sk_killrewardbonus_multiplier2", "2");
+ConVar sk_killrewardbonus_multiplier3("sk_killrewardbonus_multiplier3", "3.5");
+ConVar sk_killrewardbonus_multiplier4("sk_killrewardbonus_multiplier4", "4");
+ConVar sk_killrewardbonus_multiplier5("sk_killrewardbonus_multiplier5", "5.5");
 
 ConVar sv_killingspree("sv_killingspree", "1", FCVAR_ARCHIVE);
 
