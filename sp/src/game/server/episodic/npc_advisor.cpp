@@ -291,9 +291,9 @@ CTakeDamageInfo CNPC_Advisor::BulletResistanceLogic(const CTakeDamageInfo& info,
 {
 	CTakeDamageInfo outputInfo = info;
 
-	int shieldhealth = GetMaxHealth() * 0.5;
+	int shieldmaxhealth = GetMaxHealth() * 0.5;
 
-	if ((GetHealth() > shieldhealth) && !m_bBulletResistanceBroken)
+	if ((GetHealth() > shieldmaxhealth) && !m_bBulletResistanceBroken)
 	{
 		if (!(outputInfo.GetDamageType() & (DMG_GENERIC)))
 		{
@@ -336,7 +336,7 @@ CTakeDamageInfo CNPC_Advisor::BulletResistanceLogic(const CTakeDamageInfo& info,
 		}
 	}
 
-	if ((GetHealth() <= shieldhealth) && !m_bBulletResistanceBroken)
+	if ((GetHealth() <= shieldmaxhealth) && !m_bBulletResistanceBroken)
 	{
 		//this is so rpg rockets don't instantly kill us when our shield breaks.
 		outputInfo.SetDamage(0.0f);
@@ -348,11 +348,11 @@ CTakeDamageInfo CNPC_Advisor::BulletResistanceLogic(const CTakeDamageInfo& info,
 		EmitSound("Weapon_StriderBuster.Detonate");
 		EmitSound("NPC_Advisor.Scream");
 		SetBloodColor(BLOOD_COLOR_GREEN);
-		RemoveGlowEffect();
 		m_bBulletResistanceBroken = true;
 
 		if (!m_bBulletResistanceOutlineDisabled)
 		{
+			RemoveGlowEffect();
 			m_denyOutlines = true;
 			m_bImportantOutline = true;
 			Vector outline = Vector(255, 0, 0);
@@ -1249,7 +1249,8 @@ void CNPC_Advisor::RunTask( const Task_t *pTask )
 								pNPC->Classify() == CLASS_MANHACK ||
 								pNPC->Classify() == CLASS_SCANNER ||
 								pNPC->Classify() == CLASS_METROPOLICE) &&
-								pNPC->IRelationType(this) != D_HT)
+								pNPC->IRelationType(this) != D_HT && 
+								m_pAttributes == NULL)
 							{
 								m_droneObjects.AddToTail(pTouch);
 							}
