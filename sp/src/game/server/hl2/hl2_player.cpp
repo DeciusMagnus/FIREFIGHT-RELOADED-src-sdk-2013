@@ -715,68 +715,119 @@ void CHL2_Player::HandleArmorReduction( void )
 	SetArmorValue( iArmor );
 }
 
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+float GrappleDistance(CBasePlayer* pPlayer)
+{
+	if (pPlayer)
+	{
+		// Get the entity under my crosshair
+		trace_t tr;
+		Vector forward;
+		pPlayer->EyeVectors(&forward);
+		UTIL_TraceLine(pPlayer->EyePosition(), pPlayer->EyePosition() + forward * MAX_COORD_RANGE, MASK_SOLID, pPlayer, COLLISION_GROUP_NONE, &tr);
+
+		Vector enemyDelta = (tr.endpos - tr.startpos);
+		//DevMsg("[PLAYER] Grapple Distance: %f\n", enemyDelta.Length());
+		return enemyDelta.Length();
+	}
+	return 0.0f;
+}
+
+extern ConVar sk_grapple_batterydrain;
+extern ConVar sk_grapple_rangerestriction_max;
+extern ConVar sk_grapple_rangerestriction;
+
+void CHL2_Player::KillGrapple(void)
+{
+	if (m_afButtonPressed & IN_GRAPPLE)
+	{
+		EmitSound("Weapon_SMG1.Empty");
+	}
+
+	m_bInGrapple = false;
+}
+
 void CHL2_Player::HandleGrapple(void)
 {
-	if (!HasNamedPlayerItem("weapon_grapple"))
+	if (!(sv_player_grapple.GetBool() && HasNamedPlayerItem("weapon_grapple")))
 	{
-		if (m_afButtonPressed & IN_GRAPPLE)
-		{
-			EmitSound("Weapon_SMG1.Empty");
-		}
-
-		m_bInGrapple = false;
+		KillGrapple();
 		return;
 	}
 
-	if (sv_player_grapple.GetBool())
+	KeyValues* pInfo = CMapInfo::GetMapInfoData();
+	if (pInfo != NULL && !pInfo->GetBool("CanGrapple", true))
 	{
-		KeyValues* pInfo = CMapInfo::GetMapInfoData();
-		if (pInfo != NULL && !pInfo->GetBool("CanGrapple", true))
+		KillGrapple();
+		return;
+	}
+
+	/*
+		KUP: Don't act hostile; I'll use the universal greeting.
+		HOT ROD: "Universal greeting"?
+		KUP: Watch.  I'll have them eating out of my hand: Bah weep granah weep nini bong!
+		HOT ROD: Bah weep granah weep nini bong?
+		SHARKTICONS: Bah weep granah weep nini bong!
+		KUP: See?  The universal greeting works every time.  Now, without making any sudden moves, offer them an energon goodie.
+		(Kup opens a metal box and feeds energon to the Sharkticons.  Hot Rod proceeds to also.)
+		HOT ROD: This is getting expensive.
+		KUP: Don't worry.  They'll reciprocate.
+		(The Sharkticons make hand gestures to request more.)
+		HOT ROD: I thought they were supposed to reciprocate.  No more.
+		KUP: Empty.
+		(The Sharkticons capture Hot Rod and Kup and lead them to a structure.  A small orange car (Wheelie) witnesses the event.)
+	*/
+
+	if (sk_grapple_batterydrain.GetBool())
+	{
+		if (ArmorValue() <= 0)
 		{
+			KillGrapple();
 			return;
 		}
+	}
 
-		if (m_afButtonPressed & IN_GRAPPLE)
+	if (sk_grapple_rangerestriction.GetBool())
+	{
+		if (GrappleDistance(this) > sk_grapple_rangerestriction_max.GetFloat())
 		{
-			engine->ClientCommand(edict(), "cancelselect");
-			SelectItem("weapon_grapple");
-			CBaseCombatWeapon* pGrapple = GetActiveWeapon();
-			const char* pWeaponClass = "weapon_grapple";
-			if (pGrapple)
-			{
-				const char* strWeaponName = pGrapple->GetName();
-
-				if (!Q_stricmp(strWeaponName, pWeaponClass))
-				{
-					pGrapple->PrimaryAttack();
-				}
-			}
-
-			m_bInGrapple = true;
-		}
-		else if (!(m_nButtons & IN_GRAPPLE))
-		{
-			CBaseCombatWeapon* pWeapon = GetActiveWeapon();
-			const char* pWeaponClass = "weapon_grapple";
-
-			if (pWeapon)
-			{
-				const char* strWeaponName = pWeapon->GetName();
-
-				if (!Q_stricmp(strWeaponName, pWeaponClass))
-				{
-					SelectLastItem();
-				}
-			}
-
-			m_bInGrapple = false;
+			KillGrapple();
+			return;
 		}
 	}
-	else
+
+	if (m_afButtonPressed & IN_GRAPPLE)
 	{
-		if (m_afButtonPressed & IN_GRAPPLE)
+		engine->ClientCommand(edict(), "cancelselect");
+		SelectItem("weapon_grapple");
+		CBaseCombatWeapon* pGrapple = GetActiveWeapon();
+		const char* pWeaponClass = "weapon_grapple";
+		if (pGrapple)
 		{
-			EmitSound("Weapon_SMG1.Empty");
+			const char* strWeaponName = pGrapple->GetName();
+
+			if (!Q_stricmp(strWeaponName, pWeaponClass))
+			{
+				pGrapple->PrimaryAttack();
+			}
+		}
+
+		m_bInGrapple = true;
+	}
+	else if (!(m_nButtons & IN_GRAPPLE))
+	{
+		CBaseCombatWeapon* pWeapon = GetActiveWeapon();
+		const char* pWeaponClass = "weapon_grapple";
+
+		if (pWeapon)
+		{
+			const char* strWeaponName = pWeapon->GetName();
+
+			if (!Q_stricmp(strWeaponName, pWeaponClass))
+			{
+				SelectLastItem();
+			}
 		}
 
 		m_bInGrapple = false;

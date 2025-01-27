@@ -190,6 +190,7 @@ public:
 
 	void CheckIronsights(void);
 
+	void KillGrapple(void);
 	void HandleGrapple(void);
 
 	bool CanZoom( CBaseEntity *pRequester );

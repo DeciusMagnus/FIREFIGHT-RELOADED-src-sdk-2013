@@ -423,12 +423,6 @@ void CWeaponGrapple::PrimaryAttack( void )
 	//split this into 2 statements since this method would be called twice
 	if (sk_grapple_rangerestriction.GetBool())
 	{
-		if (Distance(this) < m_fMinRange1)
-		{
-			WeaponSound(EMPTY);
-			return;
-		}
-
 		if (Distance(this) > m_fMaxRange1)
 		{
 			WeaponSound(EMPTY);
@@ -446,6 +440,22 @@ void CWeaponGrapple::PrimaryAttack( void )
 	{
 		return;
 	}
+
+	/*
+		KUP: Don't act hostile; I'll use the universal greeting.
+		HOT ROD: "Universal greeting"?
+		KUP: Watch.  I'll have them eating out of my hand: Bah weep granah weep nini bong!
+		HOT ROD: Bah weep granah weep nini bong?
+		SHARKTICONS: Bah weep granah weep nini bong!
+		KUP: See?  The universal greeting works every time.  Now, without making any sudden moves, offer them an energon goodie.
+		(Kup opens a metal box and feeds energon to the Sharkticons.  Hot Rod proceeds to also.)
+		HOT ROD: This is getting expensive.
+		KUP: Don't worry.  They'll reciprocate.
+		(The Sharkticons make hand gestures to request more.)
+		HOT ROD: I thought they were supposed to reciprocate.  No more.
+		KUP: Empty.
+		(The Sharkticons capture Hot Rod and Kup and lead them to a structure.  A small orange car (Wheelie) witnesses the event.)
+	*/
 
 	if (sk_grapple_batterydrain.GetBool())
 	{
