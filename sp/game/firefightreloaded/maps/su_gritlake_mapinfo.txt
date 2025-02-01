@@ -1,4 +1,4 @@
-"dm_runoff"
+"su_gritlake"
 {
 	"HideFromPlayerOverride"	"0"
 	"Hunter_LargeOutdoorMap"	"1"
