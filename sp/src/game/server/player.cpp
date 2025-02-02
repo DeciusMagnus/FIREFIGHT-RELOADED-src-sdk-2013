@@ -6543,7 +6543,7 @@ void CBasePlayer::Spawn( void )
 												// are recieved by all clients
 	
 	//m_flFieldOfView	= 0.766;// some NPCs use this to determine whether or not the player is looking at them.
-	m_flFieldOfView = (m_iDefaultFOV / 100);
+	m_flFieldOfView = cos(m_iDefaultFOV * M_PI / 180); 
 
 	m_vecAdditionalPVSOrigin = vec3_origin;
 	m_vecCameraPVSOrigin = vec3_origin;
@@ -10707,7 +10707,7 @@ float CBasePlayer::GetFOVDistanceAdjustFactorForNetworking()
 void CBasePlayer::SetDefaultFOV( int FOV )
 {
 	m_iDefaultFOV = ( FOV == 0 ) ? g_pGameRules->DefaultFOV() : FOV;
-	m_flFieldOfView = (m_iDefaultFOV / 100);
+	m_flFieldOfView = cos(m_iDefaultFOV * M_PI / 180);
 }
 
 //-----------------------------------------------------------------------------
