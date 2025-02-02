@@ -150,6 +150,9 @@ public:
 
 	virtual bool		FInAimCone( CBaseEntity *pEntity );
 	virtual bool		FInAimCone( const Vector &vecSpot );
+
+	virtual bool		FInCustomCone(float cone, CBaseEntity* pEntity);
+	virtual bool		FInCustomCone(float cone, const Vector& vecSpot);
 	
 	virtual bool		ShouldShootMissTarget( CBaseCombatCharacter *pAttacker );
 	virtual CBaseEntity *FindMissTarget( void );

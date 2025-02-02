@@ -4176,6 +4176,11 @@ void CAI_BaseNPC::NPCThink( void )
 		m_flNextDecisionTime = 0;
 	}
 
+	NPCOptimization();
+}
+
+void CAI_BaseNPC::NPCOptimization()
+{
 	if (ai_disappear.GetBool() && !m_bBoss && !m_bNoRemove && (Classify() != CLASS_PLAYER_ALLY_VITAL))
 	{
 		bool fpsRemoval = false;
@@ -4244,6 +4249,7 @@ void CAI_BaseNPC::NPCThink( void )
 					{
 						DevWarning("Deleted NPC %s (%s). Reason: Low FPS, Not Visible\n", GetEntityName(), GetClassname());
 					}
+
 					SUB_Remove();
 					return;
 				}

@@ -683,6 +683,39 @@ bool CBaseCombatCharacter::FInAimCone( const Vector &vecSpot )
 	return false;
 }
 
+//=========================================================
+// FInViewCone - returns true is the passed ent is in
+// the caller's forward view cone. The dot product is performed
+// in 2d, making the view cone infinitely tall. 
+//=========================================================
+bool CBaseCombatCharacter::FInCustomCone(float cone, CBaseEntity* pEntity)
+{
+	return FInCustomCone(cone, pEntity->WorldSpaceCenter());
+}
+
+//=========================================================
+// FInViewCone - returns true is the passed Vector is in
+// the caller's forward view cone. The dot product is performed
+// in 2d, making the view cone infinitely tall. 
+//=========================================================
+bool CBaseCombatCharacter::FInCustomCone(float cone, const Vector& vecSpot)
+{
+	Vector los = (vecSpot - EyePosition());
+
+	// do this in 2D
+	los.z = 0;
+	VectorNormalize(los);
+
+	Vector facingDir = EyeDirection2D();
+
+	float flDot = DotProduct(los, facingDir);
+
+	if (flDot > cone)
+		return true;
+
+	return false;
+}
+
 //-----------------------------------------------------------------------------
 // Purpose:  This is a generic function (to be implemented by sub-classes) to
 //			 handle specific interactions between different types of characters

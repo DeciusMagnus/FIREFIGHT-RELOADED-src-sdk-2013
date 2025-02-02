@@ -588,6 +588,8 @@ public:
 	// Thinking, including core thinking, movement, animation
 	virtual void		NPCThink( void );
 
+	virtual void		NPCOptimization(void);
+
 	// Core thinking (schedules & tasks)
 	virtual void		RunAI( void );// core ai function!	
 
