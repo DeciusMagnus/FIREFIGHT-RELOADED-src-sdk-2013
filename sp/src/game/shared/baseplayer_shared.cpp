@@ -317,8 +317,7 @@ void CBasePlayer::ItemPostFrame()
 			GetActiveWeapon()->ItemBusyFrame();
 		}
 	}
-
-	if (gpGlobals->curtime >= m_flNextAttack)
+	else
 	{
 		if ( GetActiveWeapon() && (!IsInAVehicle() || UsingStandardWeaponsInVehicle()) )
 		{
@@ -1569,22 +1568,31 @@ void CBasePlayer::PlayerUse ( void )
 #endif
 }
 
-ConVar	sv_suppress_viewpunch( "sv_suppress_viewpunch", "0", FCVAR_REPLICATED | FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY );
+#ifdef CLIENT_DLL
+ConVar	cl_viewpunch_scale( "cl_viewpunch_scale", "1", FCVAR_ARCHIVE | FCVAR_USERINFO );
+static inline float get_viewpunch_scale(int idx)
+{
+	return cl_viewpunch_scale.GetFloat();
+}
+#else
+static inline float get_viewpunch_scale(int idx)
+{
+	auto str = engine->GetClientConVarValue(idx, "cl_viewpunch_scale");
+	// Treating null as empty which is zero.
+	return str == nullptr ? 0 : atof(str);
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
 void CBasePlayer::ViewPunch( const QAngle &angleOffset )
 {
-	//See if we're suppressing the view punching
-	if ( sv_suppress_viewpunch.GetBool() )
-		return;
-
 	// We don't allow view kicks in the vehicle
 	if ( IsInAVehicle() )
 		return;
 
-	m_Local.m_vecPunchAngleVel += angleOffset * 20;
+	m_Local.m_vecPunchAngleVel += angleOffset * 20 * get_viewpunch_scale(this->entindex());
 }
 
 //-----------------------------------------------------------------------------
