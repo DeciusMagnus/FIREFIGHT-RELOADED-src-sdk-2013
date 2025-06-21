@@ -1581,7 +1581,6 @@ static inline float get_viewpunch_scale(int idx)
 	// Treating null as empty which is zero.
 	return str == nullptr ? 0 : atof(str);
 }
-#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 

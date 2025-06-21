@@ -290,15 +290,13 @@ void CWeaponGaussGun::ChargedFire( void )
 	else if ( pHit != NULL )
 	{
 		CTakeDamageInfo dmgInfo(this, pOwner, flDamage, DMG_SHOCK | DMG_ALWAYSGIB | DMG_CRUSH);
-		if (pHit->VPhysicsGetObject())
-		{
-			Vector vecFacing = pOwner->BodyDirection3D();
-			Vector vecThrow;
-			GetOwner()->GetVelocity(&vecThrow, NULL);
-			vecThrow += vecFacing * 1500;
 
-			pHit->ApplyAbsVelocityImpulse(vecThrow);
-		}
+		Vector vecFacing = pOwner->BodyDirection3D();
+		Vector vecThrow;
+		GetOwner()->GetVelocity(&vecThrow, NULL);
+		vecThrow += vecFacing * 1500;
+
+		pHit->ApplyAbsVelocityImpulse(vecThrow);
 
 		//Do direct damage to anything in our path
 		pHit->DispatchTraceAttack( dmgInfo, aimDir, &tr );
@@ -460,6 +458,8 @@ void CWeaponGaussGun::PrimaryAttack( void )
 	m_flCoilVelocity = 1000.0f;
 }
 
+extern ConVar sv_player_damageflash;
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -491,8 +491,11 @@ void CWeaponGaussGun::IncreaseCharge( void )
 			// Add DMG_CRUSH because we don't want any physics force
 			pOwner->TakeDamage( CTakeDamageInfo( this, this, 25, DMG_SHOCK | DMG_CRUSH ) );
 			
-			color32 gaussDamage = {255,128,0,128};
-			UTIL_ScreenFade( pOwner, gaussDamage, 0.2f, 0.2f, FFADE_IN );
+			if (sv_player_damageflash.GetBool())
+			{
+				color32 gaussDamage = { 255,128,0,128 };
+				UTIL_ScreenFade(pOwner, gaussDamage, 0.2f, 0.2f, FFADE_IN);
+			}
 
 			m_flNextChargeTime = gpGlobals->curtime + random->RandomFloat( 0.5f, 2.5f );
 		}
